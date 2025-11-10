@@ -1,0 +1,311 @@
+# SportsPredictionSystem Configuration
+
+# Environment settings
+environment: dev  # dev, staging, prod
+
+# General settings
+general:
+  timezone_storage: UTC
+  timezone_display: Europe/Madrid
+  language_default: en
+  language_supported:
+    - en
+    - es
+  random_seed: 42
+
+# Data source configuration
+data_sources:
+  football:
+    primary_api: "https://www.football-data.org/"
+    secondary_api: "https://www.api-football.com/"
+    backup_csv: "https://www.kaggle.com/datasets/hugomathien/soccer"
+    features:
+      - match_results
+      - team_stats
+      - player_stats
+      - injuries
+      - fixtures
+    
+  basketball:
+    primary_api: "https://www.balldontlie.io/"
+    secondary_api: "https://sportsdata.io/developers/api-documentation/nba"
+    backup_csv: "https://www.kaggle.com/datasets/nathanlauga/nba-games"
+    features:
+      - match_results
+      - team_stats
+      - player_stats
+      - injuries
+      - fixtures
+
+  odds:
+    provider: "the-odds-api"
+    base_url: "https://api.the-odds-api.com/v4"
+    default_sport: "soccer"
+    default_market: "h2h"
+    region: "uk"
+    env_key: "ODDS_API_KEY"
+    cache_ttl: 900
+    sport_map:
+      premier-league: "soccer_epl"
+      la-liga: "soccer_spain_la_liga"
+      bundesliga: "soccer_germany_bundesliga"
+      serie-a: "soccer_italy_serie_a"
+      ligue-1: "soccer_france_ligue_one"
+      champions-league: "soccer_uefa_champs_league"
+      europa-league: "soccer_uefa_europa_league"
+  
+  general:
+    schedules: "https://www.sportsradar.com/"
+    weather: "https://open-meteo.com/"
+    odds_snapshot: "https://the-odds-api.com/"
+
+# Data engineering settings
+data_engineering:
+  retry_policy:
+    max_attempts: 5
+    backoff_strategy: exponential
+    jitter: true
+  
+  fallbacks:
+    order:
+      - primary_api
+      - secondary_api
+      - backup_csv
+  
+  caching:
+    enabled: true
+    ttl_seconds: 3600
+    store: disk
+
+# Model configuration
+models:
+  elo:
+    enabled: true
+    k_factor: 20
+    home_advantage: 100
+  
+  poisson:
+    enabled: true
+    max_goals: 10
+  
+  gradient_boosting:
+    enabled: true
+    library: lightgbm
+    n_estimators: 1000
+    early_stopping_rounds: 100
+  
+  bayesian:
+    enabled: true
+    prior_type: normal
+  
+  neural_network:
+    enabled: false
+    architecture: lstm
+    hidden_size: 128
+  
+  ensemble:
+    enabled: true
+    weights_auto: true
+    models:
+      - elo
+      - poisson
+      - gradient_boosting
+
+# Feature engineering
+features:
+  team_form:
+    rolling_window: 10
+    weights: exponential
+  
+  player_availability:
+    injury_weight: 0.8
+    suspension_weight: 0.9
+  
+  home_away_advantage:
+    enabled: true
+    adjustment_factor: 0.1
+  
+  advanced_stats:
+    football:
+      - expected_goals
+      - possession
+      - shots_on_target
+      - passing_accuracy
+    basketball:
+      - pace
+      - offensive_rating
+      - defensive_rating
+      - player_efficiency_rating
+
+# Monitoring and alerting
+monitoring:
+  health_checks:
+    pipeline_heartbeat: true
+    alert_webhook: null  # set in environment
+  
+  model_drift:
+    metrics:
+      - psi
+      - ks_test
+    thresholds:
+      psi_warning: 0.1
+      psi_critical: 0.25
+
+# Reporting configuration
+reporting:
+  png_style:
+    palette: okabe_ito
+    font_family: Inter
+    dpi: 200
+    margin: 16
+  
+  filenames:
+    pattern: "reports/{league}_{date}_{model_version}.{ext}"
+  
+  calibration_visuals:
+    include_reliability_diagram: true
+    include_brier_breakdown: true
+  
+  localization:
+    enabled: true
+    languages:
+      - en
+      - es
+
+# Database settings
+database:
+  type: sqlite  # sqlite or postgres
+  path: "data/sports_predictions.db"  # for sqlite
+  # For postgres, use environment variables
+
+# Logging
+logging:
+  level: INFO
+  format: json
+  location: logs/
+  correlation_ids: true
+
+# Security
+security:
+  run_as_non_root: true
+  secrets_from_env: true
+
+# Reproducibility
+reproducibility:
+  data_snapshots:
+    enabled: true
+    path: data/snapshots
+    policy: immutable_per_training_run
+  
+  lineage:
+    model_versioning: semantic
+    track_hashes:
+      - data_hash
+      - code_hash
+      - params_hash
+
+# Centralized constants and tuning knobs
+constants:
+  probability_caps:
+    home_min: 5
+    home_max: 85
+    draw_min: 5
+    draw_max: 50
+    away_min: 5
+    away_max: 85
+
+  market_blend_weight: 0.18
+
+  confidence:
+    cap: 0.92
+    denominator: 125
+    fallback_report_accuracy: 0.6
+
+  gauge:
+    outer_radius: 0.48
+    ring_width: 0.28
+    inset_text_size: 16
+
+  layout:
+    xlim: [0, 10]
+    ylim: [0, 20]
+    figure_size: [14, 18]
+    card_padding: 0.2
+
+  color_thresholds: [25, 50, 75]
+
+  # Palette used for percent->color mapping. Order: low, mid, high, max
+  color_palette:
+    - '#e74c3c'  # red
+    - '#f39c12'  # orange
+    - '#f1c40f'  # yellow
+    - '#2ecc71'  # green
+
+  visual_defaults:
+    font_main: 'DejaVu Sans'
+    footer_fontsize: 11
+    header_fontsize: 24
+    title_fontsize: 20
+    subtitle_fontsize: 16
+    section_title_fontsize: 18
+    label_fontsize: 14
+    value_fontsize: 23
+
+  colors:
+    header_bg: '#34495e'
+    main_bg: '#fdfdfd'
+    main_border: '#7f8c8d'
+    results_bg: '#8e44ad'
+    results_bg_edge: '#8e44ad'
+    text_main: '#111111'
+    gauge_bg: '#e9ecef'
+    section_bg: '#f5f7fa'
+    separator: '#d1d5db'
+    likely_home: '#3498db'
+    likely_draw: '#636e72'
+    likely_away: '#e74c3c'
+    perf_bg: '#3498db'
+    goals_bg: '#f39c12'
+    underline: 'black'
+    shadow: '#000000'
+  cache:
+    base_duration: 7200
+    weather_ttl: 1800
+    cleanup_trigger: 50
+
+  injury:
+    per_player_pct: 3.5
+    midfield_penalty: 5
+    defense_penalty: 3
+    max_reduction_pct: 25
+
+  weather_defaults:
+    fallback_temperature: 15.0
+    fallback_humidity: 60
+    fallback_wind_speed: 8
+    fallback_precipitation: 0.0
+    fallback_visibility: 15
+    fallback_pressure: 1013
+  # Toggle enforcement of engineering caps on feature values (safe default: true)
+  enforce_caps: true
+
+  # Numeric caps used as safe guardrails for incoming sensor/API values.
+  # These are applied only when `enforce_caps` is true. Prefer computed
+  # percentiles for long-term replacement instead of hard-coded numbers.
+  caps:
+    temperature:
+      min: -10
+      max: 45
+    precipitation:
+      min: 0.0
+      max: 50.0
+    wind_speed:
+      min: 0.0
+      max: 60.0
+    humidity:
+      min: 0.0
+      max: 100.0
+
+  provenance:
+    # When true, record which fields were clamped/guarded in outputs
+    record_clamps: true

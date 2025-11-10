@@ -1,0 +1,10 @@
+{
+  "typeCheckingMode": "off",
+  "reportMissingImports": false,
+  "exclude": [
+    "**/.venv/**",
+    "**/.venv-Z1.1/**",
+    "**/miniforge3/**",
+    "**/envs/**"
+  ]
+}

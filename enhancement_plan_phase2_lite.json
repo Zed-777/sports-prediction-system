@@ -1,0 +1,157 @@
+{
+  "plan_version": "2025-10-18",
+  "context": {
+    "goal": "Increase prediction confidence and accuracy by expanding data coverage, enriching features, and strengthening model calibration for Phase 2 Lite.",
+    "current_state": "Phase 2 Lite v4.1 operates on official API feeds with weather, injuries, and form analysis but lacks deep historical data fusion and secondary market insights."
+  },
+  "strategic_themes": [
+    {
+      "name": "Data Acquisition Expansion",
+      "objective": "Broaden data inputs with historical depth and alternative sources to reduce information gaps.",
+      "suggestions": [
+        "Extend football-data.org pulls to include multiple past seasons and cache snapshots.",
+        "Integrate secondary APIs (Sportradar, The Odds API, open xG providers) for odds, xG, and advanced stats.",
+        "Implement controlled BeautifulSoup scrapers for lineup rumors, local injury news, and referee assignments with throttling and caching.",
+        "Capture historical weather by venue to compare forecast vs. typical conditions."
+      ]
+    },
+    {
+      "name": "Feature Engineering & Storage",
+      "objective": "Transform raw feeds into reusable features that capture form, momentum, and matchup nuances.",
+      "suggestions": [
+        "Build an offline feature job to compute rolling ELO, Poisson parameters, and streak scores from historical data.",
+        "Derive matchup payloads such as rest differential, travel distance, referee bias history, and venue-specific goal expectations.",
+        "Persist engineered features into Parquet/SQLite tables for fast match-day loading.",
+        "Version feature sets and document schema changes in feature catalogue."
+      ]
+    },
+    {
+      "name": "Model & Confidence Enhancements",
+      "objective": "Strengthen Phase 2 Lite ensembles and calibration for more trustworthy probabilities.",
+      "suggestions": [
+        "Blend multiple predictive models (Poisson, gradient boosting, Bayesian) with league-specific weights.",
+        "Introduce empirical calibration using past predictions vs. outcomes (isotonic/logistic).",
+        "Add reliability metrics such as confidence intervals, data freshness scores, and disagreement indicators.",
+        "Automate backtests per league to monitor hit rates and recalibrate thresholds quarterly."
+      ]
+    },
+    {
+      "name": "Reporting & UX Improvements",
+      "objective": "Expose richer insights on prediction cards and summaries without sacrificing clarity.",
+      "suggestions": [
+        "Add last-five head-to-head outcomes, xG trends, and form charts to the PNG card.",
+        "Highlight key drivers (injury advantage, travel fatigue, odds alignment) with iconography.",
+        "Display scenario analysis for critical player absences and weather shifts.",
+        "Ensure markdown summaries remain lint-clean and support expandable sections in dashboards."
+      ]
+    },
+    {
+      "name": "Infrastructure & Quality",
+      "objective": "Guarantee resilient data pipelines, reproducibility, and observability.",
+      "suggestions": [
+        "Schedule nightly data pulls and feature recomputation using cron or GitHub Actions.",
+        "Implement caching with TTLs and source metadata to prevent API rate limits.",
+        "Add validation tests for new feeds (schema checks, anomaly detection).",
+        "Enhance logging/alerts for failed scrapes or stale data conditions."
+      ]
+    }
+  ],
+  "work_packages": [
+    {
+      "id": "WP1",
+      "title": "Historical Data Harvest",
+      "description": "Pull and store multi-season fixture/results data with weather snapshots and odds history.",
+      "deliverables": ["scripts/data_ingest/historical_pull.py", "data/snapshots/{league}/season_*.json"],
+      "priority": "high",
+      "effort": "large",
+      "dependencies": [],
+      "owner": "Data Engineering"
+    },
+    {
+      "id": "WP2",
+      "title": "Secondary Source Integration",
+      "description": "Add secondary APIs and curated scrapers for xG, odds, and lineup intel with caching/ratelimiting.",
+      "deliverables": ["app/data/connectors/secondary_api.py", "app/data/scrapers/news_intel.py"],
+      "priority": "high",
+      "effort": "medium",
+      "dependencies": ["WP1"],
+      "owner": "Integrations"
+    },
+    {
+      "id": "WP3",
+      "title": "Feature Store & Documentation",
+      "description": "Engineer rolling features, persist to Parquet/SQLite, and document schemas in docs/feature_catalog.md.",
+      "deliverables": ["features/build_features.py", "models/ml_enhanced/feature_store.parquet"],
+      "priority": "high",
+      "effort": "medium",
+      "dependencies": ["WP1"],
+      "owner": "Data Science"
+    },
+    {
+      "id": "WP4",
+      "title": "Phase 2 Lite Ensemble Upgrade",
+      "description": "Refine model stacking, apply calibration, and emit reliability metrics to prediction outputs.",
+      "deliverables": ["phase2_lite.py", "models/ml_enhanced/phase2_weights.json"],
+      "priority": "high",
+      "effort": "large",
+      "dependencies": ["WP3"],
+      "owner": "ML Engineering"
+    },
+    {
+      "id": "WP5",
+      "title": "Reporting Enhancements",
+      "description": "Upgrade summary markdown and PNG cards to show new metrics, badges, and scenario insights.",
+      "deliverables": ["generate_fast_reports.py", "app/reports/prediction_card.py"],
+      "priority": "medium",
+      "effort": "medium",
+      "dependencies": ["WP4"],
+      "owner": "Analytics UX"
+    },
+    {
+      "id": "WP6",
+      "title": "Pipeline Reliability & Monitoring",
+      "description": "Implement scheduling, caching, validation suites, and alerting for ingestion pipelines.",
+      "deliverables": ["config/schedules.yaml", "tests/integration/test_data_pipeline.py"],
+      "priority": "medium",
+      "effort": "medium",
+      "dependencies": ["WP1", "WP2"],
+      "owner": "Platform"
+    }
+  ],
+  "milestones": [
+    {
+      "name": "M1 - Data Foundation",
+      "target_date": "2025-11-05",
+      "success_criteria": ["Historical datasets stored for target leagues", "Secondary sources authenticated and rate-limit safe"]
+    },
+    {
+      "name": "M2 - Feature & Model Upgrade",
+      "target_date": "2025-11-20",
+      "success_criteria": ["Feature store in production", "Calibrated Phase 2 Lite probabilities within +/-5% of validation"]
+    },
+    {
+      "name": "M3 - Enhanced Reporting Release",
+      "target_date": "2025-12-01",
+      "success_criteria": ["Prediction card shows new analytics", "Markdown reports pass lint with expanded insights"]
+    }
+  ],
+  "risk_register": [
+    {
+      "risk": "API rate limits or data licensing restrictions",
+      "mitigation": "Implement caching, staggered scheduling, and monitor usage; negotiate higher tiers if required."
+    },
+    {
+      "risk": "Scraped sources change HTML structure",
+      "mitigation": "Add schema validation tests, maintain source-specific parsers, and fall back to cached data."
+    },
+    {
+      "risk": "Calibration drift due to league dynamics",
+      "mitigation": "Schedule recurring backtests and recalibration, track performance metrics per league."
+    }
+  ],
+  "next_actions": [
+    "Review and prioritize work packages with stakeholders.",
+    "Establish API keys/credentials for secondary sources and update .env/.secrets handling.",
+    "Prototype historical ingestion (WP1) to validate storage design before expanding scope."
+  ]
+}

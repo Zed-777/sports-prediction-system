@@ -1,0 +1,369 @@
+{
+  "match_id": 540490,
+  "home_team": "SV Werder Bremen",
+  "away_team": "VfL Wolfsburg",
+  "date": "2025-11-07",
+  "time": "19:30",
+  "league": "Bundesliga",
+  "confidence": 0.89,
+  "report_accuracy_probability": 0.882,
+  "home_win_probability": 44.76,
+  "draw_probability": 28.6,
+  "away_win_probability": 26.64,
+  "expected_home_goals": 1.8,
+  "expected_away_goals": 1.2,
+  "processing_time": 2.466,
+  "recommendation": "Home Win Possible",
+  "confidence_level": "89.0% (Very Good)",
+  "expected_final_score": "1-1",
+  "score_probability": 10.6,
+  "score_probability_normalized": 6.0,
+  "top3_combined_probability": 28.8,
+  "top3_probability_normalized": 10.0,
+  "alternative_scores": [
+    "2-1",
+    "1-0",
+    "2-0"
+  ],
+  "score_probabilities": [
+    [
+      "1-1",
+      10.579518757676443
+    ],
+    [
+      "2-1",
+      9.653810866379757
+    ],
+    [
+      "1-0",
+      8.607066107940156
+    ],
+    [
+      "2-0",
+      7.853947823495394
+    ],
+    [
+      "1-2",
+      6.501995903155315
+    ]
+  ],
+  "score_probabilities_normalized": [
+    [
+      "1-1",
+      6.0
+    ],
+    [
+      "2-1",
+      6.0
+    ],
+    [
+      "1-0",
+      5.0
+    ],
+    [
+      "2-0",
+      5.0
+    ],
+    [
+      "1-2",
+      4.0
+    ]
+  ],
+  "over_2_5_goals_probability": 58.9,
+  "both_teams_score_probability": 59.3,
+  "head_to_head_analysis": {
+    "total_meetings": 0,
+    "wins_when_home": 0,
+    "wins_when_away": 0,
+    "draws": 0,
+    "matches_as_home": 0,
+    "matches_as_away": 0,
+    "avg_goals_for_when_home": 0.0,
+    "avg_goals_against_when_home": 0.0,
+    "avg_goals_for_when_away": 0.0,
+    "avg_goals_against_when_away": 0.0,
+    "recent_form": [],
+    "home_advantage_vs_opponent": 0.0,
+    "away_record_vs_opponent": 0.0,
+    "data_sources": [
+      "Domestic BL1"
+    ],
+    "total_sources": 1
+  },
+  "home_performance_analysis": {
+    "home": {
+      "matches": 4,
+      "win_rate": 50.0,
+      "draw_rate": 25.0,
+      "loss_rate": 25.0,
+      "avg_goals_for": 1.25,
+      "avg_goals_against": 1.5,
+      "goal_difference": -0.25,
+      "weighted_form_score": 71.9626168224299,
+      "momentum_direction": "Stable",
+      "form_pressure": "Low",
+      "current_streak": "2 game winning streak",
+      "recent_3_performance": 66.66666666666666,
+      "form_quality": "Good"
+    },
+    "away": {
+      "matches": 5,
+      "win_rate": 20.0,
+      "draw_rate": 40.0,
+      "loss_rate": 40.0,
+      "avg_goals_for": 1.6,
+      "avg_goals_against": 2.2,
+      "goal_difference": -0.6,
+      "weighted_form_score": 23.987538940809966,
+      "momentum_direction": "Stable",
+      "form_pressure": "High",
+      "current_streak": "2 consecutive draws",
+      "recent_3_performance": 22.22222222222222,
+      "form_quality": "Very Poor"
+    },
+    "home_advantage": 30.0,
+    "scoring_difference": -0.3500000000000001
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 5,
+      "win_rate": 0.0,
+      "draw_rate": 40.0,
+      "loss_rate": 60.0,
+      "avg_goals_for": 1.2,
+      "avg_goals_against": 2.2,
+      "goal_difference": -1.0,
+      "weighted_form_score": 6.566604127579737,
+      "momentum_direction": "Stable",
+      "form_pressure": "High",
+      "current_streak": "3 games without a win",
+      "recent_3_performance": 0.0,
+      "form_quality": "Very Poor"
+    },
+    "away": {
+      "matches": 4,
+      "win_rate": 50.0,
+      "draw_rate": 0.0,
+      "loss_rate": 50.0,
+      "avg_goals_for": 1.25,
+      "avg_goals_against": 1.25,
+      "goal_difference": 0.0,
+      "weighted_form_score": 54.54545454545454,
+      "momentum_direction": "Stable",
+      "form_pressure": "Medium",
+      "current_streak": "1 game win streak",
+      "recent_3_performance": 0.0,
+      "form_quality": "Below Average"
+    },
+    "home_advantage": -50.0,
+    "scoring_difference": -0.050000000000000044
+  },
+  "goal_timing_prediction": {
+    "first_half_goal_probability": 45.0,
+    "second_half_goal_probability": 55.0,
+    "late_goal_likelihood": 20.0,
+    "early_goal_likelihood": 15.0,
+    "home_attack_style": "balanced",
+    "away_attack_style": "balanced"
+  },
+  "intelligence_summary": {
+    "h2h_meetings": 0,
+    "home_advantage_pct": 30.0,
+    "recent_h2h_form": "No recent meetings",
+    "key_factors": [
+      "Limited home data available",
+      "Limited away data available",
+      "No head-to-head history between teams"
+    ]
+  },
+  "player_availability": {
+    "home_team": {
+      "key_players_available": 10,
+      "key_players_injured": 1,
+      "strength_reduction_pct": 3.5,
+      "injury_areas": [
+        "forward"
+      ],
+      "expected_lineup_strength": 96.5,
+      "injury_concerns": [
+        "Minor rotation needed"
+      ],
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "key_players_available": 10,
+      "key_players_injured": 1,
+      "strength_reduction_pct": 3.5,
+      "injury_areas": [
+        "forward"
+      ],
+      "expected_lineup_strength": 96.5,
+      "injury_concerns": [
+        "Minor rotation needed"
+      ],
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": 15.2,
+      "humidity": 61.7,
+      "wind_speed": 22.8,
+      "precipitation": 0.58,
+      "conditions": "light_rain",
+      "visibility": 16.449726444403943,
+      "pressure": 1009.1321115786703
+    },
+    "impact_assessment": {
+      "goal_modifier": 0.8835,
+      "playing_style_effect": "normal",
+      "weather_advantage": "none",
+      "tactical_adjustments": [
+        "Slight reduction in passing accuracy",
+        "Minor impact on crossing accuracy"
+      ],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MODERATE",
+      "conditions_summary": "Challenging conditions (15.2°C, 0.58mm rain, 22.8 km/h wind) likely to affect match dynamics",
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 0.8835,
+    "style_impact": "normal",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "name": "Unknown Referee",
+    "home_bias_pct": 51.0,
+    "cards_per_game": 3.5,
+    "penalties_per_game": 0.2,
+    "strict_level": "moderate",
+    "experience_level": "experienced"
+  },
+  "team_news": {
+    "home_team": {
+      "formation_expected": "4-3-3",
+      "key_changes": [
+        "Rotation in midfield expected",
+        "New signing may start"
+      ],
+      "tactical_approach": "balanced",
+      "lineup_strength": 83.0,
+      "news_sentiment": "positive"
+    },
+    "away_team": {
+      "formation_expected": "4-3-3",
+      "key_changes": [
+        "Rotation in midfield expected",
+        "New signing may start"
+      ],
+      "tactical_approach": "balanced",
+      "lineup_strength": 83.0,
+      "news_sentiment": "positive"
+    }
+  },
+  "data_quality_score": 87.5,
+  "reliability_metrics": {
+    "score": 60.7,
+    "level": "Limited",
+    "indicator": "🟠 Limited",
+    "recommendation": "Limited reliability – supplement with manual review.",
+    "confidence_intervals": {
+      "home": [
+        32.9,
+        42.3
+      ],
+      "draw": [
+        17.4,
+        26.8
+      ],
+      "away": [
+        15.5,
+        25.0
+      ],
+      "margin_percent": 4.71
+    },
+    "spread_points": 17.4,
+    "factors": {
+      "model_confidence": 60.1,
+      "data_quality": 87.5,
+      "probability_clarity": 62.1,
+      "h2h_depth": 0.0,
+      "data_freshness": 55.0
+    },
+    "primary_driver": "data_quality",
+    "notes": [
+      "Head-to-head sample is limited – emphasis on recent form."
+    ]
+  },
+  "calibration_details": {
+    "applied": true,
+    "shrink_factor": 0.138,
+    "probabilities": {
+      "home_win_prob": 44.76,
+      "draw_prob": 28.6,
+      "away_win_prob": 26.64
+    },
+    "original_probabilities": {
+      "home_win_prob": 37.64,
+      "draw_prob": 22.12,
+      "away_win_prob": 20.24
+    },
+    "neutral_anchor": 33.3,
+    "notes": [
+      "Applied 13.8% shrink toward neutral due to reliability score 60.7."
+    ],
+    "accuracy_adjustment": {
+      "original_probability": 0.619,
+      "calibrated_probability": 0.614
+    }
+  },
+  "confidence_intervals": {
+    "home": [
+      32.9,
+      42.3
+    ],
+    "draw": [
+      17.4,
+      26.8
+    ],
+    "away": [
+      15.5,
+      25.0
+    ],
+    "margin_percent": 4.71
+  },
+  "data_provenance": {
+    "weather": true,
+    "player_availability": true,
+    "referee": false,
+    "team_news": true,
+    "h2h": false,
+    "odds": false,
+    "flashscore": true,
+    "home_injury_clamped": false,
+    "away_injury_clamped": false,
+    "weather_clamped": false
+  },
+  "phase2_lite_enhanced": true,
+  "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+  "generated_at": "2025-11-03T19:38:08.054849",
+  "data_provenance_details": {
+    "home_injury_clamped": false,
+    "home_injury_clamped_fields": {},
+    "away_injury_clamped": false,
+    "away_injury_clamped_fields": {},
+    "weather_clamped": false,
+    "weather_clamped_fields": {}
+  }
+}

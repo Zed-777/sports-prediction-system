@@ -1,0 +1,14 @@
+[Unit]
+Description=SportsPredictionSystem Runner
+After=network.target
+
+[Service]
+Type=simple
+User=svcuser
+WorkingDirectory=/opt/SportsPredictionSystem
+ExecStart=/opt/SportsPredictionSystem/.venv/bin/python /opt/SportsPredictionSystem/generate_fast_reports.py generate 5 matches for la-liga
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
