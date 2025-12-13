@@ -1394,19 +1394,19 @@ class SingleMatchGenerator:
         conf_bg = Rectangle((1.2 - 0.7, 10.9), 1.4, 1.2, facecolor='white', 
                            edgecolor=conf_color, linewidth=5.0, zorder=2, alpha=0.9)
         ax.add_patch(conf_bg)
-        ax.text(1.2, 11.6, f"{int(round(confidence))}%", ha='center', va='center', fontsize=28, 
+        ax.text(1.2, 11.6, f"{int(round(confidence))}%", ha='center', va='center', fontsize=20, 
                fontweight='bold', color=conf_color, zorder=3, fontname='DejaVu Sans')
-        ax.text(1.2, 11.1, 'Confidence', ha='center', va='center', fontsize=10, 
-               color=colors.get('text_main', '#1A1A1A'), fontweight='600', zorder=3, fontname='DejaVu Sans')
+        ax.text(1.2, 11.1, 'Confidence', ha='center', va='center', fontsize=13, 
+               color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
         
         # Data Quality box (right)
         dq_bg = Rectangle((8.8 - 0.7, 10.9), 1.4, 1.2, facecolor='white', 
                          edgecolor=dq_color, linewidth=5.0, zorder=2, alpha=0.9)
         ax.add_patch(dq_bg)
-        ax.text(8.8, 11.6, f"{int(round(data_quality))}%", ha='center', va='center', fontsize=28, 
+        ax.text(8.8, 11.6, f"{int(round(data_quality))}%", ha='center', va='center', fontsize=20, 
                fontweight='bold', color=dq_color, zorder=3, fontname='DejaVu Sans')
-        ax.text(8.8, 11.1, 'Data Quality', ha='center', va='center', fontsize=10, 
-               color=colors.get('text_main', '#1A1A1A'), fontweight='600', zorder=3, fontname='DejaVu Sans')
+        ax.text(8.8, 11.1, 'Data Quality', ha='center', va='center', fontsize=13, 
+               color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
         # WINNING CHANCES SECTION - Clean 3-column layout
@@ -1464,13 +1464,13 @@ class SingleMatchGenerator:
                              edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Larger percentage value (28 * 1.4 = 39pt)
-            ax.text(col_x_pos, 14.55, f"{col_values[i]}%", ha='center', va='center', fontsize=39, 
+            # Percentage value (39 * 0.7 = 27pt)
+            ax.text(col_x_pos, 14.55, f"{col_values[i]}%", ha='center', va='center', fontsize=27, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
-            # Team label (slightly larger)
-            ax.text(col_x_pos, 13.8, col_labels[i], ha='center', va='center', fontsize=12, 
-                   color=colors.get('text_main', '#1A1A1A'), fontweight='600', zorder=3, fontname='DejaVu Sans')
+            # Team label - bigger and bolder (12 → 14, 600 → bold)
+            ax.text(col_x_pos, 13.8, col_labels[i], ha='center', va='center', fontsize=14, 
+                   color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
         
         # Most likely outcome at bottom
         likely = max([(home_win, 'home'), (draw, 'draw'), (away_win, 'away')], key=lambda x: x[0])[1]
@@ -1522,13 +1522,13 @@ class SingleMatchGenerator:
                              edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Larger percentage value (26 * 1.4 = 36pt)
-            ax.text(col_x_pos, 10.6, f"{col_values[i]}%", ha='center', va='center', fontsize=36, 
+            # Percentage value (36 * 0.7 = 25pt)
+            ax.text(col_x_pos, 10.6, f"{col_values[i]}%", ha='center', va='center', fontsize=25, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
-            # Team label (unchanged, already readable)
-            ax.text(col_x_pos, 10.1, col_labels[i], ha='center', va='center', fontsize=12, 
-                   color=colors.get('text_main', '#1A1A1A'), fontweight='600', zorder=3, fontname='DejaVu Sans')
+            # Team label - bigger and bolder (12 → 14, 600 → bold)
+            ax.text(col_x_pos, 10.1, col_labels[i], ha='center', va='center', fontsize=14, 
+                   color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
 
         # Form advantage indicator
         if home_form_score > away_form_score + 5:
@@ -1580,13 +1580,13 @@ class SingleMatchGenerator:
                              edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Larger percentage value (26 * 1.4 = 36pt)
-            ax.text(col_x_pos, 8.0, f"{col_values[i]}%", ha='center', va='center', fontsize=36, 
+            # Percentage value (36 * 0.7 = 25pt)
+            ax.text(col_x_pos, 8.0, f"{col_values[i]}%", ha='center', va='center', fontsize=25, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
-            # Goal prediction label
-            ax.text(col_x_pos, 7.5, col_labels[i], ha='center', va='center', fontsize=11, 
-                   color=colors.get('text_main', '#1A1A1A'), fontweight='600', zorder=3, fontname='DejaVu Sans')
+            # Goal prediction label - bigger and bolder (11 → 13, 600 → bold)
+            ax.text(col_x_pos, 7.5, col_labels[i], ha='center', va='center', fontsize=13, 
+                   color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
 
         goal_timing = match_data.get('goal_timing_prediction', {})
         first_half_prob = goal_timing.get('first_half_goal_probability', 45)

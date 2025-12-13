@@ -5,7 +5,7 @@
 - **League:** La Liga
 - **Date & Time:** 2025-12-13 at 15:15
 - **Engine Mode:** Enhanced Intelligence core engine with multi-layer analysis
-- **Prediction Confidence:** **75.0%** (Phase 2 Lite probability of correctness)
+- **Prediction Confidence:** **75.5%** (Phase 2 Lite probability of correctness)
 - **Data Confidence:** 75.0% (75.0% (Good))
 - **Data Quality Score:** 50.0%
 
@@ -41,7 +41,7 @@
 - **Top 3 Scores Combined:** ⭐ **10/10** (38.4%)
 - **Expected Goals:** 1.5 - 0.8
 - **Recommendation:** Home Win Likely
-- **Processing Time:** 1.59s
+- **Processing Time:** 0.00s
 
 ### Score Probability Breakdown
 
@@ -58,9 +58,9 @@
 
 ### Win Probabilities
 
- - **RCD Mallorca Win:** 89.4%
-- **Draw:** 5.3%
-- **Elche Club de Fútbol Win:** 5.3%
+ - **RCD Mallorca Win:** 90.8%
+- **Draw:** 4.6%
+- **Elche Club de Fútbol Win:** 4.6%
 
 ## 🔍 Intelligence Analysis
 
@@ -189,14 +189,14 @@
 ## ⚠️ Risk Assessment
 
 - **Overall Risk Level:** 🟡 MEDIUM RISK
-- **Data Reliability:** 🔴 Low (57.7)
+- **Data Reliability:** 🟠 Limited (60.7)
 - **Prediction Stability:** Stable
 
 ## 🎯 Confidence Analysis
 
-- **Reliability Score:** 🔴 Low 57.7 – Low reliability – informational use only.
-- **Confidence Interval Window:** Home 94.9% – 100.0%, Draw 0.0% – 5.1%, Away 0.0% – 5.1%
-- **Calibration Adjustment:** Applied 15.9% shrink toward neutral due to reliability score 57.7. | Accuracy 60.6% → 59.4%
+- **Reliability Score:** 🟠 Limited 60.7 – Limited reliability – supplement with manual review.
+- **Confidence Interval Window:** Home 95.3% – 100.0%, Draw 0.0% – 4.7%, Away 0.0% – 4.7%
+- **Calibration Adjustment:** Applied 13.8% shrink toward neutral due to reliability score 60.7. | Accuracy 60.6% → 60.6%
 - **Head-to-Head Data Availability:** ⚠️ Limited
 - **Recent Form Data:** ⚠️ Limited
 - **Enhanced Data Integration:** ⚠️ Partial Data
@@ -219,7 +219,7 @@
 - **Prediction Algorithm:** Enhanced Intelligence with 7 Analysis Layers
 - **Data Sources:** Football-Data.org API + Weather API + Referee Database + News Analysis
 - **Analysis Layers:** H2H History, Home/Away Performance, Goal Timing, Player Injuries, Weather, Referee, Team News
-- **Generated:** 2025-12-13T15:19:56.586007
+- **Generated:** 2025-12-13T15:23:36.568899
 
 ---
 

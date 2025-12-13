@@ -6,13 +6,13 @@
   "time": "15:15",
   "league": "La Liga",
   "confidence": 0.75,
-  "report_accuracy_probability": 0.75,
-  "home_win_probability": 89.38,
-  "draw_probability": 5.31,
-  "away_win_probability": 5.31,
+  "report_accuracy_probability": 0.755,
+  "home_win_probability": 90.81,
+  "draw_probability": 4.6,
+  "away_win_probability": 4.6,
   "expected_home_goals": 1.5,
   "expected_away_goals": 0.8,
-  "processing_time": 1.586,
+  "processing_time": 0.003,
   "recommendation": "Home Win Likely",
   "confidence_level": "75.0% (Good)",
   "expected_final_score": "1-0",
@@ -314,24 +314,24 @@
   },
   "data_quality_score": 50.0,
   "reliability_metrics": {
-    "score": 57.7,
-    "level": "Low",
-    "indicator": "🔴 Low",
-    "recommendation": "Low reliability – informational use only.",
+    "score": 60.7,
+    "level": "Limited",
+    "indicator": "🟠 Limited",
+    "recommendation": "Limited reliability – supplement with manual review.",
     "confidence_intervals": {
       "home": [
-        94.9,
+        95.3,
         100.0
       ],
       "draw": [
         0.0,
-        5.1
+        4.7
       ],
       "away": [
         0.0,
-        5.1
+        4.7
       ],
-      "margin_percent": 5.08
+      "margin_percent": 4.72
     },
     "spread_points": 100.0,
     "factors": {
@@ -339,7 +339,7 @@
       "data_quality": 50.0,
       "probability_clarity": 100.0,
       "h2h_depth": 0.0,
-      "data_freshness": 70.0
+      "data_freshness": 100.0
     },
     "primary_driver": "probability_clarity",
     "notes": [
@@ -349,11 +349,11 @@
   },
   "calibration_details": {
     "applied": true,
-    "shrink_factor": 0.159,
+    "shrink_factor": 0.138,
     "probabilities": {
-      "home_win_prob": 89.38,
-      "draw_prob": 5.31,
-      "away_win_prob": 5.31
+      "home_win_prob": 90.81,
+      "draw_prob": 4.6,
+      "away_win_prob": 4.6
     },
     "original_probabilities": {
       "home_win_prob": 100.0,
@@ -367,27 +367,27 @@
     },
     "neutral_anchor": 33.3,
     "notes": [
-      "Applied 15.9% shrink toward neutral due to reliability score 57.7."
+      "Applied 13.8% shrink toward neutral due to reliability score 60.7."
     ],
     "accuracy_adjustment": {
       "original_probability": 0.606,
-      "calibrated_probability": 0.594
+      "calibrated_probability": 0.606
     }
   },
   "confidence_intervals": {
     "home": [
-      94.9,
+      95.3,
       100.0
     ],
     "draw": [
       0.0,
-      5.1
+      4.7
     ],
     "away": [
       0.0,
-      5.1
+      4.7
     ],
-    "margin_percent": 5.08
+    "margin_percent": 4.72
   },
   "data_provenance": {
     "weather": true,
@@ -414,7 +414,7 @@
       "monte_carlo": 0.22499999999999998
     }
   },
-  "generated_at": "2025-12-13T15:19:56.586007",
+  "generated_at": "2025-12-13T15:23:36.568899",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},
