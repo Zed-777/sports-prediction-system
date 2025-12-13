@@ -1399,110 +1399,97 @@ class SingleMatchGenerator:
         # Divider line
         ax.plot([0.7, 9.3], [20.6, 20.6], color='#3498db', linewidth=1.5, zorder=2, alpha=0.5)
 
-        # Confidence and Data Quality boxes (instead of gauges)
+        # Confidence and Data Quality boxes with expanded labels - ALIGNED
         confidence = match_data.get('report_accuracy_probability', 0.65) * 100
         conf_color = ProfessionalDesignSystem.get_color_for_probability(confidence)
         
         data_quality = match_data.get('data_quality_score', 75.0)
         dq_color = ProfessionalDesignSystem.get_color_for_probability(data_quality)
         
-        # Confidence box (left)
-        conf_bg = Rectangle((1.2 - 0.7, 19.5), 1.4, 1.2, facecolor='white', 
+        # Confidence box (left) - standard size
+        conf_bg = Rectangle((1.0, 19.3), 3.3, 1.4, facecolor='white', 
                            edgecolor=conf_color, linewidth=5.0, zorder=2, alpha=0.9)
         ax.add_patch(conf_bg)
-        ax.text(1.2, 20.3, f"{int(round(confidence))}%", ha='center', va='center', fontsize=20, 
+        ax.text(2.65, 20.4, f"{int(round(confidence))}%", ha='center', va='center', fontsize=22, 
                fontweight='bold', color=conf_color, zorder=3, fontname='DejaVu Sans')
-        ax.text(1.2, 19.75, 'Confidence', ha='center', va='center', fontsize=13, 
+        ax.text(2.65, 19.7, 'Prediction', ha='center', va='center', fontsize=11, 
+               color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
+        ax.text(2.65, 19.4, 'Confidence', ha='center', va='center', fontsize=11, 
                color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
         
-        # Data Quality box (right)
-        dq_bg = Rectangle((8.8 - 0.7, 19.5), 1.4, 1.2, facecolor='white', 
+        # Data Quality box (right) - same size
+        dq_bg = Rectangle((5.7, 19.3), 3.3, 1.4, facecolor='white', 
                          edgecolor=dq_color, linewidth=5.0, zorder=2, alpha=0.9)
         ax.add_patch(dq_bg)
-        ax.text(8.8, 20.3, f"{int(round(data_quality))}%", ha='center', va='center', fontsize=20, 
+        ax.text(7.35, 20.4, f"{int(round(data_quality))}%", ha='center', va='center', fontsize=22, 
                fontweight='bold', color=dq_color, zorder=3, fontname='DejaVu Sans')
-        ax.text(8.8, 19.75, 'Data Quality', ha='center', va='center', fontsize=13, 
+        ax.text(7.35, 19.7, 'Data', ha='center', va='center', fontsize=11, 
+               color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
+        ax.text(7.35, 19.4, 'Quality', ha='center', va='center', fontsize=11, 
                color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
-        # SECTION 2: WINNING CHANCES & FORM (Middle - Light Green Background)
+        # SECTION 2: PREDICTION ANALYSIS (Middle - Light Green Background)
         # =================================================================
-        # Section background group
-        analysis_bg = Rectangle((0.5, 11.0), 9.0, 4.8, facecolor='#e8f8f0', 
+        # Section background group - LARGE SECTION
+        analysis_bg = Rectangle((0.5, 1.0), 9.0, 18.5, facecolor='#e8f8f0', 
                                alpha=0.6, edgecolor='#27ae60', linewidth=2, zorder=1)
         ax.add_patch(analysis_bg)
         
         # Section category label
-        ax.text(0.8, 15.5, "PREDICTION ANALYSIS", ha='left', va='center', fontsize=11, 
+        ax.text(0.8, 19.2, "PREDICTION ANALYSIS", ha='left', va='center', fontsize=11, 
                fontweight='bold', color='#2c3e50', zorder=2, fontname='DejaVu Sans')
         
         # Divider line
-        ax.plot([0.7, 9.3], [15.3, 15.3], color='#27ae60', linewidth=1.5, zorder=2, alpha=0.5)
+        ax.plot([0.7, 9.3], [19.0, 19.0], color='#27ae60', linewidth=1.5, zorder=2, alpha=0.5)
 
-        # WINNING CHANCES SECTION - Clean 3-column layout
-        # Section subtitle
-        ax.text(5, 14.8, "WINNING CHANCES", ha='center', va='center', fontsize=17, fontweight='bold', 
+        # ===== MATCH OUTCOME PROBABILITIES =====
+        ax.text(5, 18.5, "Match Outcome Probability", ha='center', va='center', fontsize=13, fontweight='bold', 
                color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
-        
-        # Separator line
-        ax.plot([0.7, 9.3], [14.55, 14.55], color='#27ae60', linewidth=0.8, zorder=2, alpha=0.3)
         
         # Win/Draw/Away probabilities
         home_win = match_data.get('home_win_probability', 0)
         draw = match_data.get('draw_probability', 0)
         away_win = match_data.get('away_win_probability', 0)
         
-        # Smart team labels
-        def smart_team_label(name: str) -> str:
-            if len(name) <= 10:
-                return name
-            words = name.split()
-            if len(words) == 1:
-                return name[:10]
-            return f"{words[0][0]}. {words[-1]}"[:11]
-        
         home_team = match_data.get('home_team', 'Home')
         away_team = match_data.get('away_team', 'Away')
         
-        col_labels = [smart_team_label(home_team), "Draw", smart_team_label(away_team)]
-        col_x = [2.0, 5.0, 8.0]
+        col_labels = [home_team, "Draw", away_team]
+        col_x = [1.8, 5.0, 8.2]
         col_values = [int(round(home_win)), int(round(draw)), int(round(away_win))]
         
-        # Use probability-based colors for all percentage displays
         col_colors = [ProfessionalDesignSystem.get_color_for_probability(home_win),
                      ProfessionalDesignSystem.get_color_for_probability(draw),
                      ProfessionalDesignSystem.get_color_for_probability(away_win)]
         
-        # Draw three clean columns
+        # Uniform box sizing - SAME HEIGHT FOR ALL
+        box_width = 2.2
+        box_height = 1.5
+        box_y = 16.5
+        
         for i in range(3):
             col_x_pos = col_x[i]
-            
-            # Column background box with 5px border
-            col_bg = Rectangle((col_x_pos - 0.65, 13.3), 1.3, 1.1, facecolor='white', 
+            col_bg = Rectangle((col_x_pos - box_width/2, box_y), box_width, box_height, facecolor='white', 
                              edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Percentage value 
-            ax.text(col_x_pos, 14.0, f"{col_values[i]}%", ha='center', va='center', fontsize=27, 
+            ax.text(col_x_pos, box_y + 1.1, f"{col_values[i]}%", ha='center', va='center', fontsize=28, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
-            # Team label 
-            ax.text(col_x_pos, 13.55, col_labels[i], ha='center', va='center', fontsize=14, 
-                   color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
-        
-        # Most likely outcome at bottom
-        likely = max([(home_win, 'home'), (draw, 'draw'), (away_win, 'away')], key=lambda x: x[0])[1]
-        likely_text = "Most Likely: Home Win" if likely == 'home' else "Most Likely: Draw" if likely == 'draw' else "Most Likely: Away Win"
-        likely_color = colors.get('likely_home', league_theme['primary']) if likely == 'home' else colors.get('likely_draw', '#7F8C8D') if likely == 'draw' else colors.get('likely_away', league_theme['accent'])
-        
-        ax.text(5, 12.85, likely_text, ha='center', va='center', fontsize=14, fontweight='bold', color=likely_color, zorder=3)
+            label = col_labels[i]
+            if len(label) > 15:
+                words = label.split()
+                if len(words) > 1:
+                    label = f"{' '.join(words[:-1])}\\n{words[-1]}"
+            
+                ax.text(col_x_pos, box_y + 0.35, label, ha='center', va='center', fontsize=10, 
+                   color=colors.get('text_secondary', '#5A5A5A'), zorder=3, fontweight='bold', fontname='DejaVu Sans')
 
-        # TEAM FORM ANALYSIS SECTION - Subtitle separator
-        ax.text(5, 12.5, "TEAM FORM ANALYSIS", ha='center', va='center', fontsize=17, fontweight='bold',
-               color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
         
-        # Separator line
-        ax.plot([0.7, 9.3], [12.28, 12.28], color='#27ae60', linewidth=0.8, zorder=2, alpha=0.3)
+        # ===== TEAM FORM (with consistent theme colors, not probability-based) =====
+        ax.text(5, 14.8, "Team Form Assessment", ha='center', va='center', fontsize=13, fontweight='bold',
+               color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
 
         home_form = match_data.get('home_performance_analysis', {}).get('home', {})
         away_form = match_data.get('away_performance_analysis', {}).get('away', {})
@@ -1514,170 +1501,163 @@ class SingleMatchGenerator:
             home_form_score = min(95, home_form_score + np.random.randint(-5, 6))
             away_form_score = min(95, away_form_score + np.random.randint(-5, 6))
 
-        # Clean box layout like Winning Chances - two columns
-        col_x = [2.3, 7.7]
+        col_x = [2.5, 7.5]
         col_values = [int(round(home_form_score)), int(round(away_form_score))]
-        col_labels = ['Home', 'Away']
+        col_labels = ['Home Team', 'Away Team']
         
-        # Use probability-based colors for form scores
-        col_colors = [ProfessionalDesignSystem.get_color_for_probability(home_form_score),
-                     ProfessionalDesignSystem.get_color_for_probability(away_form_score)]
+        # Use THEME COLORS instead of probability-based for form
+        form_box_colors = ['#3498db', '#e74c3c']  # Blue for home, Red for away
+        
+        box_width_2 = 3.3
+        form_box_height = 1.5
+        form_box_y = 13.0
         
         for i in range(2):
             col_x_pos = col_x[i]
-            
-            # Column background box with 5px border
-            col_bg = Rectangle((col_x_pos - 0.8, 11.6), 1.6, 1.0, facecolor='white', 
-                             edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
+            col_bg = Rectangle((col_x_pos - box_width_2/2, form_box_y), box_width_2, form_box_height, facecolor='white', 
+                             edgecolor=form_box_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Percentage value
-            ax.text(col_x_pos, 12.25, f"{col_values[i]}%", ha='center', va='center', fontsize=25, 
-                   fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
+            ax.text(col_x_pos, form_box_y + 1.1, f"{col_values[i]}%", ha='center', va='center', fontsize=28, 
+                   fontweight='bold', color=form_box_colors[i], zorder=3, fontname='DejaVu Sans')
             
-            # Team label
-            ax.text(col_x_pos, 11.8, col_labels[i], ha='center', va='center', fontsize=14, 
-                   color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
+            ax.text(col_x_pos, form_box_y + 0.35, col_labels[i], ha='center', va='center', fontsize=11, 
+                   color=colors.get('text_secondary', '#5A5A5A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
 
-        # Form advantage indicator
         if home_form_score > away_form_score + 5:
-            form_advantage = f"{match_data['home_team'][:12]} in better form"
-            advantage_color = colors.get('likely_home', league_theme['primary'])
+            form_advantage = f"{home_team} in better form"
+            advantage_color = form_box_colors[0]
         elif away_form_score > home_form_score + 5:
-            form_advantage = f"{match_data['away_team'][:12]} in better form"
-            advantage_color = colors.get('likely_away', league_theme['accent'])
+            form_advantage = f"{away_team} in better form"
+            advantage_color = form_box_colors[1]
         else:
-            form_advantage = "Balanced form"
+            form_advantage = "Teams in similar form"
             advantage_color = colors.get('likely_draw', '#7F8C8D')
 
-        ax.text(5, 11.3, form_advantage, ha='center', va='center', fontsize=14, 
+        ax.text(5, 12.2, form_advantage, ha='center', va='center', fontsize=10, 
                fontweight='bold', color=advantage_color, zorder=3, fontname='DejaVu Sans')
         
-        
-        # =================================================================
-        # SECTION 3: GOAL PREDICTIONS (Light Orange Background)
-        # =================================================================
-        # Section background group
-        goals_bg = Rectangle((0.5, 8.0), 9.0, 2.2, facecolor='#fef5e7', 
-                            alpha=0.6, edgecolor='#f39c12', linewidth=2, zorder=1)
-        ax.add_patch(goals_bg)
-        
-        # Section category label
-        ax.text(0.8, 9.8, "GOAL INSIGHTS", ha='left', va='center', fontsize=11, 
-               fontweight='bold', color='#2c3e50', zorder=2, fontname='DejaVu Sans')
-        
-        # Divider line
-        ax.plot([0.7, 9.3], [9.6, 9.6], color='#f39c12', linewidth=1.5, zorder=2, alpha=0.5)
+        # ===== EXPECTED GOALS =====
+        ax.text(5, 11.5, "Expected Goals Prediction", ha='center', va='center', fontsize=13, fontweight='bold',
+               color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
 
         over_prob = match_data.get('over_2_5_goals_probability', 45)
         btts_prob = match_data.get('both_teams_score_probability', 55)
 
-        # Goal prediction boxes - side by side
-        col_x = [2.3, 7.7]
+        col_x = [2.5, 7.5]
         col_values = [int(round(over_prob)), int(round(btts_prob))]
-        col_labels = ['Over 2.5', 'BTTS']
+        col_labels = ['More Than 2 Goals', 'Both Teams Score']
         
-        # Use probability-based colors for goal predictions
         col_colors = [ProfessionalDesignSystem.get_color_for_probability(over_prob),
                      ProfessionalDesignSystem.get_color_for_probability(btts_prob)]
         
+        box_width_3 = 3.3
+        goals_box_height = 1.5
+        goals_box_y = 9.8
+        
         for i in range(2):
             col_x_pos = col_x[i]
-            
-            # Column background box with 5px border
-            col_bg = Rectangle((col_x_pos - 0.8, 8.3), 1.6, 0.95, facecolor='white', 
+            col_bg = Rectangle((col_x_pos - box_width_3/2, goals_box_y), box_width_3, goals_box_height, facecolor='white', 
                              edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Percentage value
-            ax.text(col_x_pos, 8.85, f"{col_values[i]}%", ha='center', va='center', fontsize=25, 
+            ax.text(col_x_pos, goals_box_y + 1.1, f"{col_values[i]}%", ha='center', va='center', fontsize=28, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
-            # Goal prediction label
-            ax.text(col_x_pos, 8.45, col_labels[i], ha='center', va='center', fontsize=13, 
-                   color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
+            ax.text(col_x_pos, goals_box_y + 0.35, col_labels[i], ha='center', va='center', fontsize=10, 
+                   color=colors.get('text_secondary', '#5A5A5A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
 
-        goal_timing = match_data.get('goal_timing_prediction', {})
-        first_half_prob = goal_timing.get('first_half_goal_probability', 45)
-        second_half_prob = goal_timing.get('second_half_goal_probability', 55)
+        # ===== MATCH FACTORS (Individual Boxes) =====
+        ax.text(5, 9.0, "Match Factors", ha='center', va='center', fontsize=13, fontweight='bold',
+               color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
 
-        # Goal timing insight
-        if second_half_prob > first_half_prob + 10:
-            timing_text = f"Goals expected in 2nd half ({int(second_half_prob)}%)"
-            timing_color = colors.get('likely_away', league_theme['accent'])
-        elif first_half_prob > second_half_prob + 10:
-            timing_text = f"Goals expected in 1st half ({int(first_half_prob)}%)"
-            timing_color = colors.get('likely_home', league_theme['primary'])
-        else:
-            timing_text = "Goals distributed throughout match"
-            timing_color = colors.get('likely_draw', '#7F8C8D')
-
-        ax.text(5, 8.1, timing_text, ha='center', va='center', fontsize=14, 
-               fontweight='bold', color=timing_color, zorder=3, fontname='DejaVu Sans')
-
-        # =================================================================
-        # SECTION 4: KEY FACTORS (Light Purple Background)
-        # =================================================================
-
-        # Section background group
-        factors_bg = Rectangle((0.5, 5.5), 9.0, 2.2, facecolor='#f4ecf7', 
-                              alpha=0.6, edgecolor='#8e44ad', linewidth=2, zorder=1)
-        ax.add_patch(factors_bg)
-        
-        # Section category label
-        ax.text(0.8, 7.3, "SUPPORTING INTELLIGENCE", ha='left', va='center', fontsize=11, 
-               fontweight='bold', color='#2c3e50', zorder=2, fontname='DejaVu Sans')
-        
-        # Divider line
-        ax.plot([0.7, 9.3], [7.1, 7.1], color='#8e44ad', linewidth=1.5, zorder=2, alpha=0.5)
-        
-        # Weather data
+        # Get factor data
         weather_data = match_data.get('weather_conditions', {})
         weather_impact = weather_data.get('impact_assessment', {})
         weather_modifier = weather_impact.get('goal_modifier', 1.0)
-        if weather_modifier > 1.05:
-            weather_text = "Weather may increase goals"
-            weather_color = colors.get('likely_away', league_theme['accent'])
-        elif weather_modifier < 0.95:
-            weather_text = "Weather may reduce goals"
-            weather_color = colors.get('likely_home', league_theme['primary'])
-        else:
-            weather_text = "Good weather conditions"
-            weather_color = colors.get('likely_draw', '#7F8C8D')
-
-        # H2H data
+        
         h2h_data = match_data.get('head_to_head_analysis', {})
         h2h_meetings = h2h_data.get('total_meetings', 0)
-        if h2h_meetings > 5:
-            h2h_text = f"{h2h_meetings} previous meetings analyzed"
-        else:
-            h2h_text = "Limited H2H history"
-
-        # Lineup strength
+        
         home_strength = match_data.get('player_availability', {}).get('home_team', {}).get('expected_lineup_strength')
         away_strength = match_data.get('player_availability', {}).get('away_team', {}).get('expected_lineup_strength')
-
-        if home_strength is None or away_strength is None:
-            strength_text = "Lineup data unavailable"
-        elif abs(home_strength - away_strength) > 10:
-            stronger_team = match_data['home_team'][:10] if home_strength > away_strength else match_data['away_team'][:10]
-            strength_text = f"{stronger_team} has stronger lineup"
-        else:
-            strength_text = "Teams at similar strength"
-
-        # Display factors
-        ax.text(5, 6.8, weather_text, ha='center', va='center', fontsize=14, 
-               fontweight='bold', color=weather_color, zorder=3, fontname='DejaVu Sans')
-        ax.text(5, 6.4, h2h_text, ha='center', va='center', fontsize=14, 
-               fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=3, fontname='DejaVu Sans')
-        ax.text(5, 6.0, strength_text, ha='center', va='center', fontsize=14, 
-               fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=3, fontname='DejaVu Sans')
         
-        # Referee (if available)
+        # Determine colors for factors
+        if weather_modifier > 1.05:
+            weather_text = "Weather Favorable"
+            weather_color = '#e74c3c'  # Red - increases goals
+        elif weather_modifier < 0.95:
+            weather_text = "Weather Defensive"
+            weather_color = '#3498db'  # Blue - reduces goals
+        else:
+            weather_text = "Weather Neutral"
+            weather_color = '#7F8C8D'  # Gray
+        
+        if h2h_meetings > 5:
+            h2h_text = f"H2H: {h2h_meetings} games"
+            h2h_color = '#27ae60'  # Green - data available
+        else:
+            h2h_text = "H2H: Limited"
+            h2h_color = '#f39c12'  # Orange - limited data
+        
+        if home_strength is not None and away_strength is not None:
+            if abs(home_strength - away_strength) > 10:
+                strength_text = "Lineups: Unequal"
+                strength_color = '#e74c3c'  # Red
+            else:
+                strength_text = "Lineups: Equal"
+                strength_color = '#27ae60'  # Green
+        else:
+            strength_text = "Lineups: Pending"
+            strength_color = '#95a5a6'  # Light gray
+        
+        # Referee assessment
         referee_name = match_data.get('referee_analysis', {}).get('name', 'TBD')
         if referee_name not in ['TBD', 'Unknown Referee']:
-            ax.text(5, 5.7, f"Referee: {referee_name[:12]}", ha='center', va='center', fontsize=10, 
-                   fontweight='600', color=colors.get('text_secondary', '#666666'), zorder=3, fontname='DejaVu Sans')
+            referee_text = f"Ref: {referee_name[:15]}"
+            referee_color = '#9b59b6'  # Purple
+        else:
+            referee_text = "Referee: TBD"
+            referee_color = '#95a5a6'  # Light gray
+        
+        # Create 4 boxes in 2x2 grid for factors
+        factor_boxes = [
+            (1.5, weather_text, weather_color),
+            (6.5, h2h_text, h2h_color),
+            (1.5, strength_text, strength_color),
+            (6.5, referee_text, referee_color)
+        ]
+        
+        factor_box_width = 2.8
+        factor_box_height = 1.2
+        factor_y_top = 7.9
+        factor_y_bottom = 6.4
+        
+        # Top row factors (Weather, H2H)
+        for idx in range(2):
+            x_pos = factor_boxes[idx][0]
+            text = factor_boxes[idx][1]
+            color = factor_boxes[idx][2]
+            
+            factor_bg = Rectangle((x_pos - factor_box_width/2, factor_y_top), factor_box_width, factor_box_height, 
+                                 facecolor='white', edgecolor=color, linewidth=4.0, zorder=2, alpha=0.9)
+            ax.add_patch(factor_bg)
+            
+            ax.text(x_pos, factor_y_top + 0.7, text, ha='center', va='center', fontsize=10, 
+                   fontweight='bold', color=color, zorder=3, fontname='DejaVu Sans')
+        
+        # Bottom row factors (Lineups, Referee)
+        for idx in range(2, 4):
+            x_pos = factor_boxes[idx][0]
+            text = factor_boxes[idx][1]
+            color = factor_boxes[idx][2]
+            
+            factor_bg = Rectangle((x_pos - factor_box_width/2, factor_y_bottom), factor_box_width, factor_box_height, 
+                                 facecolor='white', edgecolor=color, linewidth=4.0, zorder=2, alpha=0.9)
+            ax.add_patch(factor_bg)
+            
+            ax.text(x_pos, factor_y_bottom + 0.7, text, ha='center', va='center', fontsize=10, 
+                   fontweight='bold', color=color, zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
         # FOOTER - Clean and informative

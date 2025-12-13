@@ -7,12 +7,12 @@
   "league": "Serie A",
   "confidence": 0.75,
   "report_accuracy_probability": 0.75,
-  "home_win_probability": 88.43,
-  "draw_probability": 5.79,
-  "away_win_probability": 5.79,
+  "home_win_probability": 90.57,
+  "draw_probability": 4.71,
+  "away_win_probability": 4.71,
   "expected_home_goals": 2.2,
   "expected_away_goals": 0.6,
-  "processing_time": 2.881,
+  "processing_time": 0.003,
   "recommendation": "Home Win Likely",
   "confidence_level": "75.0% (Good)",
   "expected_final_score": "2-0",
@@ -178,18 +178,34 @@
   },
   "player_availability": {
     "home_team": {
-      "data_available": false,
+      "data_available": true,
       "team_name": "Parma Calcio 1913",
-      "key_players_available": null,
-      "key_players_injured": null,
+      "squad_size": 36,
+      "positions": {
+        "goalkeepers": 36,
+        "defenders": 0,
+        "midfielders": 0,
+        "attackers": 0
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org",
+        "Thin defensive options",
+        "Limited midfield depth",
+        "Few attacking options"
+      ],
+      "key_players_available": "All 36 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
       "strength_reduction_pct": 0.0,
       "injury_areas": [],
-      "expected_lineup_strength": null,
+      "expected_lineup_strength": 100.0,
       "injury_concerns": [
-        "Injury data unavailable - requires external injury API"
+        "Full squad available in Football-Data.org",
+        "Thin defensive options",
+        "Limited midfield depth",
+        "Few attacking options"
       ],
-      "squad_size": null,
-      "recommendation": "Integrate with API-Football (recommended) or Transfermarkt/PhysioRoom",
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
       "provenance": {
         "injury_clamped": false,
         "clamped_fields": {}
@@ -233,8 +249,8 @@
   "weather_conditions": {
     "conditions": {
       "temperature": 9.7,
-      "humidity": 71.1,
-      "wind_speed": 6.3,
+      "humidity": 70.1,
+      "wind_speed": 6.1,
       "precipitation": 0.0,
       "conditions": "clear",
       "visibility": 18.0,
@@ -249,7 +265,7 @@
       "stadium_effects": [],
       "adaptability_notes": [],
       "weather_severity": "MILD",
-      "conditions_summary": "Good playing conditions (9.7°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected",
+      "conditions_summary": "Good playing conditions (9.7°C, 0.0mm rain, 6.1 km/h wind) minimal weather impact expected",
       "weather_clamped": false,
       "clamped_fields": {}
     },
@@ -298,24 +314,24 @@
   },
   "data_quality_score": 50.0,
   "reliability_metrics": {
-    "score": 55.7,
-    "level": "Low",
-    "indicator": "🔴 Low",
-    "recommendation": "Low reliability – informational use only.",
+    "score": 60.2,
+    "level": "Limited",
+    "indicator": "🟠 Limited",
+    "recommendation": "Limited reliability – supplement with manual review.",
     "confidence_intervals": {
       "home": [
-        94.7,
+        95.2,
         100.0
       ],
       "draw": [
         0.0,
-        5.3
+        4.8
       ],
       "away": [
         0.0,
-        5.3
+        4.8
       ],
-      "margin_percent": 5.32
+      "margin_percent": 4.78
     },
     "spread_points": 100.0,
     "factors": {
@@ -323,7 +339,7 @@
       "data_quality": 50.0,
       "probability_clarity": 100.0,
       "h2h_depth": 0.0,
-      "data_freshness": 55.0
+      "data_freshness": 100.0
     },
     "primary_driver": "probability_clarity",
     "notes": [
@@ -333,11 +349,11 @@
   },
   "calibration_details": {
     "applied": true,
-    "shrink_factor": 0.174,
+    "shrink_factor": 0.141,
     "probabilities": {
-      "home_win_prob": 88.43,
-      "draw_prob": 5.79,
-      "away_win_prob": 5.79
+      "home_win_prob": 90.57,
+      "draw_prob": 4.71,
+      "away_win_prob": 4.71
     },
     "original_probabilities": {
       "home_win_prob": 100.0,
@@ -351,27 +367,27 @@
     },
     "neutral_anchor": 33.3,
     "notes": [
-      "Applied 17.4% shrink toward neutral due to reliability score 55.7."
+      "Applied 14.1% shrink toward neutral due to reliability score 60.2."
     ],
     "accuracy_adjustment": {
       "original_probability": 0.598,
-      "calibrated_probability": 0.582
+      "calibrated_probability": 0.6
     }
   },
   "confidence_intervals": {
     "home": [
-      94.7,
+      95.2,
       100.0
     ],
     "draw": [
       0.0,
-      5.3
+      4.8
     ],
     "away": [
       0.0,
-      5.3
+      4.8
     ],
-    "margin_percent": 5.32
+    "margin_percent": 4.78
   },
   "data_provenance": {
     "weather": true,
@@ -398,7 +414,7 @@
       "monte_carlo": 0.25
     }
   },
-  "generated_at": "2025-12-13T16:30:48.168334",
+  "generated_at": "2025-12-13T17:13:54.412401",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},

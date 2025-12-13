@@ -41,7 +41,7 @@
 - **Top 3 Scores Combined:** ⭐ **10/10** (27.3%)
 - **Expected Goals:** 3.0 - 0.8
 - **Recommendation:** Home Win Likely
-- **Processing Time:** 2.87s
+- **Processing Time:** 1.66s
 
 ### Score Probability Breakdown
 
@@ -58,9 +58,9 @@
 
 ### Win Probabilities
 
- - **Football Club Barcelona Win:** 88.4%
-- **Draw:** 5.8%
-- **CA Osasuna Win:** 5.8%
+ - **Football Club Barcelona Win:** 89.1%
+- **Draw:** 5.4%
+- **CA Osasuna Win:** 5.4%
 
 ## 🔍 Intelligence Analysis
 
@@ -191,14 +191,14 @@
 ## ⚠️ Risk Assessment
 
 - **Overall Risk Level:** 🟡 MEDIUM RISK
-- **Data Reliability:** 🔴 Low (55.7)
+- **Data Reliability:** 🔴 Low (57.2)
 - **Prediction Stability:** Stable
 
 ## 🎯 Confidence Analysis
 
-- **Reliability Score:** 🔴 Low 55.7 – Low reliability – informational use only.
-- **Confidence Interval Window:** Home 94.7% – 100.0%, Draw 0.0% – 5.3%, Away 0.0% – 5.3%
-- **Calibration Adjustment:** Applied 17.4% shrink toward neutral due to reliability score 55.7. | Accuracy 61.7% → 59.3%
+- **Reliability Score:** 🔴 Low 57.2 – Low reliability – informational use only.
+- **Confidence Interval Window:** Home 94.9% – 100.0%, Draw 0.0% – 5.1%, Away 0.0% – 5.1%
+- **Calibration Adjustment:** Applied 16.3% shrink toward neutral due to reliability score 57.2. | Accuracy 61.7% → 59.9%
 - **Head-to-Head Data Availability:** ⚠️ Limited
 - **Recent Form Data:** ⚠️ Limited
 - **Enhanced Data Integration:** ⚠️ Partial Data
@@ -221,7 +221,7 @@
 - **Prediction Algorithm:** Enhanced Intelligence with 7 Analysis Layers
 - **Data Sources:** Football-Data.org API + Weather API + Referee Database + News Analysis
 - **Analysis Layers:** H2H History, Home/Away Performance, Goal Timing, Player Injuries, Weather, Referee, Team News
-- **Generated:** 2025-12-13T17:01:48.077061
+- **Generated:** 2025-12-13T18:13:48.114417
 
 ---
 

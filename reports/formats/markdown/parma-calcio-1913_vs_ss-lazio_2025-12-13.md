@@ -41,7 +41,7 @@
 - **Top 3 Scores Combined:** ⭐ **10/10** (40.2%)
 - **Expected Goals:** 2.2 - 0.6
 - **Recommendation:** Home Win Likely
-- **Processing Time:** 2.88s
+- **Processing Time:** 0.00s
 
 ### Score Probability Breakdown
 
@@ -58,9 +58,9 @@
 
 ### Win Probabilities
 
- - **Parma Calcio 1913 Win:** 88.4%
-- **Draw:** 5.8%
-- **SS Lazio Win:** 5.8%
+ - **Parma Calcio 1913 Win:** 90.6%
+- **Draw:** 4.7%
+- **SS Lazio Win:** 4.7%
 
 ## 🔍 Intelligence Analysis
 
@@ -125,9 +125,9 @@
 #### Parma Calcio 1913 Players
 
 - **Squad Status:** Live injury tracking active
-- **Expected Lineup Strength:** ⚠️ Data unavailable
+- **Expected Lineup Strength:** 100.0%
 - **Data Source:** Live injury database
-- **Injury Impact:** Injury data unavailable - requires external injury API
+- **Injury Impact:** Full squad available in Football-Data.org, Thin defensive options, Limited midfield depth, Few attacking options
 
 #### SS Lazio Players
 
@@ -142,8 +142,8 @@
 
 - **Temperature:** 9.7°C
 - **Precipitation:** 0.0mm
-- **Wind Speed:** 6.3 km/h
-- **Humidity:** 71.1%
+- **Wind Speed:** 6.1 km/h
+- **Humidity:** 70.1%
 
 **Enhanced Intelligence Analysis:**
 
@@ -152,7 +152,7 @@
 - **Playing Style Effect:** Normal
 - **Tactical Adjustments:** Normal game tactics expected
 - **Stadium Effects:** Standard outdoor conditions
-- **Conditions Summary:** Good playing conditions (9.7°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected
+- **Conditions Summary:** Good playing conditions (9.7°C, 0.0mm rain, 6.1 km/h wind) minimal weather impact expected
 
 ### Referee Analysis
 
@@ -189,14 +189,14 @@
 ## ⚠️ Risk Assessment
 
 - **Overall Risk Level:** 🟡 MEDIUM RISK
-- **Data Reliability:** 🔴 Low (55.7)
+- **Data Reliability:** 🟠 Limited (60.2)
 - **Prediction Stability:** Stable
 
 ## 🎯 Confidence Analysis
 
-- **Reliability Score:** 🔴 Low 55.7 – Low reliability – informational use only.
-- **Confidence Interval Window:** Home 94.7% – 100.0%, Draw 0.0% – 5.3%, Away 0.0% – 5.3%
-- **Calibration Adjustment:** Applied 17.4% shrink toward neutral due to reliability score 55.7. | Accuracy 59.8% → 58.2%
+- **Reliability Score:** 🟠 Limited 60.2 – Limited reliability – supplement with manual review.
+- **Confidence Interval Window:** Home 95.2% – 100.0%, Draw 0.0% – 4.8%, Away 0.0% – 4.8%
+- **Calibration Adjustment:** Applied 14.1% shrink toward neutral due to reliability score 60.2. | Accuracy 59.8% → 60.0%
 - **Head-to-Head Data Availability:** ⚠️ Limited
 - **Recent Form Data:** ⚠️ Limited
 - **Enhanced Data Integration:** ⚠️ Partial Data
@@ -219,7 +219,7 @@
 - **Prediction Algorithm:** Enhanced Intelligence with 7 Analysis Layers
 - **Data Sources:** Football-Data.org API + Weather API + Referee Database + News Analysis
 - **Analysis Layers:** H2H History, Home/Away Performance, Goal Timing, Player Injuries, Weather, Referee, Team News
-- **Generated:** 2025-12-13T16:30:48.168334
+- **Generated:** 2025-12-13T17:13:54.412401
 
 ---
 

@@ -5,8 +5,8 @@
 - **League:** Premier League
 - **Date & Time:** 2025-12-13 at 17:30
 - **Engine Mode:** Enhanced Intelligence core engine with multi-layer analysis
-- **Prediction Confidence:** **75.0%** (Phase 2 Lite probability of correctness)
-- **Data Confidence:** 75.0% (75.0% (Good))
+- **Prediction Confidence:** **76.1%** (Phase 2 Lite probability of correctness)
+- **Data Confidence:** 75.4% (75.4% (Good))
 - **Data Quality Score:** 50.0%
 
 ## 🚀 Enhanced Features Applied
@@ -18,9 +18,9 @@
 
 ### 📈 Weighted Form Intelligence
 
-- **Home Team Form Score:** 50.0% (Stable momentum)
-- **Away Team Form Score:** 50.0% (Stable momentum)
-- **Current Streaks:** No streak vs No streak
+- **Home Team Form Score:** 19.7% (Stable momentum)
+- **Away Team Form Score:** 54.5% (Stable momentum)
+- **Current Streaks:** 3 games without a win vs 1 game win streak
 
 ### 🌤️ Weather Intelligence System
 
@@ -37,30 +37,30 @@
 
 ### Expected Outcome
 
-- **Expected Final Score:** 2-1 ⭐ **6/10** (9.5%)
-- **Top 3 Scores Combined:** ⭐ **10/10** (25.8%)
-- **Expected Goals:** 2.5 - 1.1
+- **Expected Final Score:** 1-0 ⭐ **8/10** (13.8%)
+- **Top 3 Scores Combined:** ⭐ **10/10** (37.5%)
+- **Expected Goals:** 1.3 - 0.9
 - **Recommendation:** Home Win Likely
-- **Processing Time:** 24.98s
+- **Processing Time:** 0.00s
 
 ### Score Probability Breakdown
 
 - **Most Likely Scores (1-10 Scale):**
-  - 2-1: **6/10** (9.5%)
-  - 2-0: **5/10** (8.6%)
-  - 3-1: **5/10** (7.8%)
+  - 1-0: **8/10** (13.8%)
+  - 1-1: **8/10** (13.0%)
+  - 0-0: **6/10** (10.6%)
 
 ### Betting Market Analysis
 
-- **Over 2.5 Goals:** 69.0%
-- **Both Teams to Score:** 61.0%
-- **Alternative Scores:** 2-0, 3-1, 1-1
+- **Over 2.5 Goals:** 38.8%
+- **Both Teams to Score:** 44.3%
+- **Alternative Scores:** 1-1, 0-0, 0-1
 
 ### Win Probabilities
 
- - **Burnley Football Club Win:** 88.6%
-- **Draw:** 5.7%
-- **Fulham Football Club Win:** 5.7%
+ - **Burnley Football Club Win:** 91.0%
+- **Draw:** 4.5%
+- **Fulham Football Club Win:** 4.5%
 
 ## 🔍 Intelligence Analysis
 
@@ -79,35 +79,35 @@
 
 **Traditional Stats:**
 
-- **Home Win Rate:** 0.0% (0 matches)
-- **Home Goals Per Game:** 0.0
-- **Home Goals Conceded:** 0.0
+- **Home Win Rate:** 28.6% (7 matches)
+- **Home Goals Per Game:** 0.7
+- **Home Goals Conceded:** 1.0
 
 **Enhanced Intelligence Insights:**
 
-- **Weighted Form Score:** 50.0% (Recent matches weighted more heavily)
+- **Weighted Form Score:** 19.7% (Recent matches weighted more heavily)
 - **Momentum Direction:** Stable 📈
-- **Current Streak:** No active streak
-- **Form Quality Assessment:** Average
-- **Form Pressure Level:** Medium (bounce-back potential)
-- **Recent 3 Match Performance:** 50.0% of maximum points
+- **Current Streak:** 3 games without a win
+- **Form Quality Assessment:** Very Poor
+- **Form Pressure Level:** High (bounce-back potential)
+- **Recent 3 Match Performance:** 0.0% of maximum points
 
 #### Fulham Football Club (Enhanced Away Analysis)
 
 **Traditional Stats:**
 
-- **Away Win Rate:** 0.0% (0 matches)
-- **Away Goals Per Game:** 0.0
-- **Away Goals Conceded:** 0.0
+- **Away Win Rate:** 14.3% (7 matches)
+- **Away Goals Per Game:** 0.9
+- **Away Goals Conceded:** 2.0
 
 **Enhanced Intelligence Insights:**
 
-- **Weighted Form Score:** 50.0% (Recent matches weighted more heavily)
+- **Weighted Form Score:** 54.5% (Recent matches weighted more heavily)
 - **Momentum Direction:** Stable 📈
-- **Current Streak:** No active streak
-- **Form Quality Assessment:** Average
+- **Current Streak:** 1 game win streak
+- **Form Quality Assessment:** Below Average
 - **Form Pressure Level:** Medium (bounce-back potential)
-- **Recent 3 Match Performance:** 50.0% of maximum points
+- **Recent 3 Match Performance:** 0.0% of maximum points
 
 ### ⏰ Goal Timing Prediction
 
@@ -142,8 +142,8 @@
 
 - **Temperature:** 9.7°C
 - **Precipitation:** 0.0mm
-- **Wind Speed:** 6.3 km/h
-- **Humidity:** 71.1%
+- **Wind Speed:** 6.1 km/h
+- **Humidity:** 70.1%
 
 **Enhanced Intelligence Analysis:**
 
@@ -152,7 +152,7 @@
 - **Playing Style Effect:** Normal
 - **Tactical Adjustments:** Normal game tactics expected
 - **Stadium Effects:** Standard outdoor conditions
-- **Conditions Summary:** Good playing conditions (9.7°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected
+- **Conditions Summary:** Good playing conditions (9.7°C, 0.0mm rain, 6.1 km/h wind) minimal weather impact expected
 
 ### Referee Analysis
 
@@ -182,21 +182,24 @@
 
 ## 💡 Key Factors Influencing Prediction
 
-- Limited home data available
-- Limited away data available
 - No head-to-head history between teams
+- Poor home form (29% win rate)
+- Weak away form (14% win rate)
+- Low-scoring home team (0.7 goals/game)
+- Leaky away defense (2.0 conceded/game)
+- Negative away goal difference (-1.1)
 
 ## ⚠️ Risk Assessment
 
 - **Overall Risk Level:** 🟡 MEDIUM RISK
-- **Data Reliability:** 🔴 Low (56.0)
+- **Data Reliability:** 🟠 Limited (61.1)
 - **Prediction Stability:** Stable
 
 ## 🎯 Confidence Analysis
 
-- **Reliability Score:** 🔴 Low 56.0 – Low reliability – informational use only.
-- **Confidence Interval Window:** Home 94.7% – 100.0%, Draw 0.0% – 5.3%, Away 0.0% – 5.3%
-- **Calibration Adjustment:** Applied 17.1% shrink toward neutral due to reliability score 56.0. | Accuracy 61.3% → 59.2%
+- **Reliability Score:** 🟠 Limited 61.1 – Limited reliability – supplement with manual review.
+- **Confidence Interval Window:** Home 95.3% – 100.0%, Draw 0.0% – 4.7%, Away 0.0% – 4.7%
+- **Calibration Adjustment:** Applied 13.5% shrink toward neutral due to reliability score 61.1. | Accuracy 60.8% → 60.9%
 - **Head-to-Head Data Availability:** ⚠️ Limited
 - **Recent Form Data:** ⚠️ Limited
 - **Enhanced Data Integration:** ⚠️ Partial Data
@@ -219,7 +222,7 @@
 - **Prediction Algorithm:** Enhanced Intelligence with 7 Analysis Layers
 - **Data Sources:** Football-Data.org API + Weather API + Referee Database + News Analysis
 - **Analysis Layers:** H2H History, Home/Away Performance, Goal Timing, Player Injuries, Weather, Referee, Team News
-- **Generated:** 2025-12-13T16:30:06.389329
+- **Generated:** 2025-12-13T17:25:10.125496
 
 ---
 

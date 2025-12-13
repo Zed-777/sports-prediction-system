@@ -7,12 +7,12 @@
   "league": "La Liga",
   "confidence": 0.75,
   "report_accuracy_probability": 0.75,
-  "home_win_probability": 88.43,
-  "draw_probability": 5.79,
-  "away_win_probability": 5.79,
+  "home_win_probability": 89.14,
+  "draw_probability": 5.43,
+  "away_win_probability": 5.43,
   "expected_home_goals": 3.0,
   "expected_away_goals": 0.8,
-  "processing_time": 2.865,
+  "processing_time": 1.655,
   "recommendation": "Home Win Likely",
   "confidence_level": "75.0% (Good)",
   "expected_final_score": "2-0",
@@ -317,24 +317,24 @@
   },
   "data_quality_score": 50.0,
   "reliability_metrics": {
-    "score": 55.7,
+    "score": 57.2,
     "level": "Low",
     "indicator": "🔴 Low",
     "recommendation": "Low reliability – informational use only.",
     "confidence_intervals": {
       "home": [
-        94.7,
+        94.9,
         100.0
       ],
       "draw": [
         0.0,
-        5.3
+        5.1
       ],
       "away": [
         0.0,
-        5.3
+        5.1
       ],
-      "margin_percent": 5.31
+      "margin_percent": 5.13
     },
     "spread_points": 100.0,
     "factors": {
@@ -342,7 +342,7 @@
       "data_quality": 50.0,
       "probability_clarity": 100.0,
       "h2h_depth": 0.0,
-      "data_freshness": 55.0
+      "data_freshness": 70.0
     },
     "primary_driver": "probability_clarity",
     "notes": [
@@ -352,11 +352,11 @@
   },
   "calibration_details": {
     "applied": true,
-    "shrink_factor": 0.174,
+    "shrink_factor": 0.163,
     "probabilities": {
-      "home_win_prob": 88.43,
-      "draw_prob": 5.79,
-      "away_win_prob": 5.79
+      "home_win_prob": 89.14,
+      "draw_prob": 5.43,
+      "away_win_prob": 5.43
     },
     "original_probabilities": {
       "home_win_prob": 100.0,
@@ -370,27 +370,27 @@
     },
     "neutral_anchor": 33.3,
     "notes": [
-      "Applied 17.4% shrink toward neutral due to reliability score 55.7."
+      "Applied 16.3% shrink toward neutral due to reliability score 57.2."
     ],
     "accuracy_adjustment": {
       "original_probability": 0.617,
-      "calibrated_probability": 0.593
+      "calibrated_probability": 0.599
     }
   },
   "confidence_intervals": {
     "home": [
-      94.7,
+      94.9,
       100.0
     ],
     "draw": [
       0.0,
-      5.3
+      5.1
     ],
     "away": [
       0.0,
-      5.3
+      5.1
     ],
-    "margin_percent": 5.31
+    "margin_percent": 5.13
   },
   "data_provenance": {
     "weather": true,
@@ -417,7 +417,7 @@
       "monte_carlo": 0.25
     }
   },
-  "generated_at": "2025-12-13T17:01:48.077061",
+  "generated_at": "2025-12-13T18:13:48.114417",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},
