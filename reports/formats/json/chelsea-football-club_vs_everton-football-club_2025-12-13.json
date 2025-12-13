@@ -1,24 +1,24 @@
 {
-  "match_id": 544362,
-  "home_team": "Club Atlético de Madrid",
-  "away_team": "Valencia Club de Fútbol",
+  "match_id": 537940,
+  "home_team": "Chelsea Football Club",
+  "away_team": "Everton Football Club",
   "date": "2025-12-13",
-  "time": "13:00",
-  "league": "La Liga",
+  "time": "15:00",
+  "league": "Premier League",
   "confidence": 0.75,
-  "report_accuracy_probability": 0.761,
-  "home_win_probability": 90.67,
-  "draw_probability": 4.67,
-  "away_win_probability": 4.67,
-  "expected_home_goals": 2.9,
+  "report_accuracy_probability": 0.75,
+  "home_win_probability": 88.52,
+  "draw_probability": 5.74,
+  "away_win_probability": 5.74,
+  "expected_home_goals": 3.0,
   "expected_away_goals": 1.1,
-  "processing_time": 0.002,
+  "processing_time": 2.708,
   "recommendation": "Home Win Likely",
   "confidence_level": "75.0% (Good)",
   "expected_final_score": "2-1",
-  "score_probability": 8.5,
+  "score_probability": 8.2,
   "score_probability_normalized": 5.0,
-  "top3_combined_probability": 24.2,
+  "top3_combined_probability": 23.9,
   "top3_probability_normalized": 10.0,
   "alternative_scores": [
     "3-1",
@@ -28,23 +28,23 @@
   "score_probabilities": [
     [
       "2-1",
-      8.497918290044938
+      8.203474323871818
     ],
     [
       "3-1",
-      8.158001558443141
+      8.203474323871818
     ],
     [
       "2-0",
-      7.520281672606141
+      7.457703930792562
     ],
     [
       "3-0",
-      7.2194704057018955
+      7.457703930792562
     ],
     [
-      "1-1",
-      5.901332145864541
+      "4-1",
+      6.152605742903864
     ]
   ],
   "score_probabilities_normalized": [
@@ -65,12 +65,12 @@
       5.0
     ],
     [
-      "1-1",
+      "4-1",
       4.0
     ]
   ],
-  "over_2_5_goals_probability": 76.3,
-  "both_teams_score_probability": 63.9,
+  "over_2_5_goals_probability": 77.6,
+  "both_teams_score_probability": 63.4,
   "head_to_head_analysis": {
     "total_meetings": 0,
     "wins_when_home": 0,
@@ -86,7 +86,7 @@
     "home_advantage_vs_opponent": 0.0,
     "away_record_vs_opponent": 0.0,
     "data_sources": [
-      "Domestic PD",
+      "Domestic PL",
       "European competitions"
     ],
     "total_sources": 2
@@ -94,46 +94,12 @@
   "home_performance_analysis": {
     "home": {
       "matches": 8,
-      "win_rate": 100.0,
-      "draw_rate": 0.0,
-      "loss_rate": 0.0,
-      "avg_goals_for": 3.0,
-      "avg_goals_against": 0.75,
-      "goal_difference": 2.25,
-      "weighted_form_score": 99.99999999999997,
-      "momentum_direction": "Stable",
-      "form_pressure": "Low",
-      "current_streak": "4 game winning streak",
-      "recent_3_performance": 100.0,
-      "form_quality": "Very Good"
-    },
-    "away": {
-      "matches": 7,
-      "win_rate": 42.857142857142854,
-      "draw_rate": 14.285714285714285,
-      "loss_rate": 42.857142857142854,
-      "avg_goals_for": 1.1428571428571428,
-      "avg_goals_against": 1.5714285714285714,
-      "goal_difference": -0.42857142857142855,
-      "weighted_form_score": 54.54545454545454,
-      "momentum_direction": "Stable",
-      "form_pressure": "Medium",
-      "current_streak": "1 game win streak",
-      "recent_3_performance": 0.0,
-      "form_quality": "Below Average"
-    },
-    "home_advantage": 57.142857142857146,
-    "scoring_difference": 1.8571428571428572
-  },
-  "away_performance_analysis": {
-    "home": {
-      "matches": 8,
-      "win_rate": 37.5,
-      "draw_rate": 37.5,
+      "win_rate": 62.5,
+      "draw_rate": 12.5,
       "loss_rate": 25.0,
-      "avg_goals_for": 1.25,
-      "avg_goals_against": 0.875,
-      "goal_difference": 0.375,
+      "avg_goals_for": 2.125,
+      "avg_goals_against": 1.0,
+      "goal_difference": 1.125,
       "weighted_form_score": 63.63636363636363,
       "momentum_direction": "Stable",
       "form_pressure": "Low",
@@ -143,21 +109,55 @@
     },
     "away": {
       "matches": 7,
-      "win_rate": 0.0,
-      "draw_rate": 42.857142857142854,
-      "loss_rate": 57.14285714285714,
-      "avg_goals_for": 0.5714285714285714,
-      "avg_goals_against": 2.2857142857142856,
-      "goal_difference": -1.7142857142857142,
-      "weighted_form_score": 18.181818181818183,
+      "win_rate": 42.857142857142854,
+      "draw_rate": 28.57142857142857,
+      "loss_rate": 28.57142857142857,
+      "avg_goals_for": 1.4285714285714286,
+      "avg_goals_against": 1.0,
+      "goal_difference": 0.42857142857142855,
+      "weighted_form_score": 15.151515151515152,
       "momentum_direction": "Stable",
       "form_pressure": "High",
-      "current_streak": "1 game draw",
+      "current_streak": "1 game without a win",
       "recent_3_performance": 0.0,
       "form_quality": "Very Poor"
     },
-    "home_advantage": 37.5,
-    "scoring_difference": 0.6785714285714286
+    "home_advantage": 19.642857142857146,
+    "scoring_difference": 0.6964285714285714
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 8,
+      "win_rate": 50.0,
+      "draw_rate": 25.0,
+      "loss_rate": 25.0,
+      "avg_goals_for": 1.375,
+      "avg_goals_against": 1.125,
+      "goal_difference": 0.25,
+      "weighted_form_score": 54.54545454545454,
+      "momentum_direction": "Stable",
+      "form_pressure": "Medium",
+      "current_streak": "1 game win streak",
+      "recent_3_performance": 0.0,
+      "form_quality": "Below Average"
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 42.857142857142854,
+      "draw_rate": 14.285714285714285,
+      "loss_rate": 42.857142857142854,
+      "avg_goals_for": 1.0,
+      "avg_goals_against": 1.1428571428571428,
+      "goal_difference": -0.14285714285714285,
+      "weighted_form_score": 81.30841121495325,
+      "momentum_direction": "Stable",
+      "form_pressure": "Low",
+      "current_streak": "2 game winning streak",
+      "recent_3_performance": 77.77777777777779,
+      "form_quality": "Very Good"
+    },
+    "home_advantage": 7.142857142857146,
+    "scoring_difference": 0.375
   },
   "goal_timing_prediction": {
     "first_half_goal_probability": 55.0,
@@ -165,28 +165,25 @@
     "late_goal_likelihood": 20.0,
     "early_goal_likelihood": 25.0,
     "home_attack_style": "aggressive",
-    "away_attack_style": "defensive"
+    "away_attack_style": "balanced"
   },
   "intelligence_summary": {
     "h2h_meetings": 0,
-    "home_advantage_pct": 57.142857142857146,
+    "home_advantage_pct": 19.642857142857146,
     "recent_h2h_form": "No recent meetings",
     "key_factors": [
       "No head-to-head history between teams",
-      "Excellent home form (100% win rate)",
-      "Weak away form (0% win rate)",
-      "High-scoring home team (3.0 goals/game)",
-      "Leaky away defense (2.3 conceded/game)",
-      "Strong home goal difference (+2.2)"
+      "High-scoring home team (2.1 goals/game)",
+      "Strong home goal difference (+1.1)"
     ]
   },
   "player_availability": {
     "home_team": {
       "data_available": true,
-      "team_name": "Club Atlético de Madrid",
-      "squad_size": 34,
+      "team_name": "Chelsea FC",
+      "squad_size": 37,
       "positions": {
-        "goalkeepers": 34,
+        "goalkeepers": 37,
         "defenders": 0,
         "midfielders": 0,
         "attackers": 0
@@ -197,7 +194,7 @@
         "Limited midfield depth",
         "Few attacking options"
       ],
-      "key_players_available": "All 34 registered players (no injury data)",
+      "key_players_available": "All 37 registered players (no injury data)",
       "key_players_injured": "Unknown - no injury API configured",
       "strength_reduction_pct": 0.0,
       "injury_areas": [],
@@ -217,10 +214,10 @@
     },
     "away_team": {
       "data_available": true,
-      "team_name": "Valencia CF",
-      "squad_size": 32,
+      "team_name": "Everton FC",
+      "squad_size": 26,
       "positions": {
-        "goalkeepers": 32,
+        "goalkeepers": 26,
         "defenders": 0,
         "midfielders": 0,
         "attackers": 0
@@ -231,7 +228,7 @@
         "Limited midfield depth",
         "Few attacking options"
       ],
-      "key_players_available": "All 32 registered players (no injury data)",
+      "key_players_available": "All 26 registered players (no injury data)",
       "key_players_injured": "Unknown - no injury API configured",
       "strength_reduction_pct": 0.0,
       "injury_areas": [],
@@ -301,7 +298,7 @@
       "lineup_strength": null,
       "news_sentiment": "unknown",
       "warning": "Team news requires press conference/lineup API integration",
-      "team_name": "Club Atlético de Madrid"
+      "team_name": "Chelsea FC"
     },
     "away_team": {
       "data_available": false,
@@ -313,37 +310,37 @@
       "lineup_strength": null,
       "news_sentiment": "unknown",
       "warning": "Team news requires press conference/lineup API integration",
-      "team_name": "Valencia CF"
+      "team_name": "Everton FC"
     }
   },
   "data_quality_score": 50.0,
   "reliability_metrics": {
-    "score": 60.4,
-    "level": "Limited",
-    "indicator": "🟠 Limited",
-    "recommendation": "Limited reliability – supplement with manual review.",
+    "score": 55.9,
+    "level": "Low",
+    "indicator": "🔴 Low",
+    "recommendation": "Low reliability – informational use only.",
     "confidence_intervals": {
       "home": [
-        95.3,
+        94.7,
         100.0
       ],
       "draw": [
         0.0,
-        4.7
+        5.3
       ],
       "away": [
         0.0,
-        4.7
+        5.3
       ],
-      "margin_percent": 4.75
+      "margin_percent": 5.29
     },
     "spread_points": 100.0,
     "factors": {
-      "model_confidence": 57.3,
+      "model_confidence": 57.2,
       "data_quality": 50.0,
       "probability_clarity": 100.0,
       "h2h_depth": 0.0,
-      "data_freshness": 100.0
+      "data_freshness": 55.0
     },
     "primary_driver": "probability_clarity",
     "notes": [
@@ -353,11 +350,11 @@
   },
   "calibration_details": {
     "applied": true,
-    "shrink_factor": 0.14,
+    "shrink_factor": 0.172,
     "probabilities": {
-      "home_win_prob": 90.67,
-      "draw_prob": 4.67,
-      "away_win_prob": 4.67
+      "home_win_prob": 88.52,
+      "draw_prob": 5.74,
+      "away_win_prob": 5.74
     },
     "original_probabilities": {
       "home_win_prob": 100.0,
@@ -371,27 +368,27 @@
     },
     "neutral_anchor": 33.3,
     "notes": [
-      "Applied 14.0% shrink toward neutral due to reliability score 60.4."
+      "Applied 17.2% shrink toward neutral due to reliability score 55.9."
     ],
     "accuracy_adjustment": {
-      "original_probability": 0.617,
-      "calibrated_probability": 0.612
+      "original_probability": 0.622,
+      "calibrated_probability": 0.597
     }
   },
   "confidence_intervals": {
     "home": [
-      95.3,
+      94.7,
       100.0
     ],
     "draw": [
       0.0,
-      4.7
+      5.3
     ],
     "away": [
       0.0,
-      4.7
+      5.3
     ],
-    "margin_percent": 4.75
+    "margin_percent": 5.29
   },
   "data_provenance": {
     "weather": true,
@@ -418,7 +415,7 @@
       "monte_carlo": 0.25
     }
   },
-  "generated_at": "2025-12-13T12:16:47.299904",
+  "generated_at": "2025-12-13T12:17:45.180721",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},

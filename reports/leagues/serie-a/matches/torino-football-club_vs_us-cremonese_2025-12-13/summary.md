@@ -1,11 +1,11 @@
-# 🧠 Enhanced Intelligence v4.2 + Market Intelligence v1.0: Club Atlético de Madrid vs Valencia Club de Fútbol
+# 🧠 Enhanced Intelligence v4.2 + Market Intelligence v1.0: Torino Football Club vs US Cremonese
 
 ## 🎯 Executive Summary
 
-- **League:** La Liga
-- **Date & Time:** 2025-12-13 at 13:00
+- **League:** Serie A
+- **Date & Time:** 2025-12-13 at 14:00
 - **Engine Mode:** Enhanced Intelligence core engine with multi-layer analysis
-- **Prediction Confidence:** **76.1%** (Phase 2 Lite probability of correctness)
+- **Prediction Confidence:** **75.0%** (Phase 2 Lite probability of correctness)
 - **Data Confidence:** 75.0% (75.0% (Good))
 - **Data Quality Score:** 50.0%
 
@@ -13,14 +13,14 @@
 
 ### ⚡ Multi-Season H2H Analysis
 
-- **Data Sources:** 2 source(s) including domestic leagues and European competitions
+- **Data Sources:** 1 source(s) including domestic leagues and European competitions
 - **Historical Depth:** 0 total meetings analyzed with weighted recency
 
 ### 📈 Weighted Form Intelligence
 
-- **Home Team Form Score:** 100.0% (Stable momentum)
-- **Away Team Form Score:** 18.2% (Stable momentum)
-- **Current Streaks:** 4 game winning streak vs 1 game draw
+- **Home Team Form Score:** 9.3% (Stable momentum)
+- **Away Team Form Score:** 54.5% (Stable momentum)
+- **Current Streaks:** 2 games without a win vs 1 game win streak
 
 ### 🌤️ Weather Intelligence System
 
@@ -37,30 +37,30 @@
 
 ### Expected Outcome
 
-- **Expected Final Score:** 2-1 ⭐ **5/10** (8.5%)
-- **Top 3 Scores Combined:** ⭐ **10/10** (24.2%)
-- **Expected Goals:** 2.9 - 1.1
+- **Expected Final Score:** 2-0 ⭐ **8/10** (13.9%)
+- **Top 3 Scores Combined:** ⭐ **10/10** (36.7%)
+- **Expected Goals:** 2.2 - 0.7
 - **Recommendation:** Home Win Likely
-- **Processing Time:** 0.00s
+- **Processing Time:** 2.83s
 
 ### Score Probability Breakdown
 
 - **Most Likely Scores (1-10 Scale):**
-  - 2-1: **5/10** (8.5%)
-  - 3-1: **5/10** (8.2%)
-  - 2-0: **5/10** (7.5%)
+  - 2-0: **8/10** (13.9%)
+  - 1-0: **7/10** (12.7%)
+  - 3-0: **6/10** (10.1%)
 
 ### Betting Market Analysis
 
-- **Over 2.5 Goals:** 76.3%
-- **Both Teams to Score:** 63.9%
-- **Alternative Scores:** 3-1, 2-0, 3-0
+- **Over 2.5 Goals:** 54.0%
+- **Both Teams to Score:** 42.9%
+- **Alternative Scores:** 1-0, 3-0, 2-1
 
 ### Win Probabilities
 
- - **Club Atlético de Madrid Win:** 90.7%
-- **Draw:** 4.7%
-- **Valencia Club de Fútbol Win:** 4.7%
+ - **Torino Football Club Win:** 88.5%
+- **Draw:** 5.8%
+- **US Cremonese Win:** 5.8%
 
 ## 🔍 Intelligence Analysis
 
@@ -75,61 +75,61 @@
 
 ### Home/Away Performance Analysis
 
-#### Club Atlético de Madrid (Enhanced Home Analysis)
+#### Torino Football Club (Enhanced Home Analysis)
 
 **Traditional Stats:**
 
-- **Home Win Rate:** 100.0% (8 matches)
-- **Home Goals Per Game:** 3.0
-- **Home Goals Conceded:** 0.8
+- **Home Win Rate:** 28.6% (7 matches)
+- **Home Goals Per Game:** 1.1
+- **Home Goals Conceded:** 2.0
 
 **Enhanced Intelligence Insights:**
 
-- **Weighted Form Score:** 100.0% (Recent matches weighted more heavily)
+- **Weighted Form Score:** 9.3% (Recent matches weighted more heavily)
 - **Momentum Direction:** Stable 📈
-- **Current Streak:** 4 game winning streak
-- **Form Quality Assessment:** Very Good
-- **Form Pressure Level:** Low (bounce-back potential)
-- **Recent 3 Match Performance:** 100.0% of maximum points
-
-#### Valencia Club de Fútbol (Enhanced Away Analysis)
-
-**Traditional Stats:**
-
-- **Away Win Rate:** 0.0% (7 matches)
-- **Away Goals Per Game:** 0.6
-- **Away Goals Conceded:** 2.3
-
-**Enhanced Intelligence Insights:**
-
-- **Weighted Form Score:** 18.2% (Recent matches weighted more heavily)
-- **Momentum Direction:** Stable 📈
-- **Current Streak:** 1 game draw
+- **Current Streak:** 2 games without a win
 - **Form Quality Assessment:** Very Poor
 - **Form Pressure Level:** High (bounce-back potential)
+- **Recent 3 Match Performance:** 11.1% of maximum points
+
+#### US Cremonese (Enhanced Away Analysis)
+
+**Traditional Stats:**
+
+- **Away Win Rate:** 42.9% (7 matches)
+- **Away Goals Per Game:** 1.3
+- **Away Goals Conceded:** 1.1
+
+**Enhanced Intelligence Insights:**
+
+- **Weighted Form Score:** 54.5% (Recent matches weighted more heavily)
+- **Momentum Direction:** Stable 📈
+- **Current Streak:** 1 game win streak
+- **Form Quality Assessment:** Below Average
+- **Form Pressure Level:** Medium (bounce-back potential)
 - **Recent 3 Match Performance:** 0.0% of maximum points
 
 ### ⏰ Goal Timing Prediction
 
-- **First Half Goal Probability:** 55%
-- **Second Half Goal Probability:** 45%
+- **First Half Goal Probability:** 45%
+- **Second Half Goal Probability:** 55%
 - **Late Goal Likelihood:** 20%
-- **Early Goal Likelihood:** 25%
-- **Home Attack Style:** Aggressive
-- **Away Attack Style:** Defensive
+- **Early Goal Likelihood:** 15%
+- **Home Attack Style:** Defensive
+- **Away Attack Style:** Balanced
 
 ## 📈 Data Quality Enhancements
 
 ### Player Availability
 
-#### Club Atlético de Madrid Players
+#### Torino Football Club Players
 
 - **Squad Status:** Live injury tracking active
 - **Expected Lineup Strength:** 100.0%
 - **Data Source:** Live injury database
 - **Injury Impact:** Full squad available in Football-Data.org, Thin defensive options, Limited midfield depth, Few attacking options
 
-#### Valencia Club de Fútbol Players
+#### US Cremonese Players
 
 - **Squad Status:** Live injury tracking active
 - **Expected Lineup Strength:** 100.0%
@@ -166,14 +166,14 @@
 
 ### Team News & Tactical Analysis
 
-#### Club Atlético de Madrid Tactics
+#### Torino Football Club Tactics
 
 - **Formation Analysis:** TBD
 - **Tactical Approach:** Unknown
 - **Team Strength:** ⚠️ Data unavailable
 - **Pre-Match Intel:** Team news unavailable
 
-#### Valencia Club de Fútbol Tactics
+#### US Cremonese Tactics
 
 - **Formation Analysis:** TBD
 - **Tactical Approach:** Unknown
@@ -183,23 +183,19 @@
 ## 💡 Key Factors Influencing Prediction
 
 - No head-to-head history between teams
-- Excellent home form (100% win rate)
-- Weak away form (0% win rate)
-- High-scoring home team (3.0 goals/game)
-- Leaky away defense (2.3 conceded/game)
-- Strong home goal difference (+2.2)
+- Poor home form (29% win rate)
 
 ## ⚠️ Risk Assessment
 
 - **Overall Risk Level:** 🟡 MEDIUM RISK
-- **Data Reliability:** 🟠 Limited (60.4)
+- **Data Reliability:** 🔴 Low (55.8)
 - **Prediction Stability:** Stable
 
 ## 🎯 Confidence Analysis
 
-- **Reliability Score:** 🟠 Limited 60.4 – Limited reliability – supplement with manual review.
-- **Confidence Interval Window:** Home 95.3% – 100.0%, Draw 0.0% – 4.7%, Away 0.0% – 4.7%
-- **Calibration Adjustment:** Applied 14.0% shrink toward neutral due to reliability score 60.4. | Accuracy 61.7% → 61.2%
+- **Reliability Score:** 🔴 Low 55.8 – Low reliability – informational use only.
+- **Confidence Interval Window:** Home 94.7% – 100.0%, Draw 0.0% – 5.3%, Away 0.0% – 5.3%
+- **Calibration Adjustment:** Applied 17.3% shrink toward neutral due to reliability score 55.8. | Accuracy 60.6% → 58.7%
 - **Head-to-Head Data Availability:** ⚠️ Limited
 - **Recent Form Data:** ⚠️ Limited
 - **Enhanced Data Integration:** ⚠️ Partial Data
@@ -222,7 +218,7 @@
 - **Prediction Algorithm:** Enhanced Intelligence with 7 Analysis Layers
 - **Data Sources:** Football-Data.org API + Weather API + Referee Database + News Analysis
 - **Analysis Layers:** H2H History, Home/Away Performance, Goal Timing, Player Injuries, Weather, Referee, Team News
-- **Generated:** 2025-12-13T12:16:47.299904
+- **Generated:** 2025-12-13T12:18:57.578773
 
 ---
 

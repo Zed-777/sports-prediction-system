@@ -1,55 +1,63 @@
 {
-  "match_id": 544362,
-  "home_team": "Club Atlético de Madrid",
-  "away_team": "Valencia Club de Fútbol",
+  "match_id": 542549,
+  "home_team": "Stade Rennais Football Club 1901",
+  "away_team": "Stade Brestois 29",
   "date": "2025-12-13",
-  "time": "13:00",
-  "league": "La Liga",
+  "time": "16:00",
+  "league": "Ligue 1",
   "confidence": 0.75,
-  "report_accuracy_probability": 0.761,
-  "home_win_probability": 90.67,
-  "draw_probability": 4.67,
-  "away_win_probability": 4.67,
-  "expected_home_goals": 2.9,
+  "report_accuracy_probability": 0.75,
+  "home_win_probability": 88.62,
+  "draw_probability": 5.69,
+  "away_win_probability": 5.69,
+  "expected_home_goals": 2.4,
   "expected_away_goals": 1.1,
-  "processing_time": 0.002,
+  "processing_time": 4.977,
   "recommendation": "Home Win Likely",
   "confidence_level": "75.0% (Good)",
   "expected_final_score": "2-1",
-  "score_probability": 8.5,
-  "score_probability_normalized": 5.0,
-  "top3_combined_probability": 24.2,
+  "score_probability": 9.5,
+  "score_probability_normalized": 6.0,
+  "top3_combined_probability": 26.0,
   "top3_probability_normalized": 10.0,
   "alternative_scores": [
-    "3-1",
     "2-0",
-    "3-0"
+    "1-1",
+    "3-1"
   ],
   "score_probabilities": [
     [
       "2-1",
-      8.497918290044938
-    ],
-    [
-      "3-1",
-      8.158001558443141
+      9.547593807755245
     ],
     [
       "2-0",
-      7.520281672606141
-    ],
-    [
-      "3-0",
-      7.2194704057018955
+      8.524637328352897
     ],
     [
       "1-1",
-      5.901332145864541
+      7.9563281731293705
+    ],
+    [
+      "3-1",
+      7.638075046204196
+    ],
+    [
+      "1-0",
+      7.10386444029408
     ]
   ],
   "score_probabilities_normalized": [
     [
       "2-1",
+      6.0
+    ],
+    [
+      "2-0",
+      5.0
+    ],
+    [
+      "1-1",
       5.0
     ],
     [
@@ -57,20 +65,12 @@
       5.0
     ],
     [
-      "2-0",
+      "1-0",
       5.0
-    ],
-    [
-      "3-0",
-      5.0
-    ],
-    [
-      "1-1",
-      4.0
     ]
   ],
-  "over_2_5_goals_probability": 76.3,
-  "both_teams_score_probability": 63.9,
+  "over_2_5_goals_probability": 68.3,
+  "both_teams_score_probability": 61.3,
   "head_to_head_analysis": {
     "total_meetings": 0,
     "wins_when_home": 0,
@@ -86,44 +86,43 @@
     "home_advantage_vs_opponent": 0.0,
     "away_record_vs_opponent": 0.0,
     "data_sources": [
-      "Domestic PD",
-      "European competitions"
+      "Domestic FL1"
     ],
-    "total_sources": 2
+    "total_sources": 1
   },
   "home_performance_analysis": {
     "home": {
-      "matches": 8,
-      "win_rate": 100.0,
-      "draw_rate": 0.0,
-      "loss_rate": 0.0,
-      "avg_goals_for": 3.0,
-      "avg_goals_against": 0.75,
-      "goal_difference": 2.25,
-      "weighted_form_score": 99.99999999999997,
+      "matches": 7,
+      "win_rate": 57.14285714285714,
+      "draw_rate": 28.57142857142857,
+      "loss_rate": 14.285714285714285,
+      "avg_goals_for": 2.142857142857143,
+      "avg_goals_against": 1.0,
+      "goal_difference": 1.1428571428571428,
+      "weighted_form_score": 71.9626168224299,
       "momentum_direction": "Stable",
       "form_pressure": "Low",
-      "current_streak": "4 game winning streak",
-      "recent_3_performance": 100.0,
-      "form_quality": "Very Good"
+      "current_streak": "2 game winning streak",
+      "recent_3_performance": 66.66666666666666,
+      "form_quality": "Good"
     },
     "away": {
-      "matches": 7,
-      "win_rate": 42.857142857142854,
-      "draw_rate": 14.285714285714285,
-      "loss_rate": 42.857142857142854,
-      "avg_goals_for": 1.1428571428571428,
-      "avg_goals_against": 1.5714285714285714,
-      "goal_difference": -0.42857142857142855,
-      "weighted_form_score": 54.54545454545454,
+      "matches": 8,
+      "win_rate": 25.0,
+      "draw_rate": 50.0,
+      "loss_rate": 25.0,
+      "avg_goals_for": 1.125,
+      "avg_goals_against": 2.0,
+      "goal_difference": -0.875,
+      "weighted_form_score": 45.45454545454545,
       "momentum_direction": "Stable",
       "form_pressure": "Medium",
-      "current_streak": "1 game win streak",
+      "current_streak": "1 game without a win",
       "recent_3_performance": 0.0,
       "form_quality": "Below Average"
     },
-    "home_advantage": 57.142857142857146,
-    "scoring_difference": 1.8571428571428572
+    "home_advantage": 32.14285714285714,
+    "scoring_difference": 1.0178571428571428
   },
   "away_performance_analysis": {
     "home": {
@@ -131,33 +130,33 @@
       "win_rate": 37.5,
       "draw_rate": 37.5,
       "loss_rate": 25.0,
-      "avg_goals_for": 1.25,
-      "avg_goals_against": 0.875,
-      "goal_difference": 0.375,
-      "weighted_form_score": 63.63636363636363,
+      "avg_goals_for": 1.5,
+      "avg_goals_against": 1.375,
+      "goal_difference": 0.125,
+      "weighted_form_score": 81.30841121495325,
       "momentum_direction": "Stable",
       "form_pressure": "Low",
-      "current_streak": "1 game draw",
-      "recent_3_performance": 0.0,
-      "form_quality": "Good"
+      "current_streak": "2 game winning streak",
+      "recent_3_performance": 77.77777777777779,
+      "form_quality": "Very Good"
     },
     "away": {
       "matches": 7,
-      "win_rate": 0.0,
-      "draw_rate": 42.857142857142854,
+      "win_rate": 28.57142857142857,
+      "draw_rate": 14.285714285714285,
       "loss_rate": 57.14285714285714,
-      "avg_goals_for": 0.5714285714285714,
-      "avg_goals_against": 2.2857142857142856,
-      "goal_difference": -1.7142857142857142,
-      "weighted_form_score": 18.181818181818183,
+      "avg_goals_for": 1.1428571428571428,
+      "avg_goals_against": 1.8571428571428572,
+      "goal_difference": -0.7142857142857143,
+      "weighted_form_score": 54.54545454545454,
       "momentum_direction": "Stable",
-      "form_pressure": "High",
-      "current_streak": "1 game draw",
+      "form_pressure": "Medium",
+      "current_streak": "1 game win streak",
       "recent_3_performance": 0.0,
-      "form_quality": "Very Poor"
+      "form_quality": "Below Average"
     },
-    "home_advantage": 37.5,
-    "scoring_difference": 0.6785714285714286
+    "home_advantage": 8.92857142857143,
+    "scoring_difference": 0.3571428571428572
   },
   "goal_timing_prediction": {
     "first_half_goal_probability": 55.0,
@@ -165,28 +164,25 @@
     "late_goal_likelihood": 20.0,
     "early_goal_likelihood": 25.0,
     "home_attack_style": "aggressive",
-    "away_attack_style": "defensive"
+    "away_attack_style": "balanced"
   },
   "intelligence_summary": {
     "h2h_meetings": 0,
-    "home_advantage_pct": 57.142857142857146,
+    "home_advantage_pct": 32.14285714285714,
     "recent_h2h_form": "No recent meetings",
     "key_factors": [
       "No head-to-head history between teams",
-      "Excellent home form (100% win rate)",
-      "Weak away form (0% win rate)",
-      "High-scoring home team (3.0 goals/game)",
-      "Leaky away defense (2.3 conceded/game)",
-      "Strong home goal difference (+2.2)"
+      "High-scoring home team (2.1 goals/game)",
+      "Strong home goal difference (+1.1)"
     ]
   },
   "player_availability": {
     "home_team": {
       "data_available": true,
-      "team_name": "Club Atlético de Madrid",
-      "squad_size": 34,
+      "team_name": "Stade Rennais FC 1901",
+      "squad_size": 27,
       "positions": {
-        "goalkeepers": 34,
+        "goalkeepers": 27,
         "defenders": 0,
         "midfielders": 0,
         "attackers": 0
@@ -197,7 +193,7 @@
         "Limited midfield depth",
         "Few attacking options"
       ],
-      "key_players_available": "All 34 registered players (no injury data)",
+      "key_players_available": "All 27 registered players (no injury data)",
       "key_players_injured": "Unknown - no injury API configured",
       "strength_reduction_pct": 0.0,
       "injury_areas": [],
@@ -217,10 +213,10 @@
     },
     "away_team": {
       "data_available": true,
-      "team_name": "Valencia CF",
-      "squad_size": 32,
+      "team_name": "Stade Brestois 29",
+      "squad_size": 26,
       "positions": {
-        "goalkeepers": 32,
+        "goalkeepers": 26,
         "defenders": 0,
         "midfielders": 0,
         "attackers": 0
@@ -231,7 +227,7 @@
         "Limited midfield depth",
         "Few attacking options"
       ],
-      "key_players_available": "All 32 registered players (no injury data)",
+      "key_players_available": "All 26 registered players (no injury data)",
       "key_players_injured": "Unknown - no injury API configured",
       "strength_reduction_pct": 0.0,
       "injury_areas": [],
@@ -301,7 +297,7 @@
       "lineup_strength": null,
       "news_sentiment": "unknown",
       "warning": "Team news requires press conference/lineup API integration",
-      "team_name": "Club Atlético de Madrid"
+      "team_name": "Stade Rennais FC 1901"
     },
     "away_team": {
       "data_available": false,
@@ -313,37 +309,37 @@
       "lineup_strength": null,
       "news_sentiment": "unknown",
       "warning": "Team news requires press conference/lineup API integration",
-      "team_name": "Valencia CF"
+      "team_name": "Stade Brestois 29"
     }
   },
   "data_quality_score": 50.0,
   "reliability_metrics": {
-    "score": 60.4,
-    "level": "Limited",
-    "indicator": "🟠 Limited",
-    "recommendation": "Limited reliability – supplement with manual review.",
+    "score": 56.1,
+    "level": "Low",
+    "indicator": "🔴 Low",
+    "recommendation": "Low reliability – informational use only.",
     "confidence_intervals": {
       "home": [
-        95.3,
+        94.7,
         100.0
       ],
       "draw": [
         0.0,
-        4.7
+        5.3
       ],
       "away": [
         0.0,
-        4.7
+        5.3
       ],
-      "margin_percent": 4.75
+      "margin_percent": 5.27
     },
     "spread_points": 100.0,
     "factors": {
-      "model_confidence": 57.3,
+      "model_confidence": 57.7,
       "data_quality": 50.0,
       "probability_clarity": 100.0,
       "h2h_depth": 0.0,
-      "data_freshness": 100.0
+      "data_freshness": 55.0
     },
     "primary_driver": "probability_clarity",
     "notes": [
@@ -353,11 +349,11 @@
   },
   "calibration_details": {
     "applied": true,
-    "shrink_factor": 0.14,
+    "shrink_factor": 0.171,
     "probabilities": {
-      "home_win_prob": 90.67,
-      "draw_prob": 4.67,
-      "away_win_prob": 4.67
+      "home_win_prob": 88.62,
+      "draw_prob": 5.69,
+      "away_win_prob": 5.69
     },
     "original_probabilities": {
       "home_win_prob": 100.0,
@@ -371,27 +367,27 @@
     },
     "neutral_anchor": 33.3,
     "notes": [
-      "Applied 14.0% shrink toward neutral due to reliability score 60.4."
+      "Applied 17.1% shrink toward neutral due to reliability score 56.1."
     ],
     "accuracy_adjustment": {
-      "original_probability": 0.617,
-      "calibrated_probability": 0.612
+      "original_probability": 0.619,
+      "calibrated_probability": 0.596
     }
   },
   "confidence_intervals": {
     "home": [
-      95.3,
+      94.7,
       100.0
     ],
     "draw": [
       0.0,
-      4.7
+      5.3
     ],
     "away": [
       0.0,
-      4.7
+      5.3
     ],
-    "margin_percent": 4.75
+    "margin_percent": 5.27
   },
   "data_provenance": {
     "weather": true,
@@ -418,7 +414,7 @@
       "monte_carlo": 0.25
     }
   },
-  "generated_at": "2025-12-13T12:16:47.299904",
+  "generated_at": "2025-12-13T12:20:57.803287",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},

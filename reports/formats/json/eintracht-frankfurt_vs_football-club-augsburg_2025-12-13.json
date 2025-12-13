@@ -1,76 +1,76 @@
 {
-  "match_id": 544362,
-  "home_team": "Club Atlético de Madrid",
-  "away_team": "Valencia Club de Fútbol",
+  "match_id": 540525,
+  "home_team": "Eintracht Frankfurt",
+  "away_team": "Football Club Augsburg",
   "date": "2025-12-13",
-  "time": "13:00",
-  "league": "La Liga",
+  "time": "14:30",
+  "league": "Bundesliga",
   "confidence": 0.75,
-  "report_accuracy_probability": 0.761,
-  "home_win_probability": 90.67,
-  "draw_probability": 4.67,
-  "away_win_probability": 4.67,
-  "expected_home_goals": 2.9,
-  "expected_away_goals": 1.1,
-  "processing_time": 0.002,
+  "report_accuracy_probability": 0.75,
+  "home_win_probability": 88.57,
+  "draw_probability": 5.71,
+  "away_win_probability": 5.71,
+  "expected_home_goals": 1.7,
+  "expected_away_goals": 0.7,
+  "processing_time": 5.183,
   "recommendation": "Home Win Likely",
   "confidence_level": "75.0% (Good)",
-  "expected_final_score": "2-1",
-  "score_probability": 8.5,
-  "score_probability_normalized": 5.0,
-  "top3_combined_probability": 24.2,
+  "expected_final_score": "1-0",
+  "score_probability": 15.8,
+  "score_probability_normalized": 8.0,
+  "top3_combined_probability": 39.8,
   "top3_probability_normalized": 10.0,
   "alternative_scores": [
-    "3-1",
     "2-0",
-    "3-0"
+    "1-1",
+    "0-0"
   ],
   "score_probabilities": [
     [
-      "2-1",
-      8.497918290044938
-    ],
-    [
-      "3-1",
-      8.158001558443141
+      "1-0",
+      15.768177273782493
     ],
     [
       "2-0",
-      7.520281672606141
-    ],
-    [
-      "3-0",
-      7.2194704057018955
+      13.16642802360838
     ],
     [
       "1-1",
-      5.901332145864541
+      10.880042318909918
+    ],
+    [
+      "0-0",
+      9.442022319630237
+    ],
+    [
+      "2-1",
+      9.084835336289782
     ]
   ],
   "score_probabilities_normalized": [
     [
-      "2-1",
-      5.0
-    ],
-    [
-      "3-1",
-      5.0
+      "1-0",
+      8.0
     ],
     [
       "2-0",
-      5.0
-    ],
-    [
-      "3-0",
-      5.0
+      8.0
     ],
     [
       "1-1",
-      4.0
+      6.0
+    ],
+    [
+      "0-0",
+      6.0
+    ],
+    [
+      "2-1",
+      6.0
     ]
   ],
-  "over_2_5_goals_probability": 76.3,
-  "both_teams_score_probability": 63.9,
+  "over_2_5_goals_probability": 42.0,
+  "both_teams_score_probability": 40.5,
   "head_to_head_analysis": {
     "total_meetings": 0,
     "wins_when_home": 0,
@@ -86,69 +86,20 @@
     "home_advantage_vs_opponent": 0.0,
     "away_record_vs_opponent": 0.0,
     "data_sources": [
-      "Domestic PD",
+      "Domestic BL1",
       "European competitions"
     ],
     "total_sources": 2
   },
   "home_performance_analysis": {
     "home": {
-      "matches": 8,
-      "win_rate": 100.0,
-      "draw_rate": 0.0,
-      "loss_rate": 0.0,
-      "avg_goals_for": 3.0,
-      "avg_goals_against": 0.75,
-      "goal_difference": 2.25,
-      "weighted_form_score": 99.99999999999997,
-      "momentum_direction": "Stable",
-      "form_pressure": "Low",
-      "current_streak": "4 game winning streak",
-      "recent_3_performance": 100.0,
-      "form_quality": "Very Good"
-    },
-    "away": {
       "matches": 7,
-      "win_rate": 42.857142857142854,
+      "win_rate": 28.57142857142857,
       "draw_rate": 14.285714285714285,
-      "loss_rate": 42.857142857142854,
-      "avg_goals_for": 1.1428571428571428,
-      "avg_goals_against": 1.5714285714285714,
-      "goal_difference": -0.42857142857142855,
-      "weighted_form_score": 54.54545454545454,
-      "momentum_direction": "Stable",
-      "form_pressure": "Medium",
-      "current_streak": "1 game win streak",
-      "recent_3_performance": 0.0,
-      "form_quality": "Below Average"
-    },
-    "home_advantage": 57.142857142857146,
-    "scoring_difference": 1.8571428571428572
-  },
-  "away_performance_analysis": {
-    "home": {
-      "matches": 8,
-      "win_rate": 37.5,
-      "draw_rate": 37.5,
-      "loss_rate": 25.0,
-      "avg_goals_for": 1.25,
-      "avg_goals_against": 0.875,
-      "goal_difference": 0.375,
-      "weighted_form_score": 63.63636363636363,
-      "momentum_direction": "Stable",
-      "form_pressure": "Low",
-      "current_streak": "1 game draw",
-      "recent_3_performance": 0.0,
-      "form_quality": "Good"
-    },
-    "away": {
-      "matches": 7,
-      "win_rate": 0.0,
-      "draw_rate": 42.857142857142854,
       "loss_rate": 57.14285714285714,
-      "avg_goals_for": 0.5714285714285714,
+      "avg_goals_for": 1.1428571428571428,
       "avg_goals_against": 2.2857142857142856,
-      "goal_difference": -1.7142857142857142,
+      "goal_difference": -1.1428571428571428,
       "weighted_form_score": 18.181818181818183,
       "momentum_direction": "Stable",
       "form_pressure": "High",
@@ -156,37 +107,85 @@
       "recent_3_performance": 0.0,
       "form_quality": "Very Poor"
     },
-    "home_advantage": 37.5,
-    "scoring_difference": 0.6785714285714286
+    "away": {
+      "matches": 8,
+      "win_rate": 25.0,
+      "draw_rate": 37.5,
+      "loss_rate": 37.5,
+      "avg_goals_for": 1.875,
+      "avg_goals_against": 2.875,
+      "goal_difference": -1.0,
+      "weighted_form_score": 28.037383177570085,
+      "momentum_direction": "Stable",
+      "form_pressure": "High",
+      "current_streak": "2 games without a win",
+      "recent_3_performance": 33.33333333333333,
+      "form_quality": "Very Poor"
+    },
+    "home_advantage": 3.5714285714285694,
+    "scoring_difference": -0.7321428571428572
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 7,
+      "win_rate": 42.857142857142854,
+      "draw_rate": 0.0,
+      "loss_rate": 57.14285714285714,
+      "avg_goals_for": 1.2857142857142858,
+      "avg_goals_against": 2.142857142857143,
+      "goal_difference": -0.8571428571428571,
+      "weighted_form_score": 71.9626168224299,
+      "momentum_direction": "Stable",
+      "form_pressure": "Low",
+      "current_streak": "2 game winning streak",
+      "recent_3_performance": 66.66666666666666,
+      "form_quality": "Good"
+    },
+    "away": {
+      "matches": 6,
+      "win_rate": 16.666666666666664,
+      "draw_rate": 16.666666666666664,
+      "loss_rate": 66.66666666666666,
+      "avg_goals_for": 1.3333333333333333,
+      "avg_goals_against": 2.0,
+      "goal_difference": -0.6666666666666666,
+      "weighted_form_score": 9.345794392523363,
+      "momentum_direction": "Stable",
+      "form_pressure": "High",
+      "current_streak": "2 games without a win",
+      "recent_3_performance": 11.11111111111111,
+      "form_quality": "Very Poor"
+    },
+    "home_advantage": 26.19047619047619,
+    "scoring_difference": -0.04761904761904745
   },
   "goal_timing_prediction": {
-    "first_half_goal_probability": 55.0,
-    "second_half_goal_probability": 45.0,
+    "first_half_goal_probability": 45.0,
+    "second_half_goal_probability": 55.0,
     "late_goal_likelihood": 20.0,
-    "early_goal_likelihood": 25.0,
-    "home_attack_style": "aggressive",
-    "away_attack_style": "defensive"
+    "early_goal_likelihood": 15.0,
+    "home_attack_style": "defensive",
+    "away_attack_style": "balanced"
   },
   "intelligence_summary": {
     "h2h_meetings": 0,
-    "home_advantage_pct": 57.142857142857146,
+    "home_advantage_pct": 3.5714285714285694,
     "recent_h2h_form": "No recent meetings",
     "key_factors": [
       "No head-to-head history between teams",
-      "Excellent home form (100% win rate)",
-      "Weak away form (0% win rate)",
-      "High-scoring home team (3.0 goals/game)",
-      "Leaky away defense (2.3 conceded/game)",
-      "Strong home goal difference (+2.2)"
+      "Poor home form (29% win rate)",
+      "Weak away form (17% win rate)",
+      "Leaky away defense (2.0 conceded/game)",
+      "Poor home goal difference (-1.1)"
     ]
   },
   "player_availability": {
     "home_team": {
       "data_available": true,
-      "team_name": "Club Atlético de Madrid",
-      "squad_size": 34,
+      "team_name": "Eintracht Frankfurt",
+      "squad_size": 29,
       "positions": {
-        "goalkeepers": 34,
+        "goalkeepers": 29,
         "defenders": 0,
         "midfielders": 0,
         "attackers": 0
@@ -197,7 +196,7 @@
         "Limited midfield depth",
         "Few attacking options"
       ],
-      "key_players_available": "All 34 registered players (no injury data)",
+      "key_players_available": "All 29 registered players (no injury data)",
       "key_players_injured": "Unknown - no injury API configured",
       "strength_reduction_pct": 0.0,
       "injury_areas": [],
@@ -217,10 +216,10 @@
     },
     "away_team": {
       "data_available": true,
-      "team_name": "Valencia CF",
-      "squad_size": 32,
+      "team_name": "FC Augsburg",
+      "squad_size": 29,
       "positions": {
-        "goalkeepers": 32,
+        "goalkeepers": 29,
         "defenders": 0,
         "midfielders": 0,
         "attackers": 0
@@ -231,7 +230,7 @@
         "Limited midfield depth",
         "Few attacking options"
       ],
-      "key_players_available": "All 32 registered players (no injury data)",
+      "key_players_available": "All 29 registered players (no injury data)",
       "key_players_injured": "Unknown - no injury API configured",
       "strength_reduction_pct": 0.0,
       "injury_areas": [],
@@ -301,7 +300,7 @@
       "lineup_strength": null,
       "news_sentiment": "unknown",
       "warning": "Team news requires press conference/lineup API integration",
-      "team_name": "Club Atlético de Madrid"
+      "team_name": "Eintracht Frankfurt"
     },
     "away_team": {
       "data_available": false,
@@ -313,37 +312,37 @@
       "lineup_strength": null,
       "news_sentiment": "unknown",
       "warning": "Team news requires press conference/lineup API integration",
-      "team_name": "Valencia CF"
+      "team_name": "FC Augsburg"
     }
   },
   "data_quality_score": 50.0,
   "reliability_metrics": {
-    "score": 60.4,
-    "level": "Limited",
-    "indicator": "🟠 Limited",
-    "recommendation": "Limited reliability – supplement with manual review.",
+    "score": 56.0,
+    "level": "Low",
+    "indicator": "🔴 Low",
+    "recommendation": "Low reliability – informational use only.",
     "confidence_intervals": {
       "home": [
-        95.3,
+        94.7,
         100.0
       ],
       "draw": [
         0.0,
-        4.7
+        5.3
       ],
       "away": [
         0.0,
-        4.7
+        5.3
       ],
-      "margin_percent": 4.75
+      "margin_percent": 5.28
     },
     "spread_points": 100.0,
     "factors": {
-      "model_confidence": 57.3,
+      "model_confidence": 57.4,
       "data_quality": 50.0,
       "probability_clarity": 100.0,
       "h2h_depth": 0.0,
-      "data_freshness": 100.0
+      "data_freshness": 55.0
     },
     "primary_driver": "probability_clarity",
     "notes": [
@@ -353,11 +352,11 @@
   },
   "calibration_details": {
     "applied": true,
-    "shrink_factor": 0.14,
+    "shrink_factor": 0.171,
     "probabilities": {
-      "home_win_prob": 90.67,
-      "draw_prob": 4.67,
-      "away_win_prob": 4.67
+      "home_win_prob": 88.57,
+      "draw_prob": 5.71,
+      "away_win_prob": 5.71
     },
     "original_probabilities": {
       "home_win_prob": 100.0,
@@ -371,27 +370,27 @@
     },
     "neutral_anchor": 33.3,
     "notes": [
-      "Applied 14.0% shrink toward neutral due to reliability score 60.4."
+      "Applied 17.1% shrink toward neutral due to reliability score 56.0."
     ],
     "accuracy_adjustment": {
-      "original_probability": 0.617,
-      "calibrated_probability": 0.612
+      "original_probability": 0.599,
+      "calibrated_probability": 0.583
     }
   },
   "confidence_intervals": {
     "home": [
-      95.3,
+      94.7,
       100.0
     ],
     "draw": [
       0.0,
-      4.7
+      5.3
     ],
     "away": [
       0.0,
-      4.7
+      5.3
     ],
-    "margin_percent": 4.75
+    "margin_percent": 5.28
   },
   "data_provenance": {
     "weather": true,
@@ -412,13 +411,13 @@
     "model_agreement_factor": 0.0,
     "optimization_applied": true,
     "ensemble_weights": {
-      "legacy": 0.18749999999999997,
-      "ml": 0.25,
-      "neural": 0.3125,
-      "monte_carlo": 0.25
+      "legacy": 0.22499999999999998,
+      "ml": 0.27499999999999997,
+      "neural": 0.27499999999999997,
+      "monte_carlo": 0.22499999999999998
     }
   },
-  "generated_at": "2025-12-13T12:16:47.299904",
+  "generated_at": "2025-12-13T12:19:57.743627",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},

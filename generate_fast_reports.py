@@ -1193,11 +1193,10 @@ class SingleMatchGenerator:
         ax.text(5, 15.8, f"Expected Goals: {home_team_short} {match_data['expected_home_goals']:.1f} - {match_data['expected_away_goals']:.1f} {away_team_short}",
             ha='center', va='center', fontsize=label_fs, fontweight='bold', color=colors.get('text_main', '#111111'))
 
-        # --- Unified gauge utility for consistency across the card ---
-        # Use the class method which reads palette and thresholds from settings
+        # --- Modern semi-circular gauge utility for Phase 2 visual enhancements ---
         def draw_gauge(center_x: float, center_y: float, radius: float, percent: float,
                    color: str, label_text: Optional[str] = None, value_text: Optional[str] = None) -> None:
-            """Draw a circular ring gauge using a small inset Axes so the circle is not distorted.
+            """Draw a modern semi-circular gauge (180-degree) with smooth styling for Phase 2.
             center_x, center_y, radius are in data coordinates of the main `ax`.
             """
             # Map data center to figure coordinates
@@ -1214,62 +1213,68 @@ class SingleMatchGenerator:
 
             # Create a small square inset axes centered at fig_coord with width 2*size
             left = fig_coord[0] - size
-            bottom = fig_coord[1] - size
+            bottom = fig_coord[1] - size * 0.7  # Adjust for semi-circle layout
             inset = fig.add_axes((left, bottom, 2 * size, 2 * size), zorder=5)
             inset.set_aspect('equal')
             inset.axis('off')
+            inset.set_xlim(-0.1, 1.1)
+            inset.set_ylim(-0.1, 1.1)
 
-            # Draw ring background using Wedge with width to form a donut
+            # Modern semi-circular gauge configuration
             outer_r = self._settings.get('constants', {}).get('gauge', {}).get('outer_radius', 0.48)
-            ring_width = self._settings.get('constants', {}).get('gauge', {}).get('ring_width', 0.28)
-            # background ring (light gray)
-            bg_wedge = Wedge((0.5, 0.5), outer_r, 0, 360, width=ring_width, facecolor=colors.get('gauge_bg', '#e9ecef'), edgecolor='none', zorder=1)
-            inset.add_patch(bg_wedge)
-
-            # colored arc for the percentage (start at 90-angle to 90)
+            ring_width = self._settings.get('constants', {}).get('gauge', {}).get('ring_width', 0.25)
+            
+            # Parse percentage
             try:
                 pct = float(percent)
             except Exception:
                 pct = 0.0
             pct = max(0.0, min(100.0, pct))
             
-            # Enhanced gauge styling with modern appearance
-            if pct > 0:
-                # Draw filled arc with smooth gradient appearance
-                angle = pct / 100.0 * 360.0
-                # Add glow effect with slightly larger semi-transparent arc
-                glow = Wedge((0.5, 0.5), outer_r, 90 - angle, 90, width=ring_width + 0.05, 
-                            facecolor=color, alpha=0.25, edgecolor='none', zorder=1)
-                inset.add_patch(glow)
-                # Main colored arc
-                arc = Wedge((0.5, 0.5), outer_r, 90 - angle, 90, width=ring_width, 
-                           facecolor=color, edgecolor=color, linewidth=0.5, zorder=2)
-                inset.add_patch(arc)
-
-            # Enhanced background ring with gradient appearance
-            bg_wedge = Wedge((0.5, 0.5), outer_r, 0, 360, width=ring_width, 
+            # SEMI-CIRCULAR DESIGN: 180 degrees from 180 (left) to 0 (right), bottom arc
+            # Background ring (professional light gray) - complete semi-circle
+            bg_wedge = Wedge((0.5, 0.5), outer_r, 180, 0, width=ring_width, 
                            facecolor=colors.get('gauge_bg', '#F0F0F0'), edgecolor='#E0E0E0', 
-                           linewidth=1.0, zorder=1)
+                           linewidth=0.8, zorder=1)
             inset.add_patch(bg_wedge)
             
-            # Professional outline with subtle shadow
-            outline = Circle((0.5, 0.5), outer_r, fill=False, linewidth=2.0, 
-                           edgecolor=color, alpha=0.3, zorder=0)  # Shadow
-            inset.add_patch(outline)
+            # Colored arc for the percentage - semi-circular (0-180 degrees)
+            if pct > 0:
+                # Calculate angle for semi-circle (0-180 degrees)
+                angle = pct / 100.0 * 180.0
+                
+                # Add glow effect with larger semi-transparent arc
+                glow = Wedge((0.5, 0.5), outer_r, 180, 180 - angle, width=ring_width + 0.06, 
+                            facecolor=color, alpha=0.2, edgecolor='none', zorder=1)
+                inset.add_patch(glow)
+                
+                # Main colored arc with professional styling
+                arc = Wedge((0.5, 0.5), outer_r, 180, 180 - angle, width=ring_width, 
+                           facecolor=color, edgecolor=color, linewidth=0.5, zorder=2)
+                inset.add_patch(arc)
             
-            # Crisp main outline
-            outline_main = Circle((0.5, 0.5), outer_r, fill=False, linewidth=1.2, 
-                                edgecolor='#555555', zorder=3)
+            # Professional outline with subtle shadow
+            from matplotlib.patches import Arc
+            outline_shadow = Arc((0.5, 0.5), 2 * outer_r, 2 * outer_r, angle=0, theta1=0, theta2=180,
+                                linewidth=2.5, color=color, alpha=0.15, zorder=0)
+            inset.add_patch(outline_shadow)
+            
+            # Crisp main outline for semi-circle
+            outline_main = Arc((0.5, 0.5), 2 * outer_r, 2 * outer_r, angle=0, theta1=0, theta2=180,
+                              linewidth=1.5, color='#333333', zorder=3)
             inset.add_patch(outline_main)
-
-            # centered value text with professional styling
+            
+            # Percentage value text - positioned above the gauge
             if value_text is None:
                 value_text = f"{int(round(pct))}%"
             inset_font = self._settings.get('constants', {}).get('gauge', {}).get('inset_text_size', 18)
-            inset.text(0.5, 0.5, value_text, ha='center', va='center', fontsize=inset_font, 
-                      fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=4)
-
-            # Do not draw the label inside the gauge inset; labels are placed on the main axes
+            inset.text(0.5, 0.68, value_text, ha='center', va='center', fontsize=inset_font, 
+                      fontweight='bold', color=color, zorder=4, fontname='DejaVu Sans')
+            
+            # Label text below the gauge
+            if label_text:
+                inset.text(0.5, 0.1, label_text, ha='center', va='center', fontsize=9, 
+                          color=colors.get('text_secondary', '#666666'), zorder=4, fontname='DejaVu Sans')
 
         # Confidence gauge (left)
         confidence = match_data.get('report_accuracy_probability', 0.65) * 100
@@ -1352,8 +1357,41 @@ class SingleMatchGenerator:
         # Most likely outcome highlight - elegant badge
         likely = max([(home_win, 'home'), (draw, 'draw'), (away_win, 'away')], key=lambda x: x[0])[1]
         likely_text = "Most Likely: Home Win" if likely == 'home' else "Most Likely: Draw" if likely == 'draw' else "Most Likely: Away Win"
-        colors.get('likely_home', '#3498db') if likely == 'home' else colors.get('likely_draw', '#636e72') if likely == 'draw' else colors.get('likely_away', '#e74c3c')
-        ax.text(5, 12.2, likely_text, ha='center', va='center', fontsize=15, fontweight='bold', color='black', bbox={'facecolor': colors.get('section_bg', '#f5f7fa'), 'edgecolor': 'black', 'boxstyle': 'round,pad=0.25', 'alpha': 0.13}, zorder=4, fontname='DejaVu Sans')
+        likely_color = colors.get('likely_home', league_theme['primary']) if likely == 'home' else colors.get('likely_draw', '#7F8C8D') if likely == 'draw' else colors.get('likely_away', league_theme['accent'])
+        ax.text(5, 12.2, likely_text, ha='center', va='center', fontsize=15, fontweight='bold', color=likely_color, 
+               bbox={'facecolor': colors.get('section_bg', '#F8F9FA'), 'edgecolor': likely_color, 'boxstyle': 'round,pad=0.25', 'alpha': 0.3, 'linewidth': 1.5}, 
+               zorder=4, fontname='DejaVu Sans')
+        
+        # PHASE 2: Probability confidence band visualization
+        # Show confidence ranges for each outcome
+        confidence_band_y = 11.85
+        band_height = 0.15
+        band_colors = [colors.get('likely_home', league_theme['primary']),  
+                      colors.get('likely_draw', '#7F8C8D'),
+                      colors.get('likely_away', league_theme['accent'])]
+        band_probs = [home_win, draw, away_win]
+        
+        # Draw stacked confidence bands showing probability ranges
+        for i in range(3):
+            # Base band (full width = 100%)
+            band_x = 0.8 + (i * 3.0)  # 3 bands across width
+            band_width = 2.8
+            
+            # Background band showing full 0-100%
+            bg_band = Rectangle((band_x, confidence_band_y), band_width, band_height, 
+                              facecolor='#E8E8E8', edgecolor='#D0D0D0', linewidth=0.8, zorder=2)
+            ax.add_patch(bg_band)
+            
+            # Colored portion showing actual probability
+            actual_width = (band_probs[i] / 100.0) * band_width
+            prob_band = Rectangle((band_x, confidence_band_y), actual_width, band_height, 
+                                facecolor=band_colors[i], edgecolor=band_colors[i], linewidth=1.0, alpha=0.8, zorder=3)
+            ax.add_patch(prob_band)
+            
+            # Probability percentage inside the band
+            ax.text(band_x + actual_width / 2, confidence_band_y + band_height / 2, 
+                   f"{int(round(band_probs[i]))}%", ha='center', va='center', fontsize=10, 
+                   fontweight='bold', color='white', zorder=4, fontname='DejaVu Sans')
 
         # =================================================================
         # TEAM PERFORMANCE SECTION - Visual gauges
@@ -1417,6 +1455,45 @@ class SingleMatchGenerator:
 
         ax.text(5, 9.0, form_advantage, ha='center', va='center', fontsize=13, 
                fontweight='bold', color=advantage_color, zorder=3, fontname='DejaVu Sans')
+
+        # PHASE 2: Mini team performance cards
+        # Home team card
+        home_card_x = 1.2
+        home_card_y = 8.0
+        home_card_w = 2.4
+        home_card_h = 0.7
+        
+        home_card_bg = FancyBboxPatch((home_card_x - home_card_w/2, home_card_y - home_card_h/2), home_card_w, home_card_h,
+                                      boxstyle="round,pad=0.05", facecolor='white', 
+                                      edgecolor=colors.get('likely_home', league_theme['primary']), linewidth=1.5, alpha=0.95, zorder=2)
+        ax.add_patch(home_card_bg)
+        
+        # Home team card content
+        home_strength = home_form.get('strength_rating', 50)
+        home_matches = home_form.get('matches', 0)
+        ax.text(home_card_x - 1.0, home_card_y + 0.18, f"Form: {int(home_form_score)}%", ha='left', va='center', 
+               fontsize=9, fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=3, fontname='DejaVu Sans')
+        ax.text(home_card_x - 1.0, home_card_y - 0.18, f"Strength: {int(home_strength)}%", ha='left', va='center', 
+               fontsize=8, color=colors.get('text_secondary', '#666666'), zorder=3, fontname='DejaVu Sans')
+        
+        # Away team card
+        away_card_x = 8.8
+        away_card_y = 8.0
+        away_card_w = 2.4
+        away_card_h = 0.7
+        
+        away_card_bg = FancyBboxPatch((away_card_x - away_card_w/2, away_card_y - away_card_h/2), away_card_w, away_card_h,
+                                      boxstyle="round,pad=0.05", facecolor='white', 
+                                      edgecolor=colors.get('likely_away', league_theme['accent']), linewidth=1.5, alpha=0.95, zorder=2)
+        ax.add_patch(away_card_bg)
+        
+        # Away team card content
+        away_strength = away_form.get('strength_rating', 50)
+        away_matches = away_form.get('matches', 0)
+        ax.text(away_card_x + 1.0, away_card_y + 0.18, f"Form: {int(away_form_score)}%", ha='right', va='center', 
+               fontsize=9, fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=3, fontname='DejaVu Sans')
+        ax.text(away_card_x + 1.0, away_card_y - 0.18, f"Strength: {int(away_strength)}%", ha='right', va='center', 
+               fontsize=8, color=colors.get('text_secondary', '#666666'), zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
         # GOAL PREDICTIONS - Professional visual section
