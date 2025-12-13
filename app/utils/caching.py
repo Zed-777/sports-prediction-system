@@ -7,7 +7,7 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class CacheManager:
     """Simple disk-based cache manager"""
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: dict[str, Any]):
         self.enabled = config.get('enabled', True)
         self.ttl_seconds = config.get('ttl_seconds', 3600)
         self.store_type = config.get('store', 'disk')
@@ -24,7 +24,7 @@ class CacheManager:
         self.cache_dir = Path('data/cache')
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
-    async def get(self, key: str) -> Optional[Any]:
+    async def get(self, key: str) -> Any | None:
         """Get item from cache"""
         if not self.enabled:
             return None
@@ -42,7 +42,7 @@ class CacheManager:
                 return None
 
             # Load cached data
-            with open(cache_file, 'r', encoding='utf-8') as f:
+            with open(cache_file, encoding='utf-8') as f:
                 data = json.load(f)
 
             logger.debug(f"Cache hit for key: {key}")

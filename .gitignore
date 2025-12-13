@@ -297,3 +297,4 @@ yarn-error.log*
 # custom_data/
 # experiments/
 # archive/
+scripts/backup/**

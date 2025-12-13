@@ -1,6 +1,4 @@
-import json
 import os
-import types
 
 import generate_fast_reports
 
@@ -30,7 +28,6 @@ def test_generate_dryrun(monkeypatch, tmp_path):
     fake_payload = {'matches': matches}
 
     # Monkeypatch requests.get used by the generator
-    import requests
 
     def fake_get(*args, **kwargs):
         return FakeResponse(fake_payload)
@@ -70,7 +67,6 @@ def test_generate_dryrun(monkeypatch, tmp_path):
 
     # Call generator method
     # Using a small temp reports dir to avoid polluting repo
-    cwd = os.getcwd()
     try:
         os.environ['REPORTS_DIR'] = str(tmp_path)
         # Ensure the method exists and runs without raising

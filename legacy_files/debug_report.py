@@ -10,7 +10,7 @@ json_path = "reports/leagues/bundesliga/matches/1.-FC-Union-Berlin_vs_Borussia-M
 
 if os.path.exists(json_path):
     print("✅ JSON file exists")
-    with open(json_path, 'r', encoding='utf-8') as f:
+    with open(json_path, encoding='utf-8') as f:
         match_data = json.load(f)
     print(f"✅ JSON contains {len(match_data)} fields")
     print(f"   Expected Score: {match_data.get('expected_final_score')}")

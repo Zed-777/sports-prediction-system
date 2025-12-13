@@ -174,7 +174,7 @@ class UltimatePredictionSystem:
                     try:
                         if not getattr(self.ml_enhancer, 'models_trained', False):
                             self.ml_enhancer.train_ensemble_models([])
-                            setattr(self.ml_enhancer, 'models_trained', True)
+                            self.ml_enhancer.models_trained = True
                     except AttributeError:
                         self.ml_enhancer.train_ensemble_models([])
 
@@ -477,7 +477,7 @@ class UltimatePredictionSystem:
         state_file = Path("data/system_state.json")
         if state_file.exists():
             try:
-                with open(state_file, 'r') as f:
+                with open(state_file) as f:
                     state = json.load(f)
                     # Load any saved state here
                     self.logger.info("✅ System state loaded")

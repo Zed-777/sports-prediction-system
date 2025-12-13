@@ -5,9 +5,9 @@ Phase 3: Expected Threat (xT), pressing intensity, formation analysis, and marke
 """
 
 import json
+from typing import Any, Dict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
 
 import numpy as np
 
@@ -26,7 +26,7 @@ class FormationAnalysis:
     home_formation: str
     away_formation: str
     tactical_advantage: str  # home, away, neutral
-    key_battles: List[str]
+    key_battles: list[str]
     predicted_style: str
     control_probability: float
 
@@ -52,7 +52,7 @@ class MarketSentiment:
 class AdvancedAnalyticsEngine:
     """Sophisticated analytics with xT modeling, tactical analysis, and market data"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.analytics_dir = Path("data/analytics")
         self.analytics_dir.mkdir(parents=True, exist_ok=True)
 
@@ -100,7 +100,7 @@ class AdvancedAnalyticsEngine:
 
         return xt_grid
 
-    def _initialize_formation_database(self) -> Dict:
+    def _initialize_formation_database(self) -> Dict[str, Dict[str, Any]]:
         """Initialize formation tactical database"""
 
         return {
@@ -146,7 +146,7 @@ class AdvancedAnalyticsEngine:
             }
         }
 
-    def _initialize_pressing_profiles(self) -> Dict:
+    def _initialize_pressing_profiles(self) -> Dict[str, PressingMetrics]:
         """Initialize team pressing intensity profiles"""
 
         return {
@@ -193,7 +193,7 @@ class AdvancedAnalyticsEngine:
 
     def calculate_expected_threat_advantage(self, home_team: str, away_team: str,
                                          formation_home: str = '4-3-3',
-                                         formation_away: str = '4-2-3-1') -> Dict:
+                                         formation_away: str = '4-2-3-1') -> Dict[str, Any]:
         """Calculate Expected Threat (xT) advantage between teams"""
 
         # Get team pressing profiles
@@ -236,7 +236,7 @@ class AdvancedAnalyticsEngine:
         formation_data = self.formation_database.get(formation, self.formation_database['4-3-3'])
 
         # Base xT generation from formation
-        base_xt = formation_data['attacking_width'] * 0.4 + formation_data['counter_attack_speed'] * 0.3
+        base_xt = float(formation_data.get('attacking_width', 0.0)) * 0.4 + float(formation_data.get('counter_attack_speed', 0.0)) * 0.3
 
         # Team quality multiplier (simplified)
         quality_multipliers = {
@@ -263,7 +263,7 @@ class AdvancedAnalyticsEngine:
         formation_data = self.formation_database.get(formation, self.formation_database['4-3-3'])
 
         # Base xT prevention from formation
-        base_prevention = formation_data['defensive_solidity'] * 0.5 + formation_data['midfield_control'] * 0.3
+        base_prevention = float(formation_data.get('defensive_solidity', 0.0)) * 0.5 + float(formation_data.get('midfield_control', 0.0)) * 0.3
 
         # Pressing contribution
         pressing_contribution = (
@@ -277,7 +277,7 @@ class AdvancedAnalyticsEngine:
         return min(1.0, total_prevention)
 
     def _predict_possession_control(self, home_pressing: PressingMetrics, away_pressing: PressingMetrics,
-                                  home_formation: str, away_formation: str) -> Dict:
+                                  home_formation: str, away_formation: str) -> Dict[str, Any]:
         """Predict possession split between teams"""
 
         home_form_data = self.formation_database.get(home_formation, self.formation_database['4-3-3'])
@@ -433,7 +433,7 @@ class AdvancedAnalyticsEngine:
 
     def generate_comprehensive_analytics(self, home_team: str, away_team: str,
                                        home_formation: str = '4-3-3',
-                                       away_formation: str = '4-2-3-1') -> Dict:
+                                       away_formation: str = '4-2-3-1') -> Dict[str, Any]:
         """Generate complete advanced analytics package"""
 
         print(f"🔬 Generating advanced analytics for {home_team} vs {away_team}...")
@@ -486,7 +486,7 @@ class AdvancedAnalyticsEngine:
         }
 
     def _analyze_pressing_battle(self, home_pressing: PressingMetrics,
-                               away_pressing: PressingMetrics) -> Dict:
+                               away_pressing: PressingMetrics) -> Dict[str, Any]:
         """Analyze the pressing battle between teams"""
 
         # Pressing vs press resistance matchup
@@ -508,8 +508,8 @@ class AdvancedAnalyticsEngine:
             'transition_advantage': 'home' if home_transition_prob > away_transition_prob else 'away'
         }
 
-    def _generate_tactical_insights(self, xt_analysis: Dict, formation_analysis: FormationAnalysis,
-                                  pressing_battle: Dict, market_analysis: MarketSentiment) -> List[str]:
+    def _generate_tactical_insights(self, xt_analysis: Dict[str, Any], formation_analysis: FormationAnalysis,
+                                  pressing_battle: Dict[str, Any], market_analysis: MarketSentiment) -> list[str]:
         """Generate key tactical insights from all analyses"""
 
         insights = []
@@ -547,7 +547,7 @@ class AdvancedAnalyticsEngine:
 
         return insights
 
-    def _calculate_analytics_confidence(self, xt_analysis: Dict, formation_analysis: FormationAnalysis,
+    def _calculate_analytics_confidence(self, xt_analysis: Dict[str, Any], formation_analysis: FormationAnalysis,
                                       market_analysis: MarketSentiment) -> float:
         """Calculate confidence in analytics predictions"""
 
@@ -573,7 +573,7 @@ class AdvancedAnalyticsEngine:
 
         return round(sum(confidence_factors), 3)
 
-def main():
+def main() -> None:
     """Test advanced analytics engine"""
     engine = AdvancedAnalyticsEngine()
 

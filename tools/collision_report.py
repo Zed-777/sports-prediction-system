@@ -1,7 +1,9 @@
-import sys
-from PIL import Image
 import json
 import os
+import sys
+
+from PIL import Image
+
 
 # identical mapping used by debug_overlay
 def data_to_pixels_rect(x, y, w, h, img_w, img_h):

@@ -31,7 +31,9 @@ class SingleMatchGenerator:
     """Generate report for just 1 match"""
 
     def __init__(self):
-        self.api_key = '17405508d1774f46a368390ff07f8a31'
+        self.api_key = os.getenv('FOOTBALL_DATA_API_KEY', '')
+        if not self.api_key:
+            raise ValueError("FOOTBALL_DATA_API_KEY environment variable not set")
         self.headers = {'X-Auth-Token': self.api_key}
         self.setup_directory_structure()
 

@@ -5,7 +5,7 @@ Data connectors for external APIs
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union, Sequence, cast
 
 import aiohttp
 import pandas as pd
@@ -18,13 +18,13 @@ class BaseDataConnector(ABC):
 
     def __init__(self, config: Dict[str, Any]):
         self.config = config
-        self.session: Optional[aiohttp.ClientSession] = None
+        self.session: aiohttp.ClientSession | None = None
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> 'BaseDataConnector':
         self.session = aiohttp.ClientSession()
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self, exc_type: Optional[type], exc_val: Optional[BaseException], exc_tb: Optional[Any]) -> None:
         if self.session:
             await self.session.close()
 
@@ -36,25 +36,25 @@ class BaseDataConnector(ABC):
 
     @abstractmethod
     async def fetch_from_primary_api(self, league: str, data_type: str, season: Optional[str] = None,
-                                    start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict]]:
+                                    start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict[str, Any]]]:
         pass
 
     @abstractmethod
     async def fetch_from_secondary_api(self, league: str, data_type: str, season: Optional[str] = None,
-                                      start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict]]:
+                                      start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict[str, Any]]]:
         pass
 
     @abstractmethod
     async def fetch_from_backup_csv(self, league: str, data_type: str, season: Optional[str] = None,
-                                   start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict]]:
+                                   start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict[str, Any]]]:
         pass
 
 
 class FootballDataConnector(BaseDataConnector):
     """Connector for football data sources"""
 
-    async def fetch_from_primary_api(self, league: str, data_type: str, season: Optional[str] = None,
-                                    start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict]]:
+    async def fetch_from_primary_api(self, league: str, data_type: str, season: str | None = None,
+                                    start_date: str | None = None, end_date: str | None = None) -> Optional[List[Dict[str, Any]]]:
         """Fetch from Football-Data.org API"""
         try:
             logger.info(f"Fetching {data_type} data for {league} from Football-Data.org API")
@@ -90,7 +90,7 @@ class FootballDataConnector(BaseDataConnector):
             if data_type == 'matches':
                 # Get fixtures/matches
                 url = f"{base_url}/competitions/{competition_code}/matches"
-                params = {}
+                params: Dict[str, Union[str, int]] = {}
                 if start_date:
                     params['dateFrom'] = start_date
                 if end_date:
@@ -98,8 +98,8 @@ class FootballDataConnector(BaseDataConnector):
 
                 async with session.get(url, headers=headers, params=params) as response:
                     if response.status == 200:
-                        data = await response.json()
-                        matches = []
+                        data = cast(Dict[str, Any], await response.json())
+                        matches: List[Dict[str, Any]] = []
                         for match in data.get('matches', []):
                             matches.append({
                                 "id": match['id'],
@@ -122,8 +122,8 @@ class FootballDataConnector(BaseDataConnector):
                 url = f"{base_url}/competitions/{competition_code}/teams"
                 async with session.get(url, headers=headers) as response:
                     if response.status == 200:
-                        data = await response.json()
-                        teams = []
+                        data = cast(Dict[str, Any], await response.json())
+                        teams: List[Dict[str, Any]] = []
                         for team in data.get('teams', []):
                             teams.append({
                                 "id": team['id'],
@@ -144,8 +144,8 @@ class FootballDataConnector(BaseDataConnector):
                 url = f"{base_url}/competitions/{competition_code}/standings"
                 async with session.get(url, headers=headers) as response:
                     if response.status == 200:
-                        data = await response.json()
-                        standings = []
+                        data = cast(Dict[str, Any], await response.json())
+                        standings: List[Dict[str, Any]] = []
                         for table in data.get('standings', []):
                             if table['type'] == 'TOTAL':
                                 for team in table['table']:
@@ -174,8 +174,8 @@ class FootballDataConnector(BaseDataConnector):
             logger.error(f"Error fetching from Football-Data.org API: {e}")
             return None
 
-    async def fetch_from_secondary_api(self, league: str, data_type: str, season: Optional[str] = None,
-                                      start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict]]:
+    async def fetch_from_secondary_api(self, league: str, data_type: str, season: str | None = None,
+                                      start_date: str | None = None, end_date: str | None = None) -> Optional[List[Dict[str, Any]]]:
         """Fetch from API-Football"""
         try:
             logger.info(f"Fetching {data_type} data for {league} from API-Football")
@@ -215,7 +215,8 @@ class FootballDataConnector(BaseDataConnector):
             if data_type == 'matches':
                 # Get fixtures
                 url = f"{base_url}/fixtures"
-                params = {'league': league_id, 'season': current_season}
+                params: Dict[str, Union[str, int]] = {'league': league_id, 'season': current_season}
+                params = {k: str(v) for k, v in params.items()}
                 if start_date:
                     params['from'] = start_date
                 if end_date:
@@ -223,8 +224,8 @@ class FootballDataConnector(BaseDataConnector):
 
                 async with session.get(url, headers=headers, params=params) as response:
                     if response.status == 200:
-                        data = await response.json()
-                        matches = []
+                        data = cast(Dict[str, Any], await response.json())
+                        matches: List[Dict[str, Any]] = []
                         for fixture in data.get('response', []):
                             matches.append({
                                 "id": fixture['fixture']['id'],
@@ -246,10 +247,11 @@ class FootballDataConnector(BaseDataConnector):
                 # Get teams in league
                 url = f"{base_url}/teams"
                 params = {'league': league_id, 'season': current_season}
+                params = {k: str(v) for k, v in params.items()}
                 async with session.get(url, headers=headers, params=params) as response:
                     if response.status == 200:
-                        data = await response.json()
-                        teams = []
+                        data = cast(Dict[str, Any], await response.json())
+                        teams: List[Dict[str, Any]] = []
                         for team_data in data.get('response', []):
                             team = team_data['team']
                             teams.append({
@@ -269,10 +271,11 @@ class FootballDataConnector(BaseDataConnector):
                 # Get league standings
                 url = f"{base_url}/standings"
                 params = {'league': league_id, 'season': current_season}
+                params = {k: str(v) for k, v in params.items()}
                 async with session.get(url, headers=headers, params=params) as response:
                     if response.status == 200:
-                        data = await response.json()
-                        standings = []
+                        data = cast(Dict[str, Any], await response.json())
+                        standings: List[Dict[str, Any]] = []
                         for league_data in data.get('response', []):
                             for standing in league_data['league']['standings'][0]:
                                 standings.append({
@@ -300,8 +303,8 @@ class FootballDataConnector(BaseDataConnector):
             logger.error(f"Error fetching from API-Football: {e}")
             return None
 
-    async def fetch_from_backup_csv(self, league: str, data_type: str, season: Optional[str] = None,
-                                   start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict]]:
+    async def fetch_from_backup_csv(self, league: str, data_type: str, season: str | None = None,
+                                   start_date: str | None = None, end_date: str | None = None) -> Optional[List[Dict[str, Any]]]:
         """Fetch from CSV backup"""
         try:
             logger.info(f"Fetching {data_type} data for {league} from CSV backup")
@@ -334,7 +337,7 @@ class FootballDataConnector(BaseDataConnector):
                 if end_date and 'date' in df.columns:
                     df = df[df['date'] <= end_date]
 
-                return df.to_dict('records')
+                return cast(List[Dict[str, Any]], df.to_dict('records'))
 
             except FileNotFoundError:
                 logger.error(f"CSV backup file not found: {csv_path}")
@@ -351,8 +354,8 @@ class FootballDataConnector(BaseDataConnector):
 class BasketballDataConnector(BaseDataConnector):
     """Connector for basketball data sources"""
 
-    async def fetch_from_primary_api(self, league: str, data_type: str, season: Optional[str] = None,
-                                    start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict]]:
+    async def fetch_from_primary_api(self, league: str, data_type: str, season: str | None = None,
+                                    start_date: str | None = None, end_date: str | None = None) -> Optional[List[Dict[str, Any]]]:
         """Fetch from Ball Don't Lie API"""
         try:
             logger.info(f"Fetching {data_type} data for {league} from Ball Don't Lie API")
@@ -364,7 +367,7 @@ class BasketballDataConnector(BaseDataConnector):
             if data_type == 'matches':
                 # Get games
                 url = f"{base_url}/games"
-                params = {}
+                params: dict[str, Union[str, int]] = {}
                 if start_date:
                     params['start_date'] = start_date
                 if end_date:
@@ -418,8 +421,8 @@ class BasketballDataConnector(BaseDataConnector):
             logger.error(f"Error fetching from Ball Don't Lie API: {e}")
             return None
 
-    async def fetch_from_secondary_api(self, league: str, data_type: str, season: Optional[str] = None,
-                                      start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict]]:
+    async def fetch_from_secondary_api(self, league: str, data_type: str, season: str | None = None,
+                                      start_date: str | None = None, end_date: str | None = None) -> Optional[List[Dict[str, Any]]]:
         """Fetch from SportsData.io NBA API"""
         try:
             logger.info(f"Fetching {data_type} data for {league} from SportsData.io")
@@ -431,7 +434,7 @@ class BasketballDataConnector(BaseDataConnector):
                 return None
 
             base_url = "https://api.sportsdata.io/v3/nba/scores/json"
-            params = {'key': api_key}
+            params: dict[str, str] = {'key': str(api_key)}
             session = await self._get_session()
 
             if data_type == 'matches':
@@ -469,8 +472,8 @@ class BasketballDataConnector(BaseDataConnector):
             logger.error(f"Error fetching from SportsData.io: {e}")
             return None
 
-    async def fetch_from_backup_csv(self, league: str, data_type: str, season: Optional[str] = None,
-                                   start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[List[Dict]]:
+    async def fetch_from_backup_csv(self, league: str, data_type: str, season: str | None = None,
+                                   start_date: str | None = None, end_date: str | None = None) -> Optional[List[Dict[str, Any]]]:
         """Fetch from CSV backup for basketball"""
         try:
             logger.info(f"Fetching {data_type} data for {league} from CSV backup")
@@ -495,7 +498,7 @@ class BasketballDataConnector(BaseDataConnector):
                 if end_date and 'date' in df.columns:
                     df = df[df['date'] <= end_date]
 
-                return df.to_dict('records')
+                return cast(List[Dict[str, Any]], df.to_dict('records'))
 
             except FileNotFoundError:
                 logger.error(f"CSV backup file not found: {csv_path}")

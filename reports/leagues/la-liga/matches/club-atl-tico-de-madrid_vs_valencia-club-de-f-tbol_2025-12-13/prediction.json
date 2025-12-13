@@ -1,0 +1,430 @@
+{
+  "match_id": 544362,
+  "home_team": "Club Atlético de Madrid",
+  "away_team": "Valencia Club de Fútbol",
+  "date": "2025-12-13",
+  "time": "13:00",
+  "league": "La Liga",
+  "confidence": 0.75,
+  "report_accuracy_probability": 0.75,
+  "home_win_probability": 88.29,
+  "draw_probability": 5.86,
+  "away_win_probability": 5.86,
+  "expected_home_goals": 2.9,
+  "expected_away_goals": 1.1,
+  "processing_time": 304.848,
+  "recommendation": "Home Win Likely",
+  "confidence_level": "75.0% (Good)",
+  "expected_final_score": "2-1",
+  "score_probability": 8.5,
+  "score_probability_normalized": 5.0,
+  "top3_combined_probability": 24.2,
+  "top3_probability_normalized": 10.0,
+  "alternative_scores": [
+    "3-1",
+    "2-0",
+    "3-0"
+  ],
+  "score_probabilities": [
+    [
+      "2-1",
+      8.497918290044938
+    ],
+    [
+      "3-1",
+      8.158001558443141
+    ],
+    [
+      "2-0",
+      7.520281672606141
+    ],
+    [
+      "3-0",
+      7.2194704057018955
+    ],
+    [
+      "1-1",
+      5.901332145864541
+    ]
+  ],
+  "score_probabilities_normalized": [
+    [
+      "2-1",
+      5.0
+    ],
+    [
+      "3-1",
+      5.0
+    ],
+    [
+      "2-0",
+      5.0
+    ],
+    [
+      "3-0",
+      5.0
+    ],
+    [
+      "1-1",
+      4.0
+    ]
+  ],
+  "over_2_5_goals_probability": 76.3,
+  "both_teams_score_probability": 63.9,
+  "head_to_head_analysis": {
+    "total_meetings": 0,
+    "wins_when_home": 0,
+    "wins_when_away": 0,
+    "draws": 0,
+    "matches_as_home": 0,
+    "matches_as_away": 0,
+    "avg_goals_for_when_home": 0.0,
+    "avg_goals_against_when_home": 0.0,
+    "avg_goals_for_when_away": 0.0,
+    "avg_goals_against_when_away": 0.0,
+    "recent_form": [],
+    "home_advantage_vs_opponent": 0.0,
+    "away_record_vs_opponent": 0.0,
+    "data_sources": [
+      "Domestic PD",
+      "European competitions"
+    ],
+    "total_sources": 2
+  },
+  "home_performance_analysis": {
+    "home": {
+      "matches": 8,
+      "win_rate": 100.0,
+      "draw_rate": 0.0,
+      "loss_rate": 0.0,
+      "avg_goals_for": 3.0,
+      "avg_goals_against": 0.75,
+      "goal_difference": 2.25,
+      "weighted_form_score": 99.99999999999997,
+      "momentum_direction": "Stable",
+      "form_pressure": "Low",
+      "current_streak": "4 game winning streak",
+      "recent_3_performance": 100.0,
+      "form_quality": "Very Good"
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 42.857142857142854,
+      "draw_rate": 14.285714285714285,
+      "loss_rate": 42.857142857142854,
+      "avg_goals_for": 1.1428571428571428,
+      "avg_goals_against": 1.5714285714285714,
+      "goal_difference": -0.42857142857142855,
+      "weighted_form_score": 54.54545454545454,
+      "momentum_direction": "Stable",
+      "form_pressure": "Medium",
+      "current_streak": "1 game win streak",
+      "recent_3_performance": 0.0,
+      "form_quality": "Below Average"
+    },
+    "home_advantage": 57.142857142857146,
+    "scoring_difference": 1.8571428571428572
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 8,
+      "win_rate": 37.5,
+      "draw_rate": 37.5,
+      "loss_rate": 25.0,
+      "avg_goals_for": 1.25,
+      "avg_goals_against": 0.875,
+      "goal_difference": 0.375,
+      "weighted_form_score": 63.63636363636363,
+      "momentum_direction": "Stable",
+      "form_pressure": "Low",
+      "current_streak": "1 game draw",
+      "recent_3_performance": 0.0,
+      "form_quality": "Good"
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 0.0,
+      "draw_rate": 42.857142857142854,
+      "loss_rate": 57.14285714285714,
+      "avg_goals_for": 0.5714285714285714,
+      "avg_goals_against": 2.2857142857142856,
+      "goal_difference": -1.7142857142857142,
+      "weighted_form_score": 18.181818181818183,
+      "momentum_direction": "Stable",
+      "form_pressure": "High",
+      "current_streak": "1 game draw",
+      "recent_3_performance": 0.0,
+      "form_quality": "Very Poor"
+    },
+    "home_advantage": 37.5,
+    "scoring_difference": 0.6785714285714286
+  },
+  "goal_timing_prediction": {
+    "first_half_goal_probability": 55.0,
+    "second_half_goal_probability": 45.0,
+    "late_goal_likelihood": 20.0,
+    "early_goal_likelihood": 25.0,
+    "home_attack_style": "aggressive",
+    "away_attack_style": "defensive"
+  },
+  "intelligence_summary": {
+    "h2h_meetings": 0,
+    "home_advantage_pct": 57.142857142857146,
+    "recent_h2h_form": "No recent meetings",
+    "key_factors": [
+      "No head-to-head history between teams",
+      "Excellent home form (100% win rate)",
+      "Weak away form (0% win rate)",
+      "High-scoring home team (3.0 goals/game)",
+      "Leaky away defense (2.3 conceded/game)",
+      "Strong home goal difference (+2.2)"
+    ]
+  },
+  "player_availability": {
+    "home_team": {
+      "data_available": true,
+      "team_name": "Club Atlético de Madrid",
+      "squad_size": 34,
+      "positions": {
+        "goalkeepers": 4,
+        "defenders": 0,
+        "midfielders": 0,
+        "attackers": 0
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org",
+        "Thin defensive options",
+        "Limited midfield depth",
+        "Few attacking options"
+      ],
+      "key_players_available": "All 34 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org",
+        "Thin defensive options",
+        "Limited midfield depth",
+        "Few attacking options"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "data_available": true,
+      "team_name": "Valencia CF",
+      "squad_size": 32,
+      "positions": {
+        "goalkeepers": 3,
+        "defenders": 0,
+        "midfielders": 0,
+        "attackers": 0
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org",
+        "Thin defensive options",
+        "Limited midfield depth",
+        "Few attacking options"
+      ],
+      "key_players_available": "All 32 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org",
+        "Thin defensive options",
+        "Limited midfield depth",
+        "Few attacking options"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": 9.6,
+      "humidity": 71.8,
+      "wind_speed": 6.3,
+      "precipitation": 0.0,
+      "conditions": "clear",
+      "visibility": 18.0,
+      "pressure": 1013,
+      "source": "open-meteo"
+    },
+    "impact_assessment": {
+      "goal_modifier": 1.0,
+      "playing_style_effect": "normal",
+      "weather_advantage": "none",
+      "tactical_adjustments": [],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MILD",
+      "conditions_summary": "Good playing conditions (9.6°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected",
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 1.0,
+    "style_impact": "normal",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "data_available": false,
+    "name": "Referee TBD",
+    "home_bias_pct": null,
+    "cards_per_game": null,
+    "penalties_per_game": null,
+    "strict_level": "unknown",
+    "experience_level": "unknown",
+    "warning": "Referee data unavailable - appointment not announced"
+  },
+  "team_news": {
+    "home_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Club Atlético de Madrid"
+    },
+    "away_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Valencia CF"
+    }
+  },
+  "data_quality_score": 50.0,
+  "reliability_metrics": {
+    "score": 55.4,
+    "level": "Low",
+    "indicator": "🔴 Low",
+    "recommendation": "Low reliability – informational use only.",
+    "confidence_intervals": {
+      "home": [
+        94.6,
+        100.0
+      ],
+      "draw": [
+        0.0,
+        5.4
+      ],
+      "away": [
+        0.0,
+        5.4
+      ],
+      "margin_percent": 5.36
+    },
+    "spread_points": 100.0,
+    "factors": {
+      "model_confidence": 55.9,
+      "data_quality": 50.0,
+      "probability_clarity": 100.0,
+      "h2h_depth": 0.0,
+      "data_freshness": 55.0
+    },
+    "primary_driver": "probability_clarity",
+    "notes": [
+      "Head-to-head sample is limited – emphasis on recent form.",
+      "Data quality below optimal threshold; confidence capped."
+    ]
+  },
+  "calibration_details": {
+    "applied": true,
+    "shrink_factor": 0.176,
+    "probabilities": {
+      "home_win_prob": 88.29,
+      "draw_prob": 5.86,
+      "away_win_prob": 5.86
+    },
+    "original_probabilities": {
+      "home_win_prob": 100.0,
+      "draw_prob": 0.0,
+      "away_win_prob": 0.0
+    },
+    "pre_calibration_probabilities": {
+      "home_win_prob": 1.0,
+      "draw_prob": 0.0,
+      "away_win_prob": 0.0
+    },
+    "neutral_anchor": 33.3,
+    "notes": [
+      "Applied 17.6% shrink toward neutral due to reliability score 55.4."
+    ],
+    "accuracy_adjustment": {
+      "original_probability": 0.617,
+      "calibrated_probability": 0.592
+    }
+  },
+  "confidence_intervals": {
+    "home": [
+      94.6,
+      100.0
+    ],
+    "draw": [
+      0.0,
+      5.4
+    ],
+    "away": [
+      0.0,
+      5.4
+    ],
+    "margin_percent": 5.36
+  },
+  "data_provenance": {
+    "weather": true,
+    "player_availability": true,
+    "referee": true,
+    "team_news": true,
+    "h2h": false,
+    "odds": false,
+    "flashscore": true,
+    "home_injury_clamped": false,
+    "away_injury_clamped": false,
+    "weather_clamped": false
+  },
+  "phase2_lite_enhanced": true,
+  "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+  "optimization_metadata": {
+    "match_context": "competitive",
+    "model_agreement_factor": 0.0,
+    "optimization_applied": true,
+    "ensemble_weights": {
+      "legacy": 0.18749999999999997,
+      "ml": 0.25,
+      "neural": 0.3125,
+      "monte_carlo": 0.25
+    }
+  },
+  "generated_at": "2025-12-13T11:28:12.580700",
+  "data_provenance_details": {
+    "home_injury_clamped": false,
+    "home_injury_clamped_fields": {},
+    "away_injury_clamped": false,
+    "away_injury_clamped_fields": {},
+    "weather_clamped": false,
+    "weather_clamped_fields": {}
+  }
+}

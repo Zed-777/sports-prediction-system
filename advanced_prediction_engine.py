@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 import requests
+from app.utils.http import safe_request_get
 
 
 class AdvancedPredictionEngine:
@@ -219,8 +220,7 @@ class AdvancedPredictionEngine:
 
         # Get matches from API
         url = "https://api.football-data.org/v4/competitions/PD/matches"
-        response = requests.get(url, headers=self.headers, timeout=10)
-
+        response = safe_request_get(url, headers=self.headers, timeout=10, logger=None)
         if response.status_code != 200:
             print(f"❌ API Error: {response.status_code}")
             return []

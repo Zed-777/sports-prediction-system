@@ -6,6 +6,7 @@ Safest: does not modify any existing code.
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Rectangle, Wedge
 
+
 def save_image_v2(match_data, path):
     # --- HEADER & SCORE ---
     fig, ax = plt.subplots(figsize=(14, 18))
@@ -90,7 +91,7 @@ def save_image_v2(match_data, path):
         recommendation = reliability_metrics.get('recommendation')
         if recommendation:
             ax.text(5, 15.0, recommendation, ha='center', va='center', fontsize=10, color='#2c3e50')
-    for i, (prob, label, color, x_pos) in enumerate(zip(probs, labels, colors, x_positions)):
+    for prob, label, color, x_pos in zip(probs, labels, colors, x_positions, strict=True):
         gauge_radius = 0.6
         gauge_center_y = 14.5
         gauge_bg = Circle((x_pos, gauge_center_y), gauge_radius, fill=False, linewidth=6, color='#ecf0f1')

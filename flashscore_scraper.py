@@ -14,11 +14,12 @@ import time
 import zlib
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, cast, Dict, List, Optional, Union
+from app.types import JSONDict, JSONList
 from urllib.parse import urljoin
 
 try:
-    import brotli  # type: ignore
+    import brotli
 except Exception:  # pragma: no cover - optional dependency may be missing in some environments
     brotli = None
 
@@ -38,15 +39,15 @@ class FlashScoreMatch:
     date: str
     time: str
     status: str
-    home_score: Optional[int]
-    away_score: Optional[int]
-    home_odds: Optional[float]
-    draw_odds: Optional[float]
-    away_odds: Optional[float]
-    statistics: Dict[str, Any]
-    events: List[Dict[str, Any]]
-    lineups: Dict[str, Any]
-    head_to_head: List[Dict[str, Any]]
+    home_score: int | None
+    away_score: int | None
+    home_odds: float | None
+    draw_odds: float | None
+    away_odds: float | None
+    statistics: dict[str, Any]
+    events: list[dict[str, Any]]
+    lineups: dict[str, Any]
+    head_to_head: list[dict[str, Any]]
 
 class FlashScoreScraper:
     """Advanced FlashScore.es scraper with sophisticated data extraction"""
@@ -69,11 +70,11 @@ class FlashScoreScraper:
         self.setup_cache()
 
         # Rate limiting
-        self.last_request = 0
+        self.last_request: float = 0.0
         self.min_delay = 2.0  # seconds between requests
         self.max_delay = 5.0
 
-    def setup_session(self):
+    def setup_session(self) -> None:
         """Configure session with realistic headers"""
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -85,14 +86,14 @@ class FlashScoreScraper:
             'Upgrade-Insecure-Requests': '1',
         })
 
-    def setup_cache(self):
+    def setup_cache(self) -> None:
         """Create cache directory structure"""
         os.makedirs(self.cache_dir, exist_ok=True)
         os.makedirs(f"{self.cache_dir}/matches", exist_ok=True)
         os.makedirs(f"{self.cache_dir}/leagues", exist_ok=True)
         os.makedirs(f"{self.cache_dir}/statistics", exist_ok=True)
 
-    def _rate_limit(self):
+    def _rate_limit(self) -> None:
         """Implement intelligent rate limiting"""
         elapsed = time.time() - self.last_request
         if elapsed < self.min_delay:
@@ -106,7 +107,7 @@ class FlashScoreScraper:
         url_hash = hash(url) % 10000  # Simple hash for cache key
         return f"{self.cache_dir}/{prefix}{url_hash}.json"
 
-    def _load_cache(self, cache_path: str) -> Optional[Dict]:
+    def _load_cache(self, cache_path: str) -> Optional[JSONDict]:
         """Load data from cache if available and fresh"""
         if not os.path.exists(cache_path):
             return None
@@ -116,13 +117,13 @@ class FlashScoreScraper:
             return None
 
         try:
-            with open(cache_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            with open(cache_path, encoding='utf-8') as f:
+                return cast(JSONDict, json.load(f))
         except Exception as e:
             logger.warning(f"Failed to load cache {cache_path}: {e}")
             return None
 
-    def _save_cache(self, cache_path: str, data: Dict):
+    def _save_cache(self, cache_path: str, data: JSONDict) -> None:
         """Save data to cache"""
         try:
             with open(cache_path, 'w', encoding='utf-8') as f:
@@ -130,7 +131,7 @@ class FlashScoreScraper:
         except Exception as e:
             logger.warning(f"Failed to save cache {cache_path}: {e}")
 
-    def get_page(self, url: str, use_cache: bool = True) -> Optional[str]:
+    def get_page(self, url: str, use_cache: bool = True) -> str | None:
         """Fetch page with caching, compression handling, and error handling"""
         cache_path = self._get_cache_path(url, "page_")
 
@@ -172,9 +173,9 @@ class FlashScoreScraper:
             logger.error(f"Failed to fetch {url}: {e}")
             return None
 
-    def parse_match_list(self, html: Union[str, bytes], league: str) -> List[Dict[str, Any]]:
+    def parse_match_list(self, html: str | bytes, league: str) -> JSONList:
         """Parse match list from league page HTML using FlashScore's encoding"""
-        matches = []
+        matches: JSONList = []
         # Accept either str or bytes (some cached fixtures may be stored as bytes encoded
         # into a JSON string using latin-1). Normalize into an HTML string.
         try:
@@ -190,8 +191,7 @@ class FlashScoreScraper:
             except Exception:
                 html = ''
 
-        # Make types explicit for static checkers
-        html = cast(str, html)
+        # Make types explicit for static checkers (already coerced above)
 
         # Prefer to inspect <script> tags that contain the compact encoded payloads.
         script_contents = re.findall(r'<script[^>]*>(.*?)</script>', html, re.DOTALL | re.IGNORECASE)
@@ -212,7 +212,7 @@ class FlashScoreScraper:
         for text in candidate_texts:
             blocks = self._extract_encoded_blocks(text)
             total_found += len(blocks)
-            for i, fields in enumerate(blocks):
+            for _i, fields in enumerate(blocks):
                 try:
                     match_data = self._build_match_from_fields(fields, league)
                     if match_data:
@@ -236,7 +236,7 @@ class FlashScoreScraper:
         logger.info(f"Returning {len(unique_matches)} unique matches")
         return unique_matches[:50]  # Increased limit
 
-    def parse_script_matches(self, script_content: str, league: str) -> List[Dict[str, Any]]:
+    def parse_script_matches(self, script_content: str, league: str) -> JSONList:
         """Parse match data from FlashScore's encoded script content"""
         matches = []
 
@@ -272,15 +272,15 @@ class FlashScoreScraper:
             for part in parts:
                 if 'AE' in part and 'AF' in part:
                     # parse key/value pairs
-                    fields = {}
+                    part_fields: Dict[str, str] = {}
                     for km, vm in re.findall(r'([A-Z]{1,3})÷([^¬]*)', part):
-                        fields[km] = vm
+                        part_fields[km] = vm
                     # check for leading ÷matchid
                     m = re.match(r'÷([^¬]+)', part)
                     if m and 'AA' not in fields:
                         fields['AA'] = m.group(1)
-                    if fields:
-                        fields_list.append(fields)
+                    if part_fields:
+                        fields_list.append(part_fields)
             return fields_list
 
         # Build slices from anchor to next anchor
@@ -305,7 +305,7 @@ class FlashScoreScraper:
 
         return fields_list
 
-    def _normalize_input(self, data: Union[str, bytes]) -> str:
+    def _normalize_input(self, data: Any) -> str:
         """Normalize input that may be str or bytes and attempt common decompression strategies.
 
         This method will try the following, in order:
@@ -314,6 +314,8 @@ class FlashScoreScraper:
         - As a fallback, return a latin-1 decoded string.
         """
         # Normalize incoming types. Accept bytes, bytearray, memoryview, or str.
+        s: str = ''
+        b: bytes = b''
         if isinstance(data, (bytes, bytearray, memoryview)):
             b = bytes(data)
         elif isinstance(data, str):
@@ -332,23 +334,23 @@ class FlashScoreScraper:
         # GZIP magic: 1f 8b
         try:
             if len(b) >= 2 and b[0] == 0x1f and b[1] == 0x8b:
-                out = gzip.decompress(b)
-                return out.decode('utf-8', errors='replace')
+                out_gzip: bytes = gzip.decompress(b)
+                return out_gzip.decode('utf-8', errors='replace')
         except Exception:
             pass
 
         # Brotli: try if module is present
         try:
             if brotli is not None:
-                out = brotli.decompress(b)
-                return out.decode('utf-8', errors='replace')
+                out_brotli: bytes = cast(bytes, brotli.decompress(b))
+                return out_brotli.decode('utf-8', errors='replace')
         except Exception:
             pass
 
         # zlib (might not have gzip headers)
         try:
-            out = zlib.decompress(b)
-            return out.decode('utf-8', errors='replace')
+            out_zlib: bytes = zlib.decompress(b)
+            return out_zlib.decode('utf-8', errors='replace')
         except Exception:
             pass
 
@@ -358,7 +360,7 @@ class FlashScoreScraper:
         except Exception:
             return b.decode('latin-1', errors='ignore')
 
-    def _build_match_from_fields(self, fields: Dict[str, str], league: str) -> Optional[Dict[str, Any]]:
+    def _build_match_from_fields(self, fields: Dict[str, str], league: str) -> Optional[JSONDict]:
         """Construct a normalized match dict from extracted fields dict."""
         try:
             match_id = fields.get('AA') or fields.get('A') or ''
@@ -431,7 +433,7 @@ class FlashScoreScraper:
             logger.warning(f"Error building match from fields: {e}")
             return None
 
-    def parse_match_block_encoded(self, block: str, league: str) -> Optional[Dict[str, Any]]:
+    def parse_match_block_encoded(self, block: str, league: str) -> Optional[JSONDict]:
         """Parse individual match data from encoded block"""
         try:
             # Extract key fields from the encoded data
@@ -501,7 +503,7 @@ class FlashScoreScraper:
             logger.warning(f"Failed to parse encoded match block: {e}")
             return None
 
-    def parse_match_block(self, match_id: str, league: str) -> Optional[Dict[str, Any]]:
+    def parse_match_block(self, match_id: str, league: str) -> Optional[JSONDict]:
         """Parse individual match data"""
         # In a real implementation, this would parse the HTML
         # For now, return mock data structure
@@ -523,7 +525,7 @@ class FlashScoreScraper:
             }
         }
 
-    def get_match_details(self, match_id: str) -> Optional[FlashScoreMatch]:
+    def get_match_details(self, match_id: str) -> FlashScoreMatch | None:
         """Get detailed match information"""
         url = f"{self.BASE_URL}/match/{match_id}/"
         html = self.get_page(url)
@@ -553,7 +555,7 @@ class FlashScoreScraper:
             head_to_head=[]
         )
 
-    def get_league_matches(self, league_key: str, days_ahead: int = 7) -> List[Dict[str, Any]]:
+    def get_league_matches(self, league_key: str, days_ahead: int = 7) -> JSONList:
         """Get upcoming matches for a league"""
         if league_key not in self.LEAGUE_URLS:
             logger.error(f"Unknown league: {league_key}")
@@ -585,7 +587,7 @@ class FlashScoreScraper:
         logger.info(f"Found {len(upcoming_matches)} upcoming matches within {days_ahead} days")
         return upcoming_matches
 
-    def get_team_statistics(self, team_name: str, league: str) -> Dict[str, Any]:
+    def get_team_statistics(self, team_name: str, league: str) -> JSONDict:
         """Get comprehensive team statistics"""
         # This would scrape team statistics pages
         return {
@@ -608,7 +610,7 @@ class FlashScoreScraper:
             }
         }
 
-    def get_head_to_head(self, team1: str, team2: str) -> List[Dict[str, Any]]:
+    def get_head_to_head(self, team1: str, team2: str) -> JSONList:
         """Get head-to-head statistics between two teams"""
         # This would scrape H2H pages
         return [
@@ -630,7 +632,7 @@ class FlashScoreScraper:
             }
         ]
 
-    def get_live_scores(self) -> List[Dict[str, Any]]:
+    def get_live_scores(self) -> JSONList:
         """Get current live match scores"""
         # Try the obvious live matches endpoint, but fall back to root and futbol landing if missing
         endpoints = [f"{self.BASE_URL}/matches/", f"{self.BASE_URL}/", f"{self.BASE_URL}/futbol/"]
@@ -643,7 +645,7 @@ class FlashScoreScraper:
         if not html:
             return []
 
-        live_matches: List[Dict[str, Any]] = []
+        live_matches: list[dict[str, Any]] = []
 
         # Inspect script tags first for encoded payloads
         script_contents = re.findall(r'<script[^>]*>(.*?)</script>', html, re.DOTALL | re.IGNORECASE)
@@ -669,13 +671,17 @@ class FlashScoreScraper:
                 for k in ('S1', 'SCORE_H', 'SH'):
                     if k in fields:
                         try:
-                            home_score = int(fields.get(k))
+                            val = fields.get(k)
+                            if val is not None:
+                                home_score = int(val)
                         except Exception:
                             home_score = None
                 for k in ('S2', 'SCORE_A', 'SA'):
                     if k in fields:
                         try:
-                            away_score = int(fields.get(k))
+                            val = fields.get(k)
+                            if val is not None:
+                                away_score = int(val)
                         except Exception:
                             away_score = None
 
@@ -735,25 +741,26 @@ class AdvancedDataIntegrator:
 
     def __init__(self, flashscore_scraper: FlashScoreScraper):
         self.scraper = flashscore_scraper
-        self.enhanced_data = {}
+        self.enhanced_data: JSONDict = {}
 
-    def enhance_match_data(self, match: Dict, league: str) -> Dict:
+    def enhance_match_data(self, match: JSONDict, league: str) -> JSONDict:
         """Enhance match data with FlashScore information"""
         try:
             # Get team names defensively (support both API formats)
-            def extract_team_name(m, keys=('home_team', 'homeTeam')):
+            def extract_team_name(m: JSONDict, keys: tuple[str, str] = ('home_team', 'homeTeam')) -> str:
                 for k in keys:
                     if k in m:
                         val = m.get(k)
                         if isinstance(val, dict):
                             # common nested format: {'id': .., 'name': 'Team Name'}
-                            return val.get('name') or val.get('team_name') or ''
+                            return str(val.get('name') or val.get('team_name') or '')
                         elif isinstance(val, str):
-                            return val
+                            return str(val)
                 # Fallbacks
                 if isinstance(m.get('home'), dict):
-                    return m['home'].get('name', '')
-                return m.get('name', '') if isinstance(m.get('name', ''), str) else ''
+                    return str(m['home'].get('name', '') or '')
+                name_val = m.get('name', '')
+                return str(name_val) if isinstance(name_val, str) else ''
 
             home_name = extract_team_name(match, keys=('home_team', 'homeTeam'))
             away_name = extract_team_name(match, keys=('away_team', 'awayTeam'))
@@ -789,7 +796,7 @@ class AdvancedDataIntegrator:
             logger.error(f"Failed to enhance match data: {e}")
             return match
 
-    def calculate_advanced_metrics(self, home_stats: Dict, away_stats: Dict, h2h: List) -> Dict:
+    def calculate_advanced_metrics(self, home_stats: JSONDict, away_stats: JSONDict, h2h: JSONList) -> JSONDict:
         """Calculate sophisticated performance metrics"""
         # Form analysis
         home_form_score = self.calculate_form_score(home_stats.get('recent_form', []))
@@ -828,7 +835,7 @@ class AdvancedDataIntegrator:
 
         return (points / 15) * 100  # Max 15 points for 5 wins
 
-    def calculate_h2h_advantage(self, h2h_matches: List, team1: str, team2: str) -> float:
+    def calculate_h2h_advantage(self, h2h_matches: JSONList, team1: str, team2: str) -> float:
         """Calculate head-to-head advantage score"""
         if not h2h_matches:
             return 0.0
@@ -859,17 +866,22 @@ class AdvancedDataIntegrator:
         team1_win_rate = (team1_wins + draws * 0.5) / total_matches
         return (team1_win_rate - 0.5) * 200  # Convert to +/- percentage
 
-    def calculate_home_advantage(self, home_stats: Dict, away_stats: Dict) -> float:
+    def calculate_home_advantage(self, home_stats: JSONDict, away_stats: JSONDict) -> float:
         """Calculate home advantage differential"""
         home_home_stats = home_stats.get('home_away_stats', {}).get('home', {})
         away_away_stats = away_stats.get('home_away_stats', {}).get('away', {})
 
-        home_win_rate = home_home_stats.get('wins', 0) / max(1, sum(home_home_stats.values()))
-        away_win_rate = away_away_stats.get('wins', 0) / max(1, sum(away_away_stats.values()))
+        home_wins = float(home_home_stats.get('wins', 0))
+        away_wins = float(away_away_stats.get('wins', 0))
+        home_matches = float(home_home_stats.get('matches', 1)) if home_home_stats.get('matches') is not None else 1.0
+        away_matches = float(away_away_stats.get('matches', 1)) if away_away_stats.get('matches') is not None else 1.0
+
+        home_win_rate = home_wins / max(1.0, home_matches)
+        away_win_rate = away_wins / max(1.0, away_matches)
 
         return (home_win_rate - away_win_rate) * 100
 
-    def analyze_scoring_patterns(self, home_stats: Dict, away_stats: Dict) -> Dict:
+    def analyze_scoring_patterns(self, home_stats: JSONDict, away_stats: JSONDict) -> JSONDict:
         """Analyze goal scoring patterns"""
         return {
             'home_goals_per_game': home_stats.get('season_stats', {}).get('goals_for', 0) / max(1, home_stats.get('season_stats', {}).get('matches_played', 1)),
@@ -878,7 +890,7 @@ class AdvancedDataIntegrator:
             'away_conceded_per_game': away_stats.get('season_stats', {}).get('goals_against', 0) / max(1, away_stats.get('season_stats', {}).get('goals_against', 1)),
         }
 
-    def calculate_momentum(self, home_stats: Dict, away_stats: Dict) -> str:
+    def calculate_momentum(self, home_stats: JSONDict, away_stats: JSONDict) -> str:
         """Calculate team momentum"""
         home_form = self.calculate_form_score(home_stats.get('recent_form', []))
         away_form = self.calculate_form_score(away_stats.get('recent_form', []))
@@ -890,7 +902,7 @@ class AdvancedDataIntegrator:
         else:
             return "Balanced momentum"
 
-    def calculate_defensive_strength(self, home_stats: Dict, away_stats: Dict) -> Dict:
+    def calculate_defensive_strength(self, home_stats: JSONDict, away_stats: JSONDict) -> JSONDict:
         """Calculate defensive strength metrics"""
         home_clean_sheets = home_stats.get('season_stats', {}).get('clean_sheets', 0)
         away_clean_sheets = away_stats.get('season_stats', {}).get('clean_sheets', 0)
@@ -904,7 +916,7 @@ class AdvancedDataIntegrator:
             'defensive_differential': ((home_clean_sheets / home_matches) - (away_clean_sheets / away_matches)) * 100
         }
 
-    def get_odds_data(self, match: Dict) -> Dict:
+    def get_odds_data(self, match: JSONDict) -> JSONDict:
         """Get betting odds data"""
         # This would integrate with odds APIs
         return {
@@ -915,7 +927,7 @@ class AdvancedDataIntegrator:
             'bookmaker': None
         }
 
-    def calculate_data_quality(self, match: Dict, home_stats: Dict, away_stats: Dict, h2h: List) -> int:
+    def calculate_data_quality(self, match: JSONDict, home_stats: JSONDict, away_stats: JSONDict, h2h: JSONList) -> int:
         """Calculate overall data quality score"""
         score = 50  # Base score
 

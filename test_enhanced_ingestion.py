@@ -4,6 +4,7 @@ Test script for Enhanced Data Ingestion System
 Demonstrates multi-source data collection with FlashScore integration
 """
 
+import importlib.util
 import os
 import sys
 from pathlib import Path
@@ -16,12 +17,10 @@ def test_enhanced_ingestion():
     print("=== Enhanced Data Ingestion System Test ===\n")
 
     # Check if FlashScore scraper is available
-    try:
-        from flashscore_scraper import FlashScoreScraper
-        flashscore_available = True
+    flashscore_available = importlib.util.find_spec('flashscore_scraper') is not None
+    if flashscore_available:
         print("✓ FlashScore integration available")
-    except ImportError:
-        flashscore_available = False
+    else:
         print("⚠ FlashScore integration not available")
 
     # Import the enhanced ingestion system

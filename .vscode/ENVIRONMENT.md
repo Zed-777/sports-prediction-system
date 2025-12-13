@@ -1,4 +1,4 @@
-﻿# Workspace environment helper
+# Workspace environment helper
 
 This workspace is configured to use the local virtual environment at `.venv-Z1.1`.
 

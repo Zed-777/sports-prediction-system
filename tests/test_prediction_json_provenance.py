@@ -52,6 +52,7 @@ def test_prediction_json_contains_provenance(monkeypatch):
     }
 
     class DummyResponse:
+        status_code = 200
         def raise_for_status(self):
             return None
 
@@ -76,7 +77,7 @@ def test_prediction_json_contains_provenance(monkeypatch):
     json_path = os.path.join(folder, 'prediction.json')
     assert os.path.exists(json_path), f"prediction.json not found at {json_path}"
 
-    with open(json_path, 'r', encoding='utf-8') as f:
+    with open(json_path, encoding='utf-8') as f:
         payload = json.load(f)
 
     # Ensure detailed provenance and promoted flags exist

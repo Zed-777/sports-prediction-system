@@ -1,7 +1,7 @@
 """Reliability and calibration utilities for prediction outputs."""
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 
 def _clamp(value: float, lower: float, upper: float) -> float:
@@ -12,7 +12,7 @@ def _clamp(value: float, lower: float, upper: float) -> float:
 class ReliabilityCalculator:
     """Compute reliability metrics and probability calibrations."""
 
-    _LEVELS: List[Tuple[float, str, str, str]] = [
+    _LEVELS: list[tuple[float, str, str, str]] = [
         (88.0, "Very High", "Highly reliable prediction – ideal for confident usage.", "🟢"),
         (78.0, "High", "Reliable outlook with minor variance expected.", "🟢"),
         (68.0, "Moderate", "Balanced reliability – treat as guidance with monitoring.", "🟡"),
@@ -20,7 +20,7 @@ class ReliabilityCalculator:
         (0.0, "Low", "Low reliability – informational use only.", "🔴"),
     ]
 
-    def calculate(self, prediction: Dict[str, Any], enhanced_data: Dict[str, Any]) -> Dict[str, Any]:
+    def calculate(self, prediction: dict[str, Any], enhanced_data: dict[str, Any]) -> dict[str, Any]:
         """Return reliability metrics by blending confidence, data quality, and coverage."""
 
         confidence = float(prediction.get("confidence", 0.6))
@@ -49,7 +49,7 @@ class ReliabilityCalculator:
             "data_freshness": round(freshness_component * 100.0, 1),
         }
 
-        notes: List[str] = []
+        notes: list[str] = []
         if clarity_component < 0.35:
             notes.append("Probability distribution fairly flat; monitor for volatility.")
         if h2h_component < 0.25:
@@ -71,9 +71,9 @@ class ReliabilityCalculator:
 
     def apply_calibration(
         self,
-        prediction: Dict[str, Any],
-        reliability_metrics: Dict[str, Any],
-    ) -> Dict[str, Any]:
+        prediction: dict[str, Any],
+        reliability_metrics: dict[str, Any],
+    ) -> dict[str, Any]:
         """Blend probabilities toward neutral anchor when reliability is limited."""
 
         probabilities = self._extract_probabilities(prediction)
@@ -88,7 +88,10 @@ class ReliabilityCalculator:
         shrink_factor = _clamp((80.0 - reliability_score) / 140.0, 0.0, 0.45)
         neutral_anchor = 1.0 / 3.0
 
-        calibrated = []
+        # Preserve the exact pre-calibration fractions for transparency
+        pre_calibration = [float(p) for p in probabilities]
+
+        calibrated: list[float] = []
         if shrink_factor > 0.0:
             for prob in probabilities:
                 calibrated.append((1.0 - shrink_factor) * prob + shrink_factor * neutral_anchor)
@@ -100,11 +103,12 @@ class ReliabilityCalculator:
             calibrated = [neutral_anchor, neutral_anchor, neutral_anchor]
             total = sum(calibrated)
         calibrated = [value / total for value in calibrated]
-
         calibrated_percents = [round(value * 100.0, 2) for value in calibrated]
         original_percents = [round(value * 100.0, 2) for value in probabilities]
 
-        notes: List[str] = []
+        pre_calibration_floats = [round(v, 6) for v in pre_calibration]
+
+        notes: list[str] = []
         if shrink_factor > 0.0:
             notes.append(
                 f"Applied {shrink_factor * 100.0:.1f}% shrink toward neutral due to reliability score {reliability_score:.1f}."
@@ -123,11 +127,16 @@ class ReliabilityCalculator:
                 "draw_prob": original_percents[1],
                 "away_win_prob": original_percents[2],
             },
+            "pre_calibration_probabilities": {
+                "home_win_prob": pre_calibration_floats[0],
+                "draw_prob": pre_calibration_floats[1],
+                "away_win_prob": pre_calibration_floats[2],
+            },
             "neutral_anchor": round(neutral_anchor * 100.0, 1),
             "notes": notes,
         }
 
-    def fallback_metrics(self) -> Dict[str, Any]:
+    def fallback_metrics(self) -> dict[str, Any]:
         """Return conservative metrics for fallback scenarios."""
 
         return {
@@ -143,7 +152,7 @@ class ReliabilityCalculator:
         }
 
     @staticmethod
-    def _extract_probabilities(prediction: Dict[str, Any]) -> List[float]:
+    def _extract_probabilities(prediction: dict[str, Any]) -> list[float]:
         """Return probabilities as unit fractions (0-1)."""
 
         keys = [
@@ -152,7 +161,7 @@ class ReliabilityCalculator:
             ("away_win_prob", "away_win_probability"),
         ]
 
-        fractions: List[float] = []
+        fractions: list[float] = []
         for primary, secondary in keys:
             value = prediction.get(primary)
             if value is None:
@@ -163,7 +172,7 @@ class ReliabilityCalculator:
         return fractions
 
     @staticmethod
-    def _calculate_probability_clarity(probabilities: List[float]) -> float:
+    def _calculate_probability_clarity(probabilities: list[float]) -> float:
         if len(probabilities) != 3:
             return 0.35
         ordered = sorted(probabilities, reverse=True)
@@ -171,20 +180,20 @@ class ReliabilityCalculator:
         return _clamp(spread / 0.25, 0.0, 1.0)
 
     @staticmethod
-    def _probability_spread(probabilities: List[float]) -> float:
+    def _probability_spread(probabilities: list[float]) -> float:
         if len(probabilities) != 3:
             return 0.0
         return max(probabilities) - min(probabilities)
 
     @staticmethod
-    def _calculate_h2h_component(prediction: Dict[str, Any]) -> float:
+    def _calculate_h2h_component(prediction: dict[str, Any]) -> float:
         h2h = prediction.get("head_to_head_analysis", {}) or {}
         meetings = float(h2h.get("total_meetings", 0.0))
         return _clamp(meetings / 10.0, 0.0, 1.0)
 
     @staticmethod
     def _calculate_freshness_component(
-        enhanced_data: Dict[str, Any], prediction: Dict[str, Any]
+        enhanced_data: dict[str, Any], prediction: dict[str, Any]
     ) -> float:
         processing_time = enhanced_data.get("processing_time") or prediction.get("processing_time")
         if processing_time is None:
@@ -201,7 +210,7 @@ class ReliabilityCalculator:
             return 0.7
         return 0.55
 
-    def _resolve_level(self, score: float) -> Tuple[str, str, str]:
+    def _resolve_level(self, score: float) -> tuple[str, str, str]:
         for threshold, level, description, emoji in self._LEVELS:
             if score >= threshold:
                 return level, description, emoji
@@ -209,14 +218,14 @@ class ReliabilityCalculator:
 
     @staticmethod
     def _build_confidence_intervals(
-        probabilities: List[float], score: float
-    ) -> Dict[str, Union[Tuple[float, float], float]]:
+        probabilities: list[float], score: float
+    ) -> dict[str, tuple[float, float] | float]:
         if len(probabilities) != 3:
             return {}
         margin = _clamp((100.0 - score) / 100.0 * 0.12, 0.025, 0.14)
         labels = ["home", "draw", "away"]
-        intervals: Dict[str, Union[Tuple[float, float], float]] = {}
-        for label, prob in zip(labels, probabilities):
+        intervals: dict[str, tuple[float, float] | float] = {}
+        for label, prob in zip(labels, probabilities, strict=True):
             lower = _clamp(prob - margin, 0.0, 1.0)
             upper = _clamp(prob + margin, 0.0, 1.0)
             intervals[label] = (round(lower * 100.0, 1), round(upper * 100.0, 1))
@@ -224,7 +233,7 @@ class ReliabilityCalculator:
         return intervals
 
     @staticmethod
-    def _primary_driver(factors: Dict[str, float]) -> Optional[str]:
+    def _primary_driver(factors: dict[str, float]) -> str | None:
         if not factors:
             return None
         best_key, _ = max(factors.items(), key=lambda item: item[1])

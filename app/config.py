@@ -5,7 +5,7 @@ Configuration management for the Sports Prediction System
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, cast
 
 import yaml
 
@@ -15,11 +15,11 @@ class DatabaseConfig:
     """Database configuration settings"""
     type: str = "sqlite"
     path: str = "data/sports_predictions.db"
-    host: Optional[str] = None
-    port: Optional[int] = None
-    username: Optional[str] = None
-    password: Optional[str] = None
-    database: Optional[str] = None
+    host: str | None = None
+    port: int | None = None
+    username: str | None = None
+    password: str | None = None
+    database: str | None = None
 
 
 @dataclass
@@ -28,14 +28,14 @@ class APIConfig:
     primary_api: str
     secondary_api: str
     backup_csv: str
-    features: list = field(default_factory=list)
+    features: list[str] = field(default_factory=list)
 
 
 @dataclass
 class ModelConfig:
     """Model configuration settings"""
     enabled: bool = True
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    parameters: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -46,29 +46,29 @@ class Config:
     timezone_storage: str = "UTC"
     timezone_display: str = "Europe/Madrid"
     language_default: str = "en"
-    language_supported: list = field(default_factory=lambda: ["en", "es"])
+    language_supported: list[str] = field(default_factory=lambda: ["en", "es"])
 
     # Nested configurations
     database: DatabaseConfig = field(default_factory=DatabaseConfig)
-    data_sources: Dict[str, Any] = field(default_factory=dict)
-    models: Dict[str, ModelConfig] = field(default_factory=dict)
-    features: Dict[str, Any] = field(default_factory=dict)
-    monitoring: Dict[str, Any] = field(default_factory=dict)
-    reporting: Dict[str, Any] = field(default_factory=dict)
-    logging: Dict[str, Any] = field(default_factory=dict)
-    data_engineering: Dict[str, Any] = field(default_factory=dict)
+    data_sources: dict[str, Any] = field(default_factory=dict)
+    models: dict[str, ModelConfig] = field(default_factory=dict)
+    features: dict[str, Any] = field(default_factory=dict)
+    monitoring: dict[str, Any] = field(default_factory=dict)
+    reporting: dict[str, Any] = field(default_factory=dict)
+    logging: dict[str, Any] = field(default_factory=dict)
+    data_engineering: dict[str, Any] = field(default_factory=dict)
 
 
-def load_config(config_path: str = "config/settings.yaml") -> Dict[str, Any]:
+def load_config(config_path: str = "config/settings.yaml") -> dict[str, Any]:
     """
     Load configuration from YAML file with environment variable substitution.
-    
+
     Args:
         config_path: Path to the configuration file
-        
+
     Returns:
         Dictionary containing the configuration
-        
+
     Raises:
         FileNotFoundError: If configuration file doesn't exist
         yaml.YAMLError: If YAML parsing fails
@@ -79,31 +79,34 @@ def load_config(config_path: str = "config/settings.yaml") -> Dict[str, Any]:
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
 
     try:
-        with open(config_file, 'r', encoding='utf-8') as f:
+        with open(config_file, encoding='utf-8') as f:
             config_data = yaml.safe_load(f)
+        # Ensure the loaded YAML is a dict for typing purposes
+        config_data = cast(dict[str, Any], config_data or {})
 
         # Substitute environment variables
-        config_data = _substitute_env_vars(config_data)
+        config_data = cast(dict[str, Any], _substitute_env_vars(config_data))
 
         # Load environment-specific overrides
         env = config_data.get('environment', 'dev')
         env_config_path = config_file.parent / f"settings.{env}.yaml"
 
         if env_config_path.exists():
-            with open(env_config_path, 'r', encoding='utf-8') as f:
+            with open(env_config_path, encoding='utf-8') as f:
                 env_config = yaml.safe_load(f)
+            env_config = cast(dict[str, Any], env_config or {})
             config_data = _merge_configs(config_data, env_config)
 
         return config_data
 
     except yaml.YAMLError as e:
-        raise yaml.YAMLError(f"Error parsing configuration file: {e}")
+        raise yaml.YAMLError(f"Error parsing configuration file: {e}") from e
 
 
 def _substitute_env_vars(data: Any) -> Any:
     """
     Recursively substitute environment variables in configuration data.
-    
+
     Variables should be in format: ${ENV_VAR_NAME:default_value}
     """
     if isinstance(data, dict):
@@ -124,7 +127,7 @@ def _substitute_env_vars(data: Any) -> Any:
         return data
 
 
-def _merge_configs(base_config: Dict[str, Any], override_config: Dict[str, Any]) -> Dict[str, Any]:
+def _merge_configs(base_config: dict[str, Any], override_config: dict[str, Any]) -> dict[str, Any]:
     """
     Merge two configuration dictionaries, with override_config taking precedence.
     """
@@ -139,10 +142,10 @@ def _merge_configs(base_config: Dict[str, Any], override_config: Dict[str, Any])
     return merged
 
 
-def get_env_config() -> Dict[str, str]:
+def get_env_config() -> dict[str, str]:
     """
     Get environment-specific configuration from environment variables.
-    
+
     Returns:
         Dictionary of environment variables relevant to the application
     """
@@ -156,7 +159,6 @@ def get_env_config() -> Dict[str, str]:
     api_keys = [
         'FOOTBALL_DATA_API_KEY',
         'API_FOOTBALL_KEY',
-        'BALLDONTLIE_API_KEY',
         'SPORTSDATA_API_KEY',
         'SPORTSRADAR_API_KEY',
         'OPENMETEO_API_KEY',
@@ -185,16 +187,16 @@ def get_env_config() -> Dict[str, str]:
     return env_vars
 
 
-def validate_config(config: Dict[str, Any]) -> bool:
+def validate_config(config: dict[str, Any]) -> bool:
     """
     Validate configuration settings.
-    
+
     Args:
         config: Configuration dictionary
-        
+
     Returns:
         True if configuration is valid
-        
+
     Raises:
         ValueError: If configuration is invalid
     """
@@ -219,10 +221,10 @@ def validate_config(config: Dict[str, Any]) -> bool:
     return True
 
 
-def create_default_config() -> Dict[str, Any]:
+def create_default_config() -> dict[str, Any]:
     """
     Create a default configuration dictionary.
-    
+
     Returns:
         Default configuration dictionary
     """
@@ -263,7 +265,7 @@ def create_default_config() -> Dict[str, Any]:
 
 
 # Ensure configuration directory exists
-def ensure_config_directory():
+def ensure_config_directory() -> None:
     """Ensure the configuration directory exists"""
     config_dir = Path("config")
     config_dir.mkdir(exist_ok=True)

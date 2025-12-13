@@ -1,2 +1,1 @@
-﻿import generate_fast_reports
-print('import ok')
+﻿print('import ok')

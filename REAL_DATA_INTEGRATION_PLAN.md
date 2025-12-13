@@ -2,7 +2,8 @@
 
 ## 🚑 Player Injury Data Sources
 
-### Primary Options:
+### Injury Data Options
+
 1. **Transfermarkt API** (Community/Unofficial)
    - URL: `https://transfermarkt-api.vercel.app/`
    - Data: Real-time injuries, suspensions, player availability
@@ -20,7 +21,8 @@
    - Data: Official injury reports, player status
    - Cost: Paid (high accuracy)
 
-### Implementation Strategy:
+### Injury Data Implementation
+
 ```python
 # New file: app/data/injury_connector.py
 class InjuryDataConnector:
@@ -31,7 +33,8 @@ class InjuryDataConnector:
 
 ## 👨‍⚽ Referee Data Sources
 
-### Primary Options:
+### Referee Data Options
+
 1. **Football-Data.org Extended**
    - Already has referee assignments for upcoming matches
    - Need to extract referee names from fixture data
@@ -46,7 +49,8 @@ class InjuryDataConnector:
    - Data: Referee appointments, statistics
    - Cost: Free but complex parsing
 
-### Implementation Strategy:
+### Implementation Strategy — Referee Data
+
 ```python
 # Enhanced: app/data/referee_connector.py
 class RefereeDataConnector:
@@ -57,7 +61,8 @@ class RefereeDataConnector:
 
 ## 📰 Team News Data Sources
 
-### Primary Options:
+### News Data Options
+
 1. **NewsAPI**
    - URL: `https://newsapi.org/`
    - Data: Team news, press conferences, lineup leaks
@@ -73,7 +78,8 @@ class RefereeDataConnector:
    - Data: Real-time lineup announcements
    - Cost: Free tier available
 
-### Implementation Strategy:
+### Implementation Strategy — Team News
+
 ```python
 # New file: app/data/news_connector.py
 class TeamNewsConnector:
@@ -84,7 +90,8 @@ class TeamNewsConnector:
 
 ## 🏃‍♂️ Lineup Prediction Sources
 
-### Primary Options:
+### Lineup Data Options
+
 1. **Predicted Lineups Websites**
    - URL: `https://www.footballlineups.com/`
    - Data: Crowd-sourced lineup predictions
@@ -100,7 +107,8 @@ class TeamNewsConnector:
    - Data: Player rotation patterns, form
    - Cost: Freemium models
 
-### Implementation Strategy:
+### Implementation Strategy — Lineup Prediction
+
 ```python
 # New file: app/data/lineup_predictor.py
 class LineupPredictor:

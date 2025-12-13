@@ -2,10 +2,18 @@
 
 ## ⚡ **Instant Setup (30 seconds)**
 
-### 1. **Install Dependencies**
+### 1. **Install Dependencies (idempotent)**
 
-```bash
-pip install -r requirements.txt
+Use the provided developer script so that your environment is created and dependencies are installed once (avoid frequent re-downloads):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\dev_setup.ps1
+```
+
+If you want to install large Phase2 dependencies that may take long or require build tools, add `-InstallPhase2`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\dev_setup.ps1 -InstallPhase2
 ```
 
 ### 2. **Generate Your First Enhanced Report**

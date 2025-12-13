@@ -19,6 +19,6 @@ if _spec and _spec.loader:
 
 # Re-export expected symbols (None if not available)
 try:
-    AIMLPredictor = getattr(_legacy, 'AIMLPredictor') if _legacy is not None else None
+    AIMLPredictor = _legacy.AIMLPredictor if _legacy is not None else None
 except Exception:
     AIMLPredictor = None

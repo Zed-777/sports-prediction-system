@@ -1,6 +1,8 @@
-from PIL import Image, ImageDraw, ImageFont
-import sys
 import os
+import sys
+
+from PIL import Image, ImageDraw, ImageFont
+
 
 # Maps data coordinates (x in [0,10], y in [0,20]) to pixel coords for the PNG
 def data_to_pixels(x, y, w, h, img_w, img_h):

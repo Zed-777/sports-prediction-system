@@ -6,19 +6,20 @@ import logging
 import os
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, cast
 
 import requests
+from app.utils.http import safe_request_get
 
 
 @dataclass
 class MarketOdds:
     """Container for normalized market odds information."""
 
-    home_price: Optional[float]
-    draw_price: Optional[float]
-    away_price: Optional[float]
-    probabilities: Dict[str, float]
+    home_price: float | None
+    draw_price: float | None
+    away_price: float | None
+    probabilities: dict[str, float]
     source: str
     fetched_at: float
     bookmaker_count: int
@@ -27,7 +28,7 @@ class MarketOdds:
 class OddsDataConnector:
     """Fetches and normalizes odds from The Odds API (or compatible endpoints)."""
 
-    def __init__(self, settings: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, settings: dict[str, Any] | None = None) -> None:
         settings = settings or {}
         self.base_url = settings.get("base_url", "https://api.the-odds-api.com/v4")
         self.default_sport = settings.get("default_sport", "soccer")
@@ -35,18 +36,18 @@ class OddsDataConnector:
         self.region = settings.get("region", "uk")
         self.env_key = settings.get("env_key", "ODDS_API_KEY")
         self.cache_ttl = settings.get("cache_ttl", 900)
-        self.sport_map: Dict[str, str] = settings.get("sport_map", {})
+        self.sport_map: dict[str, str] = settings.get("sport_map", {})
 
         self.logger = logging.getLogger("odds_connector")
-        self._cache: Dict[str, Dict[str, Any]] = {}
+        self._cache: dict[str, dict[str, Any]] = {}
 
     def get_match_odds(
         self,
         league_slug: str,
         home_team: str,
         away_team: str,
-        match_date: Optional[str] = None,
-    ) -> Optional[MarketOdds]:
+        match_date: str | None = None,
+    ) -> MarketOdds | None:
         """Return market odds for a given fixture if available. Handles caching and fallbacks."""
 
         api_key = os.getenv(self.env_key)
@@ -57,7 +58,7 @@ class OddsDataConnector:
         cache_key = self._build_cache_key(league_slug, home_team, away_team, match_date)
         cached = self._cache.get(cache_key)
         if cached and time.time() - cached["fetched_at"] <= self.cache_ttl:
-            return cached["payload"]
+            return cast(MarketOdds, cached["payload"])
 
         sport_key = self._resolve_sport_key(league_slug)
         url = f"{self.base_url}/sports/{sport_key}/odds"
@@ -69,7 +70,7 @@ class OddsDataConnector:
         }
 
         try:
-            response = requests.get(url, params=params, timeout=10)
+            response = safe_request_get(url, params=params, timeout=10, logger=self.logger)
             response.raise_for_status()
             data = response.json()
         except Exception as exc:  # requests raises multiple exception types
@@ -110,34 +111,42 @@ class OddsDataConnector:
 
     # Internal helpers -------------------------------------------------
 
-    def _build_cache_key(self, league: str, home: str, away: str, match_date: Optional[str]) -> str:
+    def _build_cache_key(self, league: str, home: str, away: str, match_date: str | None) -> str:
         date_part = match_date or "na"
         return f"{league.lower()}::{self._normalize_name(home)}::{self._normalize_name(away)}::{date_part}"
 
     def _resolve_sport_key(self, league_slug: str) -> str:
         slug = (league_slug or self.default_sport).lower()
-        return self.sport_map.get(slug, self.default_sport)
+        return cast(str, self.sport_map.get(slug, self.default_sport))
 
-    def _normalize_name(self, name: str) -> str:
-        return "".join(ch.lower() for ch in (name or "") if ch.isalnum())
+    def _normalize_name(self, name: Any) -> str:
+        s: str = str(name or "")
+        chars: list[str] = []
+        for ch in s:
+            if ch.isalnum():
+                chars.append(ch.lower())
+        result: str = "".join(chars)
+        return result
 
-    def _match_event(self, events: Any, home_norm: str, away_norm: str) -> Optional[Dict[str, Any]]:
+    def _match_event(self, events: Any, home_norm: str, away_norm: str) -> dict[str, Any] | None:
         if not isinstance(events, list):
             return None
         for event in events:
+            if not isinstance(event, dict):
+                continue
             event_home = self._normalize_name(event.get("home_team", ""))
             event_away = self._normalize_name(event.get("away_team", ""))
             if event_home == home_norm and event_away == away_norm:
-                return event
+                return cast(dict[str, Any], event)
         return None
 
-    def _extract_market(self, event: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _extract_market(self, event: dict[str, Any]) -> dict[str, Any] | None:
         bookmakers = event.get("bookmakers", [])
         if not bookmakers:
             return None
 
         bookmaker_count = 0
-        best_prices: Dict[str, float] = {}
+        best_prices: dict[str, float] = {}
         for bookmaker in bookmakers:
             try:
                 markets = bookmaker.get("markets", [])
@@ -175,8 +184,8 @@ class OddsDataConnector:
         best_prices["bookmaker_count"] = bookmaker_count
         return best_prices
 
-    def _compute_probabilities(self, prices: Dict[str, float]) -> Dict[str, float]:
-        implied: Dict[str, float] = {}
+    def _compute_probabilities(self, prices: dict[str, float]) -> dict[str, float]:
+        implied: dict[str, float] = {}
         for key in ("home", "draw", "away"):
             price = prices.get(key)
             if price and price > 1.0:
@@ -186,7 +195,7 @@ class OddsDataConnector:
 
         total = sum(implied.values())
         if total <= 0:
-            return {key: 0.0 for key in ("home", "draw", "away")}
+            return dict.fromkeys(("home", "draw", "away"), 0.0)
 
         return {key: value / total for key, value in implied.items()}
 

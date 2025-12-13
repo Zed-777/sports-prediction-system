@@ -9,7 +9,7 @@ import sys
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional, Dict, List
 
 
 class JSONFormatter(logging.Formatter):
@@ -17,7 +17,7 @@ class JSONFormatter(logging.Formatter):
     Custom JSON formatter for structured logging
     """
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         log_entry = {
             'timestamp': datetime.utcnow().isoformat(),
             'level': record.levelname,
@@ -39,10 +39,9 @@ class JSONFormatter(logging.Formatter):
         return json.dumps(log_entry)
 
 
-def setup_logging(level: str = 'INFO', config: Optional[Dict[str, Any]] = None):
-    """
-    Set up logging configuration for the application.
-    
+def setup_logging(level: str = 'INFO', config: Optional[Dict[str, Any]] = None) -> None:
+    """Set up logging configuration for the application.
+
     Args:
         level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
         config: Logging configuration dictionary
@@ -58,6 +57,7 @@ def setup_logging(level: str = 'INFO', config: Optional[Dict[str, Any]] = None):
     use_json = config.get('format', 'json') == 'json'
 
     # Create formatters
+    formatter: logging.Formatter
     if use_json:
         formatter = JSONFormatter()
     else:
@@ -66,7 +66,7 @@ def setup_logging(level: str = 'INFO', config: Optional[Dict[str, Any]] = None):
         )
 
     # Create handlers
-    handlers = []
+    handlers: List[logging.Handler] = []
 
     # Console handler
     console_handler = logging.StreamHandler(sys.stdout)
@@ -102,7 +102,7 @@ def setup_logging(level: str = 'INFO', config: Optional[Dict[str, Any]] = None):
         setup_correlation_id_filter()
 
 
-def setup_correlation_id_filter():
+def setup_correlation_id_filter() -> None:
     """
     Set up correlation ID filter for request tracing
     """

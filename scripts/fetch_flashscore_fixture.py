@@ -1,10 +1,8 @@
-from pathlib import Path
 import json
 import sys
+from pathlib import Path
 
 # Ensure project root on path
-from pathlib import Path
-import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from flashscore_scraper import FlashScoreScraper

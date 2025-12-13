@@ -3,8 +3,9 @@ Backup of original save_image method from generate_fast_reports.py
 Safest rollback point for PNG report layout.
 """
 import matplotlib.pyplot as plt
-from matplotlib.patches import Circle, Rectangle, Wedge
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.patches import Circle, Wedge
+
 
 def save_image(match_data, path):
     """Original visually stunning match prediction card with gauges and centered results (backup)"""
@@ -98,6 +99,23 @@ def save_image(match_data, path):
     likely = max([(home_win, 'home'), (draw, 'draw'), (away_win, 'away')], key=lambda x: x[0])[1]
     likely_text = "MOST LIKELY HOME WIN" if likely == 'home' else "MOST LIKELY DRAW" if likely == 'draw' else "MOST LIKELY AWAY WIN"
     likely_color = '#3498db' if likely == 'home' else '#636e72' if likely == 'draw' else '#e74c3c'
-    ax.text(0.5, 0.47, likely_text, ha='center', va='center', fontsize=13, fontweight='bold', color=likely_color, bbox=dict(facecolor='#f8fafc', edgecolor='none', boxstyle='round,pad=0.3', alpha=0.10), zorder=4, transform=ax.transAxes)
+    ax.text(
+        0.5,
+        0.47,
+        likely_text,
+        ha='center',
+        va='center',
+        fontsize=13,
+        fontweight='bold',
+        color=likely_color,
+        bbox={
+            'facecolor': '#f8fafc',
+            'edgecolor': 'none',
+            'boxstyle': 'round,pad=0.3',
+            'alpha': 0.10,
+        },
+        zorder=4,
+        transform=ax.transAxes,
+    )
     plt.savefig(path, bbox_inches="tight")
     plt.close(fig)

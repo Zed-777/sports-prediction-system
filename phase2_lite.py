@@ -7,7 +7,7 @@ Conservative upgrade focusing on working components without external ML dependen
 import logging
 import os
 import time
-from typing import Any, Dict
+from typing import Any
 
 from app.utils.reliability_calculator import ReliabilityCalculator
 from data_quality_enhancer import DataQualityEnhancer
@@ -17,7 +17,7 @@ from enhanced_predictor import EnhancedPredictor
 class Phase2LitePredictor:
     """
     Phase 2 Lite: Conservative upgrade for better confidence without external ML dependencies
-    
+
     Improvements:
     1. Enhanced data collection and validation
     2. Improved confidence calculation
@@ -44,10 +44,10 @@ class Phase2LitePredictor:
             'low': 0.45
         }
 
-    def enhanced_prediction(self, match_data: Dict[str, Any], competition_code: str) -> Dict[str, Any]:
+    def enhanced_prediction(self, match_data: dict[str, Any], competition_code: str) -> dict[str, Any]:
         """
         Enhanced prediction with Phase 2 Lite improvements
-        
+
         Focus on achievable improvements:
         - Better data validation
         - Enhanced confidence calculation
@@ -118,9 +118,9 @@ class Phase2LitePredictor:
             self.logger.error(f"Phase 2 Lite prediction failed: {e}")
             return self._safe_fallback_prediction(match_data)
 
-    def _validate_and_enhance_confidence(self, base_prediction: Dict[str, Any],
-                                       enhanced_data: Dict[str, Any],
-                                       match_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _validate_and_enhance_confidence(self, base_prediction: dict[str, Any],
+                                       enhanced_data: dict[str, Any],
+                                       match_data: dict[str, Any]) -> dict[str, Any]:
         """
         Validate prediction and enhance confidence using available data
         """
@@ -170,14 +170,14 @@ class Phase2LitePredictor:
 
         return enhanced_prediction
 
-    def _calculate_consistency_boost(self, prediction: Dict[str, Any]) -> float:
+    def _calculate_consistency_boost(self, prediction: dict[str, Any]) -> float:
         """Calculate boost based on prediction internal consistency"""
 
         try:
             # Check if probabilities are well-separated (indicates confident prediction)
-            home_prob = prediction.get('home_win_probability', 33)
-            draw_prob = prediction.get('draw_probability', 33)
-            away_prob = prediction.get('away_win_probability', 33)
+            home_prob = float(prediction.get('home_win_probability', 33))
+            draw_prob = float(prediction.get('draw_probability', 33))
+            away_prob = float(prediction.get('away_win_probability', 33))
 
             max_prob = max(home_prob, draw_prob, away_prob)
             separation = max_prob - 33.33  # Deviation from even split
@@ -186,8 +186,8 @@ class Phase2LitePredictor:
             separation_boost = min(separation / 30, 1.0) * 0.1  # Up to 10% for strong favorites
 
             # Check goal/probability consistency
-            expected_home = prediction.get('expected_home_goals', 1)
-            expected_away = prediction.get('expected_away_goals', 1)
+            expected_home = float(prediction.get('expected_home_goals', 1))
+            expected_away = float(prediction.get('expected_away_goals', 1))
 
             goal_ratio = expected_home / max(expected_away, 0.1)
             prob_ratio = home_prob / max(away_prob, 0.1)
@@ -201,7 +201,7 @@ class Phase2LitePredictor:
         except Exception:
             return 0.0
 
-    def _calculate_freshness_boost(self, match_data: Dict[str, Any], enhanced_data: Dict[str, Any]) -> float:
+    def _calculate_freshness_boost(self, match_data: dict[str, Any], enhanced_data: dict[str, Any]) -> float:
         """Calculate boost based on data freshness"""
 
         try:
@@ -221,7 +221,7 @@ class Phase2LitePredictor:
         except Exception:
             return 0.0
 
-    def _assess_confidence_level(self, confidence: float) -> Dict[str, str]:
+    def _assess_confidence_level(self, confidence: float) -> dict[str, str]:
         """Assess confidence level and provide description"""
 
         if confidence >= self.confidence_thresholds['excellent']:
@@ -255,7 +255,7 @@ class Phase2LitePredictor:
                 'color': '#e74c3c'
             }
 
-    def _assess_data_quality(self, enhanced_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _assess_data_quality(self, enhanced_data: dict[str, Any]) -> dict[str, Any]:
         """Assess overall data quality"""
 
         quality_score = enhanced_data.get('data_quality_score', 75)
@@ -284,7 +284,7 @@ class Phase2LitePredictor:
             'processing_time': enhanced_data.get('processing_time', 0)
         }
 
-    def _assess_prediction_reliability(self, prediction: Dict[str, Any]) -> Dict[str, Any]:
+    def _assess_prediction_reliability(self, prediction: dict[str, Any]) -> dict[str, Any]:
         """Assess overall prediction reliability"""
 
         confidence = prediction.get('confidence', 0.6)
@@ -319,7 +319,7 @@ class Phase2LitePredictor:
             }
         }
 
-    def _safe_fallback_prediction(self, match_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _safe_fallback_prediction(self, match_data: dict[str, Any]) -> dict[str, Any]:
         """Safe fallback when Phase 2 Lite fails"""
 
         return {
@@ -342,7 +342,7 @@ class Phase2LitePredictor:
 
 
 # Testing and integration function
-def test_phase2_lite():
+def test_phase2_lite() -> dict[str, Any] | None:
     """Test Phase 2 Lite implementation"""
 
     api_key = os.getenv('FOOTBALL_DATA_API_KEY', '17405508d1774f46a368390ff07f8a31')

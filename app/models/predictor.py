@@ -5,7 +5,7 @@ Prediction engine for generating match predictions
 import json
 import logging
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -13,21 +13,21 @@ logger = logging.getLogger(__name__)
 class PredictionEngine:
     """Main prediction engine"""
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: dict[str, Any]):
         self.config = config
 
     def predict_matches(self,
                        league: str,
                        prediction_date: str,
-                       model_name: str = 'ensemble') -> List[Dict[str, Any]]:
+                       model_name: str = 'ensemble') -> list[dict[str, Any]]:
         """
         Generate predictions for matches on a specific date
-        
+
         Args:
             league: League name
             prediction_date: Date to predict matches for
             model_name: Model to use for predictions
-            
+
         Returns:
             List of match predictions
         """
@@ -78,8 +78,8 @@ class PredictionEngine:
         logger.info(f"Generated {len(predictions)} predictions")
         return predictions
 
-    def save_predictions(self, predictions: List[Dict[str, Any]],
-                        output_path: str, format_type: str = 'json'):
+    def save_predictions(self, predictions: list[dict[str, Any]],
+                        output_path: str, format_type: str = 'json') -> None:
         """Save predictions to file"""
         try:
             with open(output_path, 'w', encoding='utf-8') as f:

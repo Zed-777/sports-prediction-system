@@ -5,17 +5,17 @@ Retry utility with exponential backoff
 import asyncio
 import logging
 import random
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
 def retry_with_backoff(max_attempts: int = 3, backoff_strategy: str = 'exponential',
-                      base_delay: float = 1.0, max_delay: float = 60.0, jitter: bool = True):
-    """
-    Decorator for retrying functions with backoff
-    
+                      base_delay: float = 1.0, max_delay: float = 60.0, jitter: bool = True) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    """Decorator for retrying functions with backoff.
+
     Args:
         max_attempts: Maximum number of retry attempts
         backoff_strategy: 'exponential' or 'linear'
@@ -23,9 +23,9 @@ def retry_with_backoff(max_attempts: int = 3, backoff_strategy: str = 'exponenti
         max_delay: Maximum delay in seconds
         jitter: Add random jitter to delay
     """
-    def decorator(func: Callable) -> Callable:
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(func)
-        async def async_wrapper(*args, **kwargs) -> Any:
+        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
             last_exception = None
 
             for attempt in range(max_attempts):
@@ -58,7 +58,7 @@ def retry_with_backoff(max_attempts: int = 3, backoff_strategy: str = 'exponenti
                 raise RuntimeError("All retry attempts failed without capturing exception")
 
         @wraps(func)
-        def sync_wrapper(*args, **kwargs) -> Any:
+        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
             # For synchronous functions, run the async wrapper
             return asyncio.run(async_wrapper(*args, **kwargs))
 

@@ -75,6 +75,10 @@ dev = [
     "ruff>=0.1.0",
     "mypy>=1.6.0",
     "bandit>=1.7.0",
+    "types-requests>=2.31.0",
+    "types-PyYAML>=6.0.0",
+    "types-urllib3>=2.0.0",
+    "requests-mock>=1.11.0",
 ]
 deep-learning = [
     "torch>=2.1.0",
@@ -96,6 +100,7 @@ Documentation = "https://github.com/username/sports-prediction-system/docs"
 Repository = "https://github.com/username/sports-prediction-system.git"
 "Bug Tracker" = "https://github.com/username/sports-prediction-system/issues"
 
+ 
 [project.scripts]
 sports-forecast = "app.cli:main"
 
@@ -112,7 +117,7 @@ include = '\.pyi?$'
 extend-exclude = '''
 /(
   # directories
-  \.eggs
+    exclude = "scripts/|BACKUP_v4.0_WORKING|legacy_files|BACKUP_.*"
   | \.git
   | \.hg
   | \.mypy_cache
@@ -124,6 +129,7 @@ extend-exclude = '''
 '''
 
 [tool.ruff]
+# NOTE: these top-level options are deprecated; ruff warns to move them to the `lint` section.
 select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
@@ -139,13 +145,32 @@ ignore = [
     "C901",  # too complex
 ]
 line-length = 88
-target-version = "py39"
+# Rename target-version to match an appropriate Python version
+target-version = "py311"
+exclude = ["BACKUP_v4.0_WORKING", "legacy_files", "BACKUP_*", "*.backup", "scripts/backup/**"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "B",
+    "C4",
+    "UP",
+]
+ignore = [
+    "E501",
+    "B008",
+    "C901",
+]
+
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["F401"]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.11"
 check_untyped_defs = true
 disallow_any_generics = true
 disallow_incomplete_defs = true
@@ -159,6 +184,7 @@ warn_return_any = true
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
+exclude = "BACKUP_v4.0_WORKING|legacy_files|BACKUP_.*"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

@@ -8,7 +8,7 @@ import asyncio
 import logging
 import time
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 # Phase 2 imports
 from app.data.multi_source_connector import MultiSourceConnector
@@ -20,7 +20,7 @@ from app.models.confidence_optimizer import ConfidenceOptimizer
 class HighConfidencePredictor:
     """
     Phase 2: High-Confidence Prediction System
-    
+
     Integrates all Phase 2 components for 80%+ confidence predictions:
     - Multi-source data fusion
     - Advanced AI ensemble models
@@ -40,10 +40,10 @@ class HighConfidencePredictor:
         # Performance tracking
         self.performance_metrics = {}
 
-    async def high_confidence_prediction(self, match_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def high_confidence_prediction(self, match_data: dict[str, Any]) -> dict[str, Any]:
         """
         Generate high-confidence prediction using Phase 2 system
-        
+
         Process:
         1. Multi-source data collection
         2. Data validation and quality assessment
@@ -90,7 +90,7 @@ class HighConfidencePredictor:
             self.logger.error(f"Phase 2 prediction failed: {e}")
             return self._fallback_prediction(match_data)
 
-    async def _collect_enhanced_data(self, match_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def _collect_enhanced_data(self, match_data: dict[str, Any]) -> dict[str, Any]:
         """Collect data from multiple sources"""
 
         # Extract team information
@@ -122,7 +122,7 @@ class HighConfidencePredictor:
             self.logger.warning(f"Multi-source data collection failed: {e}")
             return match_data
 
-    def _validate_data_quality(self, enhanced_data: Dict[str, Any]) -> Any:
+    def _validate_data_quality(self, enhanced_data: dict[str, Any]) -> Any:
         """Validate data quality and calculate impact on confidence"""
 
         try:
@@ -139,7 +139,7 @@ class HighConfidencePredictor:
             self.logger.error(f"Data validation failed: {e}")
             return None
 
-    def _generate_ai_prediction(self, enhanced_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _generate_ai_prediction(self, enhanced_data: dict[str, Any]) -> dict[str, Any]:
         """Generate prediction using advanced AI ensemble"""
 
         try:
@@ -159,8 +159,8 @@ class HighConfidencePredictor:
             self.logger.error(f"AI prediction failed: {e}")
             return self._enhanced_heuristic_prediction(enhanced_data)
 
-    def _optimize_confidence(self, ai_prediction: Dict[str, Any],
-                           enhanced_data: Dict[str, Any],
+    def _optimize_confidence(self, ai_prediction: dict[str, Any],
+                           enhanced_data: dict[str, Any],
                            validation_result: Any) -> Any:
         """Optimize confidence using advanced calibration"""
 
@@ -179,10 +179,10 @@ class HighConfidencePredictor:
             self.logger.error(f"Confidence optimization failed: {e}")
             return None
 
-    def _integrate_final_prediction(self, ai_prediction: Dict[str, Any],
+    def _integrate_final_prediction(self, ai_prediction: dict[str, Any],
                                    confidence_metrics: Any,
                                    validation_result: Any,
-                                   enhanced_data: Dict[str, Any]) -> Dict[str, Any]:
+                                   enhanced_data: dict[str, Any]) -> dict[str, Any]:
         """Integrate all components into final high-confidence prediction"""
 
         # Base prediction from AI
@@ -219,7 +219,7 @@ class HighConfidencePredictor:
 
         return final_prediction
 
-    def _enhanced_heuristic_prediction(self, enhanced_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _enhanced_heuristic_prediction(self, enhanced_data: dict[str, Any]) -> dict[str, Any]:
         """Enhanced heuristic prediction when AI models not available"""
 
         # This would implement improved heuristics using multi-source data
@@ -233,7 +233,7 @@ class HighConfidencePredictor:
             'ai_enhanced': False
         }
 
-    def _fallback_prediction(self, match_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _fallback_prediction(self, match_data: dict[str, Any]) -> dict[str, Any]:
         """Fallback when Phase 2 system fails"""
 
         return {
@@ -303,7 +303,7 @@ class Phase2IntegrationManager:
 
         return True
 
-    async def test_phase2_system(self) -> Dict[str, Any]:
+    async def test_phase2_system(self) -> dict[str, Any]:
         """Test Phase 2 system with sample data"""
 
         if not self.predictor:

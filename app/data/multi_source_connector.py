@@ -10,7 +10,7 @@ import os
 import time
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, Dict, Optional, List, Sequence, Union, Mapping
 
 import aiohttp
 
@@ -21,7 +21,7 @@ class DataSource:
     name: str
     api_key_env: str
     base_url: str
-    endpoints: Dict[str, str]
+    endpoints: dict[str, str]
     priority: int  # 1=highest, 5=lowest
     rate_limit: int  # requests per minute
     confidence_weight: float  # 0.0-1.0
@@ -29,7 +29,7 @@ class DataSource:
 class MultiSourceConnector:
     """
     Advanced multi-source data fusion system for maximum confidence
-    
+
     Data Sources (Ranked by Reliability):
     1. Football-Data.org (Primary) - Match data, standings
     2. API-Sports (Secondary) - Live data, injuries, lineups
@@ -38,15 +38,15 @@ class MultiSourceConnector:
     5. Kaggle Datasets (Offline) - Historical statistics
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.logger = logging.getLogger(__name__)
         self.setup_data_sources()
-        self.api_usage = {}
+        self.api_usage: dict[str, int] = {}
         self.confidence_multiplier = 1.0
 
-    def setup_data_sources(self):
+    def setup_data_sources(self) -> None:
         """Configure all available data sources"""
-        self.data_sources = {
+        self.data_sources: dict[str, DataSource] = {
             'football_data': DataSource(
                 name='Football-Data.org',
                 api_key_env='FOOTBALL_DATA_API_KEY',
@@ -107,10 +107,10 @@ class MultiSourceConnector:
             )
         }
 
-    async def enhanced_team_analysis(self, team_id: str, competition: str) -> Dict[str, Any]:
+    async def enhanced_team_analysis(self, team_id: str, competition: str) -> dict[str, Any]:
         """
         Multi-source team analysis for maximum confidence
-        
+
         Data Collection Strategy:
         1. Primary API (football-data.org) - Core match data
         2. Secondary API (api-sports) - Real-time data, injuries
@@ -121,7 +121,7 @@ class MultiSourceConnector:
         analysis_start = time.time()
 
         # Parallel data collection from multiple sources
-        tasks = []
+        tasks: list[Any] = []
 
         # Primary source - Football Data
         if self.is_source_available('football_data'):
@@ -137,7 +137,7 @@ class MultiSourceConnector:
 
         # Execute all data fetches in parallel
         try:
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+            results: list[Any] = await asyncio.gather(*tasks, return_exceptions=True)
 
             # Intelligent data fusion
             fused_data = self.intelligent_data_fusion(results)
@@ -155,7 +155,7 @@ class MultiSourceConnector:
             self.logger.error(f"Enhanced team analysis failed: {e}")
             return self.fallback_analysis(team_id, competition)
 
-    async def fetch_football_data_team(self, team_id: str, competition: str) -> Dict[str, Any]:
+    async def fetch_football_data_team(self, team_id: str, competition: str) -> dict[str, Any]:
         """Fetch comprehensive data from Football-Data.org"""
         try:
             api_key = os.getenv('FOOTBALL_DATA_API_KEY')
@@ -167,7 +167,7 @@ class MultiSourceConnector:
             async with aiohttp.ClientSession() as session:
                 # Team matches (last 20 games)
                 matches_url = f"{self.data_sources['football_data'].base_url}/teams/{team_id}/matches"
-                params = {'limit': 20, 'status': 'FINISHED'}
+                params: dict[str, Union[str, int]] = {'limit': 20, 'status': 'FINISHED'}
 
                 async with session.get(matches_url, headers=headers, params=params) as response:
                     if response.status == 200:
@@ -188,18 +188,18 @@ class MultiSourceConnector:
             self.logger.error(f"Football Data fetch failed: {e}")
             return {'source': 'football_data', 'error': str(e)}
 
-    async def fetch_api_sports_team(self, team_id: str, competition: str) -> Dict[str, Any]:
+    async def fetch_api_sports_team(self, team_id: str, competition: str) -> dict[str, Any]:
         """Fetch real-time intelligence from API-Sports"""
         try:
-            headers = {
-                'X-RapidAPI-Key': os.getenv('API_SPORTS_KEY'),
+            headers: dict[str, str] = {
+                'X-RapidAPI-Key': str(os.getenv('API_SPORTS_KEY', '')),
                 'X-RapidAPI-Host': 'v3.football.api-sports.io'
             }
 
             async with aiohttp.ClientSession() as session:
                 # Team fixtures and live data
                 fixtures_url = f"{self.data_sources['api_sports'].base_url}/fixtures"
-                params = {'team': team_id, 'last': 15}
+                params: dict[str, Union[str, int]] = {'team': team_id, 'last': 15}
 
                 async with session.get(fixtures_url, headers=headers, params=params) as response:
                     if response.status == 200:
@@ -207,7 +207,7 @@ class MultiSourceConnector:
 
                         # Also fetch injury data
                         injuries_url = f"{self.data_sources['api_sports'].base_url}/injuries"
-                        injury_params = {'team': team_id}
+                        injury_params: dict[str, Union[str, int]] = {'team': team_id}
 
                         async with session.get(injuries_url, headers=headers, params=injury_params) as injury_response:
                             injury_data = await injury_response.json() if injury_response.status == 200 else {}
@@ -228,13 +228,14 @@ class MultiSourceConnector:
             self.logger.error(f"API Sports fetch failed: {e}")
             return {'source': 'api_sports', 'error': str(e)}
 
-    async def fetch_sports_db_team(self, team_id: str) -> Dict[str, Any]:
+    async def fetch_sports_db_team(self, team_id: str) -> dict[str, Any]:
         """Fetch historical validation data from TheSportsDB"""
         try:
             async with aiohttp.ClientSession() as session:
                 # Team information and recent events
                 team_url = f"{self.data_sources['sports_db'].base_url}/lookupteam.php"
-                params = {'id': team_id}
+                params: dict[str, Union[str, int]] = {'id': team_id}
+                params = {k: str(v) for k, v in params.items()}
 
                 async with session.get(team_url, params=params) as response:
                     if response.status == 200:
@@ -255,10 +256,10 @@ class MultiSourceConnector:
             self.logger.error(f"SportsDB fetch failed: {e}")
             return {'source': 'sports_db', 'error': str(e)}
 
-    def intelligent_data_fusion(self, results: List[Any]) -> Dict[str, Any]:
+    def intelligent_data_fusion(self, results: list[Any]) -> dict[str, Any]:
         """
         Intelligent fusion of multi-source data with conflict resolution
-        
+
         Fusion Strategy:
         1. Primary data from highest confidence source
         2. Cross-validation against other sources
@@ -266,7 +267,7 @@ class MultiSourceConnector:
         4. Gap filling from secondary sources
         """
 
-        fused_data = {
+        fused_data: dict[str, Any] = {
             'matches': [],
             'team_info': {},
             'injuries': [],
@@ -312,13 +313,13 @@ class MultiSourceConnector:
 
         return fused_data
 
-    def calculate_multi_source_confidence(self, results: List[Any]) -> float:
+    def calculate_multi_source_confidence(self, results: list[Any]) -> float:
         """
         Calculate confidence score based on data source diversity and quality
-        
+
         Confidence Factors:
         - Number of successful sources (0-40 points)
-        - Data quality and recency (0-30 points)  
+        - Data quality and recency (0-30 points)
         - Cross-validation agreement (0-20 points)
         - Real-time data availability (0-10 points)
         """
@@ -368,7 +369,7 @@ class MultiSourceConnector:
 
         return True
 
-    def deduplicate_matches(self, matches: List[Dict]) -> List[Dict]:
+    def deduplicate_matches(self, matches: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Remove duplicate matches and keep highest quality data"""
         seen_matches = {}
 
@@ -380,7 +381,7 @@ class MultiSourceConnector:
 
         return list(seen_matches.values())
 
-    def deduplicate_injuries(self, injuries: List[Dict]) -> List[Dict]:
+    def deduplicate_injuries(self, injuries: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Remove duplicate injury reports"""
         seen_injuries = {}
 
@@ -392,7 +393,7 @@ class MultiSourceConnector:
 
         return list(seen_injuries.values())
 
-    def fallback_analysis(self, team_id: str, competition: str) -> Dict[str, Any]:
+    def fallback_analysis(self, team_id: str, competition: str) -> dict[str, Any]:
         """Fallback analysis when all sources fail"""
         return {
             'source': 'fallback',
@@ -406,7 +407,7 @@ class MultiSourceConnector:
 
 
 # Usage example and testing
-async def test_multi_source_connector():
+async def test_multi_source_connector() -> dict[str, Any]:
     """Test the multi-source connector"""
     connector = MultiSourceConnector()
 

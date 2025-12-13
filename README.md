@@ -32,6 +32,14 @@ An **advanced, AI-enhanced, and professional-grade** sports forecasting system t
 
 1. **Install dependencies:**
 
+   Use the idempotent helper script to create and activate the venv and install dependencies once. This avoids repeated downloads and keeps a consistent environment.
+
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File scripts\dev_setup.ps1
+   ```
+
+   If you must install dependencies manually:
+
    ```bash
    pip install -r requirements.txt
    ```

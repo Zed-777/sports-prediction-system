@@ -1,5 +1,4 @@
 import math
-import os
 
 import pytest
 
@@ -9,6 +8,7 @@ from app.data.odds_connector import OddsDataConnector
 class _FakeResponse:
     def __init__(self, payload):
         self._payload = payload
+        self.status_code = 200
 
     def raise_for_status(self):
         return None
@@ -56,7 +56,7 @@ def test_get_match_odds_parses_market(monkeypatch):
         }
     ]
 
-    def fake_get(url, params, timeout):  # noqa: D401 - simple stub
+    def fake_get(url, *args, **kwargs):  # noqa: D401 - simple stub
         return _FakeResponse(sample_payload)
 
     monkeypatch.setenv("ODDS_API_KEY", "test-key")
@@ -73,7 +73,7 @@ def test_get_match_odds_parses_market(monkeypatch):
     # Ensure caching avoids a second HTTP call
     call_count = {"count": 0}
 
-    def counting_get(url, params, timeout):
+    def counting_get(url, *args, **kwargs):
         call_count["count"] += 1
         return _FakeResponse(sample_payload)
 

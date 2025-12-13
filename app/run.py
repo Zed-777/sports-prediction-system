@@ -4,7 +4,6 @@ Main CLI entry point for the Sports Prediction System
 
 import asyncio
 import sys
-from typing import List, Optional
 
 import click
 from rich.console import Console
@@ -26,10 +25,9 @@ console = Console()
 @click.option('--config', '-c', default='config/settings.yaml', help='Configuration file path')
 @click.option('--verbose', '-v', is_flag=True, help='Enable verbose logging')
 @click.pass_context
-def main(ctx, config: str, verbose: bool):
-    """
-    Sports Prediction System - Advanced sports forecasting for educational purposes.
-    
+def main(ctx: click.Context, config: str, verbose: bool) -> None:
+    """Sports Prediction System - advanced sports forecasting for educational purposes.
+
     DISCLAIMER: This system is for educational and analytical purposes only.
     It is not intended for financial or betting decisions.
     """
@@ -60,11 +58,10 @@ def main(ctx, config: str, verbose: bool):
 @click.option('--end-date', help='End date for data collection (YYYY-MM-DD)')
 @click.option('--force', is_flag=True, help='Force re-download even if data exists')
 @click.pass_context
-def ingest(ctx, league: str, season: Optional[str], start_date: Optional[str],
-           end_date: Optional[str], force: bool):
-    """
-    Ingest data for a specific league and time period.
-    
+def ingest(ctx: click.Context, league: str, season: str | None, start_date: str | None,
+           end_date: str | None, force: bool) -> None:
+    """Ingest data for a specific league and time period.
+
     Example:
         sports-forecast ingest --league "La Liga" --season "2023-24"
     """
@@ -98,10 +95,9 @@ def ingest(ctx, league: str, season: Optional[str], start_date: Optional[str],
 @click.option('--tune', is_flag=True, help='Enable hyperparameter tuning')
 @click.option('--validate', is_flag=True, help='Run cross-validation')
 @click.pass_context
-def train(ctx, league: str, model: str, features: List[str], tune: bool, validate: bool):
-    """
-    Train prediction models for a specific league.
-    
+def train(ctx: click.Context, league: str, model: str, features: tuple[str, ...], tune: bool, validate: bool) -> None:
+    """Train prediction models for a specific league.
+
     Example:
         sports-forecast train --league "La Liga" --model ensemble --tune
     """
@@ -147,10 +143,9 @@ def train(ctx, league: str, model: str, features: List[str], tune: bool, validat
               type=click.Choice(['json', 'csv', 'table']),
               help='Output format')
 @click.pass_context
-def predict(ctx, league: str, date: str, model: str, output: Optional[str], output_format: str):
-    """
-    Generate predictions for upcoming matches.
-    
+def predict(ctx: click.Context, league: str, date: str, model: str, output: str | None, output_format: str) -> None:
+    """Generate predictions for upcoming matches.
+
     Example:
         sports-forecast predict --league "La Liga" --date "2025-10-20"
     """
@@ -208,10 +203,9 @@ def predict(ctx, league: str, date: str, model: str, output: Optional[str], outp
 @click.option('--output-dir', default='reports', help='Output directory')
 @click.option('--template', help='Custom report template')
 @click.pass_context
-def report(ctx, league: str, date: str, formats: str, output_dir: str, template: Optional[str]):
-    """
-    Generate comprehensive prediction reports.
-    
+def report(ctx: click.Context, league: str, date: str, formats: str, output_dir: str, template: str | None) -> None:
+    """Generate comprehensive prediction reports.
+
     Example:
         sports-forecast report --league "La Liga" --date "2025-10-20" --formats "md,png,pdf"
     """
@@ -223,7 +217,6 @@ def report(ctx, league: str, date: str, formats: str, output_dir: str, template:
     generator = ReportGenerator(config)
 
     try:
-        import asyncio
         report_paths = asyncio.run(generator.generate_reports(
             league=league,
             prediction_date=date,
@@ -246,10 +239,9 @@ def report(ctx, league: str, date: str, formats: str, output_dir: str, template:
 @click.option('--port', default=8000, help='Dashboard port')
 @click.option('--dev', is_flag=True, help='Development mode with hot reload')
 @click.pass_context
-def dashboard(ctx, host: str, port: int, dev: bool):
-    """
-    Launch the interactive web dashboard.
-    
+def dashboard(ctx: click.Context, host: str, port: int, dev: bool) -> None:
+    """Launch the interactive web dashboard.
+
     Example:
         sports-forecast dashboard --host 0.0.0.0 --port 8000
     """
@@ -273,16 +265,13 @@ def dashboard(ctx, host: str, port: int, dev: bool):
 @click.option('--start-date', help='Validation start date')
 @click.option('--end-date', help='Validation end date')
 @click.pass_context
-def validate(ctx, league: Optional[str], model: Optional[str],
-             start_date: Optional[str], end_date: Optional[str]):
-    """
-    Run model validation and backtesting.
-    
+def validate(ctx: click.Context, league: str | None, model: str | None,
+             start_date: str | None, end_date: str | None) -> None:
+    """Run model validation and backtesting.
+
     Example:
         sports-forecast validate --league "La Liga" --model ensemble
     """
-    config = ctx.obj['config']
-
     console.print("[blue]🧪 Running model validation...[/blue]")
 
     # Implementation would go here
@@ -295,7 +284,7 @@ if __name__ == '__main__':
 
 @main.command()
 @click.pass_context
-def run_prune(ctx):
+def run_prune(ctx: click.Context) -> None:
     """
     Prune all generated reports and outputs, preserving directory structure and .keep files.
     Example:
@@ -322,7 +311,7 @@ def run_prune(ctx):
                     if os.path.isdir(path) and d not in ['.keep', '.gitkeep']:
                         remaining.append(path)
         if remaining:
-            console.print(f"[yellow]⚠️ Warning: Some match directories remain after prune:[/yellow]")
+            console.print("[yellow]⚠️ Warning: Some match directories remain after prune:[/yellow]")
             for path in remaining:
                 console.print(f"  [red]{path}[/red]")
         else:

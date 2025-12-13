@@ -1,12 +1,15 @@
 <#
-Simple helper to create a virtual environment named .venv-Z1.1
+Create and bootstrap the local virtual environment `.venv-Z1.1` for Windows PowerShell.
 
-Usage (PowerShell):
-  # After installing Python, from repo root:
-  .\scripts\create_env_Z1.1.ps1
+Usage:
+  .\scripts\create_env_Z1.1.ps1 [-InstallPhase2]
 
-Options:
-  -InstallPhase2  Install extra Phase 2 dependencies from requirements_phase2.txt
+This script will:
+- Detect whether Python is available on PATH.
+- Create `.venv-Z1.1` if missing.
+- Activate the venv in the current PowerShell session.
+- Upgrade pip and install `requirements.txt` and `requirements-dev.txt`.
+- Optionally install Phase 2 extras when `-InstallPhase2` is passed.
 #>
 
 param(
@@ -15,44 +18,41 @@ param(
 
 Write-Host "Creating environment .venv-Z1.1 (PowerShell)" -ForegroundColor Cyan
 
-# Check for python
+# ensure python exists
 try {
-    $py = Get-Command python -ErrorAction Stop
+    $pyCmd = Get-Command python -ErrorAction Stop
 } catch {
-    Write-Host "Python executable not found in PATH. Please install Python first (see README or instructions)." -ForegroundColor Red
+    Write-Host "Python executable not found in PATH. Please install Python first." -ForegroundColor Red
     exit 1
 }
 
-Write-Host "Python detected: $($py.Source)" -ForegroundColor Green
+Write-Host "Python detected: $($pyCmd.Path)" -ForegroundColor Green
 
-# Create venv
-python -m venv .venv-Z1.1
+# create venv if missing
+if (-not (Test-Path ".\.venv-Z1.1")) {
+    Write-Host "Creating virtual environment .venv-Z1.1..." -ForegroundColor Cyan
+    python -m venv .venv-Z1.1
+} else {
+    Write-Host "Virtual environment already exists: .venv-Z1.1" -ForegroundColor Yellow
+}
 
+# ensure activation script exists
 if (-not (Test-Path ".\.venv-Z1.1\Scripts\Activate.ps1")) {
-    Write-Host "Failed to create virtual environment." -ForegroundColor Red
+    Write-Host "Activation script not found after creating venv; aborting." -ForegroundColor Red
     exit 1
 }
 
-Write-Host "Activating .venv-Z1.1..." -ForegroundColor Cyan
+Write-Host "Activating .venv-Z1.1 in current shell..." -ForegroundColor Cyan
 . .\.venv-Z1.1\Scripts\Activate.ps1
 
-Write-Host "Upgrading pip..." -ForegroundColor Cyan
+Write-Host "Upgrading pip and installing requirements..." -ForegroundColor Cyan
 python -m pip install --upgrade pip
-
-if (Test-Path "requirements.txt") {
-    Write-Host "Installing project requirements from requirements.txt..." -ForegroundColor Cyan
-    pip install -r requirements.txt
-} else {
-    Write-Host "requirements.txt not found in repo root; skipping dependency install." -ForegroundColor Yellow
-}
+if (Test-Path "requirements.txt") { python -m pip install -r requirements.txt }
+if (Test-Path "requirements-dev.txt") { python -m pip install -r requirements-dev.txt }
 
 if ($InstallPhase2) {
-    if (Test-Path "requirements_phase2.txt") {
-        Write-Host "Installing Phase 2 extra requirements..." -ForegroundColor Cyan
-        pip install -r requirements_phase2.txt
-    } else {
-        Write-Host "requirements_phase2.txt not found; skipping." -ForegroundColor Yellow
-    }
+    if (Test-Path "requirements_phase2.txt") { python -m pip install -r requirements_phase2.txt }
+    if (Test-Path "requirements_phase2_fixed.txt") { python -m pip install -r requirements_phase2_fixed.txt }
 }
 
-Write-Host "`nDone. Activate the environment later with:`n. .\.venv-Z1.1\Scripts\Activate.ps1" -ForegroundColor Green
+Write-Host ""; Write-Host "Done. Verify with: python -c 'import sys; print(sys.executable)'" -ForegroundColor Green

@@ -18,15 +18,17 @@ import argparse
 import json
 import os
 import time
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Any
 
 import requests
+from app.utils.http import safe_request_get
 
 # football-data.org uses a limited set of league codes; we mirror the CLI mapping
-LEAGUE_MAP: Dict[str, Tuple[str, str]] = {
+LEAGUE_MAP: dict[str, tuple[str, str]] = {
     "la-liga": ("PD", "la-liga"),
     "laliga": ("PD", "la-liga"),
     "premier-league": ("PL", "premier-league"),
@@ -48,7 +50,7 @@ class LeagueInfo:
     folder: str
 
     @classmethod
-    def from_key(cls, key: str) -> "LeagueInfo":
+    def from_key(cls, key: str) -> LeagueInfo:
         try:
             code, folder = LEAGUE_MAP[key.lower()]
         except KeyError as exc:
@@ -58,7 +60,7 @@ class LeagueInfo:
         return cls(code=code, folder=folder)
 
 
-def parse_args(argv: Optional[Iterable[str]] = None) -> argparse.Namespace:
+def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Fetch historical fixtures and cache snapshots.")
     parser.add_argument("--league", required=True, help="League identifier (e.g. la-liga, premier-league).")
     parser.add_argument(
@@ -89,17 +91,17 @@ def parse_args(argv: Optional[Iterable[str]] = None) -> argparse.Namespace:
     return parser.parse_args(list(argv) if argv is not None else None)
 
 
-def resolve_api_key(explicit: Optional[str]) -> str:
+def resolve_api_key(explicit: str | None) -> str:
     api_key = explicit or os.getenv("FOOTBALL_DATA_API_KEY")
     if not api_key:
         raise SystemExit("FOOTBALL_DATA_API_KEY not set and --api-key not provided.")
     return api_key
 
 
-def resolve_seasons(raw: Optional[str], years_back: int) -> List[int]:
+def resolve_seasons(raw: str | None, years_back: int) -> list[int]:
     current_year = datetime.utcnow().year
     if raw:
-        seasons: List[int] = []
+        seasons: list[int] = []
         for chunk in raw.split(","):
             chunk = chunk.strip()
             if not chunk:
@@ -113,7 +115,7 @@ def resolve_seasons(raw: Optional[str], years_back: int) -> List[int]:
     return [current_year - offset for offset in range(1, years_back + 1)]
 
 
-def fetch_matches(api_key: str, league: LeagueInfo, season: int) -> Dict:
+def fetch_matches(api_key: str, league: LeagueInfo, season: int) -> dict[str, Any]:
     url = f"https://api.football-data.org/v4/competitions/{league.code}/matches"
     headers = {"X-Auth-Token": api_key}
     params = {"season": season}
@@ -121,7 +123,7 @@ def fetch_matches(api_key: str, league: LeagueInfo, season: int) -> Dict:
     attempt = 0
     while True:
         attempt += 1
-        response = requests.get(url, headers=headers, params=params, timeout=30)
+        response = safe_request_get(url, headers=headers, params=params, timeout=30, logger=None)
         if response.status_code == RATE_LIMIT_STATUS and attempt <= DEFAULT_RETRIES:
             wait = min(5 * attempt, 20)
             print(f"[RATE LIMIT] 429 received for season {season}. Sleeping {wait}s before retry {attempt}/{DEFAULT_RETRIES}...")
@@ -140,7 +142,7 @@ def fetch_matches(api_key: str, league: LeagueInfo, season: int) -> Dict:
         return payload
 
 
-def write_snapshot(league: LeagueInfo, season: int, payload: Dict, force: bool) -> Path:
+def write_snapshot(league: LeagueInfo, season: int, payload: dict[str, Any], force: bool) -> Path:
     base_dir = Path("data") / "snapshots" / league.folder
     base_dir.mkdir(parents=True, exist_ok=True)
     target = base_dir / f"season_{season}.json"
@@ -156,7 +158,7 @@ def write_snapshot(league: LeagueInfo, season: int, payload: Dict, force: bool) 
     return target
 
 
-def main(argv: Optional[Iterable[str]] = None) -> None:
+def main(argv: Iterable[str] | None = None) -> None:
     args = parse_args(argv)
     try:
         league = LeagueInfo.from_key(args.league)

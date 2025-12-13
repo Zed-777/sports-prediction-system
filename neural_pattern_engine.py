@@ -1,12 +1,8 @@
-"""Shim to expose legacy neural pattern engine from legacy_files."""
-import importlib.util
-import os
-
-_path = os.path.join(os.path.dirname(__file__), 'legacy_files', 'neural_pattern_engine.py')
 """Shim to expose legacy neural pattern engine from legacy_files.
 
 Defensive loader: if the legacy module isn't available, exported symbol will be None.
 """
+
 import importlib.util
 import os
 from types import ModuleType
@@ -22,6 +18,6 @@ if _spec and _spec.loader:
         _legacy = None
 
 try:
-    NeuralPatternRecognition = getattr(_legacy, 'NeuralPatternRecognition') if _legacy is not None else None
+    NeuralPatternRecognition = _legacy.NeuralPatternRecognition if _legacy is not None else None
 except Exception:
     NeuralPatternRecognition = None

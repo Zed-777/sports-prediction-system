@@ -1,0 +1,22 @@
+Simple steps to transfer STATS to another Windows PC (plain English):
+
+1) In the STATS folder on your computer, run:
+   .\deploy\prepare_for_transfer.ps1
+   -> This makes a ZIP file like STATS_transfer_YYYYMMDD_HHMMSS.zip
+
+2) Copy that ZIP file to a USB drive.
+
+3) Plug the USB into the other computer and extract the ZIP to a folder, e.g., C:\STATS.
+
+4) On the other computer open PowerShell, go to C:\STATS and run:
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   pip install -r requirements.txt
+
+5) Run a quick test to ensure it's working:
+   $env:PYTHONPATH='C:\path\to\STATS'; python -m pytest -p no:pytest_asyncio tests/test_integration_flashscore.py -q
+   python generate_fast_reports.py generate 1 matches for la-liga
+
+Notes:
+- The prepare script excludes large caches and virtual environments to keep the ZIP small.
+- Keep any API keys or secrets off the ZIP. Add them on the new machine using .env or environment variables.

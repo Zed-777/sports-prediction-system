@@ -7,10 +7,11 @@ Phase 1: Enhanced data collection with player injuries, team form, weather, and 
 import json
 import os
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Union, Dict, List
 
 import numpy as np
 import requests
+from app.utils.http import safe_request_get
 
 
 @dataclass
@@ -20,13 +21,13 @@ class PlayerStatus:
     position: str
     status: str  # available, injured, suspended, doubtful
     impact_rating: float  # 0.0-1.0 (1.0 = crucial player)
-    expected_return: Optional[str] = None
+    expected_return: str | None = None
 
 @dataclass
 class TeamForm:
     """Recent team form analysis"""
     team_name: str
-    last_5_results: List[str]  # W, D, L
+    last_5_results: list[str]  # W, D, L
     goals_scored: int
     goals_conceded: int
     xg_for: float
@@ -55,7 +56,7 @@ class RefereeProfile:
 class RealTimeDataIntegrator:
     """Advanced real-time data integration system"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.football_api_key = os.getenv('FOOTBALL_DATA_API_KEY', '17405508d1774f46a368390ff07f8a31')
         self.weather_api_base = "https://api.open-meteo.com/v1/forecast"
         self.headers = {'X-Auth-Token': self.football_api_key}
@@ -100,12 +101,13 @@ class RealTimeDataIntegrator:
         try:
             # Get recent matches
             url = f"https://api.football-data.org/v4/teams/{team_id}/matches"
-            params = {
+            params: Dict[str, Union[str, int]] = {
                 'status': 'FINISHED',
                 'limit': 5
             }
+            params = {k: str(v) for k, v in params.items()}
 
-            response = requests.get(url, headers=self.headers, params=params, timeout=10)
+            response = safe_request_get(url, headers=self.headers, params=params, timeout=10, logger=None)
 
             if response.status_code == 200:
                 data = response.json()
@@ -117,7 +119,7 @@ class RealTimeDataIntegrator:
 
                 for match in matches:
                     home_team = match['homeTeam']['name']
-                    away_team = match['awayTeam']['name']
+                    match['awayTeam']['name']
                     home_score = match['score']['fullTime']['home']
                     away_score = match['score']['fullTime']['away']
 
@@ -179,7 +181,7 @@ class RealTimeDataIntegrator:
         """Get weather forecast for match location and date"""
 
         try:
-            params = {
+            params: Dict[str, Union[str, int, float]] = {
                 'latitude': latitude,
                 'longitude': longitude,
                 'start_date': match_date,
@@ -187,8 +189,9 @@ class RealTimeDataIntegrator:
                 'daily': 'temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max',
                 'timezone': 'Europe/Madrid'
             }
+            params = {k: str(v) for k, v in params.items()}
 
-            response = requests.get(self.weather_api_base, params=params, timeout=10)
+            response = safe_request_get(self.weather_api_base, params=params, timeout=10, logger=None)
 
             if response.status_code == 200:
                 data = response.json()
@@ -244,7 +247,7 @@ class RealTimeDataIntegrator:
             impact_score=0.0
         )
 
-    def get_player_availability_impact(self, team_name: str) -> Tuple[float, List[str]]:
+    def get_player_availability_impact(self, team_name: str) -> tuple[float, list[str]]:
         """Calculate team strength impact from player availability"""
 
         if team_name not in self.key_players:
@@ -269,7 +272,7 @@ class RealTimeDataIntegrator:
 
         return availability_multiplier, availability_notes
 
-    def get_referee_impact(self, referee_name: Optional[str] = None) -> RefereeProfile:
+    def get_referee_impact(self, referee_name: str | None = None) -> RefereeProfile:
         """Get referee profile and expected impact"""
 
         if referee_name and referee_name in self.referee_database:
@@ -279,7 +282,7 @@ class RealTimeDataIntegrator:
         import random
         return random.choice(list(self.referee_database.values()))
 
-    def integrate_realtime_data(self, match_data: Dict) -> Dict:
+    def integrate_realtime_data(self, match_data: Dict[str, Any]) -> Dict[str, Any]:
         """Integrate all real-time data sources for a match"""
 
         home_team = match_data['homeTeam']['name']
@@ -367,12 +370,11 @@ class RealTimeDataIntegrator:
 
     def _calculate_form_adjusted_probabilities(self, home_form: TeamForm, away_form: TeamForm,
                                             home_avail: float, away_avail: float,
-                                            weather: WeatherConditions, referee: RefereeProfile) -> Dict:
+                                            weather: WeatherConditions, referee: RefereeProfile) -> Dict[str, Any]:
         """Calculate probabilities adjusted for real-time factors"""
 
         # Base probabilities (from previous system)
         base_home = 0.45
-        base_draw = 0.25
         base_away = 0.30
 
         # Form adjustment
@@ -418,7 +420,7 @@ class RealTimeDataIntegrator:
             }
         }
 
-def main():
+def main() -> None:
     """Test real-time data integration"""
     integrator = RealTimeDataIntegrator()
 

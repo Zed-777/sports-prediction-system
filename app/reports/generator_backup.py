@@ -6,10 +6,12 @@ workspace without errors. The original implementation is preserved in
 repository history or external backups if needed.
 """
 
+from typing import Any
+
 __all__ = ["archived_generator_stub"]
 
 
-def archived_generator_stub(*_, **__):
+def archived_generator_stub(*args: Any, **kwargs: Any) -> None:
     """Placeholder function for archived report generator.
 
     This intentionally does nothing. Use the main `app.reports.generator`

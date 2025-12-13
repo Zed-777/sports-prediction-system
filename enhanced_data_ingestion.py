@@ -10,13 +10,15 @@ import logging
 import os
 import time
 import unicodedata
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional
+from typing import Any
 
 import requests
+from app.utils.http import safe_request_get
 
 # Import FlashScore integration
 try:
@@ -91,7 +93,7 @@ class LeagueConfig:
     code: str
     folder: str
     name: str
-    flashscore_url: Optional[str] = None
+    flashscore_url: str | None = None
 
     @classmethod
     def from_key(cls, key: str) -> "LeagueConfig":
@@ -145,7 +147,7 @@ class EnhancedDataIngestion:
             time.sleep(sleep_time)
         self.last_request = time.time()
 
-    def fetch_football_data_matches(self, league: LeagueConfig, season: int) -> Optional[Dict]:
+    def fetch_football_data_matches(self, league: LeagueConfig, season: int) -> dict[str, Any] | None:
         """Fetch match data from Football-Data.org"""
         url = f"https://api.football-data.org/v4/competitions/{league.code}/matches"
         params = {"season": season}
@@ -154,7 +156,7 @@ class EnhancedDataIngestion:
 
         try:
             logger.info(f"[DATA] Fetching {league.name} season {season} from Football-Data.org")
-            response = requests.get(url, headers=self.headers, params=params, timeout=30)
+            response = safe_request_get(url, headers=self.headers, params=params, timeout=30, retries=3, backoff=0.7, logger=logger)
             response.raise_for_status()
 
             data = response.json()
@@ -169,7 +171,7 @@ class EnhancedDataIngestion:
             logger.error(f"[ERROR] Failed to fetch Football-Data for {league.code} season {season}: {e}")
             return None
 
-    def fetch_flashscore_data(self, league: LeagueConfig, days_ahead: int = 30) -> Optional[Dict]:
+    def fetch_flashscore_data(self, league: LeagueConfig, days_ahead: int = 30) -> dict[str, Any] | None:
         """Fetch additional data from FlashScore"""
         if not self.flashscore_scraper or not league.flashscore_url:
             return None
@@ -183,7 +185,7 @@ class EnhancedDataIngestion:
             fixture_default = Path('data/cache/flashscore/fixtures') / f"{league.folder}.json"
             if fixture_env and Path(fixture_env).exists():
                 logger.debug(f"[FLASHSCORE] Loading fixture from {fixture_env}")
-                with open(fixture_env, 'r', encoding='utf-8') as f:
+                with open(fixture_env, encoding='utf-8') as f:
                     payload = json.load(f)
                 matches = payload.get('matches', [])
                 live_scores = payload.get('live_scores', [])
@@ -214,7 +216,7 @@ class EnhancedDataIngestion:
             logger.error(f"[ERROR] Failed to fetch FlashScore data for {league.name}: {e}")
             return None
 
-    def merge_data_sources(self, football_data: Dict, flashscore_data: Optional[Dict] = None) -> Dict:
+    def merge_data_sources(self, football_data: dict[str, Any], flashscore_data: dict[str, Any] | None = None) -> dict[str, Any]:
         """Merge data from multiple sources into enhanced dataset"""
         merged = dict(football_data)  # Start with Football-Data.org data
 
@@ -287,7 +289,7 @@ class EnhancedDataIngestion:
 
         return merged
 
-    def _calculate_data_quality(self, data: Dict) -> float:
+    def _calculate_data_quality(self, data: dict[str, Any]) -> float:
         """Calculate overall data quality score"""
         score = 50.0  # Base score
 
@@ -308,7 +310,7 @@ class EnhancedDataIngestion:
 
         return min(100.0, score)
 
-    def save_enhanced_snapshot(self, league: LeagueConfig, season: int, data: Dict, force: bool = False) -> Path:
+    def save_enhanced_snapshot(self, league: LeagueConfig, season: int, data: dict[str, Any], force: bool = False) -> Path:
         """Save enhanced multi-source data snapshot"""
         base_dir = Path("data/snapshots") / league.folder
         base_dir.mkdir(parents=True, exist_ok=True)
@@ -359,12 +361,12 @@ class EnhancedDataIngestion:
         enhanced_data = self.merge_data_sources(football_data, flashscore_data)
 
         # Save enhanced snapshot
-        snapshot_path = self.save_enhanced_snapshot(league, season, enhanced_data, force)
+        self.save_enhanced_snapshot(league, season, enhanced_data, force)
 
         logger.info(f"[SUCCESS] Enhanced ingestion complete for {league.name} season {season}")
         return True
 
-def parse_args(argv: Optional[Iterable[str]] = None) -> argparse.Namespace:
+def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Enhanced multi-source data ingestion system.")
     parser.add_argument("--league", required=True, help="League identifier (e.g. la-liga, premier-league).")
     parser.add_argument(
@@ -404,16 +406,16 @@ def parse_args(argv: Optional[Iterable[str]] = None) -> argparse.Namespace:
     )
     return parser.parse_args(list(argv) if argv is not None else None)
 
-def resolve_api_key(explicit: Optional[str]) -> str:
+def resolve_api_key(explicit: str | None) -> str:
     api_key = explicit or os.getenv("FOOTBALL_DATA_API_KEY")
     if not api_key:
         raise SystemExit("FOOTBALL_DATA_API_KEY not set and --api-key not provided.")
     return api_key
 
-def resolve_seasons(raw: Optional[str], years_back: int) -> List[int]:
+def resolve_seasons(raw: str | None, years_back: int) -> list[int]:
     current_year = datetime.utcnow().year
     if raw:
-        seasons: List[int] = []
+        seasons: list[int] = []
         for chunk in raw.split(","):
             chunk = chunk.strip()
             if not chunk:
@@ -426,7 +428,7 @@ def resolve_seasons(raw: Optional[str], years_back: int) -> List[int]:
     # Football seasons refer to starting year; assume we want completed seasons.
     return [current_year - offset for offset in range(1, years_back + 1)]
 
-def main(argv: Optional[Iterable[str]] = None) -> None:
+def main(argv: Iterable[str] | None = None) -> None:
     args = parse_args(argv)
 
     # Handle live-only mode

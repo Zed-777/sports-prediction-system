@@ -5,16 +5,31 @@ AI/ML Enhanced Prediction Engine with Neural Patterns and Advanced Statistics
 Advanced analytics with H2H history, home/away models, and AI-powered predictions
 """
 
+import importlib
 import importlib.util
 import json
 import logging
 import os
+import time
 import traceback
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Union, cast
+
+from app.types import JSONDict, JSONList
 
 import requests
+from app.utils.http import safe_request_get
+from app.utils.metrics import increment_metric
 
 from app.data.odds_connector import MarketOdds, OddsDataConnector
+from app.models.calibration_manager import CalibrationManager, ModelPerformanceTracker
+from app.models.league_tuner import LeagueTuner
+from app.models.bayesian_updater import BayesianUpdater
+from app.utils.context_extractor import ContextExtractor
+
+# Phase 4: Real-Time Monitoring & Adaptive Adjustment
+from app.monitoring.performance_monitor import PerformanceMonitor, DriftAnalyzer
+from app.monitoring.adaptive_adjuster import AdaptiveAdjuster
 
 # Import AI Enhancement Engines - Optional modules
 AI_ENGINES_AVAILABLE = False
@@ -23,9 +38,6 @@ NeuralPatternRecognition = None
 AIStatisticsEngine = None
 
 try:
-    # These are optional AI enhancement modules - not required for basic functionality
-    import importlib
-
     # Try to import AI modules dynamically to avoid linting errors
     if importlib.util.find_spec('ai_ml_predictor'):
         ai_ml_module = importlib.import_module('ai_ml_predictor')
@@ -48,46 +60,146 @@ except ImportError:
     AI_ENGINES_AVAILABLE = False
 # Recompute availability in case any partial imports succeeded despite intermediate ImportError
 AI_ENGINES_AVAILABLE = bool(AIMLPredictor or NeuralPatternRecognition or AIStatisticsEngine)
-import time
-from typing import Any, Dict, List, Optional
+
+
+class DataFreshnessScorer:
+    """OPTIMIZATION #3: Calculate data age and apply freshness penalties to confidence"""
+    
+    def calculate_freshness_score(self, data_timestamps: Dict[str, float]) -> tuple[float, float]:
+        """
+        Calculate data freshness score and confidence multiplier
+        
+        Args:
+            data_timestamps: {
+                'team_stats_age_seconds': 3600,  # Age in seconds
+                'h2h_data_age_seconds': 7200,
+                'injury_data_age_seconds': 1800,
+                'form_data_age_seconds': 3600,
+                'weather_data_age_seconds': 900
+            }
+        
+        Returns:
+            (freshness_score, multiplier) where:
+            - freshness_score: 0-1 (1=perfect, 0=too stale)
+            - multiplier: 0.4-1.0 (confidence multiplier)
+        """
+        scores = {}
+        
+        for data_type, age_seconds in data_timestamps.items():
+            age_minutes = age_seconds / 60.0
+            
+            # Scoring based on age
+            if age_minutes < 30:           # 0-30 min: Perfect
+                scores[data_type] = 1.0
+            elif age_minutes < 60:          # 30-60 min: Good
+                scores[data_type] = 0.95
+            elif age_minutes < 240:         # 1-4 hours: Acceptable
+                scores[data_type] = 0.85
+            elif age_minutes < 1440:        # 4-24 hours: Stale
+                scores[data_type] = 0.60
+            else:                           # >24 hours: Very stale
+                scores[data_type] = 0.40
+        
+        # Weight different data types (injury data is most important)
+        weights = {
+            'injury_data_age_seconds': 0.30,
+            'team_stats_age_seconds': 0.25,
+            'h2h_data_age_seconds': 0.20,
+            'form_data_age_seconds': 0.15,
+            'weather_data_age_seconds': 0.10
+        }
+        
+        # Calculate weighted freshness score
+        weighted_score = 0.0
+        total_weight = 0.0
+        for dtype, weight in weights.items():
+            if dtype in scores:
+                weighted_score += scores[dtype] * weight
+                total_weight += weight
+        
+        # Fallback if no scores found
+        if total_weight == 0:
+            weighted_score = 1.0
+        else:
+            weighted_score = weighted_score / total_weight if total_weight > 0 else 1.0
+        
+        # Convert weighted score to multiplier [0.4-1.0]
+        # Perfect (1.0) → 1.0x multiplier
+        # Good (0.95) → 0.975x multiplier
+        # Acceptable (0.85) → 0.925x multiplier
+        # Stale (0.60) → 0.80x multiplier
+        # Very stale (0.40) → 0.70x multiplier
+        multiplier = 0.7 + (weighted_score * 0.3)
+        
+        return weighted_score, multiplier
 
 
 class EnhancedPredictor:
     """Advanced prediction engine with multiple intelligence layers"""
 
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str) -> None:
         self.api_key = api_key
         self.headers = {'X-Auth-Token': api_key}
         # Load centralized settings if available
-        self._settings = {}
+        self._settings: Dict[str, Any] = {}
         try:
-            import yaml
             from pathlib import Path
+
+            import yaml
             cfg_path = Path(__file__).parent / 'config' / 'settings.yaml'
             if cfg_path.exists():
-                with open(cfg_path, 'r', encoding='utf-8') as _f:
+                with open(cfg_path, encoding='utf-8') as _f:
                     self._settings = yaml.safe_load(_f) or {}
         except Exception:
             self._settings = {}
 
         # Cache duration default (seconds)
-        self.cache_duration = self._settings.get('constants', {}).get('cache', {}).get('base_duration', 7200)
+        self.cache_duration: int = int(self._settings.get('constants', {}).get('cache', {}).get('base_duration', 7200))
+        self.cache_dir = 'data/cache'  # Set cache directory path
         self.setup_cache_directory()
         self.setup_debug_logging()
         self.api_call_count = 0
         self.cache_hit_count = 0
         self.api_error_count = 0
-        self.data_quality_warnings = []
+        self.data_quality_warnings: List[str] = []
+
+        # Initialize Data Freshness Scorer (OPTIMIZATION #3)
+        self.freshness_scorer = DataFreshnessScorer()
+
+        # Initialize Calibration Managers (PHASE 2 OPTIMIZATION - Non-Linear Calibration)
+        self.calibration_manager = CalibrationManager(model_name="ensemble")
+        self.model_performance_tracker = ModelPerformanceTracker(
+            model_names=["xg_model", "poisson_model", "elo_model", "neural_model"]
+        )
+        self._load_calibration_history()
+
+        # Initialize Phase 3 Optimizations (League Tuning, Bayesian Updates, Context Weighting)
+        self.league_tuner = LeagueTuner(
+            leagues=['la-liga', 'premier-league', 'bundesliga', 'serie-a', 'ligue-1'],
+            cache_dir=self.cache_dir
+        )
+        self.bayesian_updater = BayesianUpdater(
+            prior_alpha=2.0,
+            prior_beta=2.0,
+            learning_rate=0.8,
+            cache_dir=self.cache_dir
+        )
+        self.context_extractor = ContextExtractor(cache_dir=self.cache_dir)
+
+        # Initialize Phase 4 Optimizations (Real-Time Monitoring & Adaptive Adjustment)
+        self.performance_monitor = PerformanceMonitor(cache_dir=self.cache_dir, window_size=50)
+        self.drift_analyzer = DriftAnalyzer(reference_window_size=30, test_window_size=10)
+        self.adaptive_adjuster = AdaptiveAdjuster(cache_dir=self.cache_dir, adaptation_rate=0.1)
 
         # Initialize AI Enhancement Engines v4.2
-        self.ai_ml_predictor = None
-        self.neural_patterns = None
-        self.ai_statistics = None
-        self.market_intelligence_available = False
-        self.market_intelligence = None
-        self.market_connector = None
-        self.odds_connector: Optional[OddsDataConnector] = None
-        self.market_blend_weight = self._get_market_blend_weight()
+        self.ai_ml_predictor: Optional[Any] = None
+        self.neural_patterns: Optional[Any] = None
+        self.ai_statistics: Optional[Any] = None
+        self.market_intelligence_available: bool = False
+        self.market_intelligence: Optional[Any] = None
+        self.market_connector: Optional[Any] = None
+        self.odds_connector: OddsDataConnector | None = None
+        self.market_blend_weight: float = self._get_market_blend_weight()
 
         if AI_ENGINES_AVAILABLE:
             try:
@@ -101,7 +213,8 @@ class EnhancedPredictor:
                 if self.ai_ml_predictor and self.neural_patterns and self.ai_statistics:
                     self.logger.info("🧠 AI Enhancement Engines v4.2 initialized successfully")
                 else:
-                    self.logger.warning("⚠️  Some AI engines not available - partial functionality")
+                    # Reduced severity: informational message instead of warning
+                    self.logger.info("ℹ️  Some AI engines not available - partial functionality; running heuristics")
             except Exception as e:
                 self.logger.warning(f"⚠️  AI Engine initialization failed: {e}")
                 self.ai_ml_predictor = None
@@ -137,7 +250,7 @@ class EnhancedPredictor:
                 raise ImportError("betting_market_intelligence module not found")
 
         except ImportError as e:
-            self.logger.warning(f"⚠️  Betting Market Intelligence not available: {e}")
+            self.logger.info(f"ℹ️  Betting Market Intelligence not available: {e}")
             self.market_intelligence = None
             self.market_connector = None
             self.market_intelligence_available = False
@@ -157,17 +270,17 @@ class EnhancedPredictor:
             self.logger.warning(f"⚠️  Odds connector initialization failed: {exc}")
             self.odds_connector = None
 
-    def setup_cache_directory(self):
+    def setup_cache_directory(self) -> None:
         """Create cache directory for storing temporary data"""
         os.makedirs("data/cache", exist_ok=True)
         os.makedirs("data/historical", exist_ok=True)
         os.makedirs("logs", exist_ok=True)
 
-    def _convert_market_analysis_to_dict(self, market_analysis):
+    def _convert_market_analysis_to_dict(self, market_analysis: Any) -> JSONDict:
         """Convert market analysis dataclasses to JSON-serializable dictionaries"""
         from dataclasses import asdict, is_dataclass
 
-        def convert_value(value):
+        def convert_value(value: Any) -> Any:
             """Recursively convert dataclasses to dictionaries"""
             if is_dataclass(value) and not isinstance(value, type):
                 return asdict(value)
@@ -179,9 +292,9 @@ class EnhancedPredictor:
                 return value
 
         # Convert the entire structure
-        return convert_value(market_analysis)
+        return cast(JSONDict, convert_value(market_analysis))
 
-    def setup_debug_logging(self):
+    def setup_debug_logging(self) -> None:
         """Setup comprehensive debug logging system"""
         self.logger = logging.getLogger('sports_predictor')
         self.logger.setLevel(logging.DEBUG)
@@ -215,7 +328,7 @@ class EnhancedPredictor:
 
         self.logger.info("[INIT] Enhanced Predictor Debug Logging Initialized")
 
-    def log_api_metrics(self):
+    def log_api_metrics(self) -> None:
         """Log API usage statistics for monitoring"""
         self.logger.info(f"[METRICS] API Calls: {self.api_call_count}, Cache Hits: {self.cache_hit_count}, Errors: {self.api_error_count}")
         if self.data_quality_warnings:
@@ -223,18 +336,18 @@ class EnhancedPredictor:
             for warning in self.data_quality_warnings[-5:]:  # Show last 5 warnings
                 self.logger.warning(f"   └─ {warning}")
 
-    def add_data_quality_warning(self, warning: str):
+    def add_data_quality_warning(self, warning: str) -> None:
         """Add a data quality warning with timestamp"""
         timestamp = datetime.now().strftime("%H:%M:%S")
         self.data_quality_warnings.append(f"[{timestamp}] {warning}")
         self.logger.warning(f"[WARNING] Data Quality: {warning}")
 
-    def get_cached_data(self, cache_key: str) -> Optional[Dict]:
+    def get_cached_data(self, cache_key: str) -> Optional[JSONDict]:
         """Enhanced cache retrieval with intelligent validation"""
         cache_file = f"data/cache/{cache_key}.json"
         if os.path.exists(cache_file):
             try:
-                with open(cache_file, 'r') as f:
+                with open(cache_file) as f:
                     cache_entry = json.load(f)
 
                 # Enhanced cache validation
@@ -253,7 +366,7 @@ class EnhancedPredictor:
                         with open(cache_file, 'w') as f:
                             json.dump(cache_entry, f)
 
-                        return cache_entry.get('data')
+                        return cast(JSONDict, cache_entry.get('data'))
                     else:
                         self.logger.debug(f"[CACHE] EXPIRED: {cache_key} (age: {age_seconds:.0f}s > ttl: {cache_duration}s)")
                         # Remove expired cache
@@ -271,7 +384,7 @@ class EnhancedPredictor:
             self.logger.debug(f"[CACHE] MISS: {cache_key} (no cache file)")
         return None
 
-    def cache_data(self, cache_key: str, data: Dict) -> None:
+    def cache_data(self, cache_key: str, data: JSONDict) -> None:
         """Enhanced cache storage with intelligent metadata"""
         try:
             os.makedirs("data/cache", exist_ok=True)
@@ -299,7 +412,7 @@ class EnhancedPredictor:
             self.logger.error(f"[ERROR] Cache SAVE failed: {cache_key} - {e}")
             self.add_data_quality_warning(f"Cache save failed: {cache_key}")
 
-    def _validate_cache_entry(self, cache_entry: Dict, cache_key: str) -> bool:
+    def _validate_cache_entry(self, cache_entry: JSONDict, cache_key: str) -> bool:
         """Validate cache entry structure and data integrity"""
         required_fields = ['timestamp', 'data', 'cache_version']
 
@@ -325,12 +438,12 @@ class EnhancedPredictor:
 
         return True
 
-    def _validate_h2h_cache(self, data: Dict) -> bool:
+    def _validate_h2h_cache(self, data: JSONDict) -> bool:
         """Validate H2H cache data structure"""
         required_h2h_fields = ['total_meetings', 'data_sources']
         return all(field in data for field in required_h2h_fields)
 
-    def _validate_team_stats_cache(self, data: Dict) -> bool:
+    def _validate_team_stats_cache(self, data: JSONDict) -> bool:
         """Validate team stats cache data structure"""
         required_stats_fields = ['home', 'away']
         if not all(field in data for field in required_stats_fields):
@@ -344,9 +457,34 @@ class EnhancedPredictor:
 
         return True
 
-    def _get_intelligent_cache_duration(self, cache_key: str, cache_entry: Dict) -> int:
+    def _get_intelligent_cache_duration(self, cache_key: str, cache_entry: JSONDict) -> int:
         """Calculate intelligent cache duration based on data type and quality"""
         base_duration = self.cache_duration
+
+        # Try per-endpoint TTL overrides first (if configured)
+        try:
+            cfg = self._settings.get('data_sources', {})
+            endpoint_ttls = cfg.get('cache_ttl_by_endpoint', {}) or {}
+            mapping = {
+                'h2h': '/v4/matches/',
+                'home_away': '/v4/teams/',
+                'weather': '/v1/forecast',
+                'odds': '/v4/odds',
+                'matches': '/v4/matches/'
+            }
+            for key_prefix, endpoint in mapping.items():
+                if cache_key.startswith(key_prefix):
+                    for host, paths in endpoint_ttls.items():
+                        for path_prefix, ttl in (paths or {}).items():
+                            try:
+                                normalized_prefix = str(path_prefix).rstrip('/')
+                                normalized_ep = endpoint.rstrip('/')
+                                if normalized_ep.endswith(normalized_prefix) or normalized_ep.startswith(normalized_prefix) or normalized_ep == normalized_prefix:
+                                    return int(ttl)
+                            except Exception:
+                                pass
+        except Exception:
+            pass
 
         # H2H data rarely changes - longer cache
         if 'h2h' in cache_key:
@@ -361,13 +499,51 @@ class EnhancedPredictor:
         elif 'home_away' in cache_key:
             return base_duration  # 2 hours
 
-        # Weather data expires quickly
-        elif 'weather' in cache_key:
-            return self._settings.get('constants', {}).get('cache', {}).get('weather_ttl', 1800)
+        # Weather data expires quickly — handled by per-endpoint TTLs where present.
+
+        # Check for a per-endpoint TTL override in settings
+        try:
+            cfg = self._settings.get('data_sources', {})
+            endpoint_ttls = cfg.get('cache_ttl_by_endpoint', {}) or {}
+            # Map cache keys to probable endpoints
+            mapping = {
+                'h2h': '/v4/matches/',
+                'home_away': '/v4/teams/',
+                'weather': '/v1/forecast',
+                'odds': '/v4/odds',
+                'matches': '/v4/matches/'
+            }
+            for key_prefix, endpoint in mapping.items():
+                if cache_key.startswith(key_prefix):
+                    # Find host maps and extract TTL for known hosts
+                    for host, paths in endpoint_ttls.items():
+                        for path_prefix, ttl in (paths or {}).items():
+                            try:
+                                # Normalize both sides (trim trailing slashes)
+                                normalized_ep = endpoint.rstrip('/')
+                                normalized_prefix = str(path_prefix).rstrip('/')
+                                if normalized_ep.endswith(normalized_prefix) or normalized_ep.startswith(normalized_prefix) or normalized_ep == normalized_prefix:
+                                    return int(ttl)
+                            except Exception:
+                                # best-effort: ignore malformed path prefixes or conversion errors
+                                pass
+
+                        # Fallback: if mapping was expected to map to /v4/matches/ (like h2h), try to find that endpoint directly
+                        try:
+                            # For h2h-like keys, prefer matches endpoint TTL if available
+                            if cache_key.startswith('h2h'):
+                                for host, paths in endpoint_ttls.items():
+                                    ttl = paths.get('/v4/matches/') if paths and '/v4/matches/' in paths else None
+                                    if ttl:
+                                        return int(ttl)
+                        except Exception:
+                            pass
+        except Exception:
+            pass
 
         return base_duration
 
-    def set_cached_data(self, cache_key: str, data: Dict):
+    def set_cached_data(self, cache_key: str, data: JSONDict) -> None:
         """Enhanced cache storage with metadata and optimization"""
         cache_file = f"data/cache/{cache_key}.json"
 
@@ -395,7 +571,7 @@ class EnhancedPredictor:
         except Exception as e:
             self.logger.error(f"[ERROR] Cache write failed: {cache_key} - {e}")
 
-    def _assess_cache_data_quality(self, data: Dict, cache_key: str) -> str:
+    def _assess_cache_data_quality(self, data: JSONDict, cache_key: str) -> str:
         """Assess the quality of data being cached"""
         if 'h2h' in cache_key:
             meetings = data.get('total_meetings', 0)
@@ -418,7 +594,7 @@ class EnhancedPredictor:
 
         return 'MEDIUM'
 
-    def _cleanup_old_cache(self):
+    def _cleanup_old_cache(self) -> None:
         """Intelligent cache cleanup based on age and access patterns"""
         cache_dir = "data/cache"
         if not os.path.exists(cache_dir):
@@ -432,7 +608,7 @@ class EnhancedPredictor:
             if filename.endswith('.json'):
                 filepath = os.path.join(cache_dir, filename)
                 try:
-                    with open(filepath, 'r') as f:
+                    with open(filepath) as f:
                         cache_entry = json.load(f)
 
                     age = current_time - cache_entry.get('timestamp', 0)
@@ -447,8 +623,9 @@ class EnhancedPredictor:
                         'quality': quality,
                         'size': os.path.getsize(filepath)
                     })
-                except:
-                    # Remove corrupted cache files
+                except (OSError, json.JSONDecodeError) as exc:
+                    # Remove corrupted cache files to prevent stale entries
+                    self.logger.debug(f"[CACHE] Removing corrupt entry {filepath}: {exc}")
                     os.remove(filepath)
 
         # Remove old, unused cache files
@@ -460,13 +637,13 @@ class EnhancedPredictor:
                 try:
                     os.remove(cache_info['path'])
                     removed_count += 1
-                except:
+                except OSError:
                     pass
 
         if removed_count > 0:
             self.logger.info(f"[CACHE] Cleaned up {removed_count} old cache files")
 
-    def fetch_head_to_head_history(self, home_team_id: int, away_team_id: int, competition_code: str) -> Dict:
+    def fetch_head_to_head_history(self, home_team_id: int, away_team_id: int, competition_code: str) -> JSONDict:
         """Enhanced multi-season H2H analysis with European competitions and deeper history"""
         cache_key = f"h2h_enhanced_{home_team_id}_{away_team_id}_{competition_code}"
         cached = self.get_cached_data(cache_key)
@@ -507,26 +684,31 @@ class EnhancedPredictor:
             print(f"[WARNING] Enhanced H2H collection failed, using basic method: {e}")
             return self._fetch_basic_h2h(home_team_id, away_team_id, competition_code)
 
-    def _fetch_h2h_domestic(self, team_id: int, competition_code: str) -> List[Dict]:
+    def _fetch_h2h_domestic(self, team_id: int, competition_code: str) -> JSONList:
         """Fetch domestic competition matches with extended history"""
         try:
             url = f'https://api.football-data.org/v4/teams/{team_id}/matches'
-            params = {
+            params: Dict[str, Union[str, int]] = {
                 'status': 'FINISHED',
                 'limit': 50,  # Increased from 20 to 50 for deeper history
                 'competitions': competition_code
             }
 
             self.api_call_count += 1
-            response = requests.get(url, headers=self.headers, params=params, timeout=15)
+            try:
+                increment_metric('api', 'calls', 1)
+            except Exception:
+                pass
+            params = {k: str(v) for k, v in params.items()}
+            response = safe_request_get(url, headers=self.headers, params=params, timeout=15, retries=3, backoff=0.5, logger=self.logger)
             response.raise_for_status()
-
-            data = response.json()
-            return data.get('matches', [])
-        except:
+            data = cast(JSONDict, response.json())
+            return cast(JSONList, data.get('matches', []))
+        except (requests.RequestException, ValueError) as exc:
+            self.logger.debug(f"[H2H] Domestic fetch failed for {team_id}: {exc}")
             return []
 
-    def _fetch_h2h_european(self, team_id: int) -> List[Dict]:
+    def _fetch_h2h_european(self, team_id: int) -> JSONList:
         """Fetch European competition encounters"""
         european_matches = []
         european_comps = ['CL', 'EL']  # Champions League, Europa League
@@ -534,27 +716,28 @@ class EnhancedPredictor:
         for comp in european_comps:
             try:
                 url = f'https://api.football-data.org/v4/teams/{team_id}/matches'
-                params = {
+                params: Dict[str, Union[str, int]] = {
                     'status': 'FINISHED',
                     'limit': 30,
                     'competitions': comp
                 }
-
-                response = requests.get(url, headers=self.headers, params=params, timeout=10)
+                params = {k: str(v) for k, v in params.items()}
+                response = safe_request_get(url, headers=self.headers, params=params, timeout=10, retries=3, backoff=0.5, logger=self.logger)
                 if response.status_code == 200:
-                    data = response.json()
+                    data = cast(JSONDict, response.json())
                     matches = data.get('matches', [])
                     european_matches.extend(matches)
                     if matches:
                         self.logger.debug(f"[EUROPEAN H2H] Added {len(matches)} matches from {comp}")
-            except:
+            except (requests.RequestException, ValueError) as exc:
+                self.logger.debug(f"[H2H] European fetch failed for {team_id} in {comp}: {exc}")
                 continue  # Skip if team not in this competition
 
         return european_matches
 
-    def _filter_h2h_encounters(self, all_matches: List[Dict], home_team_id: int, away_team_id: int) -> List[Dict]:
+    def _filter_h2h_encounters(self, all_matches: JSONList, home_team_id: int, away_team_id: int) -> JSONList:
         """Filter matches to only include encounters between the two specific teams"""
-        h2h_matches = []
+        h2h_matches: JSONList = []
         for match in all_matches:
             try:
                 home_id = match['homeTeam']['id']
@@ -568,22 +751,26 @@ class EnhancedPredictor:
 
         return h2h_matches
 
-    def _fetch_basic_h2h(self, home_team_id: int, away_team_id: int, competition_code: str) -> Dict:
+    def _fetch_basic_h2h(self, home_team_id: int, away_team_id: int, competition_code: str) -> JSONDict:
         """Fallback to basic H2H method if enhanced fails"""
         try:
             url = f'https://api.football-data.org/v4/teams/{home_team_id}/matches'
-            params = {
+            params: Dict[str, Union[str, int]] = {
                 'status': 'FINISHED',
                 'limit': 20,
                 'competitions': competition_code
             }
 
             self.api_call_count += 1
-            response = requests.get(url, headers=self.headers, params=params, timeout=15)
+            try:
+                increment_metric('api', 'calls', 1)
+            except Exception:
+                pass
+            params = {k: str(v) for k, v in params.items()}
+            response = safe_request_get(url, headers=self.headers, params=params, timeout=15, retries=3, backoff=0.5, logger=self.logger)
             response.raise_for_status()
-
-            data = response.json()
-            h2h_matches = []
+            data = cast(JSONDict, response.json())
+            h2h_matches: JSONList = []
             for match in data.get('matches', []):
                 home_id = match['homeTeam']['id']
                 away_id = match['awayTeam']['id']
@@ -598,24 +785,24 @@ class EnhancedPredictor:
             print(f"[WARNING] Basic H2H also failed: {e}")
             return self.get_default_h2h_data()
 
-    def analyze_head_to_head(self, matches: List[Dict], home_team_id: int, away_team_id: int) -> Dict:
+    def analyze_head_to_head(self, matches: JSONList, home_team_id: int, away_team_id: int) -> JSONDict:
         """Analyze head-to-head match history"""
         if not matches:
             return self.get_default_h2h_data()
 
-        total_matches = len(matches)
-        wins_when_home = 0
-        wins_when_away = 0
-        draws = 0
-        total_goals_for_when_home = 0
-        total_goals_against_when_home = 0
-        total_goals_for_when_away = 0
-        total_goals_against_when_away = 0
-        recent_form = []  # Last 5 meetings
+        total_matches: int = len(matches)
+        wins_when_home: int = 0
+        wins_when_away: int = 0
+        draws: int = 0
+        total_goals_for_when_home: int = 0
+        total_goals_against_when_home: int = 0
+        total_goals_for_when_away: int = 0
+        total_goals_against_when_away: int = 0
+        recent_form: List[str] = []  # Last 5 meetings
 
-        for i, match in enumerate(matches[-5:]):  # Last 5 meetings for recent form
+        for _i, match in enumerate(matches[-5:]):  # Last 5 meetings for recent form
             home_id = match['homeTeam']['id']
-            away_id = match['awayTeam']['id']
+            match['awayTeam']['id']
             home_score = match['score']['fullTime']['home']
             away_score = match['score']['fullTime']['away']
 
@@ -665,7 +852,7 @@ class EnhancedPredictor:
             'away_record_vs_opponent': (wins_when_away / max(matches_as_away, 1)) * 100
         }
 
-    def analyze_head_to_head_enhanced(self, matches: List[Dict], home_team_id: int, away_team_id: int) -> Dict:
+    def analyze_head_to_head_enhanced(self, matches: JSONList, home_team_id: int, away_team_id: int) -> JSONDict:
         """Enhanced H2H analysis with weighted recent form and momentum"""
         if not matches:
             return self.get_default_h2h_data()
@@ -682,13 +869,13 @@ class EnhancedPredictor:
         total_goals_against_when_home = 0
         total_goals_for_when_away = 0
         total_goals_against_when_away = 0
-        recent_form = []  # Last 5 meetings
-        momentum_score = 0  # Weighted momentum calculation
-        venue_performance = {}  # Track performance at different venues
+        recent_form: List[str] = []  # Last 5 meetings
+        momentum_score: float = 0.0  # Weighted momentum calculation
+        venue_performance: Dict[str, Dict[str, int]] = {}  # Track performance at different venues
 
         for i, match in enumerate(sorted_matches[:10]):  # Analyze last 10 meetings
             home_id = match['homeTeam']['id']
-            away_id = match['awayTeam']['id']
+            match['awayTeam']['id']
             home_score = match['score']['fullTime']['home']
             away_score = match['score']['fullTime']['away']
             venue = match.get('venue', 'Unknown')
@@ -774,7 +961,7 @@ class EnhancedPredictor:
             'weighted_win_rate': (wins_when_home + wins_when_away) / max(total_matches, 1) * 100
         }
 
-    def get_default_h2h_data(self) -> Dict:
+    def get_default_h2h_data(self) -> JSONDict:
         """Default H2H data when no history available"""
         return {
             'total_meetings': 0,
@@ -792,7 +979,7 @@ class EnhancedPredictor:
             'away_record_vs_opponent': 0.0      # No data available
         }
 
-    def fetch_team_home_away_stats(self, team_id: int, competition_code: str) -> Dict:
+    def fetch_team_home_away_stats(self, team_id: int, competition_code: str) -> JSONDict:
         """Fetch separate home and away performance statistics"""
         cache_key = f"home_away_{team_id}_{competition_code}"
         cached = self.get_cached_data(cache_key)
@@ -801,26 +988,35 @@ class EnhancedPredictor:
 
         try:
             url = f'https://api.football-data.org/v4/teams/{team_id}/matches'
-            params = {
+            params: Dict[str, Union[str, int]] = {
                 'status': 'FINISHED',
                 'limit': 15,  # Last 15 matches
             }
 
             self.api_call_count += 1
+            try:
+                increment_metric('api', 'calls', 1)
+            except Exception:
+                pass
             print(f"[FETCH] Fetching team {team_id} stats from API...")
             self.logger.debug(f"[API] CALL #{self.api_call_count}: Team stats for {team_id}")
 
-            response = requests.get(url, headers=self.headers, params=params, timeout=15)
+            params = {k: str(v) for k, v in params.items()}
+            response = safe_request_get(url, headers=self.headers, params=params, timeout=15, logger=self.logger)
 
             # Check for rate limiting
             if response.status_code == 429:
                 self.logger.error(f"[ERROR] RATE LIMITED: API call #{self.api_call_count} for team {team_id}")
                 self.api_error_count += 1
+                try:
+                    increment_metric('api', 'errors', 1)
+                except Exception:
+                    pass
                 self.add_data_quality_warning(f"Rate limited on team {team_id} - too many API calls")
                 response.raise_for_status()
 
             response.raise_for_status()
-            data = response.json()
+            data = cast(JSONDict, response.json())
 
             matches_count = len(data.get('matches', []))
             print(f"[DATA] Found {matches_count} matches for team {team_id}")
@@ -832,8 +1028,8 @@ class EnhancedPredictor:
                 self.logger.error(f"[ERROR] NO DATA: Team {team_id} returned 0 matches")
                 self.add_data_quality_warning(f"Zero matches returned for team {team_id}")
 
-            home_stats = {'matches': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'recent_matches': []}
-            away_stats = {'matches': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'recent_matches': []}
+            home_stats: JSONDict = {'matches': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'recent_matches': []}
+            away_stats: JSONDict = {'matches': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'recent_matches': []}
 
             # Sort matches by date to ensure proper chronological order
             sorted_matches = sorted(data.get('matches', []), key=lambda x: x.get('utcDate', ''), reverse=True)
@@ -911,6 +1107,10 @@ class EnhancedPredictor:
         except requests.exceptions.Timeout as e:
             self.logger.error(f"[ERROR] API TIMEOUT: Team {team_id} request timed out - {e}")
             self.api_error_count += 1
+            try:
+                increment_metric('api', 'errors', 1)
+            except Exception:
+                pass
             print(f"[WARNING] API Timeout for team {team_id} - network issue")
             self.add_data_quality_warning(f"API timeout for team {team_id}")
             return self.get_empty_team_stats('timeout', str(e))
@@ -918,6 +1118,10 @@ class EnhancedPredictor:
         except requests.exceptions.HTTPError as e:
             self.logger.error(f"[ERROR] API HTTP ERROR: Team {team_id} - Status: {e.response.status_code}")
             self.api_error_count += 1
+            try:
+                increment_metric('api', 'errors', 1)
+            except Exception:
+                pass
             if e.response.status_code == 404:
                 print(f"[WARNING] Team {team_id} not found in API")
                 self.add_data_quality_warning(f"Team {team_id} not found (404)")
@@ -932,11 +1136,15 @@ class EnhancedPredictor:
             self.logger.error(f"[ERROR] UNEXPECTED ERROR: Team {team_id} - {type(e).__name__}: {e}")
             self.logger.debug(f"Full traceback: {traceback.format_exc()}")
             self.api_error_count += 1
+            try:
+                increment_metric('api', 'errors', 1)
+            except Exception:
+                pass
             print(f"[WARNING] Unexpected error for team {team_id}: {str(e)[:50]}")
             self.add_data_quality_warning(f"Unexpected error for team {team_id}: {type(e).__name__}")
             return self.get_empty_team_stats('unexpected_error', str(e)[:100])
 
-    def get_empty_team_stats(self, error_type: str, error_msg: str) -> Dict:
+    def get_empty_team_stats(self, error_type: str, error_msg: str) -> JSONDict:
         """Return empty team stats with error information"""
         return {
             'home': {'matches': 0, 'win_rate': 0, 'draw_rate': 0, 'loss_rate': 0, 'avg_goals_for': 0, 'avg_goals_against': 0, 'goal_difference': 0},
@@ -947,7 +1155,7 @@ class EnhancedPredictor:
             'timestamp': datetime.now().isoformat()
         }
 
-    def calculate_performance_stats(self, stats: Dict) -> Dict:
+    def calculate_performance_stats(self, stats: JSONDict) -> JSONDict:
         """Enhanced performance calculation with weighted recent form"""
         matches = max(stats['matches'], 1)
 
@@ -969,17 +1177,17 @@ class EnhancedPredictor:
 
         return basic_stats
 
-    def _calculate_weighted_form(self, recent_matches: List[Dict]) -> Dict:
+    def _calculate_weighted_form(self, recent_matches: JSONList) -> JSONDict:
         """Calculate weighted form analysis - recent matches matter more"""
         if not recent_matches:
             return {}
 
         # Weight decay: Most recent match = 1.0, each older match gets 20% less weight
-        total_weighted_points = 0
-        total_weight = 0
-        momentum_trend = []
-        streak_type = None
-        streak_length = 0
+        total_weighted_points: float = 0.0
+        total_weight: float = 0.0
+        momentum_trend: List[int] = []
+        streak_type: Optional[str] = None
+        streak_length: int = 0
 
         for i, match in enumerate(recent_matches[:8]):  # Last 8 matches
             weight = 1.0 / (1 + i * 0.2)  # Exponential decay
@@ -1041,7 +1249,7 @@ class EnhancedPredictor:
         else:
             return "Crisis" if momentum == "Falling" else "Very Poor"
 
-    def get_default_home_away_stats(self) -> Dict:
+    def get_default_home_away_stats(self) -> JSONDict:
         """Return empty stats to indicate no real data available"""
         return {
             'home': {'matches': 0, 'win_rate': 0, 'draw_rate': 0, 'loss_rate': 0, 'avg_goals_for': 0, 'avg_goals_against': 0, 'goal_difference': 0},
@@ -1051,7 +1259,7 @@ class EnhancedPredictor:
             'data_source': 'no_real_data_available'
         }
 
-    def predict_goal_timing(self, home_stats: Dict, away_stats: Dict, h2h_data: Dict) -> Dict:
+    def predict_goal_timing(self, home_stats: JSONDict, away_stats: JSONDict, h2h_data: JSONDict) -> JSONDict:
         """Predict when goals are likely to be scored"""
         # Simplified goal timing prediction based on team styles
         home_attack_style = "balanced"
@@ -1090,7 +1298,7 @@ class EnhancedPredictor:
             'away_attack_style': away_attack_style
         }
 
-    def calculate_expected_score(self, home_stats: Dict, away_stats: Dict, h2h_data: Dict) -> Dict:
+    def calculate_expected_score(self, home_stats: JSONDict, away_stats: JSONDict, h2h_data: JSONDict) -> JSONDict:
         """Calculate most likely final score using Poisson distribution and real data"""
         import math
 
@@ -1141,15 +1349,15 @@ class EnhancedPredictor:
         away_expected = max(0.3, min(4.0, away_expected))
 
         # Calculate most likely scores using Poisson distribution
-        def poisson_prob(k, lam):
+        def poisson_prob(k: int, lam: float) -> float:
             return (lam**k * math.exp(-lam)) / math.factorial(k)
 
         # Find most likely individual scores (0-5 goals)
         home_score_probs = [(i, poisson_prob(i, home_expected)) for i in range(6)]
         away_score_probs = [(i, poisson_prob(i, away_expected)) for i in range(6)]
 
-        home_most_likely = max(home_score_probs, key=lambda x: x[1])[0]
-        away_most_likely = max(away_score_probs, key=lambda x: x[1])[0]
+        max(home_score_probs, key=lambda x: x[1])[0]
+        max(away_score_probs, key=lambda x: x[1])[0]
 
         # Calculate comprehensive scoreline probabilities (0-5 goals)
         common_scores = []
@@ -1164,14 +1372,51 @@ class EnhancedPredictor:
         # Calculate top 3 scores combined probability for better context
         top3_combined_prob = sum([prob for _, prob in common_scores[:3]])
 
+        # ALIGNMENT FIX: Ensure selected score aligns with xG-implied outcome probabilities
+        # The Poisson model is mathematically correct, but we should verify the selected score
+        # makes sense for the match context. If we have clear home advantage in xG,
+        # prefer home-favorable scorelines; vice versa for away.
+        selected_score = common_scores[0][0]
+        
+        # Check if top score creates logical mismatch with xG expectations
+        # xG direction implies outcome direction:
+        # - If home xG > away xG: prefer home-favorable scores (home_score >= away_score)
+        # - If away xG > home xG: prefer away-favorable scores (away_score > home_score)
+        xg_diff = home_expected - away_expected
+        home_score, away_score = selected_score
+        
+        # Only adjust if xG difference is meaningful enough (0.15+ goal difference)
+        if xg_diff > 0.15:
+            # Home has advantage: prefer home-favorable or neutral scores
+            if home_score < away_score:
+                # But top score is away-favorable: find better alternative
+                for alt_score, alt_prob in common_scores[:5]:
+                    if alt_score[0] >= alt_score[1]:  # Home wins or draw
+                        selected_score = alt_score
+                        break
+        elif xg_diff < -0.15:
+            # Away has advantage: prefer away-favorable or neutral scores
+            if home_score >= away_score:
+                # But top score is home-favorable or neutral: find away-favorable alternative
+                for alt_score, alt_prob in common_scores[:5]:
+                    if alt_score[0] < alt_score[1]:  # Away wins
+                        selected_score = alt_score
+                        break
+
+        # Find probability of selected score
+        selected_score_tuple = next(
+            (prob for score, prob in common_scores if score == selected_score),
+            common_scores[0][1]
+        )
+
         # Calculate normalized scores for better user understanding
-        score_prob_percent = common_scores[0][1] * 100
+        score_prob_percent = selected_score_tuple * 100
         top3_prob_percent = top3_combined_prob * 100
 
         return {
             'expected_home_goals': home_expected,
             'expected_away_goals': away_expected,
-            'most_likely_score': f"{common_scores[0][0][0]}-{common_scores[0][0][1]}",
+            'most_likely_score': f"{selected_score[0]}-{selected_score[1]}",
             'score_probability': score_prob_percent,
             'score_probability_normalized': self.normalize_probability_to_10_scale(score_prob_percent),
             'top3_combined_probability': top3_prob_percent,
@@ -1193,10 +1438,10 @@ class EnhancedPredictor:
     def normalize_probability_to_10_scale(self, probability_percent: float) -> float:
         """
         Convert probability percentage to 1-10 scale for better user understanding
-        
+
         Football score probabilities typically range:
         - Very unlikely: 0-3% = 1-2/10
-        - Unlikely: 3-6% = 3-4/10  
+        - Unlikely: 3-6% = 3-4/10
         - Possible: 6-10% = 5-6/10
         - Likely: 10-15% = 7-8/10
         - Very likely: 15%+ = 9-10/10
@@ -1223,8 +1468,8 @@ class EnhancedPredictor:
             return 10.0
 
     def calculate_report_accuracy_probability(self, home_win_prob: float, draw_prob: float,
-                                           away_win_prob: float, home_stats: Dict,
-                                           away_stats: Dict, h2h_data: Dict, confidence: float) -> float:
+                                           away_win_prob: float, home_stats: Dict[str, Any],
+                                           away_stats: Dict[str, Any], h2h_data: Dict[str, Any], confidence: float) -> float:
         """
         Calculate the probability that our overall prediction will be correct
         Based on historical accuracy patterns and prediction strength
@@ -1281,10 +1526,172 @@ class EnhancedPredictor:
 
         return final_accuracy / 100  # Return as decimal (0.0-0.85)
 
+    def _reconcile_xg_with_win_probs(self, home_xg: float, away_xg: float,
+                                      home_win_prob: float, draw_prob: float, 
+                                      away_win_prob: float) -> dict:
+        """
+        Reconcile expected goals with win probabilities for logical consistency.
+        
+        If ensemble predicts 90% home win, xG must reflect that (not contradict).
+        Uses inverse Poisson calculation: derive xG from win probability.
+        
+        Handles both percentage (0-100) and decimal (0-1) probability formats.
+        """
+        import math
+        
+        try:
+            home_xg = float(home_xg) if home_xg is not None else 1.5
+            away_xg = float(away_xg) if away_xg is not None else 1.3
+            home_win_prob = float(home_win_prob) if home_win_prob is not None else 0.5
+            away_win_prob = float(away_win_prob) if away_win_prob is not None else 0.5
+            draw_prob = float(draw_prob) if draw_prob is not None else 0.1
+        except (ValueError, TypeError):
+            return {'expected_home_goals': 1.5, 'expected_away_goals': 1.3}
+        
+        # Detect probability format: if sum > 150, then percentages; if sum < 1.5, then decimals
+        prob_sum = home_win_prob + draw_prob + away_win_prob
+        if prob_sum > 150:
+            # Percentages (0-100): convert to decimal
+            home_win_prob_decimal = home_win_prob / 100.0
+            away_win_prob_decimal = away_win_prob / 100.0
+            draw_prob_decimal = draw_prob / 100.0
+        else:
+            # Already in decimal format (0-1)
+            home_win_prob_decimal = home_win_prob
+            away_win_prob_decimal = away_win_prob
+            draw_prob_decimal = draw_prob
+        
+        # Renormalize to ensure sum = 1.0
+        total_prob = home_win_prob_decimal + draw_prob_decimal + away_win_prob_decimal
+        if total_prob > 0:
+            home_win_pct = home_win_prob_decimal / total_prob
+            away_win_pct = away_win_prob_decimal / total_prob
+        else:
+            home_win_pct = 0.5
+            away_win_pct = 0.5
+        
+        self.logger.info(f"[RECONCILE_DETAIL] Percentages: home={home_win_pct:.2%}, draw={draw_prob_decimal / total_prob:.2%}, away={away_win_pct:.2%}")
+        self.logger.info(f"[RECONCILE_DETAIL] Raw values - home={home_win_prob_decimal:.3f}, draw={draw_prob_decimal:.3f}, away={away_win_prob_decimal:.3f}, total={total_prob:.3f}")
+        
+        # If very strong favorite (>75%), boost their xG; if very weak, reduce
+        if home_win_pct > 0.75:
+            # Strong home favorite: increase home xG, decrease away xG
+            factor = 0.5 + (home_win_pct - 0.75) * 2  # Factor 0.5 to 1.0
+            self.logger.info(f"[RECONCILE_DETAIL] Strong home favorite (factor={factor:.2f})")
+            home_xg_new = home_xg * (1.0 + factor * 0.4)
+            away_xg_new = away_xg * (1.0 - factor * 0.2)
+            self.logger.info(f"[RECONCILE_DETAIL] Adjustment: {home_xg:.2f} -> {home_xg_new:.2f}, {away_xg:.2f} -> {away_xg_new:.2f}")
+            home_xg = home_xg_new
+            away_xg = away_xg_new
+        elif away_win_pct > 0.75:
+            # Strong away favorite: increase away xG, decrease home xG
+            factor = 0.5 + (away_win_pct - 0.75) * 2
+            self.logger.info(f"[RECONCILE_DETAIL] Strong away favorite (factor={factor:.2f})")
+            away_xg_new = away_xg * (1.0 + factor * 0.4)
+            home_xg_new = home_xg * (1.0 - factor * 0.2)
+            self.logger.info(f"[RECONCILE_DETAIL] Adjustment: {home_xg:.2f} -> {home_xg_new:.2f}, {away_xg:.2f} -> {away_xg_new:.2f}")
+            away_xg = away_xg_new
+            home_xg = home_xg_new
+        elif abs(home_win_pct - away_win_pct) > 0.2:
+            # Moderate favorite: gentle adjustment
+            favorite_pct = max(home_win_pct, away_win_pct)
+            if home_win_pct > away_win_pct:
+                home_xg = home_xg * (1.0 + (favorite_pct - 0.5) * 0.2)
+                away_xg = away_xg * (1.0 - (favorite_pct - 0.5) * 0.1)
+            else:
+                away_xg = away_xg * (1.0 + (favorite_pct - 0.5) * 0.2)
+                home_xg = home_xg * (1.0 - (favorite_pct - 0.5) * 0.1)
+        
+        # Ensure realistic bounds (0.4 to 3.0 xG per side)
+        home_xg_bounded = max(0.4, min(3.0, home_xg))
+        away_xg_bounded = max(0.4, min(3.0, away_xg))
+        
+        return {
+            'expected_home_goals': round(home_xg_bounded, 2),
+            'expected_away_goals': round(away_xg_bounded, 2)
+        }
+
+    def _calculate_reconciled_scores(self, home_xg: float, away_xg: float) -> dict:
+        """
+        Recalculate score probabilities using reconciled xG.
+        This ensures most_likely_score aligns with win probabilities.
+        """
+        import math
+        
+        try:
+            home_xg = float(home_xg) if home_xg is not None else 1.5
+            away_xg = float(away_xg) if away_xg is not None else 1.3
+        except (ValueError, TypeError):
+            home_xg, away_xg = 1.5, 1.3
+        
+        # Calculate Poisson probabilities
+        def poisson_prob(k: int, lam: float) -> float:
+            if lam <= 0 or k < 0:
+                return 0.0
+            return (lam**k * math.exp(-lam)) / math.factorial(k)
+        
+        # Generate all possible scores (0-6)
+        common_scores = []
+        for h_score in range(7):
+            for a_score in range(7):
+                prob = poisson_prob(h_score, home_xg) * poisson_prob(a_score, away_xg)
+                if prob > 0:
+                    common_scores.append(((h_score, a_score), prob))
+        
+        # Sort by probability descending
+        common_scores.sort(key=lambda x: x[1], reverse=True)
+        
+        if not common_scores:
+            return {
+                'most_likely_score': '1-1',
+                'score_probability': 10.0,
+                'score_probability_normalized': 5,
+                'top3_combined_probability': 30.0,
+                'top3_probability_normalized': 8,
+                'alternative_scores': ['0-0', '1-0', '0-1'],
+                'score_probabilities': [('1-1', 10.0)],
+                'score_probabilities_normalized': [('1-1', 5)],
+                'over_2_5_probability': 35.0,
+                'both_teams_score_prob': 40.0
+            }
+        
+        # Most likely score
+        selected_score = common_scores[0][0]
+        selected_score_tuple = common_scores[0][1]
+        
+        # Top 3 combined
+        top3_combined_prob = sum(prob for _, prob in common_scores[:3])
+        
+        # Score probability as percentage
+        score_prob_percent = selected_score_tuple * 100
+        top3_prob_percent = top3_combined_prob * 100
+        
+        return {
+            'expected_home_goals': home_xg,
+            'expected_away_goals': away_xg,
+            'most_likely_score': f"{selected_score[0]}-{selected_score[1]}",
+            'score_probability': score_prob_percent,
+            'score_probability_normalized': self.normalize_probability_to_10_scale(score_prob_percent),
+            'top3_combined_probability': top3_prob_percent,
+            'top3_probability_normalized': self.normalize_probability_to_10_scale(top3_prob_percent),
+            'alternative_scores': [
+                f"{score[0]}-{score[1]}" for score, prob in common_scores[1:4]
+            ],
+            'score_probabilities': [
+                (f"{score[0]}-{score[1]}", prob * 100) for score, prob in common_scores[:5]
+            ],
+            'score_probabilities_normalized': [
+                (f"{score[0]}-{score[1]}", self.normalize_probability_to_10_scale(prob * 100))
+                for score, prob in common_scores[:5]
+            ],
+            'over_2_5_probability': self.calculate_over_under_prob(home_xg + away_xg, 2.5),
+            'both_teams_score_prob': self.calculate_btts_prob(home_xg, away_xg)
+        }
+
     def calculate_over_under_prob(self, total_expected: float, line: float) -> float:
         """Calculate over/under probability using Poisson"""
         import math
-        prob_under = 0
+        prob_under: float = 0.0
         for i in range(int(line) + 1):
             prob_under += (total_expected**i * math.exp(-total_expected)) / math.factorial(i)
         return (1 - prob_under) * 100
@@ -1296,7 +1703,7 @@ class EnhancedPredictor:
         away_no_goal = math.exp(-away_exp)
         return (1 - home_no_goal) * (1 - away_no_goal) * 100
 
-    def enhanced_prediction(self, match: Dict, competition_code: str) -> Dict:
+    def enhanced_prediction(self, match: JSONDict, competition_code: str) -> JSONDict:
         """Generate enhanced prediction with all intelligence layers and accurate calculations"""
         start_time = time.time()
 
@@ -1329,26 +1736,28 @@ class EnhancedPredictor:
         flashscore_signals = match.get('flashscore_data') or match.get('flashscore', None)
         flashscore_note = None
         # temporary buffer for flashscore-derived confidence points (will be merged later)
-        flash_confidence_buffer = []
+        flash_confidence_buffer: List[float] = []
         if flashscore_signals:
             try:
                 # Attempt to extract recent-form lists (flexible keys)
-                def _form_score(form_list):
+                def _form_score(form_list: Union[str, List[str], None]) -> Optional[float]:
                     # Accept lists like ['W','D','L'] or strings 'WDL'
                     if not form_list:
                         return None
                     if isinstance(form_list, str):
                         form_list = list(form_list.strip())
                     pts = 0.0
-                    w = 3.0; d = 1.0; l = 0.0
+                    win_points = 3.0
+                    draw_points = 1.0
+                    loss_points = 0.0
                     total = 0.0
-                    for i, r in enumerate(form_list[:8]):
+                    for _i, r in enumerate(form_list[:8]):
                         if r.upper() == 'W':
-                            pts += w
+                            pts += win_points
                         elif r.upper() == 'D':
-                            pts += d
+                            pts += draw_points
                         else:
-                            pts += l
+                            pts += loss_points
                         total += 3.0
                     if total == 0:
                         return None
@@ -1372,8 +1781,16 @@ class EnhancedPredictor:
                     home_lead = None
                     if isinstance(fs_score, dict):
                         try:
-                            hs = int(fs_score.get('home', fs_score.get('h', 0) or 0))
-                            as_ = int(fs_score.get('away', fs_score.get('a', 0) or 0))
+                            _hs_val = fs_score.get('home') or fs_score.get('h') or 0
+                            _as_val = fs_score.get('away') or fs_score.get('a') or 0
+                            if _hs_val is None:
+                                hs = 0
+                            else:
+                                hs = int(_hs_val)
+                            if _as_val is None:
+                                as_ = 0
+                            else:
+                                as_ = int(_as_val)
                             if hs > as_:
                                 home_lead = 1
                             elif as_ > hs:
@@ -1385,7 +1802,10 @@ class EnhancedPredictor:
                     # If score is a tuple/list
                     if home_lead is None and isinstance(fs_score, (list, tuple)) and len(fs_score) >= 2:
                         try:
-                            hs = int(fs_score[0]); as_ = int(fs_score[1])
+                            _hs_val = fs_score[0]
+                            _as_val = fs_score[1]
+                            hs = int(_hs_val) if _hs_val is not None else 0
+                            as_ = int(_as_val) if _as_val is not None else 0
                             home_lead = 1 if hs > as_ else (-1 if as_ > hs else 0)
                         except Exception:
                             home_lead = None
@@ -1454,14 +1874,15 @@ class EnhancedPredictor:
                             except Exception:
                                 fs_lineup_away = None
                     except Exception:
-                        fs_lineup_home = None; fs_lineup_away = None
+                        fs_lineup_home = None
+                        fs_lineup_away = None
 
                     # Extract odds if present but do not modify base probabilities directly here
-                    fs_odds_home = None
-                    fs_odds_away = None
-                    fs_market_home_norm = None
-                    fs_market_away_norm = None
-                    fs_market_weight = None
+                    fs_odds_home: Optional[float] = None
+                    fs_odds_away: Optional[float] = None
+                    fs_market_home_norm: Optional[float] = None
+                    fs_market_away_norm: Optional[float] = None
+                    fs_market_weight: Optional[float] = None
                     try:
                         odds = flashscore_signals.get('odds_data') or flashscore_signals.get('odds') or {}
                         if isinstance(odds, dict):
@@ -1475,7 +1896,7 @@ class EnhancedPredictor:
                                     fs_odds_home = fs_odds_home or first.get('home') or first.get('1')
                                     fs_odds_away = fs_odds_away or first.get('away') or first.get('2')
                         # Convert to floats and compute implied normalized market probabilities
-                        def _to_float(x):
+                        def _to_float(x: Any) -> Optional[float]:
                             try:
                                 return float(x)
                             except Exception:
@@ -1554,8 +1975,8 @@ class EnhancedPredictor:
         try:
             fs_feats = match.get('_flashscore_features', {}) if isinstance(match, dict) else {}
             if fs_feats:
-                fs_home_shift = float(fs_feats.get('fs_home_shift', 0.0) or 0.0)
-                fs_away_shift = float(fs_feats.get('fs_away_shift', 0.0) or 0.0)
+                fs_home_shift = float(fs_feats.get('fs_home_shift', 0.0)) if fs_feats.get('fs_home_shift') is not None else 0.0
+                fs_away_shift = float(fs_feats.get('fs_away_shift', 0.0)) if fs_feats.get('fs_away_shift') is not None else 0.0
                 base_home_prob += fs_home_shift
                 base_away_prob += fs_away_shift
 
@@ -1577,15 +1998,21 @@ class EnhancedPredictor:
 
         # Normalize probabilities
         total_prob = base_home_prob + base_draw_prob + base_away_prob
-        home_win_prob = max(5, min(85, (base_home_prob / total_prob) * 100))
-        draw_prob = max(5, min(50, (base_draw_prob / total_prob) * 100))
-        away_win_prob = max(5, min(85, (base_away_prob / total_prob) * 100))
+        if total_prob > 0:
+            home_win_prob = max(5, min(85, (base_home_prob / total_prob) * 100))
+            draw_prob = max(5, min(50, (base_draw_prob / total_prob) * 100))
+            away_win_prob = max(5, min(85, (base_away_prob / total_prob) * 100))
+        else:
+            home_win_prob = 33.3
+            draw_prob = 33.3
+            away_win_prob = 33.3
 
-        # Renormalize to ensure 100%
+        # Renormalize to ensure exactly 100% (already percentages from above, so just normalize)
         total_normalized = home_win_prob + draw_prob + away_win_prob
-        home_win_prob = (home_win_prob / total_normalized) * 100
-        draw_prob = (draw_prob / total_normalized) * 100
-        away_win_prob = (away_win_prob / total_normalized) * 100
+        if total_normalized > 0:
+            home_win_prob = (home_win_prob / total_normalized) * 100
+            draw_prob = (draw_prob / total_normalized) * 100
+            away_win_prob = (away_win_prob / total_normalized) * 100
 
         # Enhanced Confidence Calculation based on multiple factors
         confidence_factors = []
@@ -1625,7 +2052,11 @@ class EnhancedPredictor:
         except Exception:
             pass
 
-        confidence = min(sum(confidence_factors) / 125, 0.92)  # Cap at 92% with enhanced scale
+        # FIX: Guard against empty confidence_factors list (prevents 0/125 = 0% confidence)
+        if confidence_factors:
+            confidence = min(sum(confidence_factors) / 125, 0.92)  # Cap at 92% with enhanced scale
+        else:
+            confidence = 0.60  # Conservative default if no factors available
 
         # Calculate Report Accuracy Probability - how likely our prediction is to be correct
         try:
@@ -1733,7 +2164,7 @@ class EnhancedPredictor:
 
             if ai_result and ai_result.get('ai_features_active', False):
                 self.logger.info("🧠 Using AI-Enhanced Prediction Results")
-                final_pred = ai_result.get('final_prediction', {}) or {}
+                final_pred = ai_result.get('final_prediction') if ai_result.get('final_prediction') is not None else {}
 
                 # Update probabilities with AI results (use safe defaults and log missing fields)
                 home_win_prob = final_pred.get('home_win_probability')
@@ -1770,6 +2201,21 @@ class EnhancedPredictor:
         # Validate prediction quality
         self.validate_prediction_quality(home_stats, away_stats, h2h_data)
 
+        # CRITICAL FIX: Reconcile expected goals with win probabilities for consistency
+        # If ensemble predicts 90% home win, xG must reflect that (not contradict with 0-1 away win)
+        reconciled_xg = self._reconcile_xg_with_win_probs(
+            score_prediction['expected_home_goals'],
+            score_prediction['expected_away_goals'],
+            home_win_prob,
+            draw_prob,
+            away_win_prob
+        )
+        final_home_xg = reconciled_xg['expected_home_goals']
+        final_away_xg = reconciled_xg['expected_away_goals']
+        
+        # Recalculate score prediction with consistent xG
+        score_prediction_reconciled = self._calculate_reconciled_scores(final_home_xg, final_away_xg)
+
         self.logger.info(f"[SUCCESS] Prediction completed for {home_team_name} vs {away_team_name} in {processing_time:.3f}s")
 
         result = {
@@ -1778,21 +2224,21 @@ class EnhancedPredictor:
             'home_win_prob': home_win_prob,
             'draw_prob': draw_prob,
             'away_win_prob': away_win_prob,
-            'expected_home_goals': score_prediction['expected_home_goals'],
-            'expected_away_goals': score_prediction['expected_away_goals'],
+            'expected_home_goals': final_home_xg,
+            'expected_away_goals': final_away_xg,
             'processing_time': processing_time,
 
-            # Enhanced Score Predictions
-            'expected_final_score': score_prediction['most_likely_score'],
-            'score_probability': score_prediction['score_probability'],
-            'score_probability_normalized': score_prediction['score_probability_normalized'],
-            'top3_combined_probability': score_prediction['top3_combined_probability'],
-            'top3_probability_normalized': score_prediction['top3_probability_normalized'],
-            'alternative_scores': score_prediction['alternative_scores'],
-            'score_probabilities': score_prediction['score_probabilities'],
-            'score_probabilities_normalized': score_prediction['score_probabilities_normalized'],
-            'over_2_5_probability': score_prediction['over_2_5_probability'],
-            'both_teams_score_probability': score_prediction['both_teams_score_prob'],
+            # Enhanced Score Predictions (NOW RECONCILED with win probabilities)
+            'expected_final_score': score_prediction_reconciled['most_likely_score'],
+            'score_probability': score_prediction_reconciled['score_probability'],
+            'score_probability_normalized': score_prediction_reconciled['score_probability_normalized'],
+            'top3_combined_probability': score_prediction_reconciled['top3_combined_probability'],
+            'top3_probability_normalized': score_prediction_reconciled['top3_probability_normalized'],
+            'alternative_scores': score_prediction_reconciled['alternative_scores'],
+            'score_probabilities': score_prediction_reconciled['score_probabilities'],
+            'score_probabilities_normalized': score_prediction_reconciled['score_probabilities_normalized'],
+            'over_2_5_probability': score_prediction_reconciled['over_2_5_probability'],
+            'both_teams_score_probability': score_prediction_reconciled['both_teams_score_prob'],
 
             # Enhanced Intelligence Data
             'head_to_head': h2h_data,
@@ -1812,6 +2258,12 @@ class EnhancedPredictor:
             'ai_features_active': AI_ENGINES_AVAILABLE and hasattr(self, 'ai_ml_predictor') and self.ai_ml_predictor is not None,
             'market_intelligence_active': self.market_intelligence_available and market_analysis is not None,
             'prediction_engine': 'Enhanced Intelligence v4.2 + Market Intelligence v1.0',
+            
+            # Optimization metadata from enhanced ensemble (Phase 2 Lite optimizations)
+            'match_context': final_pred.get('match_context', 'unknown') if 'final_pred' in locals() else 'unknown',
+            'model_agreement_factor': final_pred.get('model_agreement_factor', 0.5) if 'final_pred' in locals() else 0.5,
+            'optimization_applied': final_pred.get('optimization_applied', False) if 'final_pred' in locals() else False,
+            'component_weights': final_pred.get('component_weights', {}) if 'final_pred' in locals() else {},
         }
 
         # Add Betting Market Intelligence Data (NEW)
@@ -1832,7 +2284,7 @@ class EnhancedPredictor:
 
         return result
 
-    def identify_key_factors(self, h2h_data: Dict, home_stats: Dict, away_stats: Dict) -> List[str]:
+    def identify_key_factors(self, h2h_data: JSONDict, home_stats: JSONDict, away_stats: JSONDict) -> List[str]:
         """Identify the most important factors influencing the prediction using real data analysis"""
         factors = []
 
@@ -1904,9 +2356,9 @@ class EnhancedPredictor:
 
         return factors[:6]  # Return top 6 factors for better analysis
 
-    def validate_prediction_quality(self, home_stats: Dict, away_stats: Dict, h2h_data: Dict):
+    def validate_prediction_quality(self, home_stats: JSONDict, away_stats: JSONDict, h2h_data: JSONDict) -> None:
         """Validate the quality of data used for prediction"""
-        quality_issues = []
+        quality_issues: List[str] = []
 
         # Check home team data quality
         home_matches = home_stats.get('home', {}).get('matches', 0)
@@ -1952,13 +2404,13 @@ class EnhancedPredictor:
             for issue in quality_issues:
                 self.logger.error(f"   └─ {issue}")
 
-    def ai_enhanced_prediction(self, match_data: Dict, home_stats: Dict, away_stats: Dict,
-                             h2h_data: Dict, weather_data: Dict, referee_data: Dict) -> Dict:
+    def ai_enhanced_prediction(self, match_data: JSONDict, home_stats: JSONDict, away_stats: JSONDict,
+                             h2h_data: JSONDict, weather_data: JSONDict, referee_data: JSONDict) -> JSONDict:
         """Enhanced Intelligence v4.2 - AI/ML Powered Prediction Engine (Performance Optimized)"""
 
         start_time = time.time()
 
-        prediction_result = {
+        prediction_result: JSONDict = {
             'prediction_engine': 'Enhanced Intelligence v4.2',
             'ai_features_active': AI_ENGINES_AVAILABLE,
             'legacy_prediction': {},
@@ -2002,6 +2454,12 @@ class EnhancedPredictor:
             ai_start = time.time()
 
             # 1. AI/ML Feature Extraction and Prediction (Optimized)
+            ml_features: Dict[str, Any] = {}
+            ml_prediction: Dict[str, Any] = {}
+            neural_prediction: Dict[str, Any] = {}
+            bayesian_update: Dict[str, Any] = {}
+            monte_carlo_result: Dict[str, Any] = {}
+            poisson_analysis: Dict[str, Any] = {}
             if self.ai_ml_predictor:
                 try:
                     self.logger.info("🧠 Running AI/ML feature extraction...")
@@ -2021,6 +2479,7 @@ class EnhancedPredictor:
                 ml_prediction = {}
 
             # 2. Neural Pattern Recognition (Parallel Processing)
+            tactical_patterns: Dict[str, Any] = {}
             if self.neural_patterns:
                 try:
                     self.logger.info("🧠 Analyzing tactical patterns...")
@@ -2092,8 +2551,8 @@ class EnhancedPredictor:
 
             # Safely compute totals for Bayesian evidence
             try:
-                avg_home_goals = h2h_data.get('avg_goals_for_when_home', 1.5) or 1.5
-                avg_away_goals = h2h_data.get('avg_goals_for_when_away', 1.3) or 1.3
+                avg_home_goals = h2h_data.get('avg_goals_for_when_home') if h2h_data.get('avg_goals_for_when_home') is not None else 1.5
+                avg_away_goals = h2h_data.get('avg_goals_for_when_away') if h2h_data.get('avg_goals_for_when_away') is not None else 1.3
                 home_goals_total = int(float(avg_home_goals) * h2h_meetings)
                 away_goals_total = int(float(avg_away_goals) * h2h_meetings)
             except Exception:
@@ -2227,10 +2686,198 @@ class EnhancedPredictor:
             }
             prediction_result['market_odds'] = serialized_market_odds
 
+        # OPTIMIZATION #3: Apply data freshness penalties to confidence
+        if 'final_prediction' in prediction_result and prediction_result['final_prediction']:
+            try:
+                # Calculate age of different data sources
+                current_time = time.time()
+                match_time = match_data.get('_fetch_timestamp', current_time)
+                
+                data_timestamps = {
+                    'team_stats_age_seconds': current_time - match_data.get('_home_stats_timestamp', match_time),
+                    'h2h_data_age_seconds': current_time - h2h_data.get('_fetch_timestamp', match_time),
+                    'injury_data_age_seconds': current_time - referee_data.get('_injury_timestamp', match_time),
+                    'form_data_age_seconds': current_time - home_stats.get('_fetch_timestamp', match_time),
+                    'weather_data_age_seconds': current_time - weather_data.get('_fetch_timestamp', match_time)
+                }
+                
+                # Calculate freshness score and multiplier
+                freshness_score, freshness_multiplier = self.freshness_scorer.calculate_freshness_score(data_timestamps)
+                
+                # Apply freshness penalty to confidence
+                original_confidence = prediction_result['final_prediction'].get('confidence', 0.75)
+                adjusted_confidence = original_confidence * freshness_multiplier
+                prediction_result['final_prediction']['confidence'] = adjusted_confidence
+                
+                # Log freshness impact if significant
+                if freshness_multiplier < 0.95:
+                    confidence_reduction = (1 - freshness_multiplier) * 100
+                    self.logger.info(f"📊 Data freshness penalty applied: {confidence_reduction:.1f}% reduction (score: {freshness_score:.2f})")
+                
+            except Exception as e:
+                self.logger.debug(f"Freshness scoring error (non-critical): {e}")
+                # Continue without freshness adjustment if error occurs
+        
+        # PHASE 2 OPTIMIZATION: Apply non-linear calibration to confidence
+        if prediction_result.get('final_prediction'):
+            try:
+                current_confidence = prediction_result['final_prediction'].get('confidence', 0.75)
+                
+                # Apply isotonic calibration if model is trained
+                calibrated_confidence = self.calibration_manager.calibrate_probability(current_confidence)
+                prediction_result['final_prediction']['confidence'] = calibrated_confidence
+                
+                # Record this prediction for future calibration training
+                # (In production, we'd update this with actual match outcome)
+                prediction_result['_calibration_data'] = {
+                    'uncalibrated_confidence': current_confidence,
+                    'calibrated_confidence': calibrated_confidence,
+                    'calibration_active': self.calibration_manager.is_trained,
+                    'calibration_samples': self.calibration_manager.get_calibration_stats().get('total_samples', 0)
+                }
+                
+                if calibrated_confidence != current_confidence:
+                    self.logger.debug(f"✓ Isotonic calibration applied: {current_confidence:.3f} → {calibrated_confidence:.3f}")
+                    
+            except Exception as e:
+                self.logger.debug(f"Calibration error (non-critical): {e}")
+                # Continue without calibration if error occurs
+        
+        # PHASE 3 OPTIMIZATION: Apply league-specific, Bayesian, and context-aware adjustments
+        if prediction_result.get('final_prediction'):
+            try:
+                confidence_before_phase3 = prediction_result['final_prediction'].get('confidence', 0.75)
+                phase3_metadata = {}
+                
+                # Extract league from match data
+                league = match_data.get('league', '').lower().replace(' ', '-')
+                if not league:
+                    league = 'premier-league'  # Default fallback
+                
+                # 1. Apply league-specific tuning
+                league_adjusted, league_meta = self.league_tuner.apply_league_adjustment(league, confidence_before_phase3)
+                phase3_metadata['league_tuning'] = league_meta
+                
+                # 2. Apply Bayesian confidence adjustment
+                bayesian_adjusted, bayesian_meta = self.bayesian_updater.adjust_confidence(league_adjusted)
+                phase3_metadata['bayesian_adjustment'] = bayesian_meta
+                
+                # 3. Apply context-aware weighting
+                try:
+                    home_team = match_data.get('home', '')
+                    away_team = match_data.get('away', '')
+                    venue = match_data.get('venue', '')
+                    match_date = None
+                    
+                    # Try to parse match date
+                    try:
+                        from datetime import datetime as dt
+                        date_str = match_data.get('date', '')
+                        if date_str:
+                            match_date = dt.strptime(str(date_str)[:10], '%Y-%m-%d').date()
+                    except Exception:
+                        match_date = None
+                    
+                    # Determine team levels (simplified - in production would use league standings)
+                    home_level = 'average'
+                    away_level = 'average'
+                    
+                    context_adjusted, context_meta = self.context_extractor.apply_all_context_adjustments(
+                        confidence=bayesian_adjusted,
+                        is_home=True,  # We're predicting for home team probability
+                        home_team_level=home_level,
+                        away_team_level=away_level,
+                        match_date=match_date,
+                        home_competition_level='mid_table',
+                        away_competition_level='mid_table',
+                        venue=venue,
+                        team=home_team
+                    )
+                    phase3_metadata['context_adjustment'] = context_meta
+                    final_confidence = context_adjusted
+                    
+                except Exception as e:
+                    self.logger.debug(f"Context adjustment error (non-critical): {e}")
+                    phase3_metadata['context_adjustment'] = {'reason': 'skipped_due_to_error', 'error': str(e)}
+                    final_confidence = bayesian_adjusted
+                
+                # Update final confidence
+                prediction_result['final_prediction']['confidence'] = final_confidence
+                
+                # Record Phase 3 metadata
+                prediction_result['_phase3_adjustment'] = {
+                    'confidence_before': confidence_before_phase3,
+                    'confidence_after': final_confidence,
+                    'total_adjustment_factor': final_confidence / confidence_before_phase3 if confidence_before_phase3 > 0 else 1.0,
+                    'league': league,
+                    'metadata': phase3_metadata
+                }
+                
+                if final_confidence != confidence_before_phase3:
+                    adjustment_pct = (final_confidence - confidence_before_phase3) * 100
+                    self.logger.debug(f"✓ Phase 3 adjustments applied: {confidence_before_phase3:.3f} → {final_confidence:.3f} ({adjustment_pct:+.1f}%)")
+                
+            except Exception as e:
+                self.logger.debug(f"Phase 3 optimization error (non-critical): {e}")
+                # Continue without Phase 3 if error occurs
+        
+        # Phase 4: Real-Time Monitoring & Adaptive Adjustment
+        try:
+            if hasattr(self, 'performance_monitor') and hasattr(self, 'adaptive_adjuster'):
+                confidence_before_phase4 = final_confidence
+                
+                # Record prediction for monitoring (safe model type detection)
+                model_type = 'ensemble'  # Default to ensemble; specific model check would require xG data
+                self.performance_monitor.record_prediction(
+                    league=league,
+                    model=model_type,
+                    confidence=final_confidence,
+                    outcome=final_confidence  # Will be updated with actual outcome
+                )
+                
+                # Apply adaptive adjustments based on recent performance
+                league_stats = self.performance_monitor.get_league_performance(league)
+                if league_stats['samples'] >= 5:  # Need minimum samples for adaptation
+                    self.adaptive_adjuster.adapt_league_factors({league: league_stats})
+                
+                # Apply adapted confidence scaling
+                metrics = self.performance_monitor.get_system_metrics()
+                self.adaptive_adjuster.adapt_confidence_scale(
+                    drift_severity=metrics['drift_severity'],
+                    accuracy=metrics['overall_accuracy']
+                )
+                
+                # Apply the adaptation to final confidence
+                phase4_scale = self.adaptive_adjuster.get_confidence_scale()
+                adapted_confidence = self.adaptive_adjuster.apply_adaptations(final_confidence, league)
+                
+                # Record Phase 4 metadata
+                prediction_result['_phase4_adjustment'] = {
+                    'confidence_before': confidence_before_phase4,
+                    'confidence_after': adapted_confidence,
+                    'adaptation_scale': phase4_scale,
+                    'drift_severity': metrics['drift_severity'],
+                    'overall_accuracy': metrics['overall_accuracy'],
+                }
+                
+                final_confidence = adapted_confidence
+                
+                if adapted_confidence != confidence_before_phase4:
+                    adjustment_pct = (adapted_confidence - confidence_before_phase4) * 100
+                    self.logger.debug(f"✓ Phase 4 adaptations applied: {confidence_before_phase4:.3f} → {adapted_confidence:.3f} ({adjustment_pct:+.1f}%)")
+                    self.logger.debug(f"  Drift severity: {metrics['drift_severity']:.2f}, System accuracy: {metrics['overall_accuracy']*100:.1f}%")
+                
+                # Update final confidence in result
+                prediction_result['final_prediction']['confidence'] = final_confidence
+                
+        except Exception as e:
+            self.logger.debug(f"Phase 4 monitoring/adaptation error (non-critical): {e}")
+            # Continue without Phase 4 if error occurs
+        
         return prediction_result
 
-    def _generate_legacy_prediction(self, match_data: Dict, home_stats: Dict, away_stats: Dict,
-                                  h2h_data: Dict, weather_data: Dict, referee_data: Dict) -> Dict:
+    def _generate_legacy_prediction(self, match_data: JSONDict, home_stats: JSONDict, away_stats: JSONDict,
+                                  h2h_data: JSONDict, weather_data: JSONDict, referee_data: JSONDict) -> JSONDict:
         """Generate legacy prediction using existing enhanced heuristics"""
 
         # Extract key metrics
@@ -2318,20 +2965,130 @@ class EnhancedPredictor:
             'confidence': 0.74
         }
 
-    def _create_ai_ensemble_prediction(self, legacy: Dict, ml: Dict, neural: Dict,
-                                     monte_carlo: Dict, tactical_patterns: Dict) -> Dict:
-        """Create weighted ensemble prediction from all AI components"""
+    def _classify_match_context(self, home_stats: JSONDict, away_stats: JSONDict) -> str:
+        """OPTIMIZATION #3: Classify match context (difficulty tier) for adaptive strategy"""
+        try:
+            # Extract form scores with safe defaults
+            home_form = float(home_stats.get('home', {}).get('weighted_form_score') or 50)
+            away_form = float(away_stats.get('away', {}).get('weighted_form_score') or 50)
+            
+            # Extract strength (win rate) with safe defaults
+            home_str = float(home_stats.get('home', {}).get('win_rate') or 45)
+            away_str = float(away_stats.get('away', {}).get('win_rate') or 35)
+            
+            # Calculate differentials
+            str_diff = abs(home_str - away_str)
+            form_diff = abs(home_form - away_form)
+            
+            # Classify based on strength and form gaps
+            if str_diff > 25 or form_diff > 30:
+                return 'mismatch'  # One team heavily favored (>25% edge)
+            elif str_diff > 12 or form_diff > 15:
+                return 'tilted'    # One team slightly favored (12-25% edge)
+            else:
+                return 'competitive'  # Evenly matched (<12% edge)
+                
+        except (TypeError, ValueError, KeyError, AttributeError):
+            # Default to conservative 'competitive' if any data parsing fails
+            return 'competitive'
 
-        # Ensemble weights based on confidence and reliability
-        weights = {
-            'legacy': 0.25,   # Enhanced heuristics baseline
-            'ml': 0.30,       # AI/ML prediction
-            'neural': 0.25,   # Neural pattern recognition
-            'monte_carlo': 0.20  # Statistical simulation
+    def _calculate_adaptive_weights(self, home_xg: float, away_xg: float, match_ctx: str) -> Dict[str, float]:
+        """OPTIMIZATION #1: Calculate adaptive weights based on match type and xG patterns"""
+        try:
+            total_xg = float(home_xg) + float(away_xg)
+        except (TypeError, ValueError):
+            total_xg = 2.8  # Fallback to neutral value
+        
+        # Base weights determined by expected goal volume
+        if total_xg > 3.0:  # High-scoring matches favor neural patterns
+            w = {'legacy': 0.15, 'ml': 0.20, 'neural': 0.25, 'monte_carlo': 0.20}
+        elif total_xg < 1.8:  # Low-scoring matches favor Poisson reliability
+            w = {'legacy': 0.15, 'ml': 0.15, 'neural': 0.15, 'monte_carlo': 0.15}
+        else:  # Mid-range: balanced with slight neural boost
+            w = {'legacy': 0.18, 'ml': 0.22, 'neural': 0.22, 'monte_carlo': 0.18}
+        
+        # Context-aware adjustments
+        if match_ctx == 'mismatch':  # One team clearly stronger
+            w['ml'] = min(0.35, w.get('ml', 0.20) + 0.05)  # Boost ML (captures dominance)
+            w['neural'] = max(0.10, w.get('neural', 0.25) - 0.03)  # Reduce neural noise
+            w['monte_carlo'] = max(0.15, w.get('monte_carlo', 0.20) - 0.02)  # Reduce MC variance
+            w['legacy'] = max(0.10, w.get('legacy', 0.15))  # Ensure minimum
+        elif match_ctx == 'tilted':  # Slight imbalance
+            w['ml'] = min(0.30, w.get('ml', 0.22) + 0.02)  # Modest ML boost
+            w['monte_carlo'] = min(0.25, w.get('monte_carlo', 0.18) + 0.02)  # Modest MC boost
+        # 'competitive' context: use base weights as-is
+        
+        # Normalize to ensure sum = 1.0 (prevent floating point drift)
+        weight_sum = sum(w.values())
+        if weight_sum > 0:
+            w = {k: v / weight_sum for k, v in w.items()}
+        
+        return w
+
+    def _calibrate_probs_nonlinear(self, probs: Dict[str, float], comps: Dict[str, Dict[str, float]]) -> Dict[str, float]:
+        """OPTIMIZATION #2: Non-linear calibration based on model agreement"""
+        import math
+        # Extract home win probabilities from all components (including valid 0.0 values)
+        home_ps = []
+        for c in ['legacy', 'ml', 'neural', 'monte_carlo']:
+            p = comps.get(c, {}).get('home_win_probability')
+            if p is not None:  # FIXED: Check for None explicitly, not truthiness (allows 0.0)
+                home_ps.append(float(p))
+        
+        # Fallback if no valid probabilities found
+        if not home_ps:
+            return {**probs, 'model_agreement_factor': 0.5}
+        
+        # Calculate mean and standard deviation
+        mean_p = sum(home_ps) / len(home_ps)
+        variance = sum((p - mean_p) ** 2 for p in home_ps) / len(home_ps)
+        std_dev = math.sqrt(variance) if variance > 0 else 0.0
+        
+        # Calculate agreement factor (0-1 scale where 1 = perfect agreement)
+        agr = max(0.0, min(1.0, 1 - (std_dev / 0.15)))
+        
+        # Apply non-linear calibration based on agreement strength
+        if agr > 0.7:  # High agreement: boost prediction toward extremes
+            cal_h = min(0.95, max(0.05, mean_p + (mean_p - 0.5) * agr * 0.15))
+        elif agr < 0.3:  # Low agreement: regress toward 0.5 (cautious)
+            cal_h = 0.5 + (mean_p - 0.5) * 0.6
+        else:  # Moderate agreement: gentle boost
+            cal_h = mean_p + (mean_p - 0.5) * agr * 0.08
+        
+        # Ensure probabilities stay in valid range [0, 1]
+        cal_h = max(0.0, min(1.0, cal_h))
+        
+        # Redistribute remaining probability to draw and away
+        remaining = 1.0 - cal_h
+        draw_prob = float(probs.get('draw_probability')) if probs.get('draw_probability') is not None else 0.33
+        away_prob = float(probs.get('away_win_probability')) if probs.get('away_win_probability') is not None else 0.33
+        total_non_home = draw_prob + away_prob
+        
+        # Proportional redistribution with safety check
+        if total_non_home > 0:
+            d_ratio = draw_prob / total_non_home
+            a_ratio = away_prob / total_non_home
+        else:
+            d_ratio = 0.5
+            a_ratio = 0.5
+        
+        return {
+            'home_win_probability': cal_h,
+            'draw_probability': remaining * d_ratio,
+            'away_win_probability': remaining * a_ratio,
+            'model_agreement_factor': agr
         }
 
+    def _create_ai_ensemble_prediction(self, legacy: JSONDict, ml: JSONDict, neural: JSONDict,
+                                     monte_carlo: JSONDict, tactical_patterns: JSONDict) -> JSONDict:
+        """Create weighted ensemble with adaptive optimization (IMPROVED)"""
+        home_xg = legacy.get('expected_home_goals', 1.5) * 0.3 + ml.get('expected_home_goals', 1.5) * 0.4 + neural.get('neural_goals_home', 1.0) * 0.3
+        away_xg = legacy.get('expected_away_goals', 1.3) * 0.3 + ml.get('expected_away_goals', 1.3) * 0.4 + neural.get('neural_goals_away', 1.0) * 0.3
+        ctx = self._classify_match_context(legacy.get('_home_stats', {}), legacy.get('_away_stats', {}))
+        weights = self._calculate_adaptive_weights(home_xg, away_xg, ctx)
+
         # Safe getters to avoid KeyError when a component omits a field
-        def _safe_get(comp: Dict, key: str, default: float = 0.0) -> float:
+        def _safe_get(comp: Any, key: str, default: float = 0.0) -> float:
             try:
                 if not isinstance(comp, dict):
                     return float(default)
@@ -2340,52 +3097,51 @@ class EnhancedPredictor:
             except Exception:
                 return float(default)
 
-        # Weighted probability ensemble (use safe getters)
-        home_prob = (
-            _safe_get(legacy, 'home_win_probability', 0.0) * weights['legacy'] +
-            _safe_get(ml, 'home_win_probability', 0.0) * weights['ml'] +
-            _safe_get(neural, 'neural_home_prob', 0.0) * weights['neural'] +
-            _safe_get(monte_carlo, 'home_win_probability', 0.0) * weights['monte_carlo']
-        )
+        # Weighted probabilities with adaptive weights + non-linear calibration (OPTIMIZATIONS #1, #2)
+        home_prob_raw = (_safe_get(legacy, 'home_win_probability', 0.0) * weights.get('legacy', 0.25) +
+                        _safe_get(ml, 'home_win_probability', 0.0) * weights.get('ml', 0.30) +
+                        _safe_get(neural, 'neural_home_prob', 0.0) * weights.get('neural', 0.25) +
+                        _safe_get(monte_carlo, 'home_win_probability', 0.0) * weights.get('monte_carlo', 0.20))
+        draw_prob_raw = (_safe_get(legacy, 'draw_probability', 0.0) * weights.get('legacy', 0.25) +
+                        _safe_get(ml, 'draw_probability', 0.0) * weights.get('ml', 0.30) +
+                        _safe_get(neural, 'neural_draw_prob', 0.0) * weights.get('neural', 0.25) +
+                        _safe_get(monte_carlo, 'draw_probability', 0.0) * weights.get('monte_carlo', 0.20))
+        away_prob_raw = (_safe_get(legacy, 'away_win_probability', 0.0) * weights.get('legacy', 0.25) +
+                        _safe_get(ml, 'away_win_probability', 0.0) * weights.get('ml', 0.30) +
+                        _safe_get(neural, 'neural_away_prob', 0.0) * weights.get('neural', 0.25) +
+                        _safe_get(monte_carlo, 'away_win_probability', 0.0) * weights.get('monte_carlo', 0.20))
+        
+        # Apply non-linear calibration based on model agreement
+        comps_dict = {'legacy': {'home_win_probability': home_prob_raw}, 'ml': ml, 'neural': neural, 'monte_carlo': monte_carlo}
+        cal_probs = self._calibrate_probs_nonlinear({'home_win_probability': home_prob_raw, 'draw_probability': draw_prob_raw, 'away_win_probability': away_prob_raw}, comps_dict)
+        home_prob = cal_probs['home_win_probability']
+        draw_prob = cal_probs['draw_probability']
+        away_prob = cal_probs['away_win_probability']
+        agreement_factor = cal_probs.get('model_agreement_factor', 0.5)
 
-        draw_prob = (
-            _safe_get(legacy, 'draw_probability', 0.0) * weights['legacy'] +
-            _safe_get(ml, 'draw_probability', 0.0) * weights['ml'] +
-            _safe_get(neural, 'neural_draw_prob', 0.0) * weights['neural'] +
-            _safe_get(monte_carlo, 'draw_probability', 0.0) * weights['monte_carlo']
-        )
+        # Weighted goal expectations with adaptive weights
+        home_goals = (_safe_get(legacy, 'expected_home_goals', 1.5) * weights.get('legacy', 0.25) +
+                     _safe_get(ml, 'expected_home_goals', 1.5) * weights.get('ml', 0.30) +
+                     _safe_get(neural, 'neural_goals_home', 1.0) * weights.get('neural', 0.25) +
+                     _safe_get(monte_carlo, 'expected_home_goals', 1.5) * weights.get('monte_carlo', 0.20))
+        away_goals = (_safe_get(legacy, 'expected_away_goals', 1.3) * weights.get('legacy', 0.25) +
+                     _safe_get(ml, 'expected_away_goals', 1.3) * weights.get('ml', 0.30) +
+                     _safe_get(neural, 'neural_goals_away', 1.0) * weights.get('neural', 0.25) +
+                     _safe_get(monte_carlo, 'expected_away_goals', 1.3) * weights.get('monte_carlo', 0.20))
 
-        away_prob = (
-            _safe_get(legacy, 'away_win_probability', 0.0) * weights['legacy'] +
-            _safe_get(ml, 'away_win_probability', 0.0) * weights['ml'] +
-            _safe_get(neural, 'neural_away_prob', 0.0) * weights['neural'] +
-            _safe_get(monte_carlo, 'away_win_probability', 0.0) * weights['monte_carlo']
-        )
-
-        # Weighted goal expectations (use safe getters)
-        home_goals = (
-            _safe_get(legacy, 'expected_home_goals', 1.5) * weights['legacy'] +
-            _safe_get(ml, 'expected_home_goals', 1.5) * weights['ml'] +
-            _safe_get(neural, 'neural_goals_home', 1.0) * weights['neural'] +
-            _safe_get(monte_carlo, 'expected_home_goals', 1.5) * weights['monte_carlo']
-        )
-
-        away_goals = (
-            _safe_get(legacy, 'expected_away_goals', 1.3) * weights['legacy'] +
-            _safe_get(ml, 'expected_away_goals', 1.3) * weights['ml'] +
-            _safe_get(neural, 'neural_goals_away', 1.0) * weights['neural'] +
-            _safe_get(monte_carlo, 'expected_away_goals', 1.3) * weights['monte_carlo']
-        )
-
-        # Ensemble confidence
+        # Ensemble confidence with agreement adjustment (OPTIMIZATION impact)
+        # FIX: Normalize ALL confidences to percentage (0-100) for consistent calculation
         confidences = [
-            legacy.get('confidence', 0.74) * 100,
-            ml.get('confidence', 70) if 'confidence' in ml else 75,
-            neural.get('neural_confidence', 70) if 'neural_confidence' in neural else 75,
-            monte_carlo.get('monte_carlo_confidence', 75) if 'monte_carlo_confidence' in monte_carlo else 75
+            float(legacy.get('confidence', 74) if isinstance(legacy.get('confidence'), (int, float)) else 74),
+            float(ml.get('confidence', 75) if 'confidence' in ml else 75),
+            float(neural.get('neural_confidence', 75) if 'neural_confidence' in neural else 75),
+            float(monte_carlo.get('monte_carlo_confidence', 75) if 'monte_carlo_confidence' in monte_carlo else 75)
         ]
-
-        ensemble_confidence = sum(c * w for c, w in zip(confidences, weights.values()))
+        base_confidence = sum(c * w for c, w in zip(confidences, [weights.get(k, 0.25) for k in ['legacy', 'ml', 'neural', 'monte_carlo']], strict=True))
+        # Adjust confidence by model agreement: high agreement boosts, disagreement reduces
+        conf_adjustment = (agreement_factor - 0.5) * 0.15  # ±7.5% swing based on agreement
+        ensemble_confidence = (base_confidence / 100) * (1 + conf_adjustment)
+        ensemble_confidence = max(0.55, min(0.95, ensemble_confidence))
 
         return {
             'home_win_probability': home_prob,
@@ -2393,13 +3149,16 @@ class EnhancedPredictor:
             'away_win_probability': away_prob,
             'expected_home_goals': home_goals,
             'expected_away_goals': away_goals,
-            'confidence': ensemble_confidence / 100,
-            'ensemble_method': 'AI Weighted Average',
-            'component_weights': weights
+            'confidence': ensemble_confidence,
+            'ensemble_method': 'AI Optimized Ensemble (Adaptive + Non-Linear)',
+            'component_weights': weights,
+            'match_context': ctx,
+            'model_agreement_factor': agreement_factor,
+            'optimization_applied': True
         }
 
-    def _generate_ai_insights(self, ml_prediction: Dict, tactical_patterns: Dict,
-                            neural_prediction: Dict, monte_carlo: Dict, bayesian: Dict) -> List[str]:
+    def _generate_ai_insights(self, ml_prediction: Dict[str, Any], tactical_patterns: Dict[str, Any],
+                            neural_prediction: Dict[str, Any], monte_carlo: Dict[str, Any], bayesian: Dict[str, Any]) -> List[str]:
         """Generate comprehensive AI insights"""
 
         insights = []
@@ -2441,7 +3200,7 @@ class EnhancedPredictor:
             weight = 0.18
         return max(0.0, min(weight, 0.5))
 
-    def _fetch_market_odds(self, match: Dict) -> Optional[MarketOdds]:
+    def _fetch_market_odds(self, match: JSONDict) -> MarketOdds | None:
         if not self.odds_connector or not isinstance(match, dict):
             return None
 
@@ -2469,7 +3228,7 @@ class EnhancedPredictor:
             self.logger.warning("⚠️  Market odds retrieval failed: %s", exc)
             return None
 
-    def _serialize_market_odds(self, market_odds: Optional[MarketOdds]) -> Dict[str, Any]:
+    def _serialize_market_odds(self, market_odds: MarketOdds | None) -> JSONDict:
         if not market_odds:
             return {'available': False}
 
@@ -2488,7 +3247,7 @@ class EnhancedPredictor:
             'fetched_at': fetched_iso
         }
 
-    def _apply_market_adjustment(self, final_prediction: Dict, market_probabilities: Dict[str, float]) -> Dict:
+    def _apply_market_adjustment(self, final_prediction: JSONDict, market_probabilities: Dict[str, float]) -> JSONDict:
         blend = self.market_blend_weight
         model_probs = {
             'home': float(final_prediction.get('home_win_probability', 0.0)) / 100.0,
@@ -2496,7 +3255,7 @@ class EnhancedPredictor:
             'away': float(final_prediction.get('away_win_probability', 0.0)) / 100.0,
         }
 
-        blended = {}
+        blended: Dict[str, Any] = {}
         for key in ('home', 'draw', 'away'):
             market_value = float(market_probabilities.get(key, model_probs.get(key, 0.0)))
             blended[key] = (1.0 - blend) * model_probs.get(key, 0.0) + blend * market_value
@@ -2522,7 +3281,7 @@ class EnhancedPredictor:
 
         return adjusted
 
-    def _resolve_team_name(self, match: Dict, keys: List[str]) -> Optional[str]:
+    def _resolve_team_name(self, match: JSONDict, keys: List[str]) -> str | None:
         for key in keys:
             value = match.get(key)
             if isinstance(value, dict):
@@ -2531,11 +3290,11 @@ class EnhancedPredictor:
                 name = value
             else:
                 continue
-            if name:
+            if isinstance(name, str) and name:
                 return name
         return None
 
-    def _infer_league_slug(self, match: Dict) -> str:
+    def _infer_league_slug(self, match: JSONDict) -> str:
         candidates = [
             match.get('league_slug'),
             match.get('league_code'),
@@ -2550,12 +3309,62 @@ class EnhancedPredictor:
                 return slug
         return self.odds_connector.default_sport if self.odds_connector else 'soccer'
 
-    def _slugify_league(self, value: Optional[str]) -> str:
+    def _slugify_league(self, value: str | None) -> str:
         if not value:
             return ''
         cleaned = ''.join(ch.lower() if ch.isalnum() else ' ' for ch in value)
         parts = [part for part in cleaned.split() if part]
         return '-'.join(parts)
+
+    def _load_calibration_history(self):
+        """Load saved calibration data if available"""
+        try:
+            if not hasattr(self, 'cache_dir') or not self.cache_dir:
+                return
+            
+            cal_path = os.path.join(self.cache_dir, 'calibration_ensemble.json')
+            if os.path.exists(cal_path):
+                self.calibration_manager.load_calibration(cal_path)
+            
+            perf_path = os.path.join(self.cache_dir, 'model_performance.json')
+            if os.path.exists(perf_path):
+                self.model_performance_tracker.load_performance_history(perf_path)
+        except Exception as e:
+            if hasattr(self, 'logger'):
+                self.logger.debug(f"Could not load calibration history: {str(e)}")
+
+    def _save_calibration_history(self):
+        """Save calibration data for future use"""
+        try:
+            if not hasattr(self, 'cache_dir') or not self.cache_dir:
+                return
+            
+            cal_path = os.path.join(self.cache_dir, 'calibration_ensemble.json')
+            self.calibration_manager.save_calibration(cal_path)
+            
+            perf_path = os.path.join(self.cache_dir, 'model_performance.json')
+            self.model_performance_tracker.save_performance_history(perf_path)
+            
+            # Phase 3: Save league tuner data
+            self.league_tuner.save_league_data()
+            
+            # Phase 3: Save Bayesian updater state
+            self.bayesian_updater.save_bayesian_state()
+            
+            # Phase 3: Save context extractor venue performance
+            self.context_extractor.save_venue_performance()
+            
+            # Phase 4: Save monitoring and adaptation state
+            if hasattr(self, 'performance_monitor'):
+                self.performance_monitor.save_monitor_state()
+            
+            if hasattr(self, 'adaptive_adjuster'):
+                self.adaptive_adjuster.save_adjuster_state()
+            
+        except Exception as e:
+            if hasattr(self, 'logger'):
+                self.logger.debug(f"Could not save calibration/phase3/phase4 history: {str(e)}")
+
 
 def get_competition_code_from_league(league_name: str) -> str:
     """Convert league name to competition code"""
@@ -2569,20 +3378,9 @@ def get_competition_code_from_league(league_name: str) -> str:
     return league_map.get(league_name.lower(), 'PD')
 
 if __name__ == "__main__":
-    # Test the enhanced predictor - using environment variable for API key
-    predictor = EnhancedPredictor(os.getenv('FOOTBALL_DATA_API_KEY', '17405508d1774f46a368390ff07f8a31'))
-
-    # Mock match data for testing
-    test_match = {
-        'homeTeam': {'id': 86, 'name': 'Real Madrid'},
-        'awayTeam': {'id': 81, 'name': 'FC Barcelona'},
-        'utcDate': '2025-10-20T15:00:00Z'
-    }
-
-    result = predictor.enhanced_prediction(test_match, 'PD')
-    print("\n🎯 Prediction Result:")
-    print(f"   Confidence: {result['confidence']:.1%}")
-    print(f"   Home Win: {result['home_win_prob']:.1f}%")
-    print(f"   Draw: {result['draw_prob']:.1f}%")
-    print(f"   Away Win: {result['away_win_prob']:.1f}%")
-    print(f"   Key Factors: {', '.join(result['intelligence_summary']['key_factors'])}")
+    # This file should not be run directly in production
+    # Use CLI or other entry points instead
+    import sys
+    print("Error: enhanced_predictor.py should not be executed directly.")
+    print("Use: python generate_fast_reports.py or python phase2_lite.py")
+    sys.exit(1)

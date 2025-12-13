@@ -3,7 +3,7 @@ FastAPI dashboard server
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 import uvicorn
 from fastapi import FastAPI
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class DashboardServer:
     """Web dashboard server using FastAPI"""
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: dict[str, Any]):
         self.config = config
         self.app = self._create_app()
 
@@ -28,7 +28,7 @@ class DashboardServer:
         )
 
         @app.get("/")
-        async def dashboard_home():
+        async def dashboard_home() -> HTMLResponse:
             """Dashboard home page"""
             html_content = """
             <!DOCTYPE html>
@@ -52,15 +52,15 @@ class DashboardServer:
                     <h1>🏆 Sports Prediction Dashboard</h1>
                     <p>Advanced Sports Forecasting System</p>
                 </div>
-                
+
                 <div class="disclaimer">
-                    <strong>⚠️ DISCLAIMER:</strong> This system is for educational and analytical purposes only. 
+                    <strong>⚠️ DISCLAIMER:</strong> This system is for educational and analytical purposes only.
                     It is not intended for financial or betting decisions.
                 </div>
-                
+
                 <div class="section">
                     <h2>📊 Latest Predictions</h2>
-                    
+
                     <div class="prediction-card">
                         <h3>Real Madrid vs Barcelona</h3>
                         <p><strong>Date:</strong> 2025-10-20</p>
@@ -70,7 +70,7 @@ class DashboardServer:
                         <p><strong>Expected Score:</strong> 1.8 - 1.2</p>
                         <p><strong>Confidence:</strong> 85%</p>
                     </div>
-                    
+
                     <div class="prediction-card">
                         <h3>Atletico Madrid vs Sevilla</h3>
                         <p><strong>Date:</strong> 2025-10-20</p>
@@ -81,7 +81,7 @@ class DashboardServer:
                         <p><strong>Confidence:</strong> 78%</p>
                     </div>
                 </div>
-                
+
                 <div class="section">
                     <h2>🔧 Available Endpoints</h2>
                     <ul>
@@ -90,7 +90,7 @@ class DashboardServer:
                         <li><a href="/predictions/La Liga/2025-10-20">Get Predictions (API)</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="section">
                     <h2>📈 System Status</h2>
                     <p>✅ System Online</p>
@@ -104,7 +104,7 @@ class DashboardServer:
             return HTMLResponse(content=html_content)
 
         @app.get("/health")
-        async def health_check():
+        async def health_check() -> dict[str, Any]:
             """Health check endpoint"""
             return {
                 "status": "healthy",
@@ -118,7 +118,7 @@ class DashboardServer:
             }
 
         @app.get("/predictions/{league}/{date}")
-        async def get_predictions(league: str, date: str):
+        async def get_predictions(league: str, date: str) -> dict[str, Any]:
             """Get predictions for a specific league and date"""
             # Mock predictions
             predictions = [
@@ -157,7 +157,7 @@ class DashboardServer:
 
         return app
 
-    def run(self, host: str = "127.0.0.1", port: int = 8000, debug: bool = False):
+    def run(self, host: str = "127.0.0.1", port: int = 8000, debug: bool = False) -> None:
         """Run the dashboard server"""
         logger.info(f"Starting dashboard on http://{host}:{port}")
 

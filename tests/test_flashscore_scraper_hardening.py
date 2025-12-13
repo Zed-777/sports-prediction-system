@@ -10,7 +10,7 @@ from flashscore_scraper import FlashScoreScraper
 
 def _load_fixture(path: Path) -> str:
     if not path.exists():
-        pytest.skip("FlashScore fixture missing: {}".format(path))
+        pytest.skip(f"FlashScore fixture missing: {path}")
 
     raw = path.read_text(encoding='utf-8', errors='ignore')
     try:

@@ -9,7 +9,7 @@ import statistics
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List
 
 
 @dataclass
@@ -18,10 +18,10 @@ class ValidationResult:
     is_valid: bool
     quality_score: float  # 0-100
     confidence_impact: float  # 0-1
-    issues: List[str]
-    warnings: List[str]
-    enhancements: List[str]
-    metadata: Dict[str, Any]
+    issues: list[str]
+    warnings: list[str]
+    enhancements: list[str]
+    metadata: dict[str, Any]
 
 @dataclass
 class DataQualityMetrics:
@@ -36,7 +36,7 @@ class DataQualityMetrics:
 class SmartDataValidator:
     """
     Intelligent data validation system for sports prediction
-    
+
     Validation Layers:
     1. Schema Validation - Data structure and types
     2. Business Logic Validation - Sports-specific rules
@@ -47,12 +47,13 @@ class SmartDataValidator:
     """
 
     def __init__(self):
+        # type: () -> None
         self.logger = logging.getLogger(__name__)
         self.validation_rules = self._load_validation_rules()
-        self.historical_stats = {}
+        self.historical_stats: dict[str, Any] = {}
         self.league_contexts = self._load_league_contexts()
 
-    def _load_validation_rules(self) -> Dict[str, Any]:
+    def _load_validation_rules(self) -> dict[str, Any]:
         """Load sports-specific validation rules"""
         return {
             'match_scores': {
@@ -81,7 +82,7 @@ class SmartDataValidator:
             }
         }
 
-    def _load_league_contexts(self) -> Dict[str, Dict[str, Any]]:
+    def _load_league_contexts(self) -> dict[str, dict[str, Any]]:
         """Load league-specific context for validation"""
         return {
             'premier-league': {
@@ -116,17 +117,17 @@ class SmartDataValidator:
             }
         }
 
-    def comprehensive_validation(self, match_data: Dict[str, Any],
-                                data_sources: Optional[List[Dict[str, Any]]] = None) -> ValidationResult:
+    def comprehensive_validation(self, match_data: dict[str, Any],
+                                data_sources: list[dict[str, Any]] | None = None) -> ValidationResult:
         """
         Perform comprehensive data validation across all layers
-        
+
         Returns validation result with quality score and confidence impact
         """
 
-        issues = []
-        warnings = []
-        enhancements = []
+        issues: List[str] = []
+        warnings: List[str] = []
+        enhancements: List[str] = []
 
         # Layer 1: Schema Validation
         schema_score = self._validate_schema(match_data, issues, warnings)
@@ -194,7 +195,7 @@ class SmartDataValidator:
             }
         )
 
-    def _validate_schema(self, match_data: Dict[str, Any], issues: List[str], warnings: List[str]) -> float:
+    def _validate_schema(self, match_data: dict[str, Any], issues: list[str], warnings: list[str]) -> float:
         """Validate data schema and structure"""
         score = 100.0
         required_fields = ['home_team', 'away_team', 'date', 'league']
@@ -226,7 +227,7 @@ class SmartDataValidator:
 
         return max(score, 0.0)
 
-    def _validate_business_logic(self, match_data: Dict[str, Any], issues: List[str], warnings: List[str]) -> float:
+    def _validate_business_logic(self, match_data: dict[str, Any], issues: list[str], warnings: list[str]) -> float:
         """Validate against sports-specific business rules"""
         score = 100.0
 
@@ -280,9 +281,9 @@ class SmartDataValidator:
 
         return max(score, 0.0)
 
-    def _validate_cross_source(self, match_data: Dict[str, Any],
-                              data_sources: Optional[List[Dict[str, Any]]],
-                              issues: List[str], warnings: List[str]) -> float:
+    def _validate_cross_source(self, match_data: dict[str, Any],
+                              data_sources: list[dict[str, Any]] | None,
+                              issues: list[str], warnings: list[str]) -> float:
         """Validate consistency across multiple data sources"""
 
         if not data_sources or len(data_sources) < 2:
@@ -313,7 +314,7 @@ class SmartDataValidator:
 
         return max(score, 0.0)
 
-    def _validate_statistical(self, match_data: Dict[str, Any], issues: List[str], warnings: List[str]) -> float:
+    def _validate_statistical(self, match_data: dict[str, Any], issues: list[str], warnings: list[str]) -> float:
         """Validate using statistical analysis and outlier detection"""
         score = 100.0
 
@@ -358,7 +359,7 @@ class SmartDataValidator:
 
         return max(score, 0.0)
 
-    def _validate_temporal(self, match_data: Dict[str, Any], issues: List[str], warnings: List[str]) -> float:
+    def _validate_temporal(self, match_data: dict[str, Any], issues: list[str], warnings: list[str]) -> float:
         """Validate temporal aspects and data freshness"""
         score = 100.0
 
@@ -399,7 +400,7 @@ class SmartDataValidator:
 
         return max(score, 0.0)
 
-    def _validate_contextual(self, match_data: Dict[str, Any], issues: List[str], warnings: List[str]) -> float:
+    def _validate_contextual(self, match_data: dict[str, Any], issues: list[str], warnings: list[str]) -> float:
         """Validate contextual relevance and league-specific factors"""
         score = 100.0
 
@@ -429,7 +430,7 @@ class SmartDataValidator:
 
         return max(score, 0.0)
 
-    def _calculate_consensus_metrics(self, data_sources: List[Dict[str, Any]]) -> Dict[str, List[float]]:
+    def _calculate_consensus_metrics(self, data_sources: list[dict[str, Any]]) -> dict[str, list[float]]:
         """Calculate consensus metrics across data sources"""
         consensus = defaultdict(list)
 
@@ -447,7 +448,7 @@ class SmartDataValidator:
         return dict(consensus)
 
     def _calculate_confidence_impact(self, quality_metrics: DataQualityMetrics,
-                                   issues: List[str], warnings: List[str]) -> float:
+                                   issues: list[str], warnings: list[str]) -> float:
         """Calculate impact on prediction confidence based on data quality"""
 
         # Base confidence impact from quality metrics
@@ -475,7 +476,7 @@ class SmartDataValidator:
         return min(confidence_impact, 0.95)  # Cap at 95%
 
     def _generate_enhancements(self, quality_metrics: DataQualityMetrics,
-                              match_data: Dict[str, Any]) -> List[str]:
+                              match_data: dict[str, Any]) -> list[str]:
         """Generate suggestions for data enhancement"""
         enhancements = []
 
@@ -513,12 +514,12 @@ class SmartDataValidator:
 
         return enhancements
 
-    def validate_and_enhance_confidence(self, match_data: Dict[str, Any],
+    def validate_and_enhance_confidence(self, match_data: dict[str, Any],
                                        current_confidence: float,
-                                       data_sources: Optional[List[Dict[str, Any]]] = None) -> Tuple[float, ValidationResult]:
+                                       data_sources: list[dict[str, Any]] | None = None) -> tuple[float, ValidationResult]:
         """
         Validate data and calculate enhanced confidence score
-        
+
         Returns enhanced confidence and validation result
         """
 

@@ -8,7 +8,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from app.data.connectors import BasketballDataConnector, FootballDataConnector
 from app.data.schemas import validate_raw_data
@@ -26,7 +26,7 @@ class DataIngestionResult:
     records_count: int
     data_hash: str
     timestamp: datetime
-    error_message: Optional[str] = None
+    error_message: str | None = None
 
 
 class DataIngestionPipeline:
@@ -35,7 +35,7 @@ class DataIngestionPipeline:
     from multiple sources with fallback mechanisms.
     """
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: dict[str, Any]):
         self.config = config
         self.cache_manager = CacheManager(config.get('data_engineering', {}).get('caching', {}))
 
@@ -54,21 +54,21 @@ class DataIngestionPipeline:
     async def ingest_league_data(
         self,
         league: str,
-        season: Optional[str] = None,
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
+        season: str | None = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
         force_refresh: bool = False
     ) -> List[DataIngestionResult]:
         """
         Ingest data for a specific league and time period.
-        
+
         Args:
             league: League name (e.g., "La Liga", "Premier League")
             season: Season string (e.g., "2023-24")
             start_date: Start date in YYYY-MM-DD format
             end_date: End date in YYYY-MM-DD format
             force_refresh: Force re-download even if cached data exists
-            
+
         Returns:
             List of ingestion results for each data source
         """
@@ -79,6 +79,7 @@ class DataIngestionPipeline:
         # Determine sport type from league
         sport_type = self._get_sport_type(league)
 
+        connector: FootballDataConnector | BasketballDataConnector
         if sport_type == 'football':
             connector = self.football_connector
         elif sport_type == 'basketball':
@@ -112,12 +113,12 @@ class DataIngestionPipeline:
 
     async def _ingest_data_with_fallback(
         self,
-        connector: Union[FootballDataConnector, BasketballDataConnector],
+        connector: FootballDataConnector | BasketballDataConnector,
         league: str,
         data_type: str,
-        season: Optional[str] = None,
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
+        season: str | None = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
         force_refresh: bool = False
     ) -> DataIngestionResult:
         """
@@ -207,14 +208,14 @@ class DataIngestionPipeline:
     @retry_with_backoff(max_attempts=5, backoff_strategy='exponential')
     async def _fetch_data_from_source(
         self,
-        connector: Union[FootballDataConnector, BasketballDataConnector],
+        connector: FootballDataConnector | BasketballDataConnector,
         source_name: str,
         league: str,
         data_type: str,
-        season: Optional[str] = None,
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None
-    ) -> Optional[List[Dict]]:
+        season: str | None = None,
+        start_date: str | None = None,
+        end_date: str | None = None
+    ) -> Optional[List[Dict[str, Any]]]:
         """
         Fetch data from a specific source using the appropriate connector.
         """
@@ -229,12 +230,12 @@ class DataIngestionPipeline:
 
     async def _save_raw_data(
         self,
-        data: List[Dict],
+        data: List[Dict[str, Any]],
         league: str,
         data_type: str,
         source: str,
-        season: Optional[str] = None
-    ):
+        season: str | None = None
+    ) -> None:
         """
         Save raw data to disk with appropriate structure.
         """
@@ -258,9 +259,9 @@ class DataIngestionPipeline:
     async def _create_data_snapshot(
         self,
         league: str,
-        season: Optional[str],
-        results: List[DataIngestionResult]
-    ):
+        season: str | None,
+        results: list[DataIngestionResult]
+    ) -> None:
         """
         Create an immutable data snapshot for reproducibility.
         """
@@ -318,14 +319,14 @@ class DataIngestionPipeline:
             logger.warning(f"Unknown league type for {league}, defaulting to football")
             return 'football'
 
-    def _calculate_data_hash(self, data: List[Dict]) -> str:
+    def _calculate_data_hash(self, data: list[dict[str, Any]]) -> str:
         """
         Calculate hash of data for integrity checking.
         """
         data_str = json.dumps(data, sort_keys=True, default=str)
         return hashlib.sha256(data_str.encode()).hexdigest()
 
-    async def get_ingestion_status(self, league: str) -> Dict[str, Any]:
+    async def get_ingestion_status(self, league: str) -> dict[str, Any]:
         """
         Get status of data ingestion for a league.
         """
@@ -344,7 +345,7 @@ class DataIngestionPipeline:
         last_update = datetime.fromtimestamp(latest_file.stat().st_mtime)
 
         # Get available data types
-        data_types = list(set(f.name.split('_')[0] for f in data_files))
+        data_types = list({f.name.split('_')[0] for f in data_files})
 
         return {
             'status': 'data_available',

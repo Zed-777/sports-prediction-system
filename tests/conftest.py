@@ -14,7 +14,7 @@ import asyncio
 import shutil
 import tempfile
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -30,7 +30,7 @@ def event_loop():
 
 
 @pytest.fixture
-def test_config() -> Dict[str, Any]:
+def test_config() -> dict[str, Any]:
     """
     Provide a test configuration dictionary.
     """

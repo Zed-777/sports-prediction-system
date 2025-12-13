@@ -1,4 +1,17 @@
 {
     "python.defaultInterpreterPath": "${workspaceFolder}\\.venv-Z1.1\\Scripts\\python.exe",
     "python.terminal.activateEnvironment": true
+    ,
+    // Re-enable editor linting and type checking for live diagnostics.
+    "python.linting.enabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": false,
+    "python.linting.pyrightEnabled": true,
+    // `off|basic|strict` are valid values. `basic` provides useful diagnostics without being too noisy.
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingModuleSource": "warning",
+        "reportMissingImports": "warning"
+    }
 }

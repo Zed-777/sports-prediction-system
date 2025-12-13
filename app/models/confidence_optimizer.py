@@ -10,7 +10,7 @@ import pickle
 import warnings
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -20,7 +20,7 @@ warnings.filterwarnings('ignore')
 class ConfidenceMetrics:
     """Confidence calibration metrics"""
     calibrated_confidence: float
-    uncertainty_bounds: Tuple[float, float]
+    uncertainty_bounds: tuple[float, float]
     prediction_stability: float
     data_sufficiency: float
     ensemble_agreement: float
@@ -29,7 +29,7 @@ class ConfidenceMetrics:
 class ConfidenceOptimizer:
     """
     Advanced confidence optimization system for achieving 80%+ accuracy
-    
+
     Optimization Strategies:
     1. Bayesian Confidence Calibration - Probabilistic uncertainty quantification
     2. Ensemble Agreement Analysis - Multi-model consensus scoring
@@ -42,8 +42,8 @@ class ConfidenceOptimizer:
     def __init__(self, calibration_data_path: str = "models/calibration"):
         self.logger = logging.getLogger(__name__)
         self.calibration_path = calibration_data_path
-        self.calibration_models = {}
-        self.historical_performance = {}
+        self.calibration_models: dict[str, Any] = {}
+        self.historical_performance: dict[str, dict[str, Any]] = {}
         self.confidence_thresholds = self._initialize_thresholds()
 
         # Ensure calibration directory exists
@@ -52,7 +52,7 @@ class ConfidenceOptimizer:
         # Load existing calibration data
         self.load_calibration_models()
 
-    def _initialize_thresholds(self) -> Dict[str, float]:
+    def _initialize_thresholds(self) -> dict[str, float]:
         """Initialize confidence thresholds for different quality levels"""
         return {
             'minimum_viable': 0.4,   # Minimum for any prediction
@@ -63,18 +63,18 @@ class ConfidenceOptimizer:
         }
 
     def optimize_confidence(self, base_confidence: float,
-                           prediction_data: Dict[str, Any],
-                           ensemble_predictions: Optional[Dict[str, Any]] = None,
-                           validation_result: Optional[Any] = None) -> ConfidenceMetrics:
+                           prediction_data: dict[str, Any],
+                           ensemble_predictions: dict[str, Any] | None = None,
+                           validation_result: Any | None = None) -> ConfidenceMetrics:
         """
         Optimize confidence score using multiple advanced techniques
-        
+
         Args:
             base_confidence: Initial confidence from prediction model
             prediction_data: Complete prediction data and metadata
             ensemble_predictions: Results from ensemble models
             validation_result: Data validation results
-            
+
         Returns:
             Optimized confidence metrics with uncertainty quantification
         """
@@ -128,10 +128,10 @@ class ConfidenceOptimizer:
         )
 
     def _bayesian_calibration(self, base_confidence: float,
-                             prediction_data: Dict[str, Any]) -> float:
+                             prediction_data: dict[str, Any]) -> float:
         """
         Apply Bayesian calibration to adjust confidence based on evidence strength
-        
+
         Uses prior knowledge and data evidence to calibrate confidence
         """
 
@@ -140,26 +140,26 @@ class ConfidenceOptimizer:
         prior_confidence = self._get_league_prior_confidence(league)
 
         # Evidence strength from data quality
-        data_quality = prediction_data.get('data_quality_score', 75) / 100.0
+        data_quality = float(prediction_data.get('data_quality_score', 75)) / 100.0
         evidence_strength = data_quality ** 2  # Square for stronger effect
 
         # Bayesian update: P(confident|evidence) ∝ P(evidence|confident) * P(confident)
         # Simplified Bayesian adjustment
-        likelihood = base_confidence * evidence_strength
-        posterior = (likelihood * prior_confidence) / (
+        likelihood = float(base_confidence) * evidence_strength
+        posterior = float((likelihood * prior_confidence) / (
             likelihood * prior_confidence + (1 - likelihood) * (1 - prior_confidence)
-        )
+        ))
 
         # Blend with base confidence (avoid over-adjustment)
-        bayesian_confidence = 0.7 * posterior + 0.3 * base_confidence
+        bayesian_confidence = float(0.7 * posterior + 0.3 * base_confidence)
 
         return min(bayesian_confidence, 0.95)
 
-    def _analyze_ensemble_agreement(self, ensemble_predictions: Optional[Dict[str, Any]],
-                                   base_confidence: float) -> Tuple[float, float]:
+    def _analyze_ensemble_agreement(self, ensemble_predictions: dict[str, Any] | None,
+                                   base_confidence: float) -> tuple[float, float]:
         """
         Analyze agreement between ensemble models for confidence adjustment
-        
+
         High agreement = higher confidence, low agreement = lower confidence
         """
 
@@ -193,11 +193,11 @@ class ConfidenceOptimizer:
 
         return float(ensemble_agreement), float(ensemble_confidence)
 
-    def _assess_data_sufficiency(self, prediction_data: Dict[str, Any],
-                                validation_result: Optional[Any]) -> float:
+    def _assess_data_sufficiency(self, prediction_data: dict[str, Any],
+                                validation_result: Any | None) -> float:
         """
         Assess data sufficiency for confident predictions
-        
+
         More data = higher confidence potential
         """
 
@@ -231,10 +231,10 @@ class ConfidenceOptimizer:
         return float(np.mean(sufficiency_factors))
 
     def _apply_historical_calibration(self, base_confidence: float,
-                                     prediction_data: Dict[str, Any]) -> float:
+                                     prediction_data: dict[str, Any]) -> float:
         """
         Apply calibration based on historical prediction performance
-        
+
         Learn from past prediction accuracy to adjust current confidence
         """
 
@@ -259,10 +259,10 @@ class ConfidenceOptimizer:
 
     def _calculate_uncertainty_bounds(self, confidence: float,
                                      ensemble_agreement: float,
-                                     data_sufficiency: float) -> Tuple[float, float]:
+                                     data_sufficiency: float) -> tuple[float, float]:
         """
         Calculate uncertainty bounds around the confidence estimate
-        
+
         Returns (lower_bound, upper_bound) for confidence interval
         """
 
@@ -284,11 +284,11 @@ class ConfidenceOptimizer:
 
         return (lower_bound, upper_bound)
 
-    def _analyze_prediction_stability(self, prediction_data: Dict[str, Any],
-                                     ensemble_predictions: Optional[Dict[str, Any]]) -> float:
+    def _analyze_prediction_stability(self, prediction_data: dict[str, Any],
+                                     ensemble_predictions: dict[str, Any] | None) -> float:
         """
         Analyze prediction stability across different models and inputs
-        
+
         Stable predictions = higher confidence
         """
 
@@ -335,7 +335,7 @@ class ConfidenceOptimizer:
                                      ensemble_confidence: float,
                                      data_sufficiency: float,
                                      stability_score: float,
-                                     validation_result: Optional[Any]) -> float:
+                                     validation_result: Any | None) -> float:
         """
         Integrate all confidence factors into final optimized confidence
         """
@@ -372,9 +372,9 @@ class ConfidenceOptimizer:
                 integrated *= 0.9   # 10% penalty for poor data
 
         # Ensure final confidence is within reasonable bounds
-        final_confidence = np.clip(integrated,
-                                  self.confidence_thresholds['minimum_viable'],
-                                  self.confidence_thresholds['maximum_achievable'])
+        final_confidence = float(np.clip(integrated,
+                      self.confidence_thresholds['minimum_viable'],
+                      self.confidence_thresholds['maximum_achievable']))
 
         return final_confidence
 
@@ -389,7 +389,7 @@ class ConfidenceOptimizer:
         }
         return league_priors.get(league, 0.65)  # Default
 
-    def _classify_prediction_type(self, prediction_data: Dict[str, Any]) -> str:
+    def _classify_prediction_type(self, prediction_data: dict[str, Any]) -> str:
         """Classify prediction type for historical calibration"""
 
         home_prob = prediction_data.get('home_win_probability', 33)
@@ -414,12 +414,12 @@ class ConfidenceOptimizer:
         else:
             return 'low_confidence'
 
-    def update_historical_performance(self, prediction_data: Dict[str, Any],
+    def update_historical_performance(self, prediction_data: dict[str, Any],
                                      actual_outcome: str,
-                                     predicted_confidence: float):
+                                     predicted_confidence: float) -> None:
         """
         Update historical performance data with actual outcomes
-        
+
         This enables continuous learning and calibration improvement
         """
 
@@ -457,7 +457,7 @@ class ConfidenceOptimizer:
         # Save updated performance data
         self.save_calibration_models()
 
-    def get_confidence_recommendation(self, confidence_metrics: ConfidenceMetrics) -> Dict[str, Any]:
+    def get_confidence_recommendation(self, confidence_metrics: ConfidenceMetrics) -> dict[str, Any]:
         """
         Get actionable recommendations based on confidence analysis
         """
@@ -465,12 +465,15 @@ class ConfidenceOptimizer:
         final_confidence = confidence_metrics.final_confidence
         data_sufficiency = confidence_metrics.data_sufficiency
 
-        recommendations = {
+        key_factors: list[str] = []
+        improvement_suggestions: list[str] = []
+
+        recommendations: dict[str, Any] = {
             'confidence_level': 'high' if final_confidence >= 0.8 else
                               'medium' if final_confidence >= 0.6 else 'low',
             'recommendation': '',
-            'key_factors': [],
-            'improvement_suggestions': [],
+            'key_factors': key_factors,
+            'improvement_suggestions': improvement_suggestions,
             'reliability_assessment': ''
         }
 
@@ -503,7 +506,7 @@ class ConfidenceOptimizer:
 
         return recommendations
 
-    def save_calibration_models(self):
+    def save_calibration_models(self) -> None:
         """Save calibration models and historical performance"""
         try:
             calibration_data = {
@@ -520,7 +523,7 @@ class ConfidenceOptimizer:
         except Exception as e:
             self.logger.error(f"Failed to save calibration data: {e}")
 
-    def load_calibration_models(self):
+    def load_calibration_models(self) -> None:
         """Load existing calibration models and historical performance"""
         try:
             calibration_file = os.path.join(self.calibration_path, 'calibration_data.pkl')

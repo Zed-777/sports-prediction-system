@@ -4,6 +4,7 @@ This test is safe for CI: it will skip if the cached fixture is missing.
 """
 import json
 from pathlib import Path
+
 try:
     import pytest
 except Exception:  # pragma: no cover - allow editor environments without pytest

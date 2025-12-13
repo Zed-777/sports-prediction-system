@@ -8,7 +8,7 @@ import os
 import pickle
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -23,25 +23,25 @@ logger = logging.getLogger(__name__)
 class ModelTrainer:
     """Model training and validation"""
 
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: dict[str, Any]):
         self.config = config
 
     def train_model(self,
                    league: str,
                    model_type: str,
-                   features: Optional[List[str]] = None,
+                   features: list[str] | None = None,
                    tune_hyperparameters: bool = False,
-                   cross_validate: bool = False) -> Dict[str, Any]:
+                   cross_validate: bool = False) -> dict[str, Any]:
         """
         Train a prediction model
-        
+
         Args:
             league: League name
             model_type: Type of model to train
             features: Feature list to use
             tune_hyperparameters: Whether to tune hyperparameters
             cross_validate: Whether to perform cross-validation
-            
+
         Returns:
             Training results dictionary
         """
@@ -52,16 +52,14 @@ class ModelTrainer:
 
         from app.data.ingestion import DataIngestionPipeline
 
-        from ..data.ingestion import DataIngestionPipeline
-
         # Get actual historical match data for training
         config = self.config.get('data_sources', {})
 
         try:
             # Use ingestion pipeline to get historical data
-            async def get_historical_data():
+            async def get_historical_data() -> dict[str, Any]:
                 ingestion_pipeline = DataIngestionPipeline(config)
-                results = await ingestion_pipeline.ingest_league_data(league=league)
+                await ingestion_pipeline.ingest_league_data(league=league)
 
                 # Load processed match data
                 matches_data = []
@@ -69,7 +67,7 @@ class ModelTrainer:
                 if data_dir.exists():
                     for file_path in data_dir.glob(f"*{league.replace(' ', '_').lower()}*.json"):
                         try:
-                            with open(file_path, 'r') as f:
+                            with open(file_path) as f:
                                 data = json.load(f)
                                 if isinstance(data, list):
                                     matches_data.extend(data)
@@ -101,7 +99,7 @@ class ModelTrainer:
             training_data = self._prepare_training_data(historical_data, features)
             model, metrics = self._train_model(model_type, training_data, tune_hyperparameters, cross_validate)
 
-            results = {
+            results: dict[str, Any] = {
                 'model_type': model_type,
                 'league': league,
                 'training_date': datetime.now().isoformat(),
@@ -133,12 +131,12 @@ class ModelTrainer:
                 'status': 'failed'
             }
 
-    def _prepare_training_data(self, historical_data: Dict[str, Any], features: Optional[List[str]]) -> pd.DataFrame:
+    def _prepare_training_data(self, historical_data: dict[str, Any], features: list[str] | None) -> pd.DataFrame:
         """Prepare training data from historical match data"""
         try:
             matches = historical_data.get('matches', [])
-            teams = historical_data.get('teams', [])
-            standings = historical_data.get('standings', [])
+            historical_data.get('teams', [])
+            historical_data.get('standings', [])
 
             if not matches:
                 logger.error("No match data available for training")
@@ -185,7 +183,7 @@ class ModelTrainer:
             return pd.DataFrame()
 
     def _train_model(self, model_type: str, training_data: pd.DataFrame,
-                    tune_hyperparameters: bool, cross_validate: bool) -> Tuple[Any, Optional[Dict[str, float]]]:
+                    tune_hyperparameters: bool, cross_validate: bool) -> tuple[Any, dict[str, float] | None]:
         """Train the actual machine learning model"""
         try:
             if training_data.empty:
