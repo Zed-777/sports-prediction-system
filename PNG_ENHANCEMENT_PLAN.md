@@ -150,7 +150,7 @@ Transform PNGs from functional to **professional-grade sports analytics cards** 
 
 ### Current → Target Examples
 
-**Example 1: Main Score Display**
+### Example 1: Main Score Display
 
 ```
 CURRENT:                          TARGET:

@@ -6,13 +6,13 @@
   "time": "13:00",
   "league": "La Liga",
   "confidence": 0.75,
-  "report_accuracy_probability": 0.75,
-  "home_win_probability": 89.24,
-  "draw_probability": 5.38,
-  "away_win_probability": 5.38,
+  "report_accuracy_probability": 0.761,
+  "home_win_probability": 90.67,
+  "draw_probability": 4.67,
+  "away_win_probability": 4.67,
   "expected_home_goals": 2.9,
   "expected_away_goals": 1.1,
-  "processing_time": 1.705,
+  "processing_time": 0.003,
   "recommendation": "Home Win Likely",
   "confidence_level": "75.0% (Good)",
   "expected_final_score": "2-1",
@@ -252,8 +252,8 @@
   },
   "weather_conditions": {
     "conditions": {
-      "temperature": 9.6,
-      "humidity": 71.8,
+      "temperature": 9.7,
+      "humidity": 71.1,
       "wind_speed": 6.3,
       "precipitation": 0.0,
       "conditions": "clear",
@@ -269,7 +269,7 @@
       "stadium_effects": [],
       "adaptability_notes": [],
       "weather_severity": "MILD",
-      "conditions_summary": "Good playing conditions (9.6°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected",
+      "conditions_summary": "Good playing conditions (9.7°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected",
       "weather_clamped": false,
       "clamped_fields": {}
     },
@@ -318,24 +318,24 @@
   },
   "data_quality_score": 50.0,
   "reliability_metrics": {
-    "score": 57.4,
-    "level": "Low",
-    "indicator": "🔴 Low",
-    "recommendation": "Low reliability – informational use only.",
+    "score": 60.4,
+    "level": "Limited",
+    "indicator": "🟠 Limited",
+    "recommendation": "Limited reliability – supplement with manual review.",
     "confidence_intervals": {
       "home": [
-        94.9,
+        95.3,
         100.0
       ],
       "draw": [
         0.0,
-        5.1
+        4.7
       ],
       "away": [
         0.0,
-        5.1
+        4.7
       ],
-      "margin_percent": 5.11
+      "margin_percent": 4.75
     },
     "spread_points": 100.0,
     "factors": {
@@ -343,7 +343,7 @@
       "data_quality": 50.0,
       "probability_clarity": 100.0,
       "h2h_depth": 0.0,
-      "data_freshness": 70.0
+      "data_freshness": 100.0
     },
     "primary_driver": "probability_clarity",
     "notes": [
@@ -353,11 +353,11 @@
   },
   "calibration_details": {
     "applied": true,
-    "shrink_factor": 0.161,
+    "shrink_factor": 0.14,
     "probabilities": {
-      "home_win_prob": 89.24,
-      "draw_prob": 5.38,
-      "away_win_prob": 5.38
+      "home_win_prob": 90.67,
+      "draw_prob": 4.67,
+      "away_win_prob": 4.67
     },
     "original_probabilities": {
       "home_win_prob": 100.0,
@@ -371,27 +371,27 @@
     },
     "neutral_anchor": 33.3,
     "notes": [
-      "Applied 16.1% shrink toward neutral due to reliability score 57.4."
+      "Applied 14.0% shrink toward neutral due to reliability score 60.4."
     ],
     "accuracy_adjustment": {
       "original_probability": 0.617,
-      "calibrated_probability": 0.6
+      "calibrated_probability": 0.612
     }
   },
   "confidence_intervals": {
     "home": [
-      94.9,
+      95.3,
       100.0
     ],
     "draw": [
       0.0,
-      5.1
+      4.7
     ],
     "away": [
       0.0,
-      5.1
+      4.7
     ],
-    "margin_percent": 5.11
+    "margin_percent": 4.75
   },
   "data_provenance": {
     "weather": true,
@@ -418,7 +418,7 @@
       "monte_carlo": 0.25
     }
   },
-  "generated_at": "2025-12-13T12:26:01.816102",
+  "generated_at": "2025-12-13T13:55:02.591229",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},
