@@ -1477,7 +1477,7 @@ class SingleMatchGenerator:
         likely_text = "Most Likely: Home Win" if likely == 'home' else "Most Likely: Draw" if likely == 'draw' else "Most Likely: Away Win"
         likely_color = colors.get('likely_home', league_theme['primary']) if likely == 'home' else colors.get('likely_draw', '#7F8C8D') if likely == 'draw' else colors.get('likely_away', league_theme['accent'])
         
-        ax.text(5, 13.2, likely_text, ha='center', va='center', fontsize=13, fontweight='bold', color=likely_color, zorder=3)
+        ax.text(5, 13.2, likely_text, ha='center', va='center', fontsize=14, fontweight='bold', color=likely_color, zorder=3)
 
         # =================================================================
         # TEAM FORM ANALYSIS SECTION - Professional visual gauges
@@ -1541,8 +1541,8 @@ class SingleMatchGenerator:
             form_advantage = "Balanced form"
             advantage_color = colors.get('likely_draw', '#7F8C8D')
 
-        ax.text(5, 8.05, form_advantage, ha='center', va='center', fontsize=11, 
-               fontweight='600', color=advantage_color, zorder=3, fontname='DejaVu Sans')
+        ax.text(5, 8.05, form_advantage, ha='center', va='center', fontsize=14, 
+               fontweight='bold', color=advantage_color, zorder=3, fontname='DejaVu Sans')
         
         
         # =================================================================
@@ -1603,8 +1603,8 @@ class SingleMatchGenerator:
             timing_text = "Goals distributed throughout match"
             timing_color = colors.get('likely_draw', '#7F8C8D')
 
-        ax.text(5, 7.2, timing_text, ha='center', va='center', fontsize=11, 
-               fontweight='600', color=timing_color, zorder=3, fontname='DejaVu Sans')
+        ax.text(5, 7.2, timing_text, ha='center', va='center', fontsize=14, 
+               fontweight='bold', color=timing_color, zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
         # KEY FACTORS SECTION - Clean layout
@@ -1657,12 +1657,12 @@ class SingleMatchGenerator:
             strength_text = "Teams at similar strength"
 
         # Display factors
-        ax.text(5, 5.5, weather_text, ha='center', va='center', fontsize=11, 
-               fontweight='600', color=weather_color, zorder=3, fontname='DejaVu Sans')
-        ax.text(5, 5.1, h2h_text, ha='center', va='center', fontsize=11, 
-               fontweight='600', color=colors.get('text_main', '#1A1A1A'), zorder=3, fontname='DejaVu Sans')
-        ax.text(5, 4.7, strength_text, ha='center', va='center', fontsize=11, 
-               fontweight='600', color=colors.get('text_main', '#1A1A1A'), zorder=3, fontname='DejaVu Sans')
+        ax.text(5, 5.5, weather_text, ha='center', va='center', fontsize=14, 
+               fontweight='bold', color=weather_color, zorder=3, fontname='DejaVu Sans')
+        ax.text(5, 5.1, h2h_text, ha='center', va='center', fontsize=14, 
+               fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=3, fontname='DejaVu Sans')
+        ax.text(5, 4.7, strength_text, ha='center', va='center', fontsize=14, 
+               fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=3, fontname='DejaVu Sans')
         
         # Referee (if available)
         referee_name = match_data.get('referee_analysis', {}).get('name', 'TBD')
