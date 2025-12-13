@@ -1392,18 +1392,18 @@ class SingleMatchGenerator:
         
         # Confidence box (left)
         conf_bg = Rectangle((1.2 - 0.7, 10.9), 1.4, 1.2, facecolor='white', 
-                           edgecolor=conf_color, linewidth=1.5, zorder=2, alpha=0.9)
+                           edgecolor=conf_color, linewidth=5.0, zorder=2, alpha=0.9)
         ax.add_patch(conf_bg)
-        ax.text(1.2, 11.6, f"{int(round(confidence))}%", ha='center', va='center', fontsize=20, 
+        ax.text(1.2, 11.6, f"{int(round(confidence))}%", ha='center', va='center', fontsize=28, 
                fontweight='bold', color=conf_color, zorder=3, fontname='DejaVu Sans')
         ax.text(1.2, 11.1, 'Confidence', ha='center', va='center', fontsize=10, 
                color=colors.get('text_main', '#1A1A1A'), fontweight='600', zorder=3, fontname='DejaVu Sans')
         
         # Data Quality box (right)
         dq_bg = Rectangle((8.8 - 0.7, 10.9), 1.4, 1.2, facecolor='white', 
-                         edgecolor=dq_color, linewidth=1.5, zorder=2, alpha=0.9)
+                         edgecolor=dq_color, linewidth=5.0, zorder=2, alpha=0.9)
         ax.add_patch(dq_bg)
-        ax.text(8.8, 11.6, f"{int(round(data_quality))}%", ha='center', va='center', fontsize=20, 
+        ax.text(8.8, 11.6, f"{int(round(data_quality))}%", ha='center', va='center', fontsize=28, 
                fontweight='bold', color=dq_color, zorder=3, fontname='DejaVu Sans')
         ax.text(8.8, 11.1, 'Data Quality', ha='center', va='center', fontsize=10, 
                color=colors.get('text_main', '#1A1A1A'), fontweight='600', zorder=3, fontname='DejaVu Sans')
@@ -1459,13 +1459,13 @@ class SingleMatchGenerator:
         for i in range(3):
             col_x_pos = col_x[i]
             
-            # Column background box with thicker border
+            # Column background box with 5px border
             col_bg = Rectangle((col_x_pos - 0.65, 13.5), 1.3, 1.4, facecolor='white', 
-                             edgecolor=col_colors[i], linewidth=3.0, zorder=2, alpha=0.9)
+                             edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Larger percentage value (increased from 24 to 28)
-            ax.text(col_x_pos, 14.55, f"{col_values[i]}%", ha='center', va='center', fontsize=28, 
+            # Larger percentage value (28 * 1.4 = 39pt)
+            ax.text(col_x_pos, 14.55, f"{col_values[i]}%", ha='center', va='center', fontsize=39, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
             # Team label (slightly larger)
@@ -1517,13 +1517,13 @@ class SingleMatchGenerator:
         for i in range(2):
             col_x_pos = col_x[i]
             
-            # Column background box with thicker border
+            # Column background box with 5px border
             col_bg = Rectangle((col_x_pos - 0.8, 9.9), 1.6, 1.2, facecolor='white', 
-                             edgecolor=col_colors[i], linewidth=3.0, zorder=2, alpha=0.9)
+                             edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Larger percentage value (increased from 22 to 26)
-            ax.text(col_x_pos, 10.6, f"{col_values[i]}%", ha='center', va='center', fontsize=26, 
+            # Larger percentage value (26 * 1.4 = 36pt)
+            ax.text(col_x_pos, 10.6, f"{col_values[i]}%", ha='center', va='center', fontsize=36, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
             # Team label (unchanged, already readable)
@@ -1575,13 +1575,13 @@ class SingleMatchGenerator:
         for i in range(2):
             col_x_pos = col_x[i]
             
-            # Column background box with thicker border
+            # Column background box with 5px border
             col_bg = Rectangle((col_x_pos - 0.8, 7.3), 1.6, 1.2, facecolor='white', 
-                             edgecolor=col_colors[i], linewidth=3.0, zorder=2, alpha=0.9)
+                             edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Larger percentage value (increased from 22 to 26)
-            ax.text(col_x_pos, 8.0, f"{col_values[i]}%", ha='center', va='center', fontsize=26, 
+            # Larger percentage value (26 * 1.4 = 36pt)
+            ax.text(col_x_pos, 8.0, f"{col_values[i]}%", ha='center', va='center', fontsize=36, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
             # Goal prediction label
