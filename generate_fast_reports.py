@@ -1359,19 +1359,21 @@ class SingleMatchGenerator:
         # TEAM PERFORMANCE SECTION - Visual gauges
         # =================================================================
 
-        perf_bg = Rectangle((0.6, 9.0), 8.8, 2.2, facecolor=colors.get('perf_bg', '#3498db'), alpha=0.08, edgecolor=colors.get('perf_bg', '#3498db'), linewidth=2)
+        # =================================================================
+        # TEAM PERFORMANCE SECTION - Professional visual gauges
+        # =================================================================
+        
+        # Section background with professional styling
+        perf_bg = Rectangle((0.6, 8.8), 8.8, 2.4, facecolor=colors.get('section_bg', '#F8F9FA'), 
+                           alpha=0.95, edgecolor=colors.get('separator', '#E0E0E0'), linewidth=1, zorder=1)
         ax.add_patch(perf_bg)
-
-        ax.text(
-            5,
-            10.8,
-            "TEAM FORM ANALYSIS",
-            ha='center',
-            va='center',
-            fontsize=16,
-            fontweight='bold',
-            color='black'
-        )
+        
+        # Section title with professional typography
+        ax.text(5, 10.95, "TEAM FORM ANALYSIS", ha='center', va='center', fontsize=19, 
+               fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
+        
+        # Professional separator line
+        ax.plot([0.7, 9.3], [10.75, 10.75], color=colors.get('separator', '#E0E0E0'), linewidth=1.5, zorder=2)
 
         home_form = match_data.get('home_performance_analysis', {}).get('home', {})
         away_form = match_data.get('away_performance_analysis', {}).get('away', {})
@@ -1383,104 +1385,105 @@ class SingleMatchGenerator:
             home_form_score = min(95, home_form_score + np.random.randint(-5, 6))
             away_form_score = min(95, away_form_score + np.random.randint(-5, 6))
 
-        home_x, form_y = 2.5, 10.0
+        home_x, form_y = 2.5, 9.6
         form_radius = 0.45
-        home_color = self.pct_to_color(home_form_score)
+        home_color = ProfessionalDesignSystem.get_color_for_probability(home_form_score)
 
-        # Team form gauges - use unified draw_gauge style
-        draw_gauge(home_x, form_y, form_radius, home_form_score, home_color, label_text=match_data['home_team'][:8], value_text=f"{int(round(home_form_score))}%")
-        # place team short label below the home form gauge (nudged further away from the gauge)
-        ax.text(home_x, form_y - form_radius - 0.6, match_data['home_team'][:8], ha='center', va='center', fontsize=11, color=colors.get('text_main', '#111111'), fontweight='bold', zorder=6)
+        # Team form gauges - use unified draw_gauge style with professional appearance
+        draw_gauge(home_x, form_y, form_radius, home_form_score, home_color, 
+                  label_text=match_data['home_team'][:8], value_text=f"{int(round(home_form_score))}%")
+        # place team short label below the home form gauge with professional styling
+        ax.text(home_x, form_y - form_radius - 0.75, match_data['home_team'][:8], ha='center', va='center', 
+               fontsize=12, color=colors.get('text_secondary', '#666666'), fontweight='bold', zorder=6, fontname='DejaVu Sans')
+        
         away_x = 7.5
-        away_color = self.pct_to_color(away_form_score)
-        draw_gauge(away_x, form_y, form_radius, away_form_score, away_color, label_text=match_data['away_team'][:8], value_text=f"{int(round(away_form_score))}%")
-        # place team short label below the away form gauge (nudged further away from the gauge)
-        ax.text(away_x, form_y - form_radius - 0.6, match_data['away_team'][:8], ha='center', va='center', fontsize=11, color=colors.get('text_main', '#111111'), fontweight='bold', zorder=6)
+        away_color = ProfessionalDesignSystem.get_color_for_probability(away_form_score)
+        draw_gauge(away_x, form_y, form_radius, away_form_score, away_color, 
+                  label_text=match_data['away_team'][:8], value_text=f"{int(round(away_form_score))}%")
+        # place team short label below the away form gauge with professional styling
+        ax.text(away_x, form_y - form_radius - 0.75, match_data['away_team'][:8], ha='center', va='center', 
+               fontsize=12, color=colors.get('text_secondary', '#666666'), fontweight='bold', zorder=6, fontname='DejaVu Sans')
 
+        # Form advantage indicator with professional badge styling
         if home_form_score > away_form_score + 5:
-            form_advantage = f"{match_data['home_team'][:10]} has better form"
+            form_advantage = f"🔥 {match_data['home_team'][:14]} in better form"
+            advantage_color = colors.get('likely_home', league_theme['primary'])
         elif away_form_score > home_form_score + 5:
-            form_advantage = f"{match_data['away_team'][:10]} has better form"
+            form_advantage = f"🔥 {match_data['away_team'][:14]} in better form"
+            advantage_color = colors.get('likely_away', league_theme['accent'])
         else:
-            form_advantage = "Both teams in similar form"
+            form_advantage = "Balanced form • Similar confidence levels"
+            advantage_color = colors.get('likely_draw', '#7F8C8D')
 
-        ax.text(
-            5,
-            9.4,
-            form_advantage,
-            ha='center',
-            va='center',
-            fontsize=14,
-            fontweight='bold',
-            color='black'
-        )
+        ax.text(5, 9.0, form_advantage, ha='center', va='center', fontsize=13, 
+               fontweight='bold', color=advantage_color, zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
-        # GOAL MARKETS & TIMING - Visual section
+        # GOAL PREDICTIONS - Professional visual section
         # =================================================================
 
-        goals_bg = Rectangle((0.6, 6.5), 8.8, 2.2, facecolor='#f39c12', alpha=0.08, edgecolor='#f39c12', linewidth=2)
+        # Section background with professional styling
+        goals_bg = Rectangle((0.6, 6.3), 8.8, 2.4, facecolor=colors.get('section_bg', '#F8F9FA'), 
+                            alpha=0.95, edgecolor=colors.get('separator', '#E0E0E0'), linewidth=1, zorder=1)
         ax.add_patch(goals_bg)
 
-        ax.text(
-            5,
-            8.4,
-            "GOAL PREDICTIONS",
-            ha='center',
-            va='center',
-            fontsize=16,
-            fontweight='bold',
-            color='black'
-        )
+        # Section title with professional typography
+        ax.text(5, 8.5, "GOAL PREDICTIONS", ha='center', va='center', fontsize=19, 
+               fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
+        
+        # Professional separator line
+        ax.plot([0.7, 9.3], [8.3, 8.3], color=colors.get('separator', '#E0E0E0'), linewidth=1.5, zorder=2)
 
         over_prob = match_data.get('over_2_5_goals_probability', 45)
         btts_prob = match_data.get('both_teams_score_probability', 55)
 
-        over_x, goals_y = 2.8, 7.6
+        over_x, goals_y = 2.8, 7.5
         gauge_size = 0.4
-        over_color = self.pct_to_color(over_prob)
+        over_color = ProfessionalDesignSystem.get_color_for_probability(over_prob)
 
-        # Over 2.5 gauge - unified style
-        draw_gauge(over_x, goals_y, gauge_size, over_prob, over_color, label_text='Over 2.5 Goals', value_text=f"{int(round(over_prob))}%")
-        # place the label for the Over 2.5 gauge on the main axes (nudged further away from the gauge)
-        ax.text(over_x, goals_y - gauge_size - 0.6, 'Over 2.5 Goals', ha='center', va='center', fontsize=11, color='#111111', fontweight='bold', zorder=6)
+        # Over 2.5 gauge with professional appearance
+        draw_gauge(over_x, goals_y, gauge_size, over_prob, over_color, 
+                  label_text='Over 2.5', value_text=f"{int(round(over_prob))}%")
+        # place the label for the Over 2.5 gauge with professional styling
+        ax.text(over_x, goals_y - gauge_size - 0.65, 'Over 2.5 Goals', ha='center', va='center', 
+               fontsize=12, color=colors.get('text_secondary', '#666666'), fontweight='bold', zorder=6, fontname='DejaVu Sans')
 
         btts_x = 7.2
-        btts_color = self.pct_to_color(btts_prob)
+        btts_color = ProfessionalDesignSystem.get_color_for_probability(btts_prob)
 
-        # BTTS gauge - unified style
-        draw_gauge(btts_x, goals_y, gauge_size, btts_prob, btts_color, label_text='Both Teams To Score', value_text=f"{int(round(btts_prob))}%")
-        # place the label for the BTTS gauge on the main axes (nudged further away from the gauge)
-        ax.text(btts_x, goals_y - gauge_size - 0.6, 'Both Teams To Score', ha='center', va='center', fontsize=11, color='#111111', fontweight='bold', zorder=6)
+        # BTTS gauge with professional appearance
+        draw_gauge(btts_x, goals_y, gauge_size, btts_prob, btts_color, 
+                  label_text='BTTS', value_text=f"{int(round(btts_prob))}%")
+        # place the label for the BTTS gauge with professional styling
+        ax.text(btts_x, goals_y - gauge_size - 0.65, 'Both Teams Score', ha='center', va='center', 
+               fontsize=12, color=colors.get('text_secondary', '#666666'), fontweight='bold', zorder=6, fontname='DejaVu Sans')
 
         goal_timing = match_data.get('goal_timing_prediction', {})
         first_half_prob = goal_timing.get('first_half_goal_probability', 45)
         second_half_prob = goal_timing.get('second_half_goal_probability', 55)
 
-        timing_text = (
-            "More goals in 2nd half"
-            if second_half_prob > first_half_prob + 10
-            else "More goals in 1st half"
-            if first_half_prob > second_half_prob + 10
-            else "Goals likely throughout"
-        )
+        # Goal timing insight with professional styling
+        if second_half_prob > first_half_prob + 10:
+            timing_text = f"⏱️ More goals expected in 2nd half ({int(second_half_prob)}%)"
+            timing_color = colors.get('likely_away', league_theme['accent'])
+        elif first_half_prob > second_half_prob + 10:
+            timing_text = f"⏱️ More goals expected in 1st half ({int(first_half_prob)}%)"
+            timing_color = colors.get('likely_home', league_theme['primary'])
+        else:
+            timing_text = "⏱️ Goals distributed throughout match"
+            timing_color = colors.get('likely_draw', '#7F8C8D')
 
-        ax.text(
-            5,
-            6.6,
-            timing_text,
-            ha='center',
-            va='center',
-            fontsize=14,
-            fontweight='bold',
-            color='black'
-        )
+        ax.text(5, 6.5, timing_text, ha='center', va='center', fontsize=13, 
+               fontweight='bold', color=timing_color, zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
-        # KEY FACTORS SECTION
+        # =================================================================
+        # KEY FACTORS SECTION - Professional styling
         # =================================================================
 
-        factors_bg = Rectangle((0.6, 4.0), 8.8, 2.2, facecolor='#9b59b6', alpha=0.08, edgecolor='#9b59b6', linewidth=2)
+        # Section background with professional styling
+        factors_bg = Rectangle((0.6, 3.8), 8.8, 2.4, facecolor=colors.get('section_bg', '#F8F9FA'), 
+                              alpha=0.95, edgecolor=colors.get('separator', '#E0E0E0'), linewidth=1, zorder=1)
         ax.add_patch(factors_bg)
 
         # Ensure variables are defined before use
@@ -1488,74 +1491,52 @@ class SingleMatchGenerator:
         weather_impact = weather_data.get('impact_assessment', {})
         weather_modifier = weather_impact.get('goal_modifier', 1.0)
         if weather_modifier > 1.05:
-            weather_text = "Weather may increase goals"
+            weather_text = "☁️ Weather may increase goals"
+            weather_color = colors.get('likely_away', league_theme['accent'])
         elif weather_modifier < 0.95:
-            weather_text = "Weather may reduce goals"
+            weather_text = "🌧️ Weather may reduce goals"
+            weather_color = colors.get('likely_home', league_theme['primary'])
         else:
-            weather_text = "Good weather conditions"
+            weather_text = "☀️ Good weather conditions"
+            weather_color = colors.get('likely_draw', '#7F8C8D')
 
         h2h_data = match_data.get('head_to_head_analysis', {})
         h2h_meetings = h2h_data.get('total_meetings', 0)
         if h2h_meetings > 5:
-            h2h_text = f"{h2h_meetings} previous meetings analyzed"
+            h2h_text = f"📊 {h2h_meetings} previous meetings analyzed"
         elif h2h_meetings > 0:
-            h2h_text = f"Limited history ({h2h_meetings} meetings)"
+            h2h_text = f"📊 Limited history ({h2h_meetings} meetings)"
         else:
-            h2h_text = "No recent H2H data available"
+            h2h_text = "📊 No recent H2H data available"
 
         home_strength = match_data.get('player_availability', {}).get('home_team', {}).get('expected_lineup_strength')
         away_strength = match_data.get('player_availability', {}).get('away_team', {}).get('expected_lineup_strength')
 
         if home_strength is None or away_strength is None:
-            strength_text = "Lineup data unavailable"
+            strength_text = "⚠️ Lineup data unavailable"
         elif abs(home_strength - away_strength) > 10:
-            stronger_team = match_data['home_team'][:8] if home_strength > away_strength else match_data['away_team'][:8]
-            strength_text = f"{stronger_team} has stronger lineup"
+            stronger_team = match_data['home_team'][:10] if home_strength > away_strength else match_data['away_team'][:10]
+            strength_text = f"💪 {stronger_team} has stronger lineup"
         else:
-            strength_text = "Both teams at similar strength"
+            strength_text = "💪 Both teams at similar strength"
 
         referee_name = match_data.get('referee_analysis', {}).get('name', 'TBD')
 
-        ax.text(
-            5,
-            5.9,
-            "KEY FACTORS",
-            ha='center',
-            va='center',
-            fontsize=16,
-            fontweight='bold',
-            color='black'
-        )
-        ax.text(
-            5,
-            5.4,
-            weather_text,
-            ha='center',
-            va='center',
-            fontsize=14,
-            fontweight='bold',
-            color='black'
-        )
-        ax.text(
-            5,
-            5.0,
-            h2h_text,
-            ha='center',
-            va='center',
-            fontsize=14,
-            fontweight='bold',
-            color='black'
-        )
-        ax.text(
-            5,
-            4.6,
-            strength_text,
-            ha='center',
-            va='center',
-            fontsize=13,
-            fontweight='bold',
-            color='black'
-        )
+        # Section title with professional typography
+        ax.text(5, 6.0, "KEY FACTORS", ha='center', va='center', fontsize=19, 
+               fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
+        
+        # Professional separator line
+        ax.plot([0.7, 9.3], [5.8, 5.8], color=colors.get('separator', '#E0E0E0'), linewidth=1.5, zorder=2)
+        
+        # Key factors with professional styling
+        ax.text(5, 5.3, weather_text, ha='center', va='center', fontsize=13, 
+               fontweight='bold', color=weather_color, zorder=3, fontname='DejaVu Sans')
+        ax.text(5, 4.9, h2h_text, ha='center', va='center', fontsize=13, 
+               fontweight='bold', color=colors.get('text_secondary', '#666666'), zorder=3, fontname='DejaVu Sans')
+        ax.text(5, 4.5, strength_text, ha='center', va='center', fontsize=13, 
+               fontweight='bold', color=colors.get('text_secondary', '#666666'), zorder=3, fontname='DejaVu Sans')
+        
         if referee_name not in ['TBD', 'Unknown Referee']:
             ax.text(
                 5,
@@ -1578,64 +1559,81 @@ class SingleMatchGenerator:
         ax.text(
             5,
             3.4,
-            "🤖 AI SPORTS PREDICTION SYSTEM",
+            "🤖 AI-ENHANCED SPORTS PREDICTION SYSTEM",
             ha='center',
             va='center',
-            fontsize=16,
+            fontsize=17,
             fontweight='bold',
-            color='white'
+            color='white',
+            fontname='DejaVu Sans',
+            zorder=3
         )
 
+        # Professional footer description with improved styling
         ax.text(
             5,
             2.9,
-            "Advanced machine learning analysis with multiple data sources",
+            "Advanced machine learning with Phase 2 Lite intelligent analysis",
             ha='center',
             va='center',
             fontsize=12,
-            color='white'
+            color='white',
+            fontname='DejaVu Sans',
+            zorder=3
         )
 
+        # Processing time with professional formatting
         ax.text(
             5,
             2.5,
-            f"Analysis completed in {match_data.get('processing_time', 0.1):.3f}s",
+            f"✓ Analysis: {match_data.get('processing_time', 0.1):.3f}s • Confidence: {int(confidence)}%",
             ha='center',
             va='center',
             fontsize=11,
-            color='white'
+            color='white',
+            fontname='DejaVu Sans',
+            zorder=3
         )
 
+        # Data sources with professional badge styling
         ax.text(
             5,
             2.1,
-            "Data: Official APIs • Weather • Form • H2H History",
+            "Data: Official APIs • Weather • Form • H2H Analysis",
             ha='center',
             va='center',
             fontsize=10,
-            color='white'
+            color='white',
+            fontname='DejaVu Sans',
+            zorder=3
         )
 
+        # Generated timestamp with professional styling
         ax.text(
             5,
             1.7,
-            f"Generated: {match_data.get('generated_at', 'Now')[:16]}",
+            f"Generated: {match_data.get('generated_at', 'Now')[:16]} • Enhanced Intelligence Active",
             ha='center',
             va='center',
             fontsize=10,
-            color='white'
+            color='white',
+            fontname='DejaVu Sans',
+            zorder=3
         )
 
+        # Professional disclaimer with improved styling
         ax.text(
             5,
             1.3,
-            "Educational purposes only - Not financial advice",
+            "⚠️ Educational purposes only • For analysis only • Not financial advice",
             ha='center',
             va='center',
-            fontsize=11,
+            fontsize=10,
             fontweight='bold',
             style='italic',
-            color='white'
+            color='white',
+            fontname='DejaVu Sans',
+            zorder=3
         )
 
         plt.tight_layout()
