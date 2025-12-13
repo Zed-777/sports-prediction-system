@@ -5,7 +5,7 @@
 - **League:** Ligue 1
 - **Date & Time:** 2025-12-13 at 16:00
 - **Engine Mode:** Enhanced Intelligence core engine with multi-layer analysis
-- **Prediction Confidence:** **75.0%** (Phase 2 Lite probability of correctness)
+- **Prediction Confidence:** **76.4%** (Phase 2 Lite probability of correctness)
 - **Data Confidence:** 75.0% (75.0% (Good))
 - **Data Quality Score:** 50.0%
 
@@ -41,7 +41,7 @@
 - **Top 3 Scores Combined:** ⭐ **10/10** (26.0%)
 - **Expected Goals:** 2.4 - 1.1
 - **Recommendation:** Home Win Likely
-- **Processing Time:** 4.98s
+- **Processing Time:** 0.00s
 
 ### Score Probability Breakdown
 
@@ -58,9 +58,9 @@
 
 ### Win Probabilities
 
- - **Stade Rennais Football Club 1901 Win:** 88.6%
-- **Draw:** 5.7%
-- **Stade Brestois 29 Win:** 5.7%
+ - **Stade Rennais Football Club 1901 Win:** 90.8%
+- **Draw:** 4.6%
+- **Stade Brestois 29 Win:** 4.6%
 
 ## 🔍 Intelligence Analysis
 
@@ -189,14 +189,14 @@
 ## ⚠️ Risk Assessment
 
 - **Overall Risk Level:** 🟡 MEDIUM RISK
-- **Data Reliability:** 🔴 Low (56.1)
+- **Data Reliability:** 🟠 Limited (60.6)
 - **Prediction Stability:** Stable
 
 ## 🎯 Confidence Analysis
 
-- **Reliability Score:** 🔴 Low 56.1 – Low reliability – informational use only.
-- **Confidence Interval Window:** Home 94.7% – 100.0%, Draw 0.0% – 5.3%, Away 0.0% – 5.3%
-- **Calibration Adjustment:** Applied 17.1% shrink toward neutral due to reliability score 56.1. | Accuracy 61.9% → 59.6%
+- **Reliability Score:** 🟠 Limited 60.6 – Limited reliability – supplement with manual review.
+- **Confidence Interval Window:** Home 95.3% – 100.0%, Draw 0.0% – 4.7%, Away 0.0% – 4.7%
+- **Calibration Adjustment:** Applied 13.9% shrink toward neutral due to reliability score 60.6. | Accuracy 61.9% → 61.4%
 - **Head-to-Head Data Availability:** ⚠️ Limited
 - **Recent Form Data:** ⚠️ Limited
 - **Enhanced Data Integration:** ⚠️ Partial Data
@@ -219,7 +219,7 @@
 - **Prediction Algorithm:** Enhanced Intelligence with 7 Analysis Layers
 - **Data Sources:** Football-Data.org API + Weather API + Referee Database + News Analysis
 - **Analysis Layers:** H2H History, Home/Away Performance, Goal Timing, Player Injuries, Weather, Referee, Team News
-- **Generated:** 2025-12-13T12:20:57.803287
+- **Generated:** 2025-12-13T12:28:40.158414
 
 ---
 

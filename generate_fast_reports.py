@@ -132,6 +132,115 @@ class ProfessionalDesignSystem:
         ax.text(x, y, text, ha='center', va='center', 
                fontsize=typo['size'], fontweight=typo['weight'],
                fontname=typo['font'], color=color, zorder=zorder, **kwargs)
+    
+    @staticmethod
+    def draw_sparkline(ax, x_pos: float, y_pos: float, width: float, height: float, 
+                      values: list, color: str = '#3498DB', title: str = '') -> None:
+        """Draw a mini sparkline chart (Phase 3 visualization).
+        
+        Args:
+            ax: Matplotlib axes
+            x_pos: X position of sparkline center
+            y_pos: Y position of sparkline center
+            width: Width of sparkline area
+            height: Height of sparkline area
+            values: List of numeric values (e.g., last 5 form scores)
+            color: Line color (default blue)
+            title: Optional title above sparkline
+        """
+        if not values or len(values) < 2:
+            # Draw placeholder if insufficient data
+            ax.text(x_pos, y_pos, 'N/A', ha='center', va='center', fontsize=8, 
+                   color='#999999', style='italic')
+            return
+        
+        # Normalize values to 0-1 range for positioning
+        min_val = min(values)
+        max_val = max(values)
+        value_range = max_val - min_val if max_val > min_val else 1
+        
+        normalized = [(v - min_val) / value_range for v in values]
+        
+        # Calculate x positions for points
+        n_points = len(values)
+        x_spacing = width / (n_points - 1) if n_points > 1 else width
+        x_coords = [x_pos - width/2 + i * x_spacing for i in range(n_points)]
+        y_coords = [y_pos - height/2 + (n * height) for n in normalized]
+        
+        # Draw sparkline path
+        ax.plot(x_coords, y_coords, color=color, linewidth=1.5, zorder=3, alpha=0.8)
+        
+        # Draw mini data points
+        ax.scatter(x_coords, y_coords, s=15, color=color, zorder=4, alpha=0.6)
+        
+        # Highlight last value with larger point
+        ax.scatter([x_coords[-1]], [y_coords[-1]], s=25, color=color, zorder=5, alpha=1.0, edgecolors='white', linewidth=0.5)
+        
+        # Optional background area under curve
+        y_baseline = [y_pos - height/2] * n_points
+        ax.fill_between(x_coords, y_coords, y_baseline, alpha=0.1, color=color, zorder=1)
+    
+    @staticmethod
+    def draw_h2h_history(ax, x_pos: float, y_pos: float, width: float, height: float,
+                        h2h_results: list, home_team: str = '', away_team: str = '',
+                        home_color: str = '#3498DB', away_color: str = '#E74C3C') -> None:
+        """Draw head-to-head history visualization (Phase 3).
+        
+        Args:
+            ax: Matplotlib axes
+            x_pos: X position of H2H section center
+            y_pos: Y position of H2H section center
+            width: Width of H2H visualization area
+            height: Height of H2H visualization area
+            h2h_results: List of match results [{'winner': 'home'/'away'/'draw', 'score': '2-1'}, ...]
+            home_team: Home team name (for labeling)
+            away_team: Away team name (for labeling)
+            home_color: Color for home team wins
+            away_color: Color for away team wins
+        """
+        if not h2h_results or len(h2h_results) == 0:
+            # Draw "No H2H history" message
+            ax.text(x_pos, y_pos, 'No H2H History', ha='center', va='center', fontsize=11,
+                   color='#999999', style='italic', fontweight='bold')
+            return
+        
+        # Limit to last 5 meetings
+        recent_h2h = h2h_results[-5:]
+        
+        # Draw mini result squares for each match
+        box_size = (width - 0.3) / len(recent_h2h)
+        start_x = x_pos - width/2 + 0.15
+        
+        for i, match in enumerate(recent_h2h):
+            box_x = start_x + i * box_size
+            box_y = y_pos
+            
+            # Determine color based on winner
+            result = match.get('winner', 'draw')
+            if result == 'home':
+                result_color = home_color
+                result_symbol = '🏠'
+            elif result == 'away':
+                result_color = away_color
+                result_symbol = '✈️'
+            else:
+                result_color = '#7F8C8D'
+                result_symbol = '='
+            
+            # Draw match result box
+            result_box = FancyBboxPatch((box_x - box_size/2 + 0.05, box_y - height/2 + 0.05), 
+                                       box_size - 0.1, height - 0.1,
+                                       boxstyle="round,pad=0.03", facecolor=result_color, 
+                                       edgecolor=result_color, alpha=0.2, linewidth=1, zorder=2)
+            ax.add_patch(result_box)
+            
+            # Score text
+            score = match.get('score', '-')
+            ax.text(box_x, box_y + 0.08, score, ha='center', va='center', fontsize=8,
+                   fontweight='bold', color=result_color, zorder=3)
+            
+            # Result indicator
+            ax.text(box_x, box_y - 0.10, result_symbol, ha='center', va='center', fontsize=9, zorder=3)
 
 try:
     from data_quality_enhancer import DataQualityEnhancer
@@ -1494,6 +1603,40 @@ class SingleMatchGenerator:
                fontsize=9, fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=3, fontname='DejaVu Sans')
         ax.text(away_card_x + 1.0, away_card_y - 0.18, f"Strength: {int(away_strength)}%", ha='right', va='center', 
                fontsize=8, color=colors.get('text_secondary', '#666666'), zorder=3, fontname='DejaVu Sans')
+        
+        # PHASE 3: Form trend sparklines - Mini line charts showing last 5 matches
+        # Extract form trend data
+        home_form_trend = home_form.get('recent_form', [50, 50, 50, 50, 50])[-5:]  # Last 5 matches
+        away_form_trend = away_form.get('recent_form', [50, 50, 50, 50, 50])[-5:]
+        
+        # Ensure values are numeric and padded to 5 points
+        home_trend_values = [float(v) if isinstance(v, (int, float)) else 50 for v in home_form_trend]
+        away_trend_values = [float(v) if isinstance(v, (int, float)) else 50 for v in away_form_trend]
+        
+        # Pad to 5 values if needed
+        while len(home_trend_values) < 5:
+            home_trend_values = [home_form_score] + home_trend_values
+        while len(away_trend_values) < 5:
+            away_trend_values = [away_form_score] + away_trend_values
+        
+        home_trend_values = home_trend_values[-5:]
+        away_trend_values = away_trend_values[-5:]
+        
+        # Draw home team sparkline
+        home_sparkline_x = home_card_x + 0.6
+        home_sparkline_y = home_card_y
+        sparkline_width = 0.8
+        sparkline_height = 0.35
+        
+        ProfessionalDesignSystem.draw_sparkline(ax, home_sparkline_x, home_sparkline_y, sparkline_width, sparkline_height,
+                                               home_trend_values, color=colors.get('likely_home', league_theme['primary']))
+        
+        # Draw away team sparkline
+        away_sparkline_x = away_card_x - 0.6
+        away_sparkline_y = away_card_y
+        
+        ProfessionalDesignSystem.draw_sparkline(ax, away_sparkline_x, away_sparkline_y, sparkline_width, sparkline_height,
+                                               away_trend_values, color=colors.get('likely_away', league_theme['accent']))
 
         # =================================================================
         # GOAL PREDICTIONS - Professional visual section
@@ -1613,6 +1756,19 @@ class SingleMatchGenerator:
                fontweight='bold', color=colors.get('text_secondary', '#666666'), zorder=3, fontname='DejaVu Sans')
         ax.text(5, 4.5, strength_text, ha='center', va='center', fontsize=13, 
                fontweight='bold', color=colors.get('text_secondary', '#666666'), zorder=3, fontname='DejaVu Sans')
+        
+        # PHASE 3: H2H History visualization - Mini match results grid
+        h2h_results = h2h_data.get('recent_matches', [])
+        if h2h_results and len(h2h_results) > 0:
+            h2h_vis_x = 5
+            h2h_vis_y = 4.15
+            h2h_width = 3.5
+            h2h_height = 0.25
+            
+            ProfessionalDesignSystem.draw_h2h_history(ax, h2h_vis_x, h2h_vis_y, h2h_width, h2h_height,
+                                                     h2h_results, match_data['home_team'], match_data['away_team'],
+                                                     colors.get('likely_home', league_theme['primary']),
+                                                     colors.get('likely_away', league_theme['accent']))
         
         if referee_name not in ['TBD', 'Unknown Referee']:
             ax.text(
