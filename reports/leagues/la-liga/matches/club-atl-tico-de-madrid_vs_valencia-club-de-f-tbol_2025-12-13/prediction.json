@@ -6,13 +6,13 @@
   "time": "13:00",
   "league": "La Liga",
   "confidence": 0.75,
-  "report_accuracy_probability": 0.75,
-  "home_win_probability": 88.29,
-  "draw_probability": 5.86,
-  "away_win_probability": 5.86,
+  "report_accuracy_probability": 0.761,
+  "home_win_probability": 90.67,
+  "draw_probability": 4.67,
+  "away_win_probability": 4.67,
   "expected_home_goals": 2.9,
   "expected_away_goals": 1.1,
-  "processing_time": 304.848,
+  "processing_time": 0.003,
   "recommendation": "Home Win Likely",
   "confidence_level": "75.0% (Good)",
   "expected_final_score": "2-1",
@@ -186,7 +186,7 @@
       "team_name": "Club Atlético de Madrid",
       "squad_size": 34,
       "positions": {
-        "goalkeepers": 4,
+        "goalkeepers": 34,
         "defenders": 0,
         "midfielders": 0,
         "attackers": 0
@@ -220,7 +220,7 @@
       "team_name": "Valencia CF",
       "squad_size": 32,
       "positions": {
-        "goalkeepers": 3,
+        "goalkeepers": 32,
         "defenders": 0,
         "midfielders": 0,
         "attackers": 0
@@ -318,32 +318,32 @@
   },
   "data_quality_score": 50.0,
   "reliability_metrics": {
-    "score": 55.4,
-    "level": "Low",
-    "indicator": "🔴 Low",
-    "recommendation": "Low reliability – informational use only.",
+    "score": 60.4,
+    "level": "Limited",
+    "indicator": "🟠 Limited",
+    "recommendation": "Limited reliability – supplement with manual review.",
     "confidence_intervals": {
       "home": [
-        94.6,
+        95.3,
         100.0
       ],
       "draw": [
         0.0,
-        5.4
+        4.7
       ],
       "away": [
         0.0,
-        5.4
+        4.7
       ],
-      "margin_percent": 5.36
+      "margin_percent": 4.75
     },
     "spread_points": 100.0,
     "factors": {
-      "model_confidence": 55.9,
+      "model_confidence": 57.3,
       "data_quality": 50.0,
       "probability_clarity": 100.0,
       "h2h_depth": 0.0,
-      "data_freshness": 55.0
+      "data_freshness": 100.0
     },
     "primary_driver": "probability_clarity",
     "notes": [
@@ -353,11 +353,11 @@
   },
   "calibration_details": {
     "applied": true,
-    "shrink_factor": 0.176,
+    "shrink_factor": 0.14,
     "probabilities": {
-      "home_win_prob": 88.29,
-      "draw_prob": 5.86,
-      "away_win_prob": 5.86
+      "home_win_prob": 90.67,
+      "draw_prob": 4.67,
+      "away_win_prob": 4.67
     },
     "original_probabilities": {
       "home_win_prob": 100.0,
@@ -371,27 +371,27 @@
     },
     "neutral_anchor": 33.3,
     "notes": [
-      "Applied 17.6% shrink toward neutral due to reliability score 55.4."
+      "Applied 14.0% shrink toward neutral due to reliability score 60.4."
     ],
     "accuracy_adjustment": {
       "original_probability": 0.617,
-      "calibrated_probability": 0.592
+      "calibrated_probability": 0.612
     }
   },
   "confidence_intervals": {
     "home": [
-      94.6,
+      95.3,
       100.0
     ],
     "draw": [
       0.0,
-      5.4
+      4.7
     ],
     "away": [
       0.0,
-      5.4
+      4.7
     ],
-    "margin_percent": 5.36
+    "margin_percent": 4.75
   },
   "data_provenance": {
     "weather": true,
@@ -418,7 +418,7 @@
       "monte_carlo": 0.25
     }
   },
-  "generated_at": "2025-12-13T11:28:12.580700",
+  "generated_at": "2025-12-13T12:03:30.856633",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},

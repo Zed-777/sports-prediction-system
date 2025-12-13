@@ -27,6 +27,112 @@ warnings.filterwarnings('ignore', category=UserWarning, message='.*missing from 
 
 CURRENT_DIR = Path(__file__).parent
 
+# ============================================================================
+# PROFESSIONAL DESIGN SYSTEM FOR SPORTS CARDS
+# ============================================================================
+
+class ProfessionalDesignSystem:
+    """Professional design system for sports analytics cards"""
+    
+    # League-specific color themes for premium appearance
+    LEAGUE_THEMES = {
+        'la-liga': {
+            'primary': '#003DA5',      # Royal Blue
+            'secondary': '#FFD700',    # Gold
+            'accent': '#8B0000',       # Deep Crimson
+            'light_primary': '#E6F0FF', # Light blue for backgrounds
+        },
+        'premier-league': {
+            'primary': '#004CD4',      # Royal Blue
+            'secondary': '#FFD700',    # Gold
+            'accent': '#1F1F1F',       # Dark Charcoal
+            'light_primary': '#E6F2FF',
+        },
+        'serie-a': {
+            'primary': '#003A70',      # Deep Blue
+            'secondary': '#CE1126',    # Red
+            'accent': '#FFFFFF',       # White
+            'light_primary': '#E6F0FF',
+        },
+        'bundesliga': {
+            'primary': '#000000',      # Black
+            'secondary': '#F4B942',    # Gold
+            'accent': '#DD0000',       # Red
+            'light_primary': '#F5F5F5',
+        },
+        'ligue-1': {
+            'primary': '#002D5D',      # Navy Blue
+            'secondary': '#F7A600',    # Gold
+            'accent': '#EF3B39',       # Red
+            'light_primary': '#E6F0FF',
+        }
+    }
+    
+    # Professional color palette
+    BASE_COLORS = {
+        'header_bg': '#1a1a1a',
+        'main_bg': '#FFFFFF',
+        'main_border': '#D0D0D0',
+        'section_bg': '#F8F9FA',
+        'text_main': '#1a1a1a',
+        'text_secondary': '#666666',
+        'text_light': '#999999',
+        'gauge_bg': '#E8E8E8',
+        'separator': '#E0E0E0',
+        'shadow': '#000000',
+        'success': '#27AE60',
+        'warning': '#F39C12',
+        'danger': '#E74C3C'
+    }
+    
+    @classmethod
+    def get_theme(cls, league_name: str) -> Dict[str, str]:
+        """Get theme colors for league"""
+        # Normalize league name
+        normalized = league_name.lower().replace(' ', '-')
+        return cls.LEAGUE_THEMES.get(normalized, cls.LEAGUE_THEMES['la-liga'])
+    
+    @classmethod
+    def get_color_for_probability(cls, probability: float) -> str:
+        """Get professional color gradient for probability"""
+        p = max(0.0, min(100.0, probability))
+        if p >= 80:
+            return '#27AE60'  # Green - Very High
+        elif p >= 60:
+            return '#3498DB'  # Blue - High
+        elif p >= 40:
+            return '#F39C12'  # Orange - Medium
+        elif p >= 20:
+            return '#E67E22'  # Orange-Red - Low
+        else:
+            return '#E74C3C'  # Red - Very Low
+    
+    # Professional typography system for consistent styling
+    TYPOGRAPHY = {
+        'title': {'size': 26, 'weight': 'bold', 'font': 'DejaVu Sans'},
+        'heading': {'size': 19, 'weight': 'bold', 'font': 'DejaVu Sans'},
+        'subheading': {'size': 14, 'weight': 'bold', 'font': 'DejaVu Sans'},
+        'label': {'size': 12, 'weight': 'bold', 'font': 'DejaVu Sans'},
+        'value': {'size': 23, 'weight': 'bold', 'font': 'DejaVu Sans'},
+        'body': {'size': 11, 'weight': 'normal', 'font': 'DejaVu Sans'},
+        'small': {'size': 10, 'weight': 'normal', 'font': 'DejaVu Sans'},
+    }
+    
+    @classmethod
+    def apply_text(cls, ax, text: str, x: float, y: float, style: str = 'body', 
+                   color: str = None, zorder: int = 1, **kwargs) -> None:
+        """Apply typography with consistent professional styling."""
+        if style not in cls.TYPOGRAPHY:
+            style = 'body'
+        typo = cls.TYPOGRAPHY[style]
+        
+        if color is None:
+            color = cls.BASE_COLORS['text_main']
+        
+        ax.text(x, y, text, ha='center', va='center', 
+               fontsize=typo['size'], fontweight=typo['weight'],
+               fontname=typo['font'], color=color, zorder=zorder, **kwargs)
+
 try:
     from data_quality_enhancer import DataQualityEnhancer
     from enhanced_predictor import EnhancedPredictor, get_competition_code_from_league
@@ -972,7 +1078,7 @@ class SingleMatchGenerator:
     # ==================== START OF save_image SECTION ====================
     # ================================================================
     def save_image(self, match_data: JSONDict, path: Union[str, Path]) -> None:
-        """Generate visually stunning match prediction card with gauges and centered results"""
+        """Generate visually stunning match prediction card with modern design, professional spacing, and gauges"""
 
         reliability_metrics = match_data.get('reliability_metrics', {}) or {}
         reliability_score = reliability_metrics.get('score')
@@ -985,26 +1091,43 @@ class SingleMatchGenerator:
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 20)
         ax.axis('off')
+        
+        # Professional figure background and spacing
+        fig.patch.set_facecolor('#FFFFFF')
+        fig.subplots_adjust(left=0.05, right=0.95, top=0.98, bottom=0.02)
 
-        # Load visual constants (with safe fallbacks)
+        # Get league name for theme selection
+        league_name = match_data.get('league', 'La Liga')
+        
+        # Load visual constants with professional design system
         vis = self._settings.get('constants', {}).get('visual_defaults', {})
-        colors = self._settings.get('constants', {}).get('colors', {
-            'header_bg': '#34495e',
-            'main_bg': '#fdfdfd',
-            'main_border': '#7f8c8d',
-            'results_bg': '#8e44ad',
-            'results_bg_edge': '#8e44ad',
-            'text_main': '#111111',
-            'gauge_bg': '#e9ecef',
-            'section_bg': '#f5f7fa',
-            'separator': '#d1d5db',
-            'likely_home': '#3498db',
-            'likely_draw': '#636e72',
-            'likely_away': '#e74c3c',
-            'perf_bg': '#3498db',
-            'goals_bg': '#f39c12',
-            'underline': 'black',
-            'shadow': '#000000'
+        
+        # Get league-specific theme
+        league_theme = ProfessionalDesignSystem.get_theme(league_name)
+        
+        # Build color palette with league theme
+        base_colors = ProfessionalDesignSystem.BASE_COLORS.copy()
+        colors = self._settings.get('constants', {}).get('colors', base_colors.copy())
+        
+        # Override with professional defaults and league theme
+        colors.update({
+            'header_bg': league_theme['primary'],  # Use league primary color for header
+            'main_bg': '#FFFFFF',                   # Clean white background
+            'main_border': '#E0E0E0',               # Professional light border
+            'results_bg': league_theme['light_primary'],  # Light theme color for results
+            'results_bg_edge': league_theme['primary'],   # Dark theme color for border
+            'text_main': '#1A1A1A',                 # Professional dark text
+            'text_secondary': '#666666',            # Secondary text
+            'gauge_bg': '#F0F0F0',                  # Light gauge background
+            'section_bg': '#F8F9FA',                # Professional section background
+            'separator': '#E0E0E0',                 # Clean separator
+            'likely_home': league_theme['primary'], # Use league color for home
+            'likely_draw': '#7F8C8D',               # Neutral gray
+            'likely_away': league_theme['accent'],  # Use league accent for away
+            'perf_bg': league_theme['primary'],    # League color for performance
+            'goals_bg': league_theme['secondary'], # League secondary for goals
+            'underline': league_theme['primary'],  # League color for underlines
+            'shadow': '#00000015'                   # Subtle shadow
         })
 
         # font sizes
@@ -1022,28 +1145,29 @@ class SingleMatchGenerator:
         main_box = FancyBboxPatch((0.2, 0.3), 9.6, 19.4, boxstyle="round,pad=0.02,rounding_size=0.05", facecolor=colors.get('main_bg', '#fdfdfd'), edgecolor=colors.get('main_border', '#7f8c8d'), linewidth=2, zorder=1)
         ax.add_patch(main_box)
 
-        # Professional header section with enhanced styling
-        header_bg = Rectangle((0.4, 17.5), 9.2, 2.2, facecolor=colors.get('header_bg', '#34495e'), alpha=0.95)
+        # Professional header section with enhanced styling and improved spacing
+        header_bg = Rectangle((0.4, 17.3), 9.2, 2.4, facecolor=colors.get('header_bg', '#34495e'), alpha=0.95, zorder=2)
         ax.add_patch(header_bg)
 
         # Add subtle inner border for premium look
-        inner_border = Rectangle((0.3, 0.4), 9.4, 19.2, facecolor='none', edgecolor=colors.get('main_border', '#95a5a6'), linewidth=1, alpha=0.3)
+        inner_border = Rectangle((0.3, 0.4), 9.4, 19.2, facecolor='none', edgecolor=colors.get('main_border', '#95a5a6'), linewidth=1, alpha=0.3, zorder=2)
         ax.add_patch(inner_border)
 
-        # Enhanced main title with premium typography
+        # Enhanced main title with premium typography and improved spacing
         # Use white header text on dark header background for better contrast
-        ax.text(5, 18.9, f"{match_data['home_team']}",
-                ha='center', va='center', fontsize=header_fs, fontweight='bold', color='white')
-        ax.text(5, 18.4, "VS",
-                ha='center', va='center', fontsize=subtitle_fs, fontweight='bold', color='white', alpha=0.95)
-        ax.text(5, 17.9, f"{match_data['away_team']}",
-                ha='center', va='center', fontsize=header_fs, fontweight='bold', color='white')
-        ax.text(5, 17.6, f"{match_data.get('league', 'League')} • {match_data['date']} at {match_data['time']}",
-                ha='center', va='center', fontsize=label_fs, fontweight='bold', color='white')
+        ax.text(5, 19.2, f"{match_data['home_team']}",
+                ha='center', va='center', fontsize=header_fs, fontweight='bold', color='white', zorder=3, fontname='DejaVu Sans')
+        ax.text(5, 18.5, "VS",
+                ha='center', va='center', fontsize=subtitle_fs-2, fontweight='bold', color='white', alpha=0.9, zorder=3, fontname='DejaVu Sans')
+        ax.text(5, 17.8, f"{match_data['away_team']}",
+                ha='center', va='center', fontsize=header_fs, fontweight='bold', color='white', zorder=3, fontname='DejaVu Sans')
+        # Match info with professional styling and subtle separator
+        ax.text(5, 17.4, f"{match_data.get('league', 'League')} • {match_data['date']} • {match_data['time']}",
+                ha='center', va='center', fontsize=11, fontweight='normal', color='white', alpha=0.85, zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
         # CENTER SECTION - FINAL RESULTS & WINNING CHANCES (PRIORITY)
-        # =================================================================
+        # ================================================================
 
         # Main results section - MASSIVE and centered
         results_bg = Rectangle((0.6, 14.5), 8.8, 2.8, facecolor=colors.get('results_bg', '#8e44ad'), alpha=0.15, edgecolor=colors.get('results_bg_edge', '#8e44ad'), linewidth=3)
@@ -1108,53 +1232,81 @@ class SingleMatchGenerator:
             except Exception:
                 pct = 0.0
             pct = max(0.0, min(100.0, pct))
+            
+            # Enhanced gauge styling with modern appearance
             if pct > 0:
+                # Draw filled arc with smooth gradient appearance
                 angle = pct / 100.0 * 360.0
-                arc = Wedge((0.5, 0.5), outer_r, 90 - angle, 90, width=ring_width, facecolor=color, edgecolor='none', zorder=2)
+                # Add glow effect with slightly larger semi-transparent arc
+                glow = Wedge((0.5, 0.5), outer_r, 90 - angle, 90, width=ring_width + 0.05, 
+                            facecolor=color, alpha=0.25, edgecolor='none', zorder=1)
+                inset.add_patch(glow)
+                # Main colored arc
+                arc = Wedge((0.5, 0.5), outer_r, 90 - angle, 90, width=ring_width, 
+                           facecolor=color, edgecolor=color, linewidth=0.5, zorder=2)
                 inset.add_patch(arc)
 
-            # thin dark outline outer
-            outline = Circle((0.5, 0.5), outer_r, fill=False, linewidth=1.0, edgecolor='#222222', zorder=3)
+            # Enhanced background ring with gradient appearance
+            bg_wedge = Wedge((0.5, 0.5), outer_r, 0, 360, width=ring_width, 
+                           facecolor=colors.get('gauge_bg', '#F0F0F0'), edgecolor='#E0E0E0', 
+                           linewidth=1.0, zorder=1)
+            inset.add_patch(bg_wedge)
+            
+            # Professional outline with subtle shadow
+            outline = Circle((0.5, 0.5), outer_r, fill=False, linewidth=2.0, 
+                           edgecolor=color, alpha=0.3, zorder=0)  # Shadow
             inset.add_patch(outline)
+            
+            # Crisp main outline
+            outline_main = Circle((0.5, 0.5), outer_r, fill=False, linewidth=1.2, 
+                                edgecolor='#555555', zorder=3)
+            inset.add_patch(outline_main)
 
-            # centered value text (slightly larger)
+            # centered value text with professional styling
             if value_text is None:
                 value_text = f"{int(round(pct))}%"
-            inset_font = self._settings.get('constants', {}).get('gauge', {}).get('inset_text_size', 16)
-            inset.text(0.5, 0.5, value_text, ha='center', va='center', fontsize=inset_font, fontweight='bold', color=colors.get('text_main', '#111111'), zorder=4)
+            inset_font = self._settings.get('constants', {}).get('gauge', {}).get('inset_text_size', 18)
+            inset.text(0.5, 0.5, value_text, ha='center', va='center', fontsize=inset_font, 
+                      fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=4)
 
             # Do not draw the label inside the gauge inset; labels are placed on the main axes
 
         # Confidence gauge (left)
         confidence = match_data.get('report_accuracy_probability', 0.65) * 100
-        conf_color = self.pct_to_color(confidence)
+        conf_color = ProfessionalDesignSystem.get_color_for_probability(confidence)
         # Confidence gauge (moved into the Winning Chances band; nudge down to avoid overlapping column text)
         draw_gauge(2, 11.7, 0.45, confidence, conf_color, label_text='CONFIDENCE', value_text=f"{int(round(confidence))}%")
         # place the label for the confidence gauge on the main axes (nudged further away from the gauge)
-        ax.text(2, 10.4, 'CONFIDENCE', ha='center', va='center', fontsize=label_fs, color=colors.get('text_main', '#111111'), fontweight='bold', zorder=6)
+        ax.text(2, 10.4, 'CONFIDENCE', ha='center', va='center', fontsize=label_fs, 
+               color=colors.get('text_secondary', '#666666'), fontweight='bold', zorder=6)
 
         # Data quality gauge (right)
         data_quality = match_data.get('data_quality_score', 75.0)
-        dq_color = self.pct_to_color(data_quality)
+        dq_color = ProfessionalDesignSystem.get_color_for_probability(data_quality)
         # Data quality gauge (moved into the Winning Chances band; nudge down to avoid overlapping column text)
         draw_gauge(8, 11.7, 0.45, data_quality, dq_color, label_text='DATA QUALITY', value_text=f"{int(round(data_quality))}%")
         # place the label for the data-quality gauge on the main axes (nudged further away from the gauge)
-        ax.text(8, 10.4, 'DATA QUALITY', ha='center', va='center', fontsize=label_fs, color=colors.get('text_main', '#111111'), fontweight='bold', zorder=6)
+        ax.text(8, 10.4, 'DATA QUALITY', ha='center', va='center', fontsize=label_fs, 
+               color=colors.get('text_secondary', '#666666'), fontweight='bold', zorder=6)
 
         # =================================================================
         # WINNING CHANCES SECTION - Professional, clean, column layout
         # =================================================================
-        # Section background: subtle color block, no gradient
-        win_bg = Rectangle((0.5, 11.3), 9.0, 2.8, facecolor=colors.get('section_bg', '#f5f7fa'), alpha=0.97, edgecolor='none', zorder=1)
+        # Section background: professional gradient effect with subtle color
+        win_bg = Rectangle((0.5, 11.3), 9.0, 2.8, facecolor=colors.get('section_bg', '#F8F9FA'), 
+                          alpha=0.95, edgecolor=colors.get('separator', '#E0E0E0'), linewidth=1, zorder=1)
         ax.add_patch(win_bg)
-        # Section title
-        ax.text(5, 14.0, "WINNING CHANCES", ha='center', va='center', fontsize=19, fontweight='bold', color='black', zorder=2, fontname='DejaVu Sans')
-        # Subtle separator line
-        ax.plot([0.7, 9.3], [13.8, 13.8], color=colors.get('separator', '#d1d5db'), linewidth=1.2, zorder=2)
-        # Reliability indicator (badge style)
+        # Section title with professional styling
+        ax.text(5, 14.0, "WINNING CHANCES", ha='center', va='center', fontsize=19, fontweight='bold', 
+               color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
+        # Professional separator line
+        ax.plot([0.7, 9.3], [13.8, 13.8], color=colors.get('separator', '#E0E0E0'), linewidth=1.5, zorder=2)
+        # Reliability indicator (professional badge style)
         reliability_score = reliability_metrics.get('score', 0)
-        reliability_text = f"Reliability: {reliability_score:.1f}" if reliability_score else "Reliability: Limited"
-        ax.text(8.7, 13.9, reliability_text, ha='right', va='center', fontsize=13, color='black', fontweight='bold', alpha=0.85, zorder=2, fontname='DejaVu Sans')
+        reliability_text = f"Confidence: {int(confidence)}%" if confidence else "Confidence: Limited"
+        ax.text(8.7, 13.9, reliability_text, ha='right', va='center', fontsize=12, 
+               color=colors.get('text_secondary', '#666666'), fontweight='bold', alpha=0.85, zorder=2, 
+               fontname='DejaVu Sans')
         # Win/Draw/Away probabilities - column layout
         home_win = match_data.get('home_win_probability', 0)
         draw = match_data.get('draw_probability', 0)
@@ -1175,13 +1327,28 @@ class SingleMatchGenerator:
         col_labels = [smart_team_label(home_team), "Draw", smart_team_label(away_team)]
         col_x = [2.2, 5.0, 7.8]
         col_values = [int(round(home_win)), int(round(draw)), int(round(away_win))]
+        
+        # Professional column styling with colors
+        col_colors = [colors.get('likely_home', league_theme['primary']),  
+                     colors.get('likely_draw', '#7F8C8D'),
+                     colors.get('likely_away', league_theme['accent'])]
+        
         for i in range(3):
-            # Value
-            ax.text(col_x[i], 13.2, f"{col_values[i]}%", ha='center', va='center', fontsize=23, fontweight='bold', color='black', zorder=3, fontname='DejaVu Sans')
-            # Label
-            ax.text(col_x[i], 12.8, col_labels[i], ha='center', va='center', fontsize=14, color='black', zorder=3, fontname='DejaVu Sans')
-            # Subtle underline for value
-            ax.plot([col_x[i]-0.5, col_x[i]+0.5], [13.05, 13.05], color='black', linewidth=1.1, alpha=0.15, zorder=3)
+            # Professional background for each column
+            col_bg = Rectangle((col_x[i]-0.6, 12.5), 1.2, 1.3, facecolor=col_colors[i], 
+                             alpha=0.08, edgecolor=col_colors[i], linewidth=1, zorder=2)
+            ax.add_patch(col_bg)
+            
+            # Value with professional styling
+            ax.text(col_x[i], 13.2, f"{col_values[i]}%", ha='center', va='center', fontsize=23, 
+                   fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
+            # Label with secondary text color
+            ax.text(col_x[i], 12.8, col_labels[i], ha='center', va='center', fontsize=13, 
+                   color=colors.get('text_secondary', '#666666'), zorder=3, fontname='DejaVu Sans')
+            # Professional underline for value
+            ax.plot([col_x[i]-0.45, col_x[i]+0.45], [13.05, 13.05], color=col_colors[i], 
+                   linewidth=2.0, alpha=0.5, zorder=3)
+        
         # Most likely outcome highlight - elegant badge
         likely = max([(home_win, 'home'), (draw, 'draw'), (away_win, 'away')], key=lambda x: x[0])[1]
         likely_text = "Most Likely: Home Win" if likely == 'home' else "Most Likely: Draw" if likely == 'draw' else "Most Likely: Away Win"

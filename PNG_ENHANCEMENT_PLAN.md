@@ -1,7 +1,9 @@
 # 📊 PNG Report Card Enhancement Plan
 
 ## Current State
+
 The PNG prediction cards are **functional but basic**:
+
 - Simple gauge visualizations (circular progress bars)
 - Text-heavy layout with limited visual hierarchy
 - Flat color design (no gradients, shadows, or depth)
@@ -14,6 +16,7 @@ The PNG prediction cards are **functional but basic**:
 ## 🎨 Vision: Professional Sports Analytics Dashboard
 
 Transform PNGs from functional to **professional-grade sports analytics cards** with:
+
 - Modern design language (clean, minimal, premium)
 - Rich visual hierarchy and typography
 - Data visualization excellence
@@ -24,6 +27,7 @@ Transform PNGs from functional to **professional-grade sports analytics cards** 
 ## 🔧 Enhancement Roadmap
 
 ### **Phase 1: Design Foundation** (High Impact, Medium Effort)
+
 1. **Color Scheme Overhaul**
    - Current: Basic palette from settings.yaml
    - Target: League-specific primary colors + sophisticated accent palette
@@ -43,6 +47,7 @@ Transform PNGs from functional to **professional-grade sports analytics cards** 
    - Improve: Visual breathing room
 
 ### **Phase 2: Visual Elements** (High Impact, High Effort)
+
 1. **Upgrade Gauge Visualizations**
    - Current: Basic circular progress bars with text
    - Target: Modern semi-circular gauges with needle indicators
@@ -71,6 +76,7 @@ Transform PNGs from functional to **professional-grade sports analytics cards** 
    - Example: Horizontal bar with color gradients
 
 ### **Phase 3: Data Visualization** (Medium Impact, Medium Effort)
+
 1. **Performance Metrics**
    - Current: Form scores shown as simple gauges
    - Target: Sparkline mini-charts showing recent form trend
@@ -90,6 +96,7 @@ Transform PNGs from functional to **professional-grade sports analytics cards** 
    - Visual: Timeline progress bar
 
 ### **Phase 4: Premium Touches** (Low Impact, Medium Effort)
+
 1. **Shadows & Depth**
    - Add subtle drop shadows to cards
    - Inner shadows for premium button-like elements
@@ -116,6 +123,7 @@ Transform PNGs from functional to **professional-grade sports analytics cards** 
 ## 📐 Detailed Implementation Priorities
 
 ### **Quick Wins** (1-2 hours each)
+
 - ✅ Add league-specific color themes
 - ✅ Improve typography and font sizes
 - ✅ Add subtle gradient backgrounds
@@ -123,12 +131,14 @@ Transform PNGs from functional to **professional-grade sports analytics cards** 
 - ✅ Add small icons next to labels
 
 ### **Medium Effort** (3-5 hours each)
+
 - ✅ Upgrade confidence gauge to semi-circular design
 - ✅ Create score prediction card component
 - ✅ Add mini sparkline charts for form
 - ✅ Implement probability distribution bar chart
 
 ### **Major Features** (6+ hours each)
+
 - ✅ Team logo integration
 - ✅ Betting market dashboard layout
 - ✅ Match context timeline visualization
@@ -138,9 +148,10 @@ Transform PNGs from functional to **professional-grade sports analytics cards** 
 
 ## 🎯 Specific Visual Examples
 
-### Current → Target Examples:
+### Current → Target Examples
 
 **Example 1: Main Score Display**
+
 ```
 CURRENT:                          TARGET:
 Expected Score: 2-1               ┌─────────────────┐
@@ -152,6 +163,7 @@ Expected Score: 2-1               ┌──────────────�
 ```
 
 **Example 2: Winning Chances**
+
 ```
 CURRENT:                          TARGET:
 Home Win: 88.3%                   ┏━━━━━━━━━━━━━━━━┓
@@ -161,6 +173,7 @@ Away Win: 5.9%                    ║ 88.3%  │5.9%│5.9%║
 ```
 
 **Example 3: Team Form**
+
 ```
 CURRENT:                          TARGET:
 Home Form: 100%                   Home Team ▓▓▓▓▓▓▓▓▓░ 100%
@@ -173,13 +186,16 @@ Away Form: 18.2%                  Away Team ▓▓░░░░░░░░ 18%
 ## 📊 Technical Implementation Notes
 
 ### Current Code Structure
+
 - Main function: `save_image()` in `generate_fast_reports.py` (~600+ lines)
 - Uses: matplotlib with Rectangle, FancyBboxPatch, manual layout
 - Color handling: Via `pct_to_color()` method
 - Gauge implementation: Custom `draw_gauge()` function
 
 ### Recommended Refactoring
+
 1. **Create PNG Component Classes**
+
    ```python
    class ScorePredictionCard:
        def draw(self, ax, score, probability, alternates)
@@ -192,6 +208,7 @@ Away Form: 18.2%                  Away Team ▓▓░░░░░░░░ 18%
    ```
 
 2. **Design System Module**
+
    ```python
    class DesignSystem:
        - colors (palette, themes)
@@ -209,29 +226,34 @@ Away Form: 18.2%                  Away Team ▓▓░░░░░░░░ 18%
 
 ## 🎨 Color Scheme Recommendations
 
-### League-Specific Themes:
+### League-Specific Themes
 
 **La Liga**
+
 - Primary: Royal Blue (#003DA5)
 - Secondary: Gold (#FFD700)
 - Accent: Deep Crimson (#8B0000)
 
 **Premier League**
+
 - Primary: Royal Blue (#004CD4)
 - Secondary: Gold (#FFD700)
 - Accent: Dark Charcoal (#1F1F1F)
 
 **Serie A**
+
 - Primary: Deep Blue (#003A70)
 - Secondary: Red (#CE1126)
 - Accent: White (#FFFFFF)
 
 **Bundesliga**
+
 - Primary: Black (#000000)
 - Secondary: Gold (#F4B942)
 - Accent: Red (#DD0000)
 
 **Ligue 1**
+
 - Primary: Navy Blue (#002D5D)
 - Secondary: Gold (#F7A600)
 - Accent: Red (#EF3B39)
@@ -241,12 +263,14 @@ Away Form: 18.2%                  Away Team ▓▓░░░░░░░░ 18%
 ## 📈 Expected Outcomes
 
 ### Before
+
 - Reports look "amateur" and DIY
 - Difficult to scan for key information
 - Not suitable for sharing/embedding
 - Lacks professional branding
 
 ### After
+
 - Reports look professional and publication-ready
 - Clear visual hierarchy and information flow
 - Share-worthy on social media, emails, reports
@@ -271,4 +295,3 @@ Away Form: 18.2%                  Away Team ▓▓░░░░░░░░ 18%
 - **Scalability**: Make sure designs work for variable match counts
 - **Maintenance**: Keep code modular and well-documented
 - **Testing**: Generate test cards for all leagues and scenarios
-
