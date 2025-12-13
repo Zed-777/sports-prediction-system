@@ -1193,10 +1193,11 @@ class SingleMatchGenerator:
         # No helper function needed - use direct approach
 
         # Read visual/layout defaults from settings (with safe fallbacks)
-        fig_size = self._settings.get('constants', {}).get('layout', {}).get('figure_size', [14, 20])
+        # Expanded canvas for better spacing and readability
+        fig_size = self._settings.get('constants', {}).get('layout', {}).get('figure_size', [14, 32])
         fig, ax = plt.subplots(figsize=(fig_size[0], fig_size[1]))
         ax.set_xlim(0, 10)
-        ax.set_ylim(0, 24)  # Increased from 20 to 24 for better spacing
+        ax.set_ylim(0, 32)  # Expanded from 24 to 32 for comfortable spacing between sections
         ax.axis('off')
         
         # Professional figure background and spacing
@@ -1253,23 +1254,23 @@ class SingleMatchGenerator:
         ax.add_patch(main_box)
 
         # Professional header section with enhanced styling and improved spacing
-        header_bg = Rectangle((0.4, 20.8), 9.2, 2.8, facecolor=colors.get('header_bg', '#34495e'), alpha=0.95, zorder=2)
+        header_bg = Rectangle((0.4, 28.0), 9.2, 3.5, facecolor=colors.get('header_bg', '#34495e'), alpha=0.95, zorder=2)
         ax.add_patch(header_bg)
 
         # Add subtle inner border for premium look
-        inner_border = Rectangle((0.3, 0.4), 9.4, 23.2, facecolor='none', edgecolor=colors.get('main_border', '#95a5a6'), linewidth=1, alpha=0.3, zorder=2)
+        inner_border = Rectangle((0.3, 0.4), 9.4, 31.2, facecolor='none', edgecolor=colors.get('main_border', '#95a5a6'), linewidth=1, alpha=0.3, zorder=2)
         ax.add_patch(inner_border)
 
         # Enhanced main title with premium typography and improved spacing
         # Use white header text on dark header background for better contrast
-        ax.text(5, 22.8, f"{match_data['home_team']}",
+        ax.text(5, 30.8, f"{match_data['home_team']}",
                 ha='center', va='center', fontsize=header_fs, fontweight='bold', color='white', zorder=3, fontname='DejaVu Sans')
-        ax.text(5, 22.0, "VS",
+        ax.text(5, 29.8, "VS",
                 ha='center', va='center', fontsize=subtitle_fs-2, fontweight='bold', color='white', alpha=0.9, zorder=3, fontname='DejaVu Sans')
-        ax.text(5, 21.2, f"{match_data['away_team']}",
+        ax.text(5, 28.8, f"{match_data['away_team']}",
                 ha='center', va='center', fontsize=header_fs, fontweight='bold', color='white', zorder=3, fontname='DejaVu Sans')
         # Match info with professional styling and subtle separator
-        ax.text(5, 20.5, f"{match_data.get('league', 'League')} • {match_data['date']} • {match_data['time']}",
+        ax.text(5, 28.0, f"{match_data.get('league', 'League')} • {match_data['date']} • {match_data['time']}",
                 ha='center', va='center', fontsize=11, fontweight='normal', color='white', alpha=0.85, zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
@@ -1277,11 +1278,11 @@ class SingleMatchGenerator:
         # ================================================================
 
         # Main results section - MASSIVE and centered
-        results_bg = Rectangle((0.6, 17.2), 8.8, 2.8, facecolor=colors.get('results_bg', '#8e44ad'), alpha=0.15, edgecolor=colors.get('results_bg_edge', '#8e44ad'), linewidth=3)
+        results_bg = Rectangle((0.6, 22.0), 8.8, 3.8, facecolor=colors.get('results_bg', '#8e44ad'), alpha=0.15, edgecolor=colors.get('results_bg_edge', '#8e44ad'), linewidth=3)
         ax.add_patch(results_bg)
 
         # PREDICTED SCORE - Center focus, adjusted font for balance
-        ax.text(5, 19.5, "PREDICTED FINAL SCORE",
+        ax.text(5, 25.2, "PREDICTED FINAL SCORE",
             ha='center', va='center', fontsize=section_title_fs, fontweight='bold', color=colors.get('text_main', '#111111'))
 
         # Parse the expected final score to get individual team scores
@@ -1293,11 +1294,11 @@ class SingleMatchGenerator:
         home_team_short = match_data['home_team'][:15] + "..." if len(match_data['home_team']) > 15 else match_data['home_team']
         away_team_short = match_data['away_team'][:15] + "..." if len(match_data['away_team']) > 15 else match_data['away_team']
 
-        ax.text(5, 19.0, f"{home_team_short} {home_score} - {away_score} {away_team_short}",
+        ax.text(5, 24.2, f"{home_team_short} {home_score} - {away_score} {away_team_short}",
             ha='center', va='center', fontsize=value_fs, fontweight='bold', color=colors.get('text_main', '#111111'))
 
         # Expected goals with team names - clearer display
-        ax.text(5, 18.4, f"Expected Goals: {home_team_short} {match_data['expected_home_goals']:.1f} - {match_data['expected_away_goals']:.1f} {away_team_short}",
+        ax.text(5, 23.3, f"Expected Goals: {home_team_short} {match_data['expected_home_goals']:.1f} - {match_data['expected_away_goals']:.1f} {away_team_short}",
             ha='center', va='center', fontsize=label_fs, fontweight='bold', color=colors.get('text_main', '#111111'))
 
         # --- Modern semi-circular gauge utility for Phase 2 visual enhancements ---
@@ -1387,16 +1388,16 @@ class SingleMatchGenerator:
         # SECTION 1: MATCH CONFIDENCE METRICS (Top - Light Blue Background)
         # =================================================================
         # Section background group
-        metrics_bg = Rectangle((0.5, 10.3), 9.0, 1.8, facecolor='#e8f4f8', 
+        metrics_bg = Rectangle((0.5, 19.0), 9.0, 2.2, facecolor='#e8f4f8', 
                               alpha=0.6, edgecolor='#3498db', linewidth=2, zorder=1)
         ax.add_patch(metrics_bg)
         
         # Section category label
-        ax.text(0.8, 11.9, "CONFIDENCE METRICS", ha='left', va='center', fontsize=11, 
+        ax.text(0.8, 20.8, "CONFIDENCE METRICS", ha='left', va='center', fontsize=11, 
                fontweight='bold', color='#2c3e50', zorder=2, fontname='DejaVu Sans')
         
         # Divider line
-        ax.plot([0.7, 9.3], [11.7, 11.7], color='#3498db', linewidth=1.5, zorder=2, alpha=0.5)
+        ax.plot([0.7, 9.3], [20.6, 20.6], color='#3498db', linewidth=1.5, zorder=2, alpha=0.5)
 
         # Confidence and Data Quality boxes (instead of gauges)
         confidence = match_data.get('report_accuracy_probability', 0.65) * 100
@@ -1406,45 +1407,45 @@ class SingleMatchGenerator:
         dq_color = ProfessionalDesignSystem.get_color_for_probability(data_quality)
         
         # Confidence box (left)
-        conf_bg = Rectangle((1.2 - 0.7, 10.9), 1.4, 1.2, facecolor='white', 
+        conf_bg = Rectangle((1.2 - 0.7, 19.5), 1.4, 1.2, facecolor='white', 
                            edgecolor=conf_color, linewidth=5.0, zorder=2, alpha=0.9)
         ax.add_patch(conf_bg)
-        ax.text(1.2, 11.6, f"{int(round(confidence))}%", ha='center', va='center', fontsize=20, 
+        ax.text(1.2, 20.3, f"{int(round(confidence))}%", ha='center', va='center', fontsize=20, 
                fontweight='bold', color=conf_color, zorder=3, fontname='DejaVu Sans')
-        ax.text(1.2, 11.1, 'Confidence', ha='center', va='center', fontsize=13, 
+        ax.text(1.2, 19.75, 'Confidence', ha='center', va='center', fontsize=13, 
                color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
         
         # Data Quality box (right)
-        dq_bg = Rectangle((8.8 - 0.7, 10.9), 1.4, 1.2, facecolor='white', 
+        dq_bg = Rectangle((8.8 - 0.7, 19.5), 1.4, 1.2, facecolor='white', 
                          edgecolor=dq_color, linewidth=5.0, zorder=2, alpha=0.9)
         ax.add_patch(dq_bg)
-        ax.text(8.8, 11.6, f"{int(round(data_quality))}%", ha='center', va='center', fontsize=20, 
+        ax.text(8.8, 20.3, f"{int(round(data_quality))}%", ha='center', va='center', fontsize=20, 
                fontweight='bold', color=dq_color, zorder=3, fontname='DejaVu Sans')
-        ax.text(8.8, 11.1, 'Data Quality', ha='center', va='center', fontsize=13, 
+        ax.text(8.8, 19.75, 'Data Quality', ha='center', va='center', fontsize=13, 
                color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
         # SECTION 2: WINNING CHANCES & FORM (Middle - Light Green Background)
         # =================================================================
         # Section background group
-        analysis_bg = Rectangle((0.5, 7.5), 9.0, 3.5, facecolor='#e8f8f0', 
+        analysis_bg = Rectangle((0.5, 11.0), 9.0, 4.8, facecolor='#e8f8f0', 
                                alpha=0.6, edgecolor='#27ae60', linewidth=2, zorder=1)
         ax.add_patch(analysis_bg)
         
         # Section category label
-        ax.text(0.8, 10.8, "PREDICTION ANALYSIS", ha='left', va='center', fontsize=11, 
+        ax.text(0.8, 15.5, "PREDICTION ANALYSIS", ha='left', va='center', fontsize=11, 
                fontweight='bold', color='#2c3e50', zorder=2, fontname='DejaVu Sans')
         
         # Divider line
-        ax.plot([0.7, 9.3], [10.6, 10.6], color='#27ae60', linewidth=1.5, zorder=2, alpha=0.5)
+        ax.plot([0.7, 9.3], [15.3, 15.3], color='#27ae60', linewidth=1.5, zorder=2, alpha=0.5)
 
         # WINNING CHANCES SECTION - Clean 3-column layout
         # Section subtitle
-        ax.text(5, 10.15, "WINNING CHANCES", ha='center', va='center', fontsize=17, fontweight='bold', 
+        ax.text(5, 14.8, "WINNING CHANCES", ha='center', va='center', fontsize=17, fontweight='bold', 
                color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
         
         # Separator line
-        ax.plot([0.7, 9.3], [9.95, 9.95], color='#27ae60', linewidth=0.8, zorder=2, alpha=0.3)
+        ax.plot([0.7, 9.3], [14.55, 14.55], color='#27ae60', linewidth=0.8, zorder=2, alpha=0.3)
         
         # Win/Draw/Away probabilities
         home_win = match_data.get('home_win_probability', 0)
@@ -1477,16 +1478,16 @@ class SingleMatchGenerator:
             col_x_pos = col_x[i]
             
             # Column background box with 5px border
-            col_bg = Rectangle((col_x_pos - 0.65, 8.65), 1.3, 1.1, facecolor='white', 
+            col_bg = Rectangle((col_x_pos - 0.65, 13.3), 1.3, 1.1, facecolor='white', 
                              edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
             # Percentage value 
-            ax.text(col_x_pos, 9.35, f"{col_values[i]}%", ha='center', va='center', fontsize=27, 
+            ax.text(col_x_pos, 14.0, f"{col_values[i]}%", ha='center', va='center', fontsize=27, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
             # Team label 
-            ax.text(col_x_pos, 8.9, col_labels[i], ha='center', va='center', fontsize=14, 
+            ax.text(col_x_pos, 13.55, col_labels[i], ha='center', va='center', fontsize=14, 
                    color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
         
         # Most likely outcome at bottom
@@ -1494,14 +1495,14 @@ class SingleMatchGenerator:
         likely_text = "Most Likely: Home Win" if likely == 'home' else "Most Likely: Draw" if likely == 'draw' else "Most Likely: Away Win"
         likely_color = colors.get('likely_home', league_theme['primary']) if likely == 'home' else colors.get('likely_draw', '#7F8C8D') if likely == 'draw' else colors.get('likely_away', league_theme['accent'])
         
-        ax.text(5, 8.25, likely_text, ha='center', va='center', fontsize=14, fontweight='bold', color=likely_color, zorder=3)
+        ax.text(5, 12.85, likely_text, ha='center', va='center', fontsize=14, fontweight='bold', color=likely_color, zorder=3)
 
         # TEAM FORM ANALYSIS SECTION - Subtitle separator
-        ax.text(5, 7.95, "TEAM FORM ANALYSIS", ha='center', va='center', fontsize=17, fontweight='bold',
+        ax.text(5, 12.5, "TEAM FORM ANALYSIS", ha='center', va='center', fontsize=17, fontweight='bold',
                color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
         
         # Separator line
-        ax.plot([0.7, 9.3], [7.75, 7.75], color='#27ae60', linewidth=0.8, zorder=2, alpha=0.3)
+        ax.plot([0.7, 9.3], [12.28, 12.28], color='#27ae60', linewidth=0.8, zorder=2, alpha=0.3)
 
         home_form = match_data.get('home_performance_analysis', {}).get('home', {})
         away_form = match_data.get('away_performance_analysis', {}).get('away', {})
@@ -1526,16 +1527,16 @@ class SingleMatchGenerator:
             col_x_pos = col_x[i]
             
             # Column background box with 5px border
-            col_bg = Rectangle((col_x_pos - 0.8, 7.15), 1.6, 1.0, facecolor='white', 
+            col_bg = Rectangle((col_x_pos - 0.8, 11.6), 1.6, 1.0, facecolor='white', 
                              edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
             # Percentage value
-            ax.text(col_x_pos, 7.75, f"{col_values[i]}%", ha='center', va='center', fontsize=25, 
+            ax.text(col_x_pos, 12.25, f"{col_values[i]}%", ha='center', va='center', fontsize=25, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
             # Team label
-            ax.text(col_x_pos, 7.3, col_labels[i], ha='center', va='center', fontsize=14, 
+            ax.text(col_x_pos, 11.8, col_labels[i], ha='center', va='center', fontsize=14, 
                    color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
 
         # Form advantage indicator
@@ -1549,25 +1550,24 @@ class SingleMatchGenerator:
             form_advantage = "Balanced form"
             advantage_color = colors.get('likely_draw', '#7F8C8D')
 
-        ax.text(5, 6.85, form_advantage, ha='center', va='center', fontsize=14, 
+        ax.text(5, 11.3, form_advantage, ha='center', va='center', fontsize=14, 
                fontweight='bold', color=advantage_color, zorder=3, fontname='DejaVu Sans')
-        
         
         
         # =================================================================
         # SECTION 3: GOAL PREDICTIONS (Light Orange Background)
         # =================================================================
         # Section background group
-        goals_bg = Rectangle((0.5, 5.5), 9.0, 1.5, facecolor='#fef5e7', 
+        goals_bg = Rectangle((0.5, 8.0), 9.0, 2.2, facecolor='#fef5e7', 
                             alpha=0.6, edgecolor='#f39c12', linewidth=2, zorder=1)
         ax.add_patch(goals_bg)
         
         # Section category label
-        ax.text(0.8, 6.8, "GOAL INSIGHTS", ha='left', va='center', fontsize=11, 
+        ax.text(0.8, 9.8, "GOAL INSIGHTS", ha='left', va='center', fontsize=11, 
                fontweight='bold', color='#2c3e50', zorder=2, fontname='DejaVu Sans')
         
         # Divider line
-        ax.plot([0.7, 9.3], [6.6, 6.6], color='#f39c12', linewidth=1.5, zorder=2, alpha=0.5)
+        ax.plot([0.7, 9.3], [9.6, 9.6], color='#f39c12', linewidth=1.5, zorder=2, alpha=0.5)
 
         over_prob = match_data.get('over_2_5_goals_probability', 45)
         btts_prob = match_data.get('both_teams_score_probability', 55)
@@ -1585,16 +1585,16 @@ class SingleMatchGenerator:
             col_x_pos = col_x[i]
             
             # Column background box with 5px border
-            col_bg = Rectangle((col_x_pos - 0.8, 5.8), 1.6, 0.95, facecolor='white', 
+            col_bg = Rectangle((col_x_pos - 0.8, 8.3), 1.6, 0.95, facecolor='white', 
                              edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
             # Percentage value
-            ax.text(col_x_pos, 6.35, f"{col_values[i]}%", ha='center', va='center', fontsize=25, 
+            ax.text(col_x_pos, 8.85, f"{col_values[i]}%", ha='center', va='center', fontsize=25, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
             # Goal prediction label
-            ax.text(col_x_pos, 5.95, col_labels[i], ha='center', va='center', fontsize=13, 
+            ax.text(col_x_pos, 8.45, col_labels[i], ha='center', va='center', fontsize=13, 
                    color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
 
         goal_timing = match_data.get('goal_timing_prediction', {})
@@ -1612,7 +1612,7 @@ class SingleMatchGenerator:
             timing_text = "Goals distributed throughout match"
             timing_color = colors.get('likely_draw', '#7F8C8D')
 
-        ax.text(5, 5.6, timing_text, ha='center', va='center', fontsize=14, 
+        ax.text(5, 8.1, timing_text, ha='center', va='center', fontsize=14, 
                fontweight='bold', color=timing_color, zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
@@ -1620,16 +1620,16 @@ class SingleMatchGenerator:
         # =================================================================
 
         # Section background group
-        factors_bg = Rectangle((0.5, 3.8), 9.0, 1.5, facecolor='#f4ecf7', 
+        factors_bg = Rectangle((0.5, 5.5), 9.0, 2.2, facecolor='#f4ecf7', 
                               alpha=0.6, edgecolor='#8e44ad', linewidth=2, zorder=1)
         ax.add_patch(factors_bg)
         
         # Section category label
-        ax.text(0.8, 5.1, "SUPPORTING INTELLIGENCE", ha='left', va='center', fontsize=11, 
+        ax.text(0.8, 7.3, "SUPPORTING INTELLIGENCE", ha='left', va='center', fontsize=11, 
                fontweight='bold', color='#2c3e50', zorder=2, fontname='DejaVu Sans')
         
         # Divider line
-        ax.plot([0.7, 9.3], [4.9, 4.9], color='#8e44ad', linewidth=1.5, zorder=2, alpha=0.5)
+        ax.plot([0.7, 9.3], [7.1, 7.1], color='#8e44ad', linewidth=1.5, zorder=2, alpha=0.5)
         
         # Weather data
         weather_data = match_data.get('weather_conditions', {})
@@ -1666,29 +1666,29 @@ class SingleMatchGenerator:
             strength_text = "Teams at similar strength"
 
         # Display factors
-        ax.text(5, 5.5, weather_text, ha='center', va='center', fontsize=14, 
+        ax.text(5, 6.8, weather_text, ha='center', va='center', fontsize=14, 
                fontweight='bold', color=weather_color, zorder=3, fontname='DejaVu Sans')
-        ax.text(5, 5.1, h2h_text, ha='center', va='center', fontsize=14, 
+        ax.text(5, 6.4, h2h_text, ha='center', va='center', fontsize=14, 
                fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=3, fontname='DejaVu Sans')
-        ax.text(5, 4.7, strength_text, ha='center', va='center', fontsize=14, 
+        ax.text(5, 6.0, strength_text, ha='center', va='center', fontsize=14, 
                fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=3, fontname='DejaVu Sans')
         
         # Referee (if available)
         referee_name = match_data.get('referee_analysis', {}).get('name', 'TBD')
         if referee_name not in ['TBD', 'Unknown Referee']:
-            ax.text(5, 4.3, f"Referee: {referee_name[:12]}", ha='center', va='center', fontsize=10, 
+            ax.text(5, 5.7, f"Referee: {referee_name[:12]}", ha='center', va='center', fontsize=10, 
                    fontweight='600', color=colors.get('text_secondary', '#666666'), zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
         # FOOTER - Clean and informative
         # =================================================================
 
-        footer_bg = Rectangle((0.4, 0.5), 9.2, 4.0, facecolor='#2c3e50', alpha=1.0)
+        footer_bg = Rectangle((0.4, 0.5), 9.2, 5.0, facecolor='#2c3e50', alpha=1.0)
         ax.add_patch(footer_bg)
 
         ax.text(
             5,
-            4.0,
+            5.0,
             "🤖 AI-ENHANCED SPORTS PREDICTION SYSTEM",
             ha='center',
             va='center',
@@ -1702,7 +1702,7 @@ class SingleMatchGenerator:
         # Professional footer description with improved styling
         ax.text(
             5,
-            3.5,
+            4.4,
             "Advanced machine learning with Phase 2 Lite intelligent analysis",
             ha='center',
             va='center',
@@ -1715,7 +1715,7 @@ class SingleMatchGenerator:
         # Processing time with professional formatting
         ax.text(
             5,
-            3.1,
+            3.9,
             f"✓ Analysis: {match_data.get('processing_time', 0.1):.3f}s • Confidence: {int(confidence)}%",
             ha='center',
             va='center',
@@ -1728,7 +1728,7 @@ class SingleMatchGenerator:
         # Data sources with professional badge styling
         ax.text(
             5,
-            2.7,
+            3.4,
             "Data: Official APIs • Weather • Form • H2H Analysis",
             ha='center',
             va='center',
@@ -1741,7 +1741,7 @@ class SingleMatchGenerator:
         # Generated timestamp with professional styling
         ax.text(
             5,
-            2.3,
+            2.9,
             f"Generated: {match_data.get('generated_at', 'Now')[:16]} • Enhanced Intelligence Active",
             ha='center',
             va='center',
@@ -1754,7 +1754,7 @@ class SingleMatchGenerator:
         # Professional disclaimer with improved styling
         ax.text(
             5,
-            1.3,
+            1.8,
             "⚠️ Educational purposes only • For analysis only • Not financial advice",
             ha='center',
             va='center',
