@@ -94,18 +94,16 @@ class ProfessionalDesignSystem:
     
     @classmethod
     def get_color_for_probability(cls, probability: float) -> str:
-        """Get professional color gradient for probability"""
+        """Get color gradient for probability: 0-25% red, 25-50% orange, 50-75% yellow, 75-100% green"""
         p = max(0.0, min(100.0, probability))
-        if p >= 80:
-            return '#27AE60'  # Green - Very High
-        elif p >= 60:
-            return '#3498DB'  # Blue - High
-        elif p >= 40:
-            return '#F39C12'  # Orange - Medium
-        elif p >= 20:
-            return '#E67E22'  # Orange-Red - Low
+        if p >= 75:
+            return '#27AE60'  # Green - 75-100%
+        elif p >= 50:
+            return '#F4D03F'  # Yellow - 50-75%
+        elif p >= 25:
+            return '#F39C12'  # Orange - 25-50%
         else:
-            return '#E74C3C'  # Red - Very Low
+            return '#E74C3C'  # Red - 0-25%
     
     # Professional typography system for consistent styling
     TYPOGRAPHY = {
@@ -1452,9 +1450,10 @@ class SingleMatchGenerator:
         col_x = [2.0, 5.0, 8.0]
         col_values = [int(round(home_win)), int(round(draw)), int(round(away_win))]
         
-        col_colors = [colors.get('likely_home', league_theme['primary']),  
-                     colors.get('likely_draw', '#7F8C8D'),
-                     colors.get('likely_away', league_theme['accent'])]
+        # Use probability-based colors for all percentage displays
+        col_colors = [ProfessionalDesignSystem.get_color_for_probability(home_win),
+                     ProfessionalDesignSystem.get_color_for_probability(draw),
+                     ProfessionalDesignSystem.get_color_for_probability(away_win)]
         
         # Draw three clean columns
         for i in range(3):
@@ -1511,8 +1510,9 @@ class SingleMatchGenerator:
         col_values = [int(round(home_form_score)), int(round(away_form_score))]
         col_labels = ['Home', 'Away']
         
-        col_colors = [colors.get('likely_home', league_theme['primary']),
-                     colors.get('likely_away', league_theme['accent'])]
+        # Use probability-based colors for form scores
+        col_colors = [ProfessionalDesignSystem.get_color_for_probability(home_form_score),
+                     ProfessionalDesignSystem.get_color_for_probability(away_form_score)]
         
         for i in range(2):
             col_x_pos = col_x[i]
@@ -1560,7 +1560,6 @@ class SingleMatchGenerator:
         
         # Separator line
         ax.plot([0.7, 9.3], [8.55, 8.55], color=colors.get('separator', '#E0E0E0'), linewidth=1.2, zorder=2)
-
         over_prob = match_data.get('over_2_5_goals_probability', 45)
         btts_prob = match_data.get('both_teams_score_probability', 55)
 
@@ -1569,8 +1568,9 @@ class SingleMatchGenerator:
         col_values = [int(round(over_prob)), int(round(btts_prob))]
         col_labels = ['Over 2.5', 'BTTS']
         
-        col_colors = [colors.get('likely_away', '#F39C12'),
-                     colors.get('likely_home', league_theme['primary'])]
+        # Use probability-based colors for goal predictions
+        col_colors = [ProfessionalDesignSystem.get_color_for_probability(over_prob),
+                     ProfessionalDesignSystem.get_color_for_probability(btts_prob)]
         
         for i in range(2):
             col_x_pos = col_x[i]
