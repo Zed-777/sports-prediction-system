@@ -1385,23 +1385,30 @@ class SingleMatchGenerator:
                 inset.text(0.5, 0.1, label_text, ha='center', va='center', fontsize=9, 
                           color=colors.get('text_secondary', '#666666'), zorder=4, fontname='DejaVu Sans')
 
-        # Confidence gauge (left)
+        # Confidence and Data Quality boxes (instead of gauges)
         confidence = match_data.get('report_accuracy_probability', 0.65) * 100
         conf_color = ProfessionalDesignSystem.get_color_for_probability(confidence)
-        # Confidence gauge (moved into the Winning Chances band; nudge down to avoid overlapping column text)
-        draw_gauge(2, 11.7, 0.45, confidence, conf_color, label_text='CONFIDENCE', value_text=f"{int(round(confidence))}%")
-        # place the label for the confidence gauge on the main axes (nudged further away from the gauge)
-        ax.text(2, 10.4, 'CONFIDENCE', ha='center', va='center', fontsize=label_fs, 
-               color=colors.get('text_secondary', '#666666'), fontweight='bold', zorder=6)
-
-        # Data quality gauge (right)
+        
         data_quality = match_data.get('data_quality_score', 75.0)
         dq_color = ProfessionalDesignSystem.get_color_for_probability(data_quality)
-        # Data quality gauge (moved into the Winning Chances band; nudge down to avoid overlapping column text)
-        draw_gauge(8, 11.7, 0.45, data_quality, dq_color, label_text='DATA QUALITY', value_text=f"{int(round(data_quality))}%")
-        # place the label for the data-quality gauge on the main axes (nudged further away from the gauge)
-        ax.text(8, 10.4, 'DATA QUALITY', ha='center', va='center', fontsize=label_fs, 
-               color=colors.get('text_secondary', '#666666'), fontweight='bold', zorder=6)
+        
+        # Confidence box (left)
+        conf_bg = Rectangle((1.2 - 0.7, 10.9), 1.4, 1.2, facecolor='white', 
+                           edgecolor=conf_color, linewidth=1.5, zorder=2, alpha=0.9)
+        ax.add_patch(conf_bg)
+        ax.text(1.2, 11.6, f"{int(round(confidence))}%", ha='center', va='center', fontsize=20, 
+               fontweight='bold', color=conf_color, zorder=3, fontname='DejaVu Sans')
+        ax.text(1.2, 11.1, 'Confidence', ha='center', va='center', fontsize=10, 
+               color=colors.get('text_main', '#1A1A1A'), fontweight='600', zorder=3, fontname='DejaVu Sans')
+        
+        # Data Quality box (right)
+        dq_bg = Rectangle((8.8 - 0.7, 10.9), 1.4, 1.2, facecolor='white', 
+                         edgecolor=dq_color, linewidth=1.5, zorder=2, alpha=0.9)
+        ax.add_patch(dq_bg)
+        ax.text(8.8, 11.6, f"{int(round(data_quality))}%", ha='center', va='center', fontsize=20, 
+               fontweight='bold', color=dq_color, zorder=3, fontname='DejaVu Sans')
+        ax.text(8.8, 11.1, 'Data Quality', ha='center', va='center', fontsize=10, 
+               color=colors.get('text_main', '#1A1A1A'), fontweight='600', zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
         # WINNING CHANCES SECTION - Clean 3-column layout
