@@ -1484,16 +1484,16 @@ class SingleMatchGenerator:
         # =================================================================
         
         # Section background with professional styling
-        perf_bg = Rectangle((0.6, 8.9), 8.8, 3.2, facecolor=colors.get('section_bg', '#F8F9FA'), 
+        perf_bg = Rectangle((0.6, 7.5), 8.8, 3.2, facecolor=colors.get('section_bg', '#F8F9FA'), 
                            alpha=0.95, edgecolor=colors.get('separator', '#E0E0E0'), linewidth=1, zorder=1)
         ax.add_patch(perf_bg)
         
         # Section title with professional typography
-        ax.text(5, 12.1, "TEAM FORM ANALYSIS", ha='center', va='center', fontsize=19, 
+        ax.text(5, 10.7, "TEAM FORM ANALYSIS", ha='center', va='center', fontsize=19, 
                fontweight='bold', color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
         
         # Professional separator line
-        ax.plot([0.7, 9.3], [10.75, 10.75], color=colors.get('separator', '#E0E0E0'), linewidth=1.5, zorder=2)
+        ax.plot([0.7, 9.3], [10.35, 10.35], color=colors.get('separator', '#E0E0E0'), linewidth=1.5, zorder=2)
 
         home_form = match_data.get('home_performance_analysis', {}).get('home', {})
         away_form = match_data.get('away_performance_analysis', {}).get('away', {})
@@ -1517,17 +1517,17 @@ class SingleMatchGenerator:
         for i in range(2):
             col_x_pos = col_x[i]
             
-            # Column background box with 5px border
-            col_bg = Rectangle((col_x_pos - 0.8, 9.9), 1.6, 1.2, facecolor='white', 
+            # Column background box with 5px border (moved down to avoid overlap)
+            col_bg = Rectangle((col_x_pos - 0.8, 8.5), 1.6, 1.2, facecolor='white', 
                              edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
             # Percentage value (36 * 0.7 = 25pt)
-            ax.text(col_x_pos, 10.6, f"{col_values[i]}%", ha='center', va='center', fontsize=25, 
+            ax.text(col_x_pos, 9.2, f"{col_values[i]}%", ha='center', va='center', fontsize=25, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
             # Team label - bigger and bolder (12 → 14, 600 → bold)
-            ax.text(col_x_pos, 10.1, col_labels[i], ha='center', va='center', fontsize=14, 
+            ax.text(col_x_pos, 8.7, col_labels[i], ha='center', va='center', fontsize=14, 
                    color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
 
         # Form advantage indicator
@@ -1541,7 +1541,7 @@ class SingleMatchGenerator:
             form_advantage = "Balanced form"
             advantage_color = colors.get('likely_draw', '#7F8C8D')
 
-        ax.text(5, 9.45, form_advantage, ha='center', va='center', fontsize=11, 
+        ax.text(5, 8.05, form_advantage, ha='center', va='center', fontsize=11, 
                fontweight='600', color=advantage_color, zorder=3, fontname='DejaVu Sans')
         
         
