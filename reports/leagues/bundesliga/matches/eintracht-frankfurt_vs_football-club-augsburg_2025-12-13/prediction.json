@@ -251,8 +251,8 @@
   },
   "weather_conditions": {
     "conditions": {
-      "temperature": 9.6,
-      "humidity": 71.8,
+      "temperature": 9.7,
+      "humidity": 71.1,
       "wind_speed": 6.3,
       "precipitation": 0.0,
       "conditions": "clear",
@@ -268,7 +268,7 @@
       "stadium_effects": [],
       "adaptability_notes": [],
       "weather_severity": "MILD",
-      "conditions_summary": "Good playing conditions (9.6°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected",
+      "conditions_summary": "Good playing conditions (9.7°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected",
       "weather_clamped": false,
       "clamped_fields": {}
     },
@@ -417,7 +417,7 @@
       "monte_carlo": 0.22499999999999998
     }
   },
-  "generated_at": "2025-12-13T12:28:10.669592",
+  "generated_at": "2025-12-13T14:19:32.125952",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},

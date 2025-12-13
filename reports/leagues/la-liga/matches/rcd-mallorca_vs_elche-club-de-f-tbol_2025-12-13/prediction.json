@@ -1,76 +1,76 @@
 {
-  "match_id": 542549,
-  "home_team": "Stade Rennais Football Club 1901",
-  "away_team": "Stade Brestois 29",
+  "match_id": 544367,
+  "home_team": "RCD Mallorca",
+  "away_team": "Elche Club de Fútbol",
   "date": "2025-12-13",
-  "time": "16:00",
-  "league": "Ligue 1",
+  "time": "15:15",
+  "league": "La Liga",
   "confidence": 0.75,
-  "report_accuracy_probability": 0.766,
+  "report_accuracy_probability": 0.756,
   "home_win_probability": 90.86,
   "draw_probability": 4.57,
   "away_win_probability": 4.57,
-  "expected_home_goals": 2.4,
-  "expected_away_goals": 1.1,
-  "processing_time": 0.003,
+  "expected_home_goals": 1.5,
+  "expected_away_goals": 0.8,
+  "processing_time": 0.002,
   "recommendation": "Home Win Likely",
   "confidence_level": "75.0% (Good)",
-  "expected_final_score": "2-1",
-  "score_probability": 9.5,
-  "score_probability_normalized": 6.0,
-  "top3_combined_probability": 26.0,
+  "expected_final_score": "1-0",
+  "score_probability": 15.0,
+  "score_probability_normalized": 8.0,
+  "top3_combined_probability": 38.4,
   "top3_probability_normalized": 10.0,
   "alternative_scores": [
-    "2-0",
     "1-1",
-    "3-1"
+    "2-0",
+    "0-0"
   ],
   "score_probabilities": [
     [
-      "2-1",
-      9.547593807755245
-    ],
-    [
-      "2-0",
-      8.524637328352897
+      "1-0",
+      15.035858597467316
     ],
     [
       "1-1",
-      7.9563281731293705
+      11.87832829199918
     ],
     [
-      "3-1",
-      7.638075046204196
+      "2-0",
+      11.502431827062496
     ],
     [
-      "1-0",
-      7.10386444029408
+      "0-0",
+      9.827358560436153
+    ],
+    [
+      "2-1",
+      9.086921143379373
     ]
   ],
   "score_probabilities_normalized": [
     [
-      "2-1",
-      6.0
-    ],
-    [
-      "2-0",
-      5.0
+      "1-0",
+      8.0
     ],
     [
       "1-1",
-      5.0
+      7.0
     ],
     [
-      "3-1",
-      5.0
+      "2-0",
+      7.0
     ],
     [
-      "1-0",
-      5.0
+      "0-0",
+      6.0
+    ],
+    [
+      "2-1",
+      6.0
     ]
   ],
-  "over_2_5_goals_probability": 68.3,
-  "both_teams_score_probability": 61.3,
+  "over_2_5_goals_probability": 40.9,
+  "both_teams_score_probability": 42.8,
   "head_to_head_analysis": {
     "total_meetings": 0,
     "wins_when_home": 0,
@@ -86,103 +86,103 @@
     "home_advantage_vs_opponent": 0.0,
     "away_record_vs_opponent": 0.0,
     "data_sources": [
-      "Domestic FL1"
+      "Domestic PD"
     ],
     "total_sources": 1
   },
   "home_performance_analysis": {
     "home": {
       "matches": 7,
-      "win_rate": 57.14285714285714,
-      "draw_rate": 28.57142857142857,
+      "win_rate": 28.57142857142857,
+      "draw_rate": 57.14285714285714,
       "loss_rate": 14.285714285714285,
-      "avg_goals_for": 2.142857142857143,
-      "avg_goals_against": 1.0,
-      "goal_difference": 1.1428571428571428,
-      "weighted_form_score": 71.9626168224299,
+      "avg_goals_for": 1.0,
+      "avg_goals_against": 1.1428571428571428,
+      "goal_difference": -0.14285714285714285,
+      "weighted_form_score": 63.63636363636363,
       "momentum_direction": "Stable",
       "form_pressure": "Low",
-      "current_streak": "2 game winning streak",
-      "recent_3_performance": 66.66666666666666,
+      "current_streak": "1 game draw",
+      "recent_3_performance": 0.0,
       "form_quality": "Good"
     },
     "away": {
       "matches": 8,
-      "win_rate": 25.0,
-      "draw_rate": 50.0,
-      "loss_rate": 25.0,
-      "avg_goals_for": 1.125,
-      "avg_goals_against": 2.0,
-      "goal_difference": -0.875,
-      "weighted_form_score": 45.45454545454545,
+      "win_rate": 12.5,
+      "draw_rate": 12.5,
+      "loss_rate": 75.0,
+      "avg_goals_for": 1.0,
+      "avg_goals_against": 1.75,
+      "goal_difference": -0.75,
+      "weighted_form_score": 18.181818181818183,
       "momentum_direction": "Stable",
-      "form_pressure": "Medium",
-      "current_streak": "1 game without a win",
+      "form_pressure": "High",
+      "current_streak": "1 game draw",
       "recent_3_performance": 0.0,
-      "form_quality": "Below Average"
+      "form_quality": "Very Poor"
     },
-    "home_advantage": 32.14285714285714,
-    "scoring_difference": 1.0178571428571428
+    "home_advantage": 16.07142857142857,
+    "scoring_difference": 0.0
   },
   "away_performance_analysis": {
     "home": {
       "matches": 8,
-      "win_rate": 37.5,
-      "draw_rate": 37.5,
-      "loss_rate": 25.0,
+      "win_rate": 50.0,
+      "draw_rate": 50.0,
+      "loss_rate": 0.0,
       "avg_goals_for": 1.5,
-      "avg_goals_against": 1.375,
-      "goal_difference": 0.125,
-      "weighted_form_score": 81.30841121495325,
+      "avg_goals_against": 0.625,
+      "goal_difference": 0.875,
+      "weighted_form_score": 69.6969696969697,
       "momentum_direction": "Stable",
       "form_pressure": "Low",
-      "current_streak": "2 game winning streak",
-      "recent_3_performance": 77.77777777777779,
-      "form_quality": "Very Good"
+      "current_streak": "1 game win streak",
+      "recent_3_performance": 0.0,
+      "form_quality": "Good"
     },
     "away": {
       "matches": 7,
-      "win_rate": 28.57142857142857,
-      "draw_rate": 14.285714285714285,
+      "win_rate": 0.0,
+      "draw_rate": 42.857142857142854,
       "loss_rate": 57.14285714285714,
-      "avg_goals_for": 1.1428571428571428,
-      "avg_goals_against": 1.8571428571428572,
-      "goal_difference": -0.7142857142857143,
-      "weighted_form_score": 54.54545454545454,
+      "avg_goals_for": 0.8571428571428571,
+      "avg_goals_against": 1.7142857142857142,
+      "goal_difference": -0.8571428571428571,
+      "weighted_form_score": 0.0,
       "momentum_direction": "Stable",
-      "form_pressure": "Medium",
-      "current_streak": "1 game win streak",
+      "form_pressure": "High",
+      "current_streak": "4 games without a win",
       "recent_3_performance": 0.0,
-      "form_quality": "Below Average"
+      "form_quality": "Very Poor"
     },
-    "home_advantage": 8.92857142857143,
-    "scoring_difference": 0.3571428571428572
+    "home_advantage": 50.0,
+    "scoring_difference": 0.6428571428571429
   },
   "goal_timing_prediction": {
-    "first_half_goal_probability": 55.0,
-    "second_half_goal_probability": 45.0,
+    "first_half_goal_probability": 30.0,
+    "second_half_goal_probability": 70.0,
     "late_goal_likelihood": 20.0,
-    "early_goal_likelihood": 25.0,
-    "home_attack_style": "aggressive",
-    "away_attack_style": "balanced"
+    "early_goal_likelihood": 15.0,
+    "home_attack_style": "defensive",
+    "away_attack_style": "defensive"
   },
   "intelligence_summary": {
     "h2h_meetings": 0,
-    "home_advantage_pct": 32.14285714285714,
+    "home_advantage_pct": 16.07142857142857,
     "recent_h2h_form": "No recent meetings",
     "key_factors": [
       "No head-to-head history between teams",
-      "High-scoring home team (2.1 goals/game)",
-      "Strong home goal difference (+1.1)"
+      "Poor home form (29% win rate)",
+      "Weak away form (0% win rate)"
     ]
   },
   "player_availability": {
     "home_team": {
       "data_available": true,
-      "team_name": "Stade Rennais FC 1901",
-      "squad_size": 27,
+      "team_name": "RCD Mallorca",
+      "squad_size": 29,
       "positions": {
-        "goalkeepers": 27,
+        "goalkeepers": 29,
         "defenders": 0,
         "midfielders": 0,
         "attackers": 0
@@ -193,7 +193,7 @@
         "Limited midfield depth",
         "Few attacking options"
       ],
-      "key_players_available": "All 27 registered players (no injury data)",
+      "key_players_available": "All 29 registered players (no injury data)",
       "key_players_injured": "Unknown - no injury API configured",
       "strength_reduction_pct": 0.0,
       "injury_areas": [],
@@ -213,10 +213,10 @@
     },
     "away_team": {
       "data_available": true,
-      "team_name": "Stade Brestois 29",
-      "squad_size": 26,
+      "team_name": "Elche CF",
+      "squad_size": 32,
       "positions": {
-        "goalkeepers": 26,
+        "goalkeepers": 32,
         "defenders": 0,
         "midfielders": 0,
         "attackers": 0
@@ -227,7 +227,7 @@
         "Limited midfield depth",
         "Few attacking options"
       ],
-      "key_players_available": "All 26 registered players (no injury data)",
+      "key_players_available": "All 32 registered players (no injury data)",
       "key_players_injured": "Unknown - no injury API configured",
       "strength_reduction_pct": 0.0,
       "injury_areas": [],
@@ -297,7 +297,7 @@
       "lineup_strength": null,
       "news_sentiment": "unknown",
       "warning": "Team news requires press conference/lineup API integration",
-      "team_name": "Stade Rennais FC 1901"
+      "team_name": "RCD Mallorca"
     },
     "away_team": {
       "data_available": false,
@@ -309,7 +309,7 @@
       "lineup_strength": null,
       "news_sentiment": "unknown",
       "warning": "Team news requires press conference/lineup API integration",
-      "team_name": "Stade Brestois 29"
+      "team_name": "Elche CF"
     }
   },
   "data_quality_score": 50.0,
@@ -370,8 +370,8 @@
       "Applied 13.7% shrink toward neutral due to reliability score 60.8."
     ],
     "accuracy_adjustment": {
-      "original_probability": 0.619,
-      "calibrated_probability": 0.614
+      "original_probability": 0.606,
+      "calibrated_probability": 0.607
     }
   },
   "confidence_intervals": {
@@ -408,13 +408,13 @@
     "model_agreement_factor": 0.0,
     "optimization_applied": true,
     "ensemble_weights": {
-      "legacy": 0.18749999999999997,
-      "ml": 0.25,
-      "neural": 0.3125,
-      "monte_carlo": 0.25
+      "legacy": 0.22499999999999998,
+      "ml": 0.27499999999999997,
+      "neural": 0.27499999999999997,
+      "monte_carlo": 0.22499999999999998
     }
   },
-  "generated_at": "2025-12-13T14:20:20.612407",
+  "generated_at": "2025-12-13T14:19:56.341854",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},

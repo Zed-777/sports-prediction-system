@@ -6,13 +6,13 @@
   "time": "16:00",
   "league": "Ligue 1",
   "confidence": 0.75,
-  "report_accuracy_probability": 0.764,
-  "home_win_probability": 90.76,
-  "draw_probability": 4.62,
-  "away_win_probability": 4.62,
+  "report_accuracy_probability": 0.766,
+  "home_win_probability": 90.86,
+  "draw_probability": 4.57,
+  "away_win_probability": 4.57,
   "expected_home_goals": 2.4,
   "expected_away_goals": 1.1,
-  "processing_time": 0.004,
+  "processing_time": 0.003,
   "recommendation": "Home Win Likely",
   "confidence_level": "75.0% (Good)",
   "expected_final_score": "2-1",
@@ -248,8 +248,8 @@
   },
   "weather_conditions": {
     "conditions": {
-      "temperature": 9.6,
-      "humidity": 71.8,
+      "temperature": 9.7,
+      "humidity": 71.1,
       "wind_speed": 6.3,
       "precipitation": 0.0,
       "conditions": "clear",
@@ -265,7 +265,7 @@
       "stadium_effects": [],
       "adaptability_notes": [],
       "weather_severity": "MILD",
-      "conditions_summary": "Good playing conditions (9.6°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected",
+      "conditions_summary": "Good playing conditions (9.7°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected",
       "weather_clamped": false,
       "clamped_fields": {}
     },
@@ -314,7 +314,7 @@
   },
   "data_quality_score": 50.0,
   "reliability_metrics": {
-    "score": 60.6,
+    "score": 60.8,
     "level": "Limited",
     "indicator": "🟠 Limited",
     "recommendation": "Limited reliability – supplement with manual review.",
@@ -331,11 +331,11 @@
         0.0,
         4.7
       ],
-      "margin_percent": 4.73
+      "margin_percent": 4.71
     },
     "spread_points": 100.0,
     "factors": {
-      "model_confidence": 57.7,
+      "model_confidence": 58.2,
       "data_quality": 50.0,
       "probability_clarity": 100.0,
       "h2h_depth": 0.0,
@@ -349,11 +349,11 @@
   },
   "calibration_details": {
     "applied": true,
-    "shrink_factor": 0.139,
+    "shrink_factor": 0.137,
     "probabilities": {
-      "home_win_prob": 90.76,
-      "draw_prob": 4.62,
-      "away_win_prob": 4.62
+      "home_win_prob": 90.86,
+      "draw_prob": 4.57,
+      "away_win_prob": 4.57
     },
     "original_probabilities": {
       "home_win_prob": 100.0,
@@ -367,7 +367,7 @@
     },
     "neutral_anchor": 33.3,
     "notes": [
-      "Applied 13.9% shrink toward neutral due to reliability score 60.6."
+      "Applied 13.7% shrink toward neutral due to reliability score 60.8."
     ],
     "accuracy_adjustment": {
       "original_probability": 0.619,
@@ -387,7 +387,7 @@
       0.0,
       4.7
     ],
-    "margin_percent": 4.73
+    "margin_percent": 4.71
   },
   "data_provenance": {
     "weather": true,
@@ -414,7 +414,7 @@
       "monte_carlo": 0.25
     }
   },
-  "generated_at": "2025-12-13T12:28:40.158414",
+  "generated_at": "2025-12-13T14:20:20.612407",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},

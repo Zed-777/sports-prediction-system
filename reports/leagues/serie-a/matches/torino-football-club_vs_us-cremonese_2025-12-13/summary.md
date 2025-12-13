@@ -5,7 +5,7 @@
 - **League:** Serie A
 - **Date & Time:** 2025-12-13 at 14:00
 - **Engine Mode:** Enhanced Intelligence core engine with multi-layer analysis
-- **Prediction Confidence:** **75.2%** (Phase 2 Lite probability of correctness)
+- **Prediction Confidence:** **75.0%** (Phase 2 Lite probability of correctness)
 - **Data Confidence:** 75.0% (75.0% (Good))
 - **Data Quality Score:** 50.0%
 
@@ -13,7 +13,7 @@
 
 ### ⚡ Multi-Season H2H Analysis
 
-- **Data Sources:** 1 source(s) including domestic leagues and European competitions
+- **Data Sources:** 0 source(s) including domestic leagues and European competitions
 - **Historical Depth:** 0 total meetings analyzed with weighted recency
 
 ### 📈 Weighted Form Intelligence
@@ -41,7 +41,7 @@
 - **Top 3 Scores Combined:** ⭐ **10/10** (36.7%)
 - **Expected Goals:** 2.2 - 0.7
 - **Recommendation:** Home Win Likely
-- **Processing Time:** 0.00s
+- **Processing Time:** 14.89s
 
 ### Score Probability Breakdown
 
@@ -58,9 +58,9 @@
 
 ### Win Probabilities
 
- - **Torino Football Club Win:** 90.6%
-- **Draw:** 4.7%
-- **US Cremonese Win:** 4.7%
+ - **Torino Football Club Win:** 88.6%
+- **Draw:** 5.7%
+- **US Cremonese Win:** 5.7%
 
 ## 🔍 Intelligence Analysis
 
@@ -140,10 +140,10 @@
 
 **Current Conditions:**
 
-- **Temperature:** 9.6°C
+- **Temperature:** 9.7°C
 - **Precipitation:** 0.0mm
 - **Wind Speed:** 6.3 km/h
-- **Humidity:** 71.8%
+- **Humidity:** 71.1%
 
 **Enhanced Intelligence Analysis:**
 
@@ -152,7 +152,7 @@
 - **Playing Style Effect:** Normal
 - **Tactical Adjustments:** Normal game tactics expected
 - **Stadium Effects:** Standard outdoor conditions
-- **Conditions Summary:** Good playing conditions (9.6°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected
+- **Conditions Summary:** Good playing conditions (9.7°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected
 
 ### Referee Analysis
 
@@ -188,14 +188,14 @@
 ## ⚠️ Risk Assessment
 
 - **Overall Risk Level:** 🟡 MEDIUM RISK
-- **Data Reliability:** 🟠 Limited (60.3)
+- **Data Reliability:** 🔴 Low (56.1)
 - **Prediction Stability:** Stable
 
 ## 🎯 Confidence Analysis
 
-- **Reliability Score:** 🟠 Limited 60.3 – Limited reliability – supplement with manual review.
-- **Confidence Interval Window:** Home 95.2% – 100.0%, Draw 0.0% – 4.8%, Away 0.0% – 4.8%
-- **Calibration Adjustment:** Applied 14.1% shrink toward neutral due to reliability score 60.3. | Accuracy 60.6% → 60.5%
+- **Reliability Score:** 🔴 Low 56.1 – Low reliability – informational use only.
+- **Confidence Interval Window:** Home 94.7% – 100.0%, Draw 0.0% – 5.3%, Away 0.0% – 5.3%
+- **Calibration Adjustment:** Applied 17.1% shrink toward neutral due to reliability score 56.1. | Accuracy 60.6% → 58.8%
 - **Head-to-Head Data Availability:** ⚠️ Limited
 - **Recent Form Data:** ⚠️ Limited
 - **Enhanced Data Integration:** ⚠️ Partial Data
@@ -218,7 +218,7 @@
 - **Prediction Algorithm:** Enhanced Intelligence with 7 Analysis Layers
 - **Data Sources:** Football-Data.org API + Weather API + Referee Database + News Analysis
 - **Analysis Layers:** H2H History, Home/Away Performance, Goal Timing, Player Injuries, Weather, Referee, Team News
-- **Generated:** 2025-12-13T12:27:40.751995
+- **Generated:** 2025-12-13T13:57:58.211661
 
 ---
 

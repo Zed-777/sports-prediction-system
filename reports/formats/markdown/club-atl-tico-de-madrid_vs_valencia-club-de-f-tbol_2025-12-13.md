@@ -5,7 +5,7 @@
 - **League:** La Liga
 - **Date & Time:** 2025-12-13 at 13:00
 - **Engine Mode:** Enhanced Intelligence core engine with multi-layer analysis
-- **Prediction Confidence:** **76.1%** (Phase 2 Lite probability of correctness)
+- **Prediction Confidence:** **76.2%** (Phase 2 Lite probability of correctness)
 - **Data Confidence:** 75.0% (75.0% (Good))
 - **Data Quality Score:** 50.0%
 
@@ -59,8 +59,8 @@
 ### Win Probabilities
 
  - **Club Atlético de Madrid Win:** 90.7%
-- **Draw:** 4.7%
-- **Valencia Club de Fútbol Win:** 4.7%
+- **Draw:** 4.6%
+- **Valencia Club de Fútbol Win:** 4.6%
 
 ## 🔍 Intelligence Analysis
 
@@ -192,14 +192,14 @@
 ## ⚠️ Risk Assessment
 
 - **Overall Risk Level:** 🟡 MEDIUM RISK
-- **Data Reliability:** 🟠 Limited (60.4)
+- **Data Reliability:** 🟠 Limited (60.5)
 - **Prediction Stability:** Stable
 
 ## 🎯 Confidence Analysis
 
-- **Reliability Score:** 🟠 Limited 60.4 – Limited reliability – supplement with manual review.
+- **Reliability Score:** 🟠 Limited 60.5 – Limited reliability – supplement with manual review.
 - **Confidence Interval Window:** Home 95.3% – 100.0%, Draw 0.0% – 4.7%, Away 0.0% – 4.7%
-- **Calibration Adjustment:** Applied 14.0% shrink toward neutral due to reliability score 60.4. | Accuracy 61.7% → 61.2%
+- **Calibration Adjustment:** Applied 13.9% shrink toward neutral due to reliability score 60.5. | Accuracy 61.7% → 61.2%
 - **Head-to-Head Data Availability:** ⚠️ Limited
 - **Recent Form Data:** ⚠️ Limited
 - **Enhanced Data Integration:** ⚠️ Partial Data
@@ -222,7 +222,7 @@
 - **Prediction Algorithm:** Enhanced Intelligence with 7 Analysis Layers
 - **Data Sources:** Football-Data.org API + Weather API + Referee Database + News Analysis
 - **Analysis Layers:** H2H History, Home/Away Performance, Goal Timing, Player Injuries, Weather, Referee, Team News
-- **Generated:** 2025-12-13T13:55:02.591229
+- **Generated:** 2025-12-13T13:56:11.920881
 
 ---
 

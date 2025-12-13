@@ -1,11 +1,11 @@
-# 🧠 Enhanced Intelligence v4.2 + Market Intelligence v1.0: Torino Football Club vs US Cremonese
+# 🧠 Enhanced Intelligence v4.2 + Market Intelligence v1.0: RCD Mallorca vs Elche Club de Fútbol
 
 ## 🎯 Executive Summary
 
-- **League:** Serie A
-- **Date & Time:** 2025-12-13 at 14:00
+- **League:** La Liga
+- **Date & Time:** 2025-12-13 at 15:15
 - **Engine Mode:** Enhanced Intelligence core engine with multi-layer analysis
-- **Prediction Confidence:** **75.0%** (Phase 2 Lite probability of correctness)
+- **Prediction Confidence:** **75.6%** (Phase 2 Lite probability of correctness)
 - **Data Confidence:** 75.0% (75.0% (Good))
 - **Data Quality Score:** 50.0%
 
@@ -13,14 +13,14 @@
 
 ### ⚡ Multi-Season H2H Analysis
 
-- **Data Sources:** 0 source(s) including domestic leagues and European competitions
+- **Data Sources:** 1 source(s) including domestic leagues and European competitions
 - **Historical Depth:** 0 total meetings analyzed with weighted recency
 
 ### 📈 Weighted Form Intelligence
 
-- **Home Team Form Score:** 9.3% (Stable momentum)
-- **Away Team Form Score:** 54.5% (Stable momentum)
-- **Current Streaks:** 2 games without a win vs 1 game win streak
+- **Home Team Form Score:** 63.6% (Stable momentum)
+- **Away Team Form Score:** 0.0% (Stable momentum)
+- **Current Streaks:** 1 game draw vs 4 games without a win
 
 ### 🌤️ Weather Intelligence System
 
@@ -37,30 +37,30 @@
 
 ### Expected Outcome
 
-- **Expected Final Score:** 2-0 ⭐ **8/10** (13.9%)
-- **Top 3 Scores Combined:** ⭐ **10/10** (36.7%)
-- **Expected Goals:** 2.2 - 0.7
+- **Expected Final Score:** 1-0 ⭐ **8/10** (15.0%)
+- **Top 3 Scores Combined:** ⭐ **10/10** (38.4%)
+- **Expected Goals:** 1.5 - 0.8
 - **Recommendation:** Home Win Likely
-- **Processing Time:** 14.89s
+- **Processing Time:** 0.00s
 
 ### Score Probability Breakdown
 
 - **Most Likely Scores (1-10 Scale):**
-  - 2-0: **8/10** (13.9%)
-  - 1-0: **7/10** (12.7%)
-  - 3-0: **6/10** (10.1%)
+  - 1-0: **8/10** (15.0%)
+  - 1-1: **7/10** (11.9%)
+  - 2-0: **7/10** (11.5%)
 
 ### Betting Market Analysis
 
-- **Over 2.5 Goals:** 54.0%
-- **Both Teams to Score:** 42.9%
-- **Alternative Scores:** 1-0, 3-0, 2-1
+- **Over 2.5 Goals:** 40.9%
+- **Both Teams to Score:** 42.8%
+- **Alternative Scores:** 1-1, 2-0, 0-0
 
 ### Win Probabilities
 
- - **Torino Football Club Win:** 88.6%
-- **Draw:** 5.7%
-- **US Cremonese Win:** 5.7%
+ - **RCD Mallorca Win:** 90.9%
+- **Draw:** 4.6%
+- **Elche Club de Fútbol Win:** 4.6%
 
 ## 🔍 Intelligence Analysis
 
@@ -75,61 +75,61 @@
 
 ### Home/Away Performance Analysis
 
-#### Torino Football Club (Enhanced Home Analysis)
+#### RCD Mallorca (Enhanced Home Analysis)
 
 **Traditional Stats:**
 
 - **Home Win Rate:** 28.6% (7 matches)
-- **Home Goals Per Game:** 1.1
-- **Home Goals Conceded:** 2.0
+- **Home Goals Per Game:** 1.0
+- **Home Goals Conceded:** 1.1
 
 **Enhanced Intelligence Insights:**
 
-- **Weighted Form Score:** 9.3% (Recent matches weighted more heavily)
+- **Weighted Form Score:** 63.6% (Recent matches weighted more heavily)
 - **Momentum Direction:** Stable 📈
-- **Current Streak:** 2 games without a win
-- **Form Quality Assessment:** Very Poor
-- **Form Pressure Level:** High (bounce-back potential)
-- **Recent 3 Match Performance:** 11.1% of maximum points
+- **Current Streak:** 1 game draw
+- **Form Quality Assessment:** Good
+- **Form Pressure Level:** Low (bounce-back potential)
+- **Recent 3 Match Performance:** 0.0% of maximum points
 
-#### US Cremonese (Enhanced Away Analysis)
+#### Elche Club de Fútbol (Enhanced Away Analysis)
 
 **Traditional Stats:**
 
-- **Away Win Rate:** 42.9% (7 matches)
-- **Away Goals Per Game:** 1.3
-- **Away Goals Conceded:** 1.1
+- **Away Win Rate:** 0.0% (7 matches)
+- **Away Goals Per Game:** 0.9
+- **Away Goals Conceded:** 1.7
 
 **Enhanced Intelligence Insights:**
 
-- **Weighted Form Score:** 54.5% (Recent matches weighted more heavily)
+- **Weighted Form Score:** 0.0% (Recent matches weighted more heavily)
 - **Momentum Direction:** Stable 📈
-- **Current Streak:** 1 game win streak
-- **Form Quality Assessment:** Below Average
-- **Form Pressure Level:** Medium (bounce-back potential)
+- **Current Streak:** 4 games without a win
+- **Form Quality Assessment:** Very Poor
+- **Form Pressure Level:** High (bounce-back potential)
 - **Recent 3 Match Performance:** 0.0% of maximum points
 
 ### ⏰ Goal Timing Prediction
 
-- **First Half Goal Probability:** 45%
-- **Second Half Goal Probability:** 55%
+- **First Half Goal Probability:** 30%
+- **Second Half Goal Probability:** 70%
 - **Late Goal Likelihood:** 20%
 - **Early Goal Likelihood:** 15%
 - **Home Attack Style:** Defensive
-- **Away Attack Style:** Balanced
+- **Away Attack Style:** Defensive
 
 ## 📈 Data Quality Enhancements
 
 ### Player Availability
 
-#### Torino Football Club Players
+#### RCD Mallorca Players
 
 - **Squad Status:** Live injury tracking active
 - **Expected Lineup Strength:** 100.0%
 - **Data Source:** Live injury database
 - **Injury Impact:** Full squad available in Football-Data.org, Thin defensive options, Limited midfield depth, Few attacking options
 
-#### US Cremonese Players
+#### Elche Club de Fútbol Players
 
 - **Squad Status:** Live injury tracking active
 - **Expected Lineup Strength:** 100.0%
@@ -166,14 +166,14 @@
 
 ### Team News & Tactical Analysis
 
-#### Torino Football Club Tactics
+#### RCD Mallorca Tactics
 
 - **Formation Analysis:** TBD
 - **Tactical Approach:** Unknown
 - **Team Strength:** ⚠️ Data unavailable
 - **Pre-Match Intel:** Team news unavailable
 
-#### US Cremonese Tactics
+#### Elche Club de Fútbol Tactics
 
 - **Formation Analysis:** TBD
 - **Tactical Approach:** Unknown
@@ -184,18 +184,19 @@
 
 - No head-to-head history between teams
 - Poor home form (29% win rate)
+- Weak away form (0% win rate)
 
 ## ⚠️ Risk Assessment
 
 - **Overall Risk Level:** 🟡 MEDIUM RISK
-- **Data Reliability:** 🔴 Low (56.1)
+- **Data Reliability:** 🟠 Limited (60.8)
 - **Prediction Stability:** Stable
 
 ## 🎯 Confidence Analysis
 
-- **Reliability Score:** 🔴 Low 56.1 – Low reliability – informational use only.
-- **Confidence Interval Window:** Home 94.7% – 100.0%, Draw 0.0% – 5.3%, Away 0.0% – 5.3%
-- **Calibration Adjustment:** Applied 17.1% shrink toward neutral due to reliability score 56.1. | Accuracy 60.6% → 58.8%
+- **Reliability Score:** 🟠 Limited 60.8 – Limited reliability – supplement with manual review.
+- **Confidence Interval Window:** Home 95.3% – 100.0%, Draw 0.0% – 4.7%, Away 0.0% – 4.7%
+- **Calibration Adjustment:** Applied 13.7% shrink toward neutral due to reliability score 60.8. | Accuracy 60.6% → 60.7%
 - **Head-to-Head Data Availability:** ⚠️ Limited
 - **Recent Form Data:** ⚠️ Limited
 - **Enhanced Data Integration:** ⚠️ Partial Data
@@ -218,7 +219,7 @@
 - **Prediction Algorithm:** Enhanced Intelligence with 7 Analysis Layers
 - **Data Sources:** Football-Data.org API + Weather API + Referee Database + News Analysis
 - **Analysis Layers:** H2H History, Home/Away Performance, Goal Timing, Player Injuries, Weather, Referee, Team News
-- **Generated:** 2025-12-13T13:57:58.211661
+- **Generated:** 2025-12-13T14:19:56.341854
 
 ---
 

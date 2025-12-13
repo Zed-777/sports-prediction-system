@@ -5,7 +5,7 @@
 - **League:** Premier League
 - **Date & Time:** 2025-12-13 at 15:00
 - **Engine Mode:** Enhanced Intelligence core engine with multi-layer analysis
-- **Prediction Confidence:** **76.5%** (Phase 2 Lite probability of correctness)
+- **Prediction Confidence:** **75.0%** (Phase 2 Lite probability of correctness)
 - **Data Confidence:** 75.0% (75.0% (Good))
 - **Data Quality Score:** 50.0%
 
@@ -41,7 +41,7 @@
 - **Top 3 Scores Combined:** ⭐ **10/10** (23.9%)
 - **Expected Goals:** 3.0 - 1.1
 - **Recommendation:** Home Win Likely
-- **Processing Time:** 0.00s
+- **Processing Time:** 1.63s
 
 ### Score Probability Breakdown
 
@@ -58,9 +58,9 @@
 
 ### Win Probabilities
 
- - **Chelsea Football Club Win:** 90.7%
-- **Draw:** 4.7%
-- **Everton Football Club Win:** 4.7%
+ - **Chelsea Football Club Win:** 89.4%
+- **Draw:** 5.3%
+- **Everton Football Club Win:** 5.3%
 
 ## 🔍 Intelligence Analysis
 
@@ -140,10 +140,10 @@
 
 **Current Conditions:**
 
-- **Temperature:** 9.6°C
+- **Temperature:** 9.7°C
 - **Precipitation:** 0.0mm
 - **Wind Speed:** 6.3 km/h
-- **Humidity:** 71.8%
+- **Humidity:** 71.1%
 
 **Enhanced Intelligence Analysis:**
 
@@ -152,7 +152,7 @@
 - **Playing Style Effect:** Normal
 - **Tactical Adjustments:** Normal game tactics expected
 - **Stadium Effects:** Standard outdoor conditions
-- **Conditions Summary:** Good playing conditions (9.6°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected
+- **Conditions Summary:** Good playing conditions (9.7°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected
 
 ### Referee Analysis
 
@@ -189,14 +189,14 @@
 ## ⚠️ Risk Assessment
 
 - **Overall Risk Level:** 🟡 MEDIUM RISK
-- **Data Reliability:** 🟠 Limited (60.4)
+- **Data Reliability:** 🔴 Low (57.7)
 - **Prediction Stability:** Stable
 
 ## 🎯 Confidence Analysis
 
-- **Reliability Score:** 🟠 Limited 60.4 – Limited reliability – supplement with manual review.
-- **Confidence Interval Window:** Home 95.2% – 100.0%, Draw 0.0% – 4.8%, Away 0.0% – 4.8%
-- **Calibration Adjustment:** Applied 14.0% shrink toward neutral due to reliability score 60.4. | Accuracy 62.2% → 61.5%
+- **Reliability Score:** 🔴 Low 57.7 – Low reliability – informational use only.
+- **Confidence Interval Window:** Home 94.9% – 100.0%, Draw 0.0% – 5.1%, Away 0.0% – 5.1%
+- **Calibration Adjustment:** Applied 15.9% shrink toward neutral due to reliability score 57.7. | Accuracy 62.2% → 60.4%
 - **Head-to-Head Data Availability:** ⚠️ Limited
 - **Recent Form Data:** ⚠️ Limited
 - **Enhanced Data Integration:** ⚠️ Partial Data
@@ -219,7 +219,7 @@
 - **Prediction Algorithm:** Enhanced Intelligence with 7 Analysis Layers
 - **Data Sources:** Football-Data.org API + Weather API + Referee Database + News Analysis
 - **Analysis Layers:** H2H History, Home/Away Performance, Goal Timing, Player Injuries, Weather, Referee, Team News
-- **Generated:** 2025-12-13T12:27:06.712862
+- **Generated:** 2025-12-13T13:57:14.542892
 
 ---
 

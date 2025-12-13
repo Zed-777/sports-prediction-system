@@ -6,13 +6,13 @@
   "time": "14:00",
   "league": "Serie A",
   "confidence": 0.75,
-  "report_accuracy_probability": 0.752,
-  "home_win_probability": 90.62,
-  "draw_probability": 4.69,
-  "away_win_probability": 4.69,
+  "report_accuracy_probability": 0.75,
+  "home_win_probability": 88.62,
+  "draw_probability": 5.69,
+  "away_win_probability": 5.69,
   "expected_home_goals": 2.2,
   "expected_away_goals": 0.7,
-  "processing_time": 0.003,
+  "processing_time": 14.889,
   "recommendation": "Home Win Likely",
   "confidence_level": "75.0% (Good)",
   "expected_final_score": "2-0",
@@ -85,10 +85,8 @@
     "recent_form": [],
     "home_advantage_vs_opponent": 0.0,
     "away_record_vs_opponent": 0.0,
-    "data_sources": [
-      "Domestic SA"
-    ],
-    "total_sources": 1
+    "data_sources": [],
+    "total_sources": 0
   },
   "home_performance_analysis": {
     "home": {
@@ -247,8 +245,8 @@
   },
   "weather_conditions": {
     "conditions": {
-      "temperature": 9.6,
-      "humidity": 71.8,
+      "temperature": 9.7,
+      "humidity": 71.1,
       "wind_speed": 6.3,
       "precipitation": 0.0,
       "conditions": "clear",
@@ -264,7 +262,7 @@
       "stadium_effects": [],
       "adaptability_notes": [],
       "weather_severity": "MILD",
-      "conditions_summary": "Good playing conditions (9.6°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected",
+      "conditions_summary": "Good playing conditions (9.7°C, 0.0mm rain, 6.3 km/h wind) minimal weather impact expected",
       "weather_clamped": false,
       "clamped_fields": {}
     },
@@ -313,32 +311,32 @@
   },
   "data_quality_score": 50.0,
   "reliability_metrics": {
-    "score": 60.3,
-    "level": "Limited",
-    "indicator": "🟠 Limited",
-    "recommendation": "Limited reliability – supplement with manual review.",
+    "score": 56.1,
+    "level": "Low",
+    "indicator": "🔴 Low",
+    "recommendation": "Low reliability – informational use only.",
     "confidence_intervals": {
       "home": [
-        95.2,
+        94.7,
         100.0
       ],
       "draw": [
         0.0,
-        4.8
+        5.3
       ],
       "away": [
         0.0,
-        4.8
+        5.3
       ],
-      "margin_percent": 4.77
+      "margin_percent": 5.27
     },
     "spread_points": 100.0,
     "factors": {
-      "model_confidence": 56.9,
+      "model_confidence": 57.8,
       "data_quality": 50.0,
       "probability_clarity": 100.0,
       "h2h_depth": 0.0,
-      "data_freshness": 100.0
+      "data_freshness": 55.0
     },
     "primary_driver": "probability_clarity",
     "notes": [
@@ -348,11 +346,11 @@
   },
   "calibration_details": {
     "applied": true,
-    "shrink_factor": 0.141,
+    "shrink_factor": 0.171,
     "probabilities": {
-      "home_win_prob": 90.62,
-      "draw_prob": 4.69,
-      "away_win_prob": 4.69
+      "home_win_prob": 88.62,
+      "draw_prob": 5.69,
+      "away_win_prob": 5.69
     },
     "original_probabilities": {
       "home_win_prob": 100.0,
@@ -366,27 +364,27 @@
     },
     "neutral_anchor": 33.3,
     "notes": [
-      "Applied 14.1% shrink toward neutral due to reliability score 60.3."
+      "Applied 17.1% shrink toward neutral due to reliability score 56.1."
     ],
     "accuracy_adjustment": {
       "original_probability": 0.606,
-      "calibrated_probability": 0.605
+      "calibrated_probability": 0.588
     }
   },
   "confidence_intervals": {
     "home": [
-      95.2,
+      94.7,
       100.0
     ],
     "draw": [
       0.0,
-      4.8
+      5.3
     ],
     "away": [
       0.0,
-      4.8
+      5.3
     ],
-    "margin_percent": 4.77
+    "margin_percent": 5.27
   },
   "data_provenance": {
     "weather": true,
@@ -413,7 +411,7 @@
       "monte_carlo": 0.22499999999999998
     }
   },
-  "generated_at": "2025-12-13T12:27:40.751995",
+  "generated_at": "2025-12-13T13:57:58.211661",
   "data_provenance_details": {
     "home_injury_clamped": false,
     "home_injury_clamped_fields": {},
