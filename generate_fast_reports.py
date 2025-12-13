@@ -94,12 +94,12 @@ class ProfessionalDesignSystem:
     
     @classmethod
     def get_color_for_probability(cls, probability: float) -> str:
-        """Get color gradient for probability: 0-25% red, 25-50% orange, 50-75% yellow, 75-100% green"""
+        """Get color gradient for probability: 0-25% red, 25-50% orange, 50-75% cyan, 75-100% green"""
         p = max(0.0, min(100.0, probability))
         if p >= 75:
             return '#27AE60'  # Green - 75-100%
         elif p >= 50:
-            return '#F4D03F'  # Yellow - 50-75%
+            return '#17A2B8'  # Cyan - 50-75% (highly visible)
         elif p >= 25:
             return '#F39C12'  # Orange - 25-50%
         else:
@@ -1459,17 +1459,17 @@ class SingleMatchGenerator:
         for i in range(3):
             col_x_pos = col_x[i]
             
-            # Column background box
+            # Column background box with thicker border
             col_bg = Rectangle((col_x_pos - 0.65, 13.5), 1.3, 1.4, facecolor='white', 
-                             edgecolor=col_colors[i], linewidth=1.5, zorder=2, alpha=0.9)
+                             edgecolor=col_colors[i], linewidth=3.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Large percentage value
-            ax.text(col_x_pos, 14.55, f"{col_values[i]}%", ha='center', va='center', fontsize=24, 
+            # Larger percentage value (increased from 24 to 28)
+            ax.text(col_x_pos, 14.55, f"{col_values[i]}%", ha='center', va='center', fontsize=28, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
-            # Team label
-            ax.text(col_x_pos, 13.8, col_labels[i], ha='center', va='center', fontsize=11, 
+            # Team label (slightly larger)
+            ax.text(col_x_pos, 13.8, col_labels[i], ha='center', va='center', fontsize=12, 
                    color=colors.get('text_main', '#1A1A1A'), fontweight='600', zorder=3, fontname='DejaVu Sans')
         
         # Most likely outcome at bottom
@@ -1517,16 +1517,16 @@ class SingleMatchGenerator:
         for i in range(2):
             col_x_pos = col_x[i]
             
-            # Column background box
+            # Column background box with thicker border
             col_bg = Rectangle((col_x_pos - 0.8, 9.9), 1.6, 1.2, facecolor='white', 
-                             edgecolor=col_colors[i], linewidth=1.5, zorder=2, alpha=0.9)
+                             edgecolor=col_colors[i], linewidth=3.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Large percentage value
-            ax.text(col_x_pos, 10.6, f"{col_values[i]}%", ha='center', va='center', fontsize=22, 
+            # Larger percentage value (increased from 22 to 26)
+            ax.text(col_x_pos, 10.6, f"{col_values[i]}%", ha='center', va='center', fontsize=26, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
-            # Team label
+            # Team label (unchanged, already readable)
             ax.text(col_x_pos, 10.1, col_labels[i], ha='center', va='center', fontsize=12, 
                    color=colors.get('text_main', '#1A1A1A'), fontweight='600', zorder=3, fontname='DejaVu Sans')
 
@@ -1575,13 +1575,13 @@ class SingleMatchGenerator:
         for i in range(2):
             col_x_pos = col_x[i]
             
-            # Column background box
+            # Column background box with thicker border
             col_bg = Rectangle((col_x_pos - 0.8, 7.3), 1.6, 1.2, facecolor='white', 
-                             edgecolor=col_colors[i], linewidth=1.5, zorder=2, alpha=0.9)
+                             edgecolor=col_colors[i], linewidth=3.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            # Large percentage value
-            ax.text(col_x_pos, 8.0, f"{col_values[i]}%", ha='center', va='center', fontsize=22, 
+            # Larger percentage value (increased from 22 to 26)
+            ax.text(col_x_pos, 8.0, f"{col_values[i]}%", ha='center', va='center', fontsize=26, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
             # Goal prediction label
