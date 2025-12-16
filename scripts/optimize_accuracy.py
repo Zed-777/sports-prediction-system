@@ -29,6 +29,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 import argparse
+import os
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -142,7 +143,53 @@ class AccuracyOptimizer:
         except ImportError as e:
             logger.warning(f"Prediction tracker not available: {e}")
             self.tracker = None
-    
+
+    def _apply_param_overrides_to_predictor(self, predictor, overrides: Dict[str, float]) -> None:
+        """
+        Apply parameter overrides to an EnhancedPredictor instance by mapping known
+        optimizable parameters to either predictor._settings or attributes.
+        """
+        if not overrides:
+            return
+
+        for name, value in overrides.items():
+            param = OPTIMIZABLE_PARAMS.get(name)
+            if not param:
+                # Fallback: set as attribute if possible
+                try:
+                    setattr(predictor, name, value)
+                except Exception:
+                    continue
+                continue
+            cfg = param.config_path
+            try:
+                if ':' in cfg:
+                    _, attr_path = cfg.split(':', 1)
+                else:
+                    attr_path = cfg
+
+                # If path looks like settings dict (e.g., constants.*) apply there
+                if attr_path.split('.')[0] in ('constants', 'settings', 'config'):
+                    parts = attr_path.split('.')
+                    d = predictor._settings.setdefault(parts[0], {})
+                    for p in parts[1:-1]:
+                        d = d.setdefault(p, {})
+                    d[parts[-1]] = value
+                else:
+                    # set attribute chain on the predictor instance
+                    attrs = attr_path.split('.')
+                    obj = predictor
+                    for a in attrs[:-1]:
+                        if not hasattr(obj, a):
+                            setattr(obj, a, {})
+                        obj = getattr(obj, a)
+                    setattr(obj, attrs[-1], value)
+            except Exception:
+                try:
+                    setattr(predictor, name, value)
+                except Exception:
+                    continue
+
     def run_backtest(self, 
                      league: str = 'la-liga',
                      days_back: int = 90,
@@ -174,13 +221,33 @@ class AccuracyOptimizer:
             with open(historical_file, 'r', encoding='utf-8') as f:
                 historical_data = json.load(f)
             
-            # Run actual backtest
-            results = self.backtester.run_backtest(
-                historical_data=historical_data,
-                parameter_overrides=parameter_overrides
-            )
-            return results
-            
+            # Build a predictor wrapper for the backtester
+            try:
+                from enhanced_predictor import EnhancedPredictor
+                from app.models.backtesting import create_simple_predictor
+                enhanced_pred = EnhancedPredictor(api_key=os.getenv('FOOTBALL_DATA_API_KEY', 'DUMMY_API_KEY'))
+
+                # Apply parameter overrides to the predictor if provided
+                if parameter_overrides:
+                    self._apply_param_overrides_to_predictor(enhanced_pred, parameter_overrides)
+
+                predictor_fn = create_simple_predictor(enhanced_pred)
+
+                # Run actual backtest using BacktestingFramework (uses rolling windows internally)
+                results = self.backtester.run_backtest(
+                    predictor=predictor_fn,
+                    model_name=f"optimizer_{league}",
+                    test_matches=historical_data,
+                    train_window_days=parameter_overrides.get('train_window_days', 180) if parameter_overrides else 180,
+                    test_window_days=parameter_overrides.get('test_window_days', 30) if parameter_overrides else 30,
+                    min_train_matches=parameter_overrides.get('min_train_matches', 50) if parameter_overrides else 50
+                )
+                return results
+
+            except Exception as e:
+                logger.error(f"Backtest execution failed: {e}")
+                return self._simulate_backtest(league, days_back, parameter_overrides)
+        
         except Exception as e:
             logger.error(f"Backtest failed: {e}")
             return self._simulate_backtest(league, days_back, parameter_overrides)
@@ -291,11 +358,12 @@ class AccuracyOptimizer:
                 league=league,
                 parameter_overrides=test_params
             )
+            backtest_norm = self._normalize_backtest_output(backtest_result)
             
             results.append({
                 'value': current_value,
-                'accuracy': backtest_result['metrics']['accuracy'],
-                'brier_score': backtest_result['metrics']['brier_score']
+                'accuracy': backtest_norm['metrics']['accuracy'],
+                'brier_score': backtest_norm['metrics'].get('brier_score', 0.0)
             })
             
             current_value = round(current_value + param.step, 4)
@@ -308,7 +376,7 @@ class AccuracyOptimizer:
             'current_value': param.current_value,
             'optimal_value': best['value'],
             'optimal_accuracy': best['accuracy'],
-            'improvement': best['accuracy'] - self.run_backtest(league)['metrics']['accuracy'],
+            'improvement': best['accuracy'] - self._normalize_backtest_output(self.run_backtest(league))['metrics']['accuracy'],
             'all_results': results,
             'recommendation': f"Change {param_name} from {param.current_value} to {best['value']}" 
                             if best['value'] != param.current_value else "Current value is optimal",
@@ -378,44 +446,102 @@ class AccuracyOptimizer:
         logger.info(f"A/B experiment configured: {experiment_id}")
         return experiment_config
     
+    def _normalize_backtest_output(self, result) -> Dict[str, Any]:
+        """
+        Normalize backtest outputs to a consistent dictionary format with 'metrics'
+        containing 'accuracy' and 'accuracy_pct', whether the source is a dict
+        or a BacktestSummary object.
+        """
+        if isinstance(result, dict):
+            # If dict already contains metrics, ensure accuracy_pct present
+            metrics = result.get('metrics', {})
+            if 'accuracy_pct' not in metrics and 'accuracy' in metrics:
+                metrics['accuracy_pct'] = f"{metrics['accuracy'] * 100:.1f}%"
+            return {'metrics': metrics}
+
+        # Otherwise assume BacktestSummary-like object with to_dict
+        try:
+            d = result.to_dict()
+            metrics = {
+                'accuracy': d.get('accuracy', 0.0),
+                'accuracy_pct': f"{d.get('accuracy', 0.0) * 100:.1f}%",
+                'home_accuracy': d.get('home_accuracy', 0.0),
+                'away_accuracy': d.get('away_accuracy', 0.0),
+                'draw_accuracy': d.get('draw_accuracy', 0.0),
+                'brier_score': d.get('mean_brier_score', 0.0)
+            }
+            return {'metrics': metrics, 'summary': d}
+        except Exception:
+            return {'metrics': {'accuracy': 0.0, 'accuracy_pct': '0.0%'}}
+
     def full_optimization(self, league: str = 'la-liga') -> Dict[str, Any]:
         """
         Run complete optimization: sweep all parameters and generate recommendations
+        Supports running for a single league or all leagues (pass league='all').
         """
-        logger.info("="*60)
-        logger.info("FULL OPTIMIZATION RUN")
-        logger.info("="*60)
-        
-        # Current baseline
-        baseline = self.run_backtest(league=league)
-        logger.info(f"Baseline accuracy: {baseline['metrics']['accuracy_pct']}")
-        
-        # Sweep each parameter
-        all_sweeps = {}
-        optimal_params = {}
-        
-        for param_name in OPTIMIZABLE_PARAMS:
-            logger.info(f"\nSweeping {param_name}...")
-            sweep = self.run_parameter_sweep(param_name, league)
-            all_sweeps[param_name] = sweep
-            optimal_params[param_name] = sweep['optimal_value']
-            logger.info(f"  Optimal: {sweep['optimal_value']} (accuracy: {sweep['optimal_accuracy']:.1%})")
-        
-        # Test all optimal params together
-        logger.info("\nTesting combined optimal parameters...")
-        combined_result = self.run_backtest(league=league, parameter_overrides=optimal_params)
-        
-        optimization_result = {
-            'baseline_accuracy': baseline['metrics']['accuracy'],
-            'optimized_accuracy': combined_result['metrics']['accuracy'],
-            'improvement': combined_result['metrics']['accuracy'] - baseline['metrics']['accuracy'],
-            'improvement_pct': f"{(combined_result['metrics']['accuracy'] - baseline['metrics']['accuracy']) * 100:.2f}%",
-            'optimal_parameters': optimal_params,
-            'parameter_sweeps': all_sweeps,
-            'recommended_changes': [],
-            'timestamp': datetime.now().isoformat()
-        }
-        
+        leagues_to_run = [league]
+        if league in ('all', 'all-leagues'):
+            leagues_to_run = ['la-liga', 'premier-league', 'bundesliga', 'serie-a', 'ligue-1']
+
+        all_results = {}
+        for run_league in leagues_to_run:
+            logger.info("="*60)
+            logger.info(f"FULL OPTIMIZATION RUN: {run_league}")
+            logger.info("="*60)
+            
+            # Current baseline
+            baseline = self.run_backtest(league=run_league)
+            baseline_norm = self._normalize_backtest_output(baseline)
+            logger.info(f"Baseline accuracy: {baseline_norm['metrics']['accuracy_pct']}")
+            
+            # Sweep each parameter
+            all_sweeps = {}
+            optimal_params = {}
+            
+            for param_name in OPTIMIZABLE_PARAMS:
+                logger.info(f"\nSweeping {param_name}...")
+                sweep = self.run_parameter_sweep(param_name, run_league)
+                all_sweeps[param_name] = sweep
+                optimal_params[param_name] = sweep['optimal_value']
+                logger.info(f"  Optimal: {sweep['optimal_value']} (accuracy: {sweep['optimal_accuracy']:.1%})")
+            
+            # Test all optimal params together
+            logger.info("\nTesting combined optimal parameters...")
+            combined_result = self.run_backtest(league=run_league, parameter_overrides=optimal_params)
+            combined_norm = self._normalize_backtest_output(combined_result)
+            
+            optimization_result = {
+                'baseline_accuracy': baseline_norm['metrics']['accuracy'],
+                'optimized_accuracy': combined_norm['metrics']['accuracy'],
+                'improvement': combined_norm['metrics']['accuracy'] - baseline_norm['metrics']['accuracy'],
+                'improvement_pct': f"{(combined_norm['metrics']['accuracy'] - baseline_norm['metrics']['accuracy']) * 100:.2f}%",
+                'optimal_parameters': optimal_params,
+                'parameter_sweeps': all_sweeps,
+                'recommended_changes': [],
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            # Generate change recommendations
+            for param_name, optimal in optimal_params.items():
+                current = OPTIMIZABLE_PARAMS[param_name].current_value
+                if optimal != current:
+                    optimization_result['recommended_changes'].append({
+                        'parameter': param_name,
+                        'current': current,
+                        'recommended': optimal,
+                        'config_path': OPTIMIZABLE_PARAMS[param_name].config_path
+                    })
+
+            # Save per-league results
+            output_file = self.results_dir / f'full_optimization_{run_league}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(optimization_result, f, indent=2)
+
+            all_results[run_league] = optimization_result
+            logger.info(f"Full results for {run_league} saved to: {output_file}")
+
+        # If single league requested, return that result, else return dict for all
+        return all_results[leagues_to_run[0]] if len(all_results) == 1 else all_results        
         # Generate change recommendations
         for param_name, optimal in optimal_params.items():
             current = OPTIMIZABLE_PARAMS[param_name].current_value

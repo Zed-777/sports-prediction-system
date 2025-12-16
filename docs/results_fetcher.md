@@ -3,6 +3,7 @@ Results Fetcher & Optimization Workflow
 
 Overview
 --------
+
 This project now includes an automated "results fetcher" that:
 
 - Collects prediction records from generated reports
@@ -12,6 +13,7 @@ This project now includes an automated "results fetcher" that:
 
 Quick commands
 --------------
+
 1. Collect latest predictions (from reports):
 
    ```powershell
@@ -55,6 +57,7 @@ Quick commands
 
 Scheduling Options
 ------------------
+
 - Windows Task Scheduler (PowerShell example):
 
   ```powershell
@@ -67,6 +70,7 @@ Scheduling Options
 
 Notes & Tips
 ------------
+
 - Make sure `FOOTBALL_DATA_API_KEY` (or `API_FOOTBALL_KEY`) is set as an environment variable or in `.env` for the runner.
 - The fetcher uses a case-insensitive match of home/away team and date to map API results to prediction records. If your team names differ, consider normalizing names in prediction JSONs.
 - After accumulating a reasonable number of matched results (50+), run the optimizer and parameter sweeps to find improvements.
