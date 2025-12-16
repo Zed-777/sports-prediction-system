@@ -67,14 +67,37 @@ constants:
     ylim:
     - 0
     - 20
-  market_blend_weight: 0.18
+  market_blend_weight: 0.2
   probability_caps:
-    away_max: 85
-    away_min: 5
-    draw_max: 50
-    draw_min: 5
-    home_max: 85
-    home_min: 5
+    default:
+      away_max: 85
+      away_min: 5
+      draw_max: 50
+      draw_min: 5
+      home_max: 85
+      home_min: 5
+    league_overrides:
+      LL:
+        away_max: 82
+        away_min: 4
+        draw_max: 48
+        draw_min: 6
+        home_max: 88
+        home_min: 5
+      PL:
+        away_max: 88
+        away_min: 3
+        draw_max: 45
+        draw_min: 5
+        home_max: 87
+        home_min: 5
+      SA:
+        away_max: 80
+        away_min: 5
+        draw_max: 52
+        draw_min: 8
+        home_max: 85
+        home_min: 5
   provenance:
     record_clamps: true
   visual_defaults:
@@ -197,7 +220,7 @@ data_sources:
       /v3/teams: 1.5
   throttle_by_host:
     api-football-v1.p.rapidapi.com: 1.2
-    api.football-data.org: 1.5
+    api.football-data.org: 6.0
     api.sportsdata.io: 1.0
     api.the-odds-api.com: 1.0
 database:

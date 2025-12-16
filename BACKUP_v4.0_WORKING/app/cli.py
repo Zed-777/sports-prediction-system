@@ -1,8 +1,0 @@
-"""
-CLI entry point module
-"""
-
-from app.run import main
-
-if __name__ == '__main__':
-    main()

@@ -195,6 +195,25 @@ SportsPredictionSystem/
 5. **Explore enhanced metadata** in JSON and markdown outputs
 6. **Monitor Phase 2 Lite indicators** for enhanced intelligence confirmation
 
+## Accuracy Optimization Workflow
+The system includes tools to track and optimize prediction accuracy over time:
+
+### Quick Reference
+| Task | Command |
+|------|---------|
+| Generate predictions | `python generate_fast_reports.py generate 5 matches for la-liga` |
+| Save to history | `python scripts/collect_historical_results.py --all-leagues` |
+| Record result | `python scripts/collect_historical_results.py --update-result la-liga {match_id} 2 1` |
+| Check accuracy | `python scripts/collect_historical_results.py --accuracy la-liga` |
+| Optimize | `python scripts/optimize_accuracy.py --mode full --league la-liga` |
+
+### Tunable Parameters
+- `market_blend_weight` (0.20): How much market odds influence predictions
+- `k_factor` (32.0): ELO rating sensitivity
+- `h2h_max_weight` (0.30): Head-to-head history influence
+
+See `config/accuracy_optimization_workflow.json` for complete documentation.
+
 ## Support & Documentation
 - **README.md**: Complete user guide with Phase 2 Lite features and examples
 - **PHASE2_INTEGRATION_COMPLETE.md**: Detailed Phase 2 Lite integration documentation

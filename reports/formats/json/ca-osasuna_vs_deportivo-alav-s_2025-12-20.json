@@ -1,0 +1,803 @@
+{
+  "match_id": 544376,
+  "home_team": "CA Osasuna",
+  "away_team": "Deportivo Alavés",
+  "date": "2025-12-20",
+  "time": "17:30",
+  "league": "La Liga",
+  "confidence": 0.95,
+  "report_accuracy_probability": 0.95,
+  "home_win_probability": 58.27,
+  "draw_probability": 22.49,
+  "away_win_probability": 19.24,
+  "expected_home_goals": 2.1,
+  "expected_away_goals": 0.8,
+  "processing_time": 2.742,
+  "recommendation": "Home Win Likely",
+  "confidence_level": "95.0% (Excellent)",
+  "expected_final_score": "2-0",
+  "score_probability": 10.7,
+  "score_probability_normalized": 6.0,
+  "top3_combined_probability": 30.5,
+  "top3_probability_normalized": 10.0,
+  "alternative_scores": [
+    "1-0",
+    "2-1",
+    "1-1"
+  ],
+  "score_probabilities": [
+    [
+      "2-0",
+      10.65480786193981
+    ],
+    [
+      "1-0",
+      9.949047317831162
+    ],
+    [
+      "2-1",
+      9.882334291949176
+    ],
+    [
+      "1-1",
+      9.227741387288404
+    ],
+    [
+      "3-0",
+      7.6070888630974425
+    ]
+  ],
+  "score_probabilities_normalized": [
+    [
+      "2-0",
+      6.0
+    ],
+    [
+      "1-0",
+      6.0
+    ],
+    [
+      "2-1",
+      6.0
+    ],
+    [
+      "1-1",
+      6.0
+    ],
+    [
+      "3-0",
+      5.0
+    ]
+  ],
+  "over_2_5_goals_probability": 59.2,
+  "both_teams_score_probability": 53.3,
+  "head_to_head_analysis": {
+    "total_meetings": 0,
+    "wins_when_home": 0,
+    "wins_when_away": 0,
+    "draws": 0,
+    "matches_as_home": 0,
+    "matches_as_away": 0,
+    "avg_goals_for_when_home": 0.0,
+    "avg_goals_against_when_home": 0.0,
+    "avg_goals_for_when_away": 0.0,
+    "avg_goals_against_when_away": 0.0,
+    "recent_form": [],
+    "home_advantage_vs_opponent": 0.0,
+    "away_record_vs_opponent": 0.0,
+    "data_sources": [
+      "Domestic PD"
+    ],
+    "total_sources": 1
+  },
+  "home_performance_analysis": {
+    "home": {
+      "matches": 7,
+      "win_rate": 57.14285714285714,
+      "draw_rate": 14.285714285714285,
+      "loss_rate": 28.57142857142857,
+      "avg_goals_for": 1.5714285714285714,
+      "avg_goals_against": 1.1428571428571428,
+      "goal_difference": 0.42857142857142855,
+      "weighted_form_score": 34.9,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 1.5,
+      "form_pressure": "High",
+      "current_streak": "1 game win streak",
+      "recent_5_performance": 33.3,
+      "form_quality": "Struggling",
+      "consistency_score": 57.6,
+      "confidence_interval": {
+        "lower": 26.3,
+        "upper": 43.6
+      },
+      "regression_expected": true,
+      "scoring_form": 1.67,
+      "defensive_form": 2.0,
+      "sample_size": 3,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 0,
+          "date": "2025-12-08T20:00:00Z",
+          "opponent": "Levante UD"
+        },
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 3,
+          "date": "2025-11-22T17:30:00Z",
+          "opponent": "Real Sociedad de Fútbol"
+        },
+        {
+          "result": "L",
+          "goals_for": 2,
+          "goals_against": 3,
+          "date": "2025-10-26T17:30:00Z",
+          "opponent": "RC Celta de Vigo"
+        }
+      ]
+    },
+    "away": {
+      "matches": 8,
+      "win_rate": 0.0,
+      "draw_rate": 25.0,
+      "loss_rate": 75.0,
+      "avg_goals_for": 0.375,
+      "avg_goals_against": 1.375,
+      "goal_difference": -1.0,
+      "weighted_form_score": 10.8,
+      "momentum_direction": "Stable",
+      "momentum_slope": -0.0,
+      "form_pressure": "Extreme",
+      "current_streak": "3 games without a win",
+      "recent_5_performance": 13.3,
+      "form_quality": "Severe Crisis",
+      "consistency_score": 85.3,
+      "confidence_interval": {
+        "lower": 4.1,
+        "upper": 17.5
+      },
+      "regression_expected": true,
+      "scoring_form": 0.4,
+      "defensive_form": 1.2,
+      "sample_size": 5,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2025-12-13T17:30:00Z",
+          "opponent": "FC Barcelona"
+        },
+        {
+          "result": "D",
+          "goals_for": 2,
+          "goals_against": 2,
+          "date": "2025-11-29T13:00:00Z",
+          "opponent": "RCD Mallorca"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-11-08T15:15:00Z",
+          "opponent": "Sevilla FC"
+        },
+        {
+          "result": "D",
+          "goals_for": 0,
+          "goals_against": 0,
+          "date": "2025-11-03T20:00:00Z",
+          "opponent": "Real Oviedo"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-10-18T19:00:00Z",
+          "opponent": "Club Atlético de Madrid"
+        }
+      ]
+    },
+    "home_advantage": 57.14285714285714,
+    "scoring_difference": 1.1964285714285714
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 8,
+      "win_rate": 37.5,
+      "draw_rate": 25.0,
+      "loss_rate": 37.5,
+      "avg_goals_for": 1.125,
+      "avg_goals_against": 1.0,
+      "goal_difference": 0.125,
+      "weighted_form_score": 35.5,
+      "momentum_direction": "Falling",
+      "momentum_slope": -0.2,
+      "form_pressure": "High",
+      "current_streak": "2 games without a win",
+      "recent_5_performance": 46.7,
+      "form_quality": "Poor",
+      "consistency_score": 59.3,
+      "confidence_interval": {
+        "lower": 28.8,
+        "upper": 42.2
+      },
+      "regression_expected": true,
+      "scoring_form": 0.8,
+      "defensive_form": 0.8,
+      "sample_size": 5,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 2,
+          "date": "2025-12-14T20:00:00Z",
+          "opponent": "Real Madrid CF"
+        },
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-12-06T15:15:00Z",
+          "opponent": "Real Sociedad de Fútbol"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-11-22T13:00:00Z",
+          "opponent": "RC Celta de Vigo"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2025-11-02T15:15:00Z",
+          "opponent": "RCD Espanyol de Barcelona"
+        },
+        {
+          "result": "D",
+          "goals_for": 0,
+          "goals_against": 0,
+          "date": "2025-10-20T19:00:00Z",
+          "opponent": "Valencia CF"
+        }
+      ]
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 14.285714285714285,
+      "draw_rate": 14.285714285714285,
+      "loss_rate": 71.42857142857143,
+      "avg_goals_for": 0.42857142857142855,
+      "avg_goals_against": 1.1428571428571428,
+      "goal_difference": -0.7142857142857143,
+      "weighted_form_score": 0,
+      "momentum_direction": "Stable",
+      "momentum_slope": -0.0,
+      "form_pressure": "Extreme",
+      "current_streak": "3 games without a win",
+      "recent_5_performance": 0.0,
+      "form_quality": "Severe Crisis",
+      "consistency_score": 100.0,
+      "confidence_interval": {
+        "lower": 0,
+        "upper": 8.7
+      },
+      "regression_expected": true,
+      "scoring_form": 0.33,
+      "defensive_form": 1.67,
+      "sample_size": 3,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 3,
+          "date": "2025-11-29T15:15:00Z",
+          "opponent": "FC Barcelona"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-11-08T13:00:00Z",
+          "opponent": "Girona FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-10-26T20:00:00Z",
+          "opponent": "Rayo Vallecano de Madrid"
+        }
+      ]
+    },
+    "home_advantage": 23.214285714285715,
+    "scoring_difference": 0.6964285714285714
+  },
+  "goal_timing_prediction": {
+    "first_half_goal_probability": 46.0,
+    "second_half_goal_probability": 54.0,
+    "late_goal_likelihood": 15.8,
+    "early_goal_likelihood": 9.5,
+    "home_attack_style": "possession-heavy",
+    "away_attack_style": "defensive",
+    "period_probabilities": {
+      "0-15": 11.8,
+      "16-30": 16.3,
+      "31-45": 17.8,
+      "46-60": 14.6,
+      "61-75": 19.6,
+      "76-90": 19.8
+    },
+    "expected_goals_by_period": {
+      "0-15": 0.24,
+      "16-30": 0.33,
+      "31-45": 0.36,
+      "46-60": 0.29,
+      "61-75": 0.39,
+      "76-90": 0.4
+    },
+    "most_likely_goal_period": "76-90",
+    "scoring_tempo": "low"
+  },
+  "intelligence_summary": {
+    "h2h_meetings": 0,
+    "home_advantage_pct": 57.14285714285714,
+    "recent_h2h_form": "No recent meetings",
+    "key_factors": [
+      "No head-to-head history between teams",
+      "Weak away form (14% win rate)"
+    ]
+  },
+  "player_availability": {
+    "home_team": {
+      "data_available": true,
+      "team_name": "CA Osasuna",
+      "squad_size": 31,
+      "positions": {
+        "goalkeepers": 3,
+        "defenders": 10,
+        "midfielders": 5,
+        "attackers": 13
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org",
+        "Limited midfield depth"
+      ],
+      "key_players_available": "All 31 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org",
+        "Limited midfield depth"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "data_available": true,
+      "team_name": "Deportivo Alavés",
+      "squad_size": 33,
+      "positions": {
+        "goalkeepers": 4,
+        "defenders": 14,
+        "midfielders": 7,
+        "attackers": 8
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 33 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": 8.9,
+      "humidity": 84.7,
+      "wind_speed": 7.6,
+      "precipitation": 0.0,
+      "conditions": "clear",
+      "visibility": 18.0,
+      "pressure": 1013,
+      "source": "open-meteo",
+      "match_hour": 17,
+      "location": {
+        "lat": 42.7966,
+        "lon": -1.6378
+      }
+    },
+    "impact_assessment": {
+      "goal_modifier": 0.9736,
+      "playing_style_effect": "normal",
+      "weather_advantage": "none",
+      "tactical_adjustments": [
+        "Normal playing conditions expected"
+      ],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MILD",
+      "conditions_summary": "Good playing conditions (8.9°C, 0.0mm rain, 7.6 km/h wind) minimal weather impact expected",
+      "modifier_components": {
+        "temperature": 0.9375,
+        "precipitation": 1.0,
+        "wind": 1.076,
+        "humidity": 0.9652,
+        "interaction": 1.0,
+        "stadium": 1.0,
+        "team_style": 1.0
+      },
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 0.9736,
+    "style_impact": "normal",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "data_available": false,
+    "name": "Referee TBD",
+    "home_bias_pct": null,
+    "cards_per_game": null,
+    "penalties_per_game": null,
+    "strict_level": "unknown",
+    "experience_level": "unknown",
+    "warning": "Referee data unavailable - appointment not announced"
+  },
+  "team_news": {
+    "home_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "CA Osasuna"
+    },
+    "away_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Deportivo Alavés"
+    }
+  },
+  "data_quality_score": 54.0,
+  "reliability_metrics": {
+    "score": 70.8,
+    "level": "Moderate",
+    "indicator": "🟡 Moderate",
+    "recommendation": "Balanced reliability – treat as guidance with monitoring.",
+    "confidence_intervals": {
+      "home": [
+        56.5,
+        63.5
+      ],
+      "draw": [
+        18.2,
+        25.2
+      ],
+      "away": [
+        14.7,
+        21.8
+      ],
+      "margin_percent": 3.5
+    },
+    "spread_points": 41.8,
+    "factors": {
+      "model_confidence": 92.0,
+      "data_quality": 54.0,
+      "probability_clarity": 100.0,
+      "h2h_depth": 0.0,
+      "data_freshness": 55.0
+    },
+    "primary_driver": "probability_clarity",
+    "notes": [
+      "Head-to-head sample is limited – emphasis on recent form.",
+      "Data quality below optimal threshold; confidence capped."
+    ]
+  },
+  "calibration_details": {
+    "applied": true,
+    "shrink_factor": 0.066,
+    "probabilities": {
+      "home_win_prob": 58.27,
+      "draw_prob": 22.49,
+      "away_win_prob": 19.24
+    },
+    "original_probabilities": {
+      "home_win_prob": 60.02,
+      "draw_prob": 21.73,
+      "away_win_prob": 18.25
+    },
+    "pre_calibration_probabilities": {
+      "home_win_prob": 0.6002,
+      "draw_prob": 0.2173,
+      "away_win_prob": 0.1825
+    },
+    "neutral_anchor": 33.3,
+    "notes": [
+      "Applied 6.6% shrink toward neutral due to reliability score 70.8."
+    ],
+    "accuracy_adjustment": {
+      "original_probability": 0.85,
+      "calibrated_probability": 0.793
+    }
+  },
+  "confidence_intervals": {
+    "home": [
+      56.5,
+      63.5
+    ],
+    "draw": [
+      18.2,
+      25.2
+    ],
+    "away": [
+      14.7,
+      21.8
+    ],
+    "margin_percent": 3.5
+  },
+  "data_provenance": {
+    "weather": true,
+    "player_availability": true,
+    "referee": true,
+    "team_news": true,
+    "h2h": false,
+    "odds": false,
+    "flashscore": true,
+    "home_injury_clamped": false,
+    "away_injury_clamped": false,
+    "weather_clamped": false
+  },
+  "phase2_lite_enhanced": true,
+  "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+  "advanced_predictions": {
+    "btts": {
+      "btts_yes_probability": 55.6,
+      "btts_no_probability": 44.4,
+      "prediction": "Yes",
+      "confidence": 69.7,
+      "method_breakdown": {
+        "poisson": 56.5,
+        "historical": 60.0,
+        "league_base": 48.0
+      },
+      "factors": {
+        "home_scoring_chance": 89.9,
+        "away_scoring_chance": 62.8
+      }
+    },
+    "over_under": {
+      "expected_total_goals": 3.28,
+      "lines": {
+        "0.5": {
+          "over_probability": 96.2,
+          "under_probability": 3.8,
+          "prediction": "Over",
+          "fair_over_odds": 1.04,
+          "fair_under_odds": 26.58
+        },
+        "1.5": {
+          "over_probability": 83.9,
+          "under_probability": 16.1,
+          "prediction": "Over",
+          "fair_over_odds": 1.19,
+          "fair_under_odds": 6.21
+        },
+        "2.5": {
+          "over_probability": 63.7,
+          "under_probability": 36.3,
+          "prediction": "Over",
+          "fair_over_odds": 1.57,
+          "fair_under_odds": 2.75
+        },
+        "3.5": {
+          "over_probability": 41.5,
+          "under_probability": 58.5,
+          "prediction": "Under",
+          "fair_over_odds": 2.41,
+          "fair_under_odds": 1.71
+        },
+        "4.5": {
+          "over_probability": 23.4,
+          "under_probability": 76.6,
+          "prediction": "Under",
+          "fair_over_odds": 4.28,
+          "fair_under_odds": 1.31
+        },
+        "5.5": {
+          "over_probability": 11.5,
+          "under_probability": 88.5,
+          "prediction": "Under",
+          "fair_over_odds": 8.72,
+          "fair_under_odds": 1.13
+        }
+      },
+      "recommended_line": "3.5",
+      "main_prediction": "Under"
+    },
+    "exact_scores": [
+      {
+        "score": "2-0",
+        "probability": 9.9
+      },
+      {
+        "score": "2-1",
+        "probability": 9.8
+      },
+      {
+        "score": "1-0",
+        "probability": 8.6
+      },
+      {
+        "score": "1-1",
+        "probability": 8.5
+      },
+      {
+        "score": "3-0",
+        "probability": 7.5
+      },
+      {
+        "score": "3-1",
+        "probability": 7.5
+      },
+      {
+        "score": "2-2",
+        "probability": 4.8
+      },
+      {
+        "score": "4-0",
+        "probability": 4.3
+      },
+      {
+        "score": "4-1",
+        "probability": 4.3
+      },
+      {
+        "score": "1-2",
+        "probability": 4.2
+      }
+    ],
+    "two_stage_score": {
+      "expected_home": 2.29,
+      "expected_away": 0.99,
+      "most_likely": "2-1",
+      "probability": 17.8,
+      "alternatives": [
+        "1-0 (17.5%)",
+        "2-0 (17.1%)",
+        "3-1 (12.2%)"
+      ]
+    }
+  },
+  "shot_quality": {
+    "home": {
+      "team_name": "CA Osasuna",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.11000000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    },
+    "away": {
+      "team_name": "Deportivo Alavés",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.11000000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    }
+  },
+  "defensive_metrics": {},
+  "odds_movement": {
+    "match_id": "CA Osasuna_Deportivo Alavés_2025-12-20",
+    "home_team": "CA Osasuna",
+    "away_team": "Deportivo Alavés",
+    "opening_odds": {
+      "timestamp": "2025-12-16T12:46:49.133319",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "current_odds": {
+      "timestamp": "2025-12-16T12:46:49.133319",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "home_movement": "stable",
+    "away_movement": "stable",
+    "home_movement_pct": 0.0,
+    "away_movement_pct": 0.0,
+    "movement_strength": "minimal",
+    "sharp_money_detected": false,
+    "sharp_money_side": null,
+    "sharp_confidence": 0.0,
+    "market_favorite": "home",
+    "implied_home_prob": 0.3772968558595345,
+    "implied_draw_prob": 0.2858309514087382,
+    "implied_away_prob": 0.3368721927317272
+  },
+  "market_implied": {
+    "home": 0.3772968558595345,
+    "draw": 0.2858309514087382,
+    "away": 0.3368721927317272
+  },
+  "sharp_money_alert": {},
+  "player_impact": {},
+  "phase_enhancements": {
+    "phase1_enhanced": true,
+    "phase2_enhanced": false,
+    "phase3_enhanced": true,
+    "phase4_enhanced": true,
+    "phase5_enhanced": true,
+    "phase6_enhanced": true,
+    "phase7_enhanced": false
+  },
+  "optimization_metadata": {
+    "match_context": "unknown",
+    "model_agreement_factor": 0.5,
+    "optimization_applied": false,
+    "ensemble_weights": {}
+  },
+  "generated_at": "2025-12-16T12:47:12.022825",
+  "data_provenance_details": {
+    "home_injury_clamped": false,
+    "home_injury_clamped_fields": {},
+    "away_injury_clamped": false,
+    "away_injury_clamped_fields": {},
+    "weather_clamped": false,
+    "weather_clamped_fields": {}
+  }
+}

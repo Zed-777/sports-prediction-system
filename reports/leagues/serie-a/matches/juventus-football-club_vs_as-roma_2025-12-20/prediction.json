@@ -1,0 +1,805 @@
+{
+  "match_id": 536971,
+  "home_team": "Juventus Football Club",
+  "away_team": "AS Roma",
+  "date": "2025-12-20",
+  "time": "19:45",
+  "league": "Serie A",
+  "confidence": 0.95,
+  "report_accuracy_probability": 0.89,
+  "home_win_probability": 48.5,
+  "draw_probability": 20.92,
+  "away_win_probability": 30.57,
+  "expected_home_goals": 2.8,
+  "expected_away_goals": 2.1,
+  "processing_time": 2.733,
+  "recommendation": "Home Win Possible",
+  "confidence_level": "95.0% (Excellent)",
+  "expected_final_score": "2-2",
+  "score_probability": 6.6,
+  "score_probability_normalized": 4.0,
+  "top3_combined_probability": 18.9,
+  "top3_probability_normalized": 9.0,
+  "alternative_scores": [
+    "2-1",
+    "3-2",
+    "3-1"
+  ],
+  "score_probabilities": [
+    [
+      "2-2",
+      6.604950668441026
+    ],
+    [
+      "2-1",
+      6.345932995168828
+    ],
+    [
+      "3-2",
+      5.963326889221039
+    ],
+    [
+      "3-1",
+      5.729470932780998
+    ],
+    [
+      "1-2",
+      4.877073278384724
+    ]
+  ],
+  "score_probabilities_normalized": [
+    [
+      "2-2",
+      4.0
+    ],
+    [
+      "2-1",
+      4.0
+    ],
+    [
+      "3-2",
+      4.0
+    ],
+    [
+      "3-1",
+      4.0
+    ],
+    [
+      "1-2",
+      3.0
+    ]
+  ],
+  "over_2_5_goals_probability": 85.7,
+  "both_teams_score_probability": 81.7,
+  "head_to_head_analysis": {
+    "total_meetings": 0,
+    "wins_when_home": 0,
+    "wins_when_away": 0,
+    "draws": 0,
+    "matches_as_home": 0,
+    "matches_as_away": 0,
+    "avg_goals_for_when_home": 0.0,
+    "avg_goals_against_when_home": 0.0,
+    "avg_goals_for_when_away": 0.0,
+    "avg_goals_against_when_away": 0.0,
+    "recent_form": [],
+    "home_advantage_vs_opponent": 0.0,
+    "away_record_vs_opponent": 0.0,
+    "data_sources": [
+      "Domestic SA",
+      "European competitions"
+    ],
+    "total_sources": 2
+  },
+  "home_performance_analysis": {
+    "home": {
+      "matches": 6,
+      "win_rate": 50.0,
+      "draw_rate": 50.0,
+      "loss_rate": 0.0,
+      "avg_goals_for": 1.3333333333333333,
+      "avg_goals_against": 0.5,
+      "goal_difference": 0.8333333333333334,
+      "weighted_form_score": 62.4,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 0.8,
+      "form_pressure": "Medium",
+      "current_streak": "2 game winning streak",
+      "recent_5_performance": 66.7,
+      "form_quality": "Good",
+      "consistency_score": 70.0,
+      "confidence_interval": {
+        "lower": 54.9,
+        "upper": 69.9
+      },
+      "regression_expected": false,
+      "scoring_form": 1.25,
+      "defensive_form": 0.5,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 0,
+          "date": "2025-12-10T20:00:00Z",
+          "opponent": "Paphos FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2025-11-29T17:00:00Z",
+          "opponent": "Cagliari Calcio"
+        },
+        {
+          "result": "D",
+          "goals_for": 0,
+          "goals_against": 0,
+          "date": "2025-11-08T17:00:00Z",
+          "opponent": "Torino FC"
+        },
+        {
+          "result": "D",
+          "goals_for": 1,
+          "goals_against": 1,
+          "date": "2025-11-04T20:00:00Z",
+          "opponent": "Sporting Clube de Portugal"
+        }
+      ]
+    },
+    "away": {
+      "matches": 9,
+      "win_rate": 33.33333333333333,
+      "draw_rate": 22.22222222222222,
+      "loss_rate": 44.44444444444444,
+      "avg_goals_for": 1.1111111111111112,
+      "avg_goals_against": 1.3333333333333333,
+      "goal_difference": -0.2222222222222222,
+      "weighted_form_score": 51.4,
+      "momentum_direction": "Rising",
+      "momentum_slope": 0.3,
+      "form_pressure": "Medium",
+      "current_streak": "2 game winning streak",
+      "recent_5_performance": 58.3,
+      "form_quality": "Good",
+      "consistency_score": 61.0,
+      "confidence_interval": {
+        "lower": 43.9,
+        "upper": 58.9
+      },
+      "regression_expected": false,
+      "scoring_form": 1.5,
+      "defensive_form": 1.25,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-12-14T19:45:00Z",
+          "opponent": "Bologna FC 1909"
+        },
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 2,
+          "date": "2025-12-07T19:45:00Z",
+          "opponent": "SSC Napoli"
+        },
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 2,
+          "date": "2025-11-25T20:00:00Z",
+          "opponent": "FK Bodø/Glimt"
+        },
+        {
+          "result": "D",
+          "goals_for": 1,
+          "goals_against": 1,
+          "date": "2025-11-22T17:00:00Z",
+          "opponent": "ACF Fiorentina"
+        }
+      ]
+    },
+    "home_advantage": 16.66666666666667,
+    "scoring_difference": 0.2222222222222221
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 8,
+      "win_rate": 62.5,
+      "draw_rate": 0.0,
+      "loss_rate": 37.5,
+      "avg_goals_for": 1.0,
+      "avg_goals_against": 0.5,
+      "goal_difference": 0.5,
+      "weighted_form_score": 60.6,
+      "momentum_direction": "Falling",
+      "momentum_slope": -0.3,
+      "form_pressure": "Medium",
+      "current_streak": "3 game winning streak",
+      "recent_5_performance": 75.0,
+      "form_quality": "Declining",
+      "consistency_score": 61.0,
+      "confidence_interval": {
+        "lower": 53.1,
+        "upper": 68.1
+      },
+      "regression_expected": false,
+      "scoring_form": 1.25,
+      "defensive_form": 0.5,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-12-15T19:45:00Z",
+          "opponent": "Como 1907"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-11-30T19:45:00Z",
+          "opponent": "SSC Napoli"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 0,
+          "date": "2025-11-09T17:00:00Z",
+          "opponent": "Udinese Calcio"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2025-10-29T17:30:00Z",
+          "opponent": "Parma Calcio 1913"
+        }
+      ]
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 71.42857142857143,
+      "draw_rate": 0.0,
+      "loss_rate": 28.57142857142857,
+      "avg_goals_for": 1.1428571428571428,
+      "avg_goals_against": 0.5714285714285714,
+      "goal_difference": 0.5714285714285714,
+      "weighted_form_score": 36.5,
+      "momentum_direction": "Falling Sharply",
+      "momentum_slope": -0.6,
+      "form_pressure": "High",
+      "current_streak": "2 games without a win",
+      "recent_5_performance": 50.0,
+      "form_quality": "Poor",
+      "consistency_score": 55.0,
+      "confidence_interval": {
+        "lower": 29.0,
+        "upper": 44.0
+      },
+      "regression_expected": true,
+      "scoring_form": 1.0,
+      "defensive_form": 0.75,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-12-07T14:00:00Z",
+          "opponent": "Cagliari Calcio"
+        },
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 1,
+          "date": "2025-11-23T14:00:00Z",
+          "opponent": "US Cremonese"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-11-02T19:45:00Z",
+          "opponent": "AC Milan"
+        },
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-10-26T14:00:00Z",
+          "opponent": "US Sassuolo Calcio"
+        }
+      ]
+    },
+    "home_advantage": -8.92857142857143,
+    "scoring_difference": -0.1428571428571428
+  },
+  "goal_timing_prediction": {
+    "first_half_goal_probability": 48.9,
+    "second_half_goal_probability": 51.1,
+    "late_goal_likelihood": 17.9,
+    "early_goal_likelihood": 12.0,
+    "home_attack_style": "possession-heavy",
+    "away_attack_style": "aggressive",
+    "period_probabilities": {
+      "0-15": 12.1,
+      "16-30": 16.9,
+      "31-45": 19.8,
+      "46-60": 14.1,
+      "61-75": 18.9,
+      "76-90": 18.1
+    },
+    "expected_goals_by_period": {
+      "0-15": 0.3,
+      "16-30": 0.42,
+      "31-45": 0.49,
+      "46-60": 0.35,
+      "61-75": 0.47,
+      "76-90": 0.45
+    },
+    "most_likely_goal_period": "31-45",
+    "scoring_tempo": "medium"
+  },
+  "intelligence_summary": {
+    "h2h_meetings": 0,
+    "home_advantage_pct": 16.66666666666667,
+    "recent_h2h_form": "No recent meetings",
+    "key_factors": [
+      "No head-to-head history between teams",
+      "Strong away form (71% win rate)",
+      "Solid away defense (0.6 conceded/game)",
+      "Positive away goal difference (+0.6)"
+    ]
+  },
+  "player_availability": {
+    "home_team": {
+      "data_available": true,
+      "team_name": "Juventus FC",
+      "squad_size": 36,
+      "positions": {
+        "goalkeepers": 6,
+        "defenders": 14,
+        "midfielders": 7,
+        "attackers": 9
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 36 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "data_available": true,
+      "team_name": "AS Roma",
+      "squad_size": 33,
+      "positions": {
+        "goalkeepers": 6,
+        "defenders": 12,
+        "midfielders": 8,
+        "attackers": 7
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 33 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": 4.5,
+      "humidity": 97.7,
+      "wind_speed": 1.6,
+      "precipitation": 0.0,
+      "conditions": "cold",
+      "visibility": 18.0,
+      "pressure": 1013,
+      "source": "open-meteo",
+      "match_hour": 19,
+      "location": {
+        "lat": 45.1096,
+        "lon": 7.6412
+      }
+    },
+    "impact_assessment": {
+      "goal_modifier": 0.8323,
+      "playing_style_effect": "defensive",
+      "weather_advantage": "physical_teams",
+      "tactical_adjustments": [
+        "Reduced technical play in cold conditions",
+        "Increased player fatigue expected"
+      ],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MODERATE",
+      "conditions_summary": "Challenging conditions (4.5°C, 0.0mm rain, 1.6 km/h wind) likely to affect match dynamics",
+      "modifier_components": {
+        "temperature": 0.8828,
+        "precipitation": 1.0,
+        "wind": 1.016,
+        "humidity": 0.928,
+        "interaction": 1.0,
+        "stadium": 1.0,
+        "team_style": 1.0
+      },
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 0.8323,
+    "style_impact": "defensive",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "data_available": false,
+    "name": "Referee TBD",
+    "home_bias_pct": null,
+    "cards_per_game": null,
+    "penalties_per_game": null,
+    "strict_level": "unknown",
+    "experience_level": "unknown",
+    "warning": "Referee data unavailable - appointment not announced"
+  },
+  "team_news": {
+    "home_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Juventus FC"
+    },
+    "away_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "AS Roma"
+    }
+  },
+  "data_quality_score": 54.0,
+  "reliability_metrics": {
+    "score": 67.6,
+    "level": "Limited",
+    "indicator": "🟠 Limited",
+    "recommendation": "Limited reliability – supplement with manual review.",
+    "confidence_intervals": {
+      "home": [
+        46.1,
+        53.9
+      ],
+      "draw": [
+        15.8,
+        23.6
+      ],
+      "away": [
+        26.4,
+        34.2
+      ],
+      "margin_percent": 3.89
+    },
+    "spread_points": 30.3,
+    "factors": {
+      "model_confidence": 92.0,
+      "data_quality": 54.0,
+      "probability_clarity": 78.7,
+      "h2h_depth": 0.0,
+      "data_freshness": 55.0
+    },
+    "primary_driver": "model_confidence",
+    "notes": [
+      "Head-to-head sample is limited – emphasis on recent form.",
+      "Data quality below optimal threshold; confidence capped."
+    ]
+  },
+  "calibration_details": {
+    "applied": true,
+    "shrink_factor": 0.089,
+    "probabilities": {
+      "home_win_prob": 48.5,
+      "draw_prob": 20.92,
+      "away_win_prob": 30.57
+    },
+    "original_probabilities": {
+      "home_win_prob": 49.98,
+      "draw_prob": 19.72,
+      "away_win_prob": 30.31
+    },
+    "pre_calibration_probabilities": {
+      "home_win_prob": 0.4998,
+      "draw_prob": 0.1972,
+      "away_win_prob": 0.3031
+    },
+    "neutral_anchor": 33.3,
+    "notes": [
+      "Applied 8.9% shrink toward neutral due to reliability score 67.6."
+    ],
+    "accuracy_adjustment": {
+      "original_probability": 0.68,
+      "calibrated_probability": 0.678
+    }
+  },
+  "confidence_intervals": {
+    "home": [
+      46.1,
+      53.9
+    ],
+    "draw": [
+      15.8,
+      23.6
+    ],
+    "away": [
+      26.4,
+      34.2
+    ],
+    "margin_percent": 3.89
+  },
+  "data_provenance": {
+    "weather": true,
+    "player_availability": true,
+    "referee": true,
+    "team_news": true,
+    "h2h": false,
+    "odds": false,
+    "flashscore": true,
+    "home_injury_clamped": false,
+    "away_injury_clamped": false,
+    "weather_clamped": false
+  },
+  "phase2_lite_enhanced": true,
+  "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+  "advanced_predictions": {
+    "btts": {
+      "btts_yes_probability": 67.2,
+      "btts_no_probability": 32.8,
+      "prediction": "Yes",
+      "confidence": 67.9,
+      "method_breakdown": {
+        "poisson": 84.3,
+        "historical": 60.0,
+        "league_base": 50.0
+      },
+      "factors": {
+        "home_scoring_chance": 94.5,
+        "away_scoring_chance": 89.2
+      }
+    },
+    "over_under": {
+      "expected_total_goals": 5.13,
+      "lines": {
+        "0.5": {
+          "over_probability": 99.4,
+          "under_probability": 0.6,
+          "prediction": "Over",
+          "fair_over_odds": 1.01,
+          "fair_under_odds": 169.02
+        },
+        "1.5": {
+          "over_probability": 96.4,
+          "under_probability": 3.6,
+          "prediction": "Over",
+          "fair_over_odds": 1.04,
+          "fair_under_odds": 27.57
+        },
+        "2.5": {
+          "over_probability": 88.6,
+          "under_probability": 11.4,
+          "prediction": "Over",
+          "fair_over_odds": 1.13,
+          "fair_under_odds": 8.76
+        },
+        "3.5": {
+          "over_probability": 75.3,
+          "under_probability": 24.7,
+          "prediction": "Over",
+          "fair_over_odds": 1.33,
+          "fair_under_odds": 4.04
+        },
+        "4.5": {
+          "over_probability": 58.2,
+          "under_probability": 41.8,
+          "prediction": "Over",
+          "fair_over_odds": 1.72,
+          "fair_under_odds": 2.39
+        },
+        "5.5": {
+          "over_probability": 40.7,
+          "under_probability": 59.3,
+          "prediction": "Under",
+          "fair_over_odds": 2.46,
+          "fair_under_odds": 1.69
+        }
+      },
+      "recommended_line": "4.5",
+      "main_prediction": "Over"
+    },
+    "exact_scores": [
+      {
+        "score": "2-2",
+        "probability": 6.2
+      },
+      {
+        "score": "3-2",
+        "probability": 6.0
+      },
+      {
+        "score": "2-1",
+        "probability": 5.5
+      },
+      {
+        "score": "3-1",
+        "probability": 5.4
+      },
+      {
+        "score": "2-3",
+        "probability": 4.6
+      },
+      {
+        "score": "3-3",
+        "probability": 4.4
+      },
+      {
+        "score": "4-2",
+        "probability": 4.3
+      },
+      {
+        "score": "1-2",
+        "probability": 4.3
+      },
+      {
+        "score": "4-1",
+        "probability": 3.9
+      },
+      {
+        "score": "1-1",
+        "probability": 3.8
+      }
+    ],
+    "two_stage_score": {
+      "expected_home": 2.9,
+      "expected_away": 2.23,
+      "most_likely": "1-2",
+      "probability": 21.1,
+      "alternatives": [
+        "0-1 (16.2%)",
+        "2-3 (14.9%)",
+        "1-3 (13.0%)"
+      ]
+    }
+  },
+  "shot_quality": {
+    "home": {
+      "team_name": "Juventus FC",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.11000000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    },
+    "away": {
+      "team_name": "AS Roma",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.11000000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    }
+  },
+  "defensive_metrics": {},
+  "odds_movement": {
+    "match_id": "Juventus FC_AS Roma_2025-12-20",
+    "home_team": "Juventus FC",
+    "away_team": "AS Roma",
+    "opening_odds": {
+      "timestamp": "2025-12-16T16:11:39.619203",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "current_odds": {
+      "timestamp": "2025-12-16T16:11:39.619203",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "home_movement": "stable",
+    "away_movement": "stable",
+    "home_movement_pct": 0.0,
+    "away_movement_pct": 0.0,
+    "movement_strength": "minimal",
+    "sharp_money_detected": false,
+    "sharp_money_side": null,
+    "sharp_confidence": 0.0,
+    "market_favorite": "home",
+    "implied_home_prob": 0.3772968558595345,
+    "implied_draw_prob": 0.2858309514087382,
+    "implied_away_prob": 0.3368721927317272
+  },
+  "market_implied": {
+    "home": 0.3772968558595345,
+    "draw": 0.2858309514087382,
+    "away": 0.3368721927317272
+  },
+  "sharp_money_alert": {},
+  "player_impact": {},
+  "phase_enhancements": {
+    "phase1_enhanced": true,
+    "phase2_enhanced": false,
+    "phase3_enhanced": true,
+    "phase4_enhanced": true,
+    "phase5_enhanced": true,
+    "phase6_enhanced": true,
+    "phase7_enhanced": false
+  },
+  "optimization_metadata": {
+    "match_context": "unknown",
+    "model_agreement_factor": 0.5,
+    "optimization_applied": false,
+    "ensemble_weights": {}
+  },
+  "generated_at": "2025-12-16T16:12:02.343494",
+  "data_provenance_details": {
+    "home_injury_clamped": false,
+    "home_injury_clamped_fields": {},
+    "away_injury_clamped": false,
+    "away_injury_clamped_fields": {},
+    "weather_clamped": false,
+    "weather_clamped_fields": {}
+  }
+}

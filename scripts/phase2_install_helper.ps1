@@ -14,19 +14,19 @@ param(
 
 Write-Host "Phase2 Install Helper - Attempting to detect install options..."
 
-function Try-Py313 {
+function Test-Py313 {
     try {
-        $pyOut = py -3.13 -V 2>&1
+        $null = py -3.13 -V 2>&1
         if ($LASTEXITCODE -eq 0) { return $true }
         return $false
     } catch { return $false }
 }
 
-function Try-Mamba {
+function Test-Mamba {
     try { Get-Command mamba -ErrorAction Stop | Out-Null; return $true } catch { return $false }
 }
 
-if (Try-Py313) {
+if (Test-Py313) {
     Write-Host "Python 3.13 detected via 'py' launcher - using it for Phase2 installation"
     py -3.13 -m venv .venv_phase2
     .\.venv_phase2\Scripts\Activate.ps1
@@ -36,7 +36,7 @@ if (Try-Py313) {
     exit 0
 }
 
-if (Try-Mamba) {
+if (Test-Mamba) {
     Write-Host "mamba detected. Creating conda environment 'sps_py313' with Python 3.13"
     mamba create -n sps_py313 python=3.13 -y
     Write-Host "Activating conda env sps_py313 and installing pip requirements..."

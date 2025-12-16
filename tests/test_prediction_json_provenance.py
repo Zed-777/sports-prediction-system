@@ -2,7 +2,7 @@ import json
 import os
 import re
 
-from generate_fast_reports import SingleMatchGenerator
+import pytest
 
 
 class StubPredictor:
@@ -43,6 +43,11 @@ def slugify(name: str) -> str:
 
 
 def test_prediction_json_contains_provenance(monkeypatch):
+    # Set mock API key before importing module
+    monkeypatch.setenv('FOOTBALL_DATA_API_KEY', 'test_key_for_unit_tests')
+    
+    from generate_fast_reports import SingleMatchGenerator
+    
     # Fake API response from football-data
     fake_match = {
         'id': 9999,

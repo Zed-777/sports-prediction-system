@@ -54,7 +54,15 @@ class BayesianUpdate:
     update_strength: float
 
 class MachineLearningEnhancer:
-    """Advanced ML system with ensemble methods and Bayesian updates"""
+    """Advanced ML system with ensemble methods and dynamic ELO ratings"""
+
+    # Default ELO rating for new teams
+    DEFAULT_ELO = 1500
+    # K-factor controls how much ratings change after each match
+    K_FACTOR_NEW = 40  # Higher for new teams (more volatile)
+    K_FACTOR_ESTABLISHED = 20  # Lower for established teams (more stable)
+    # Home advantage in ELO points
+    HOME_ADVANTAGE = 65
 
     def __init__(self) -> None:
         self.models_dir = Path("models/ml_enhanced")
@@ -63,22 +71,9 @@ class MachineLearningEnhancer:
         # Model performance tracking
         self.model_performances: dict[str, ModelPerformance] = {}
 
-        # Bayesian team ratings (start with base ratings)
-        self.bayesian_ratings = {
-            'FC Barcelona': {'attack': 0.90, 'defense': 0.82, 'confidence': 0.8, 'matches': 50},
-            'Real Madrid CF': {'attack': 0.92, 'defense': 0.88, 'confidence': 0.8, 'matches': 50},
-            'Atlético Madrid': {'attack': 0.78, 'defense': 0.92, 'confidence': 0.8, 'matches': 45},
-            'Sevilla FC': {'attack': 0.75, 'defense': 0.78, 'confidence': 0.7, 'matches': 40},
-            'Villarreal CF': {'attack': 0.78, 'defense': 0.75, 'confidence': 0.7, 'matches': 38},
-            'Real Betis Balompié': {'attack': 0.72, 'defense': 0.68, 'confidence': 0.6, 'matches': 35},
-            'Athletic Bilbao': {'attack': 0.70, 'defense': 0.80, 'confidence': 0.6, 'matches': 35},
-            'Valencia CF': {'attack': 0.68, 'defense': 0.70, 'confidence': 0.5, 'matches': 30},
-            'Real Sociedad': {'attack': 0.75, 'defense': 0.78, 'confidence': 0.6, 'matches': 35},
-            'RCD Mallorca': {'attack': 0.60, 'defense': 0.65, 'confidence': 0.4, 'matches': 25},
-            'Girona FC': {'attack': 0.65, 'defense': 0.62, 'confidence': 0.3, 'matches': 20},
-            'RCD Espanyol de Barcelona': {'attack': 0.55, 'defense': 0.60, 'confidence': 0.4, 'matches': 25},
-            'Real Oviedo': {'attack': 0.58, 'defense': 0.62, 'confidence': 0.3, 'matches': 20}
-        }
+        # Dynamic ELO ratings - loaded from file or initialized with defaults
+        self.elo_ratings: dict[str, dict] = {}
+        self._load_elo_ratings()
 
         # Initialize ensemble models
         self.ensemble_models = self._initialize_models()
@@ -86,6 +81,248 @@ class MachineLearningEnhancer:
 
         # Load historical performance if exists
         self._load_model_performances()
+        
+        # Legacy compatibility - map to bayesian_ratings format for existing code
+        self.bayesian_ratings = self._elo_to_bayesian_format()
+
+    def _load_elo_ratings(self) -> None:
+        """Load ELO ratings from file or initialize with league-based defaults"""
+        elo_file = self.models_dir / "elo_ratings.json"
+        
+        if elo_file.exists():
+            try:
+                with open(elo_file, 'r') as f:
+                    self.elo_ratings = json.load(f)
+                return
+            except Exception:
+                pass
+        
+        # Initialize with research-based starting ratings by league tier
+        # Based on historical performance data and club coefficients
+        self.elo_ratings = {
+            # Top tier (Champions League regulars)
+            'Real Madrid CF': {'elo': 2050, 'attack_elo': 2100, 'defense_elo': 2000, 'matches': 100, 'last_updated': '2025-01-01'},
+            'FC Barcelona': {'elo': 2020, 'attack_elo': 2080, 'defense_elo': 1960, 'matches': 100, 'last_updated': '2025-01-01'},
+            'Manchester City FC': {'elo': 2080, 'attack_elo': 2100, 'defense_elo': 2060, 'matches': 100, 'last_updated': '2025-01-01'},
+            'Liverpool FC': {'elo': 2000, 'attack_elo': 2050, 'defense_elo': 1950, 'matches': 100, 'last_updated': '2025-01-01'},
+            'FC Bayern München': {'elo': 2040, 'attack_elo': 2100, 'defense_elo': 1980, 'matches': 100, 'last_updated': '2025-01-01'},
+            'Paris Saint-Germain FC': {'elo': 1980, 'attack_elo': 2050, 'defense_elo': 1910, 'matches': 100, 'last_updated': '2025-01-01'},
+            'Inter Milan': {'elo': 1950, 'attack_elo': 1920, 'defense_elo': 1980, 'matches': 100, 'last_updated': '2025-01-01'},
+            'Arsenal FC': {'elo': 1970, 'attack_elo': 1980, 'defense_elo': 1960, 'matches': 100, 'last_updated': '2025-01-01'},
+            
+            # Strong tier (Europa League level)
+            'Atlético Madrid': {'elo': 1900, 'attack_elo': 1850, 'defense_elo': 1950, 'matches': 80, 'last_updated': '2025-01-01'},
+            'Borussia Dortmund': {'elo': 1880, 'attack_elo': 1920, 'defense_elo': 1840, 'matches': 80, 'last_updated': '2025-01-01'},
+            'SSC Napoli': {'elo': 1870, 'attack_elo': 1900, 'defense_elo': 1840, 'matches': 80, 'last_updated': '2025-01-01'},
+            'Chelsea FC': {'elo': 1860, 'attack_elo': 1870, 'defense_elo': 1850, 'matches': 80, 'last_updated': '2025-01-01'},
+            'Tottenham Hotspur FC': {'elo': 1840, 'attack_elo': 1870, 'defense_elo': 1810, 'matches': 80, 'last_updated': '2025-01-01'},
+            'Juventus FC': {'elo': 1850, 'attack_elo': 1830, 'defense_elo': 1870, 'matches': 80, 'last_updated': '2025-01-01'},
+            'AC Milan': {'elo': 1840, 'attack_elo': 1850, 'defense_elo': 1830, 'matches': 80, 'last_updated': '2025-01-01'},
+            'RB Leipzig': {'elo': 1820, 'attack_elo': 1850, 'defense_elo': 1790, 'matches': 80, 'last_updated': '2025-01-01'},
+            
+            # Mid-tier (solid domestic performers)
+            'Sevilla FC': {'elo': 1750, 'attack_elo': 1720, 'defense_elo': 1780, 'matches': 60, 'last_updated': '2025-01-01'},
+            'Real Betis Balompié': {'elo': 1720, 'attack_elo': 1740, 'defense_elo': 1700, 'matches': 60, 'last_updated': '2025-01-01'},
+            'Real Sociedad': {'elo': 1740, 'attack_elo': 1760, 'defense_elo': 1720, 'matches': 60, 'last_updated': '2025-01-01'},
+            'Villarreal CF': {'elo': 1730, 'attack_elo': 1750, 'defense_elo': 1710, 'matches': 60, 'last_updated': '2025-01-01'},
+            'Athletic Club': {'elo': 1710, 'attack_elo': 1690, 'defense_elo': 1730, 'matches': 60, 'last_updated': '2025-01-01'},
+            'Newcastle United FC': {'elo': 1780, 'attack_elo': 1760, 'defense_elo': 1800, 'matches': 60, 'last_updated': '2025-01-01'},
+            'Aston Villa FC': {'elo': 1760, 'attack_elo': 1780, 'defense_elo': 1740, 'matches': 60, 'last_updated': '2025-01-01'},
+            'SS Lazio': {'elo': 1720, 'attack_elo': 1750, 'defense_elo': 1690, 'matches': 60, 'last_updated': '2025-01-01'},
+            'AS Roma': {'elo': 1730, 'attack_elo': 1710, 'defense_elo': 1750, 'matches': 60, 'last_updated': '2025-01-01'},
+            'Bayer 04 Leverkusen': {'elo': 1850, 'attack_elo': 1900, 'defense_elo': 1800, 'matches': 60, 'last_updated': '2025-01-01'},
+            
+            # Lower-mid tier
+            'Valencia CF': {'elo': 1650, 'attack_elo': 1630, 'defense_elo': 1670, 'matches': 50, 'last_updated': '2025-01-01'},
+            'Getafe CF': {'elo': 1600, 'attack_elo': 1550, 'defense_elo': 1650, 'matches': 50, 'last_updated': '2025-01-01'},
+            'Girona FC': {'elo': 1700, 'attack_elo': 1750, 'defense_elo': 1650, 'matches': 40, 'last_updated': '2025-01-01'},
+            'RCD Mallorca': {'elo': 1580, 'attack_elo': 1550, 'defense_elo': 1610, 'matches': 50, 'last_updated': '2025-01-01'},
+            'RC Celta de Vigo': {'elo': 1620, 'attack_elo': 1650, 'defense_elo': 1590, 'matches': 50, 'last_updated': '2025-01-01'},
+            'Rayo Vallecano de Madrid': {'elo': 1590, 'attack_elo': 1610, 'defense_elo': 1570, 'matches': 50, 'last_updated': '2025-01-01'},
+            'CA Osasuna': {'elo': 1610, 'attack_elo': 1580, 'defense_elo': 1640, 'matches': 50, 'last_updated': '2025-01-01'},
+            'Deportivo Alavés': {'elo': 1550, 'attack_elo': 1520, 'defense_elo': 1580, 'matches': 40, 'last_updated': '2025-01-01'},
+            'UD Las Palmas': {'elo': 1560, 'attack_elo': 1580, 'defense_elo': 1540, 'matches': 40, 'last_updated': '2025-01-01'},
+            'RCD Espanyol de Barcelona': {'elo': 1540, 'attack_elo': 1520, 'defense_elo': 1560, 'matches': 40, 'last_updated': '2025-01-01'},
+            'Real Valladolid CF': {'elo': 1520, 'attack_elo': 1500, 'defense_elo': 1540, 'matches': 40, 'last_updated': '2025-01-01'},
+            'CD Leganés': {'elo': 1510, 'attack_elo': 1490, 'defense_elo': 1530, 'matches': 40, 'last_updated': '2025-01-01'},
+        }
+        
+        self._save_elo_ratings()
+
+    def _save_elo_ratings(self) -> None:
+        """Persist ELO ratings to file"""
+        elo_file = self.models_dir / "elo_ratings.json"
+        try:
+            with open(elo_file, 'w') as f:
+                json.dump(self.elo_ratings, f, indent=2)
+        except Exception:
+            pass
+
+    def _elo_to_bayesian_format(self) -> dict:
+        """Convert ELO ratings to legacy bayesian_ratings format for compatibility"""
+        bayesian = {}
+        for team, ratings in self.elo_ratings.items():
+            elo = ratings.get('elo', self.DEFAULT_ELO)
+            attack_elo = ratings.get('attack_elo', elo)
+            defense_elo = ratings.get('defense_elo', elo)
+            matches = ratings.get('matches', 20)
+            
+            # Convert ELO (1200-2200 range) to 0-1 scale
+            attack = (attack_elo - 1200) / 1000  # Maps 1200-2200 to 0-1
+            defense = (defense_elo - 1200) / 1000
+            confidence = min(0.95, matches / 100)  # More matches = higher confidence
+            
+            bayesian[team] = {
+                'attack': max(0.3, min(0.98, attack)),
+                'defense': max(0.3, min(0.98, defense)),
+                'confidence': confidence,
+                'matches': matches
+            }
+        return bayesian
+
+    def get_team_elo(self, team_name: str) -> dict:
+        """Get ELO rating for a team, creating default if not exists"""
+        if team_name not in self.elo_ratings:
+            # Try fuzzy match
+            for known_team in self.elo_ratings:
+                if team_name.lower() in known_team.lower() or known_team.lower() in team_name.lower():
+                    return self.elo_ratings[known_team]
+            
+            # Create new entry with default rating
+            self.elo_ratings[team_name] = {
+                'elo': self.DEFAULT_ELO,
+                'attack_elo': self.DEFAULT_ELO,
+                'defense_elo': self.DEFAULT_ELO,
+                'matches': 0,
+                'last_updated': datetime.now().strftime('%Y-%m-%d')
+            }
+            self._save_elo_ratings()
+        
+        return self.elo_ratings[team_name]
+
+    def calculate_expected_score(self, home_elo: float, away_elo: float, include_home_advantage: bool = True) -> tuple:
+        """
+        Calculate expected score using ELO formula.
+        Returns (home_expected, away_expected) where values sum to 1.0
+        """
+        if include_home_advantage:
+            home_elo += self.HOME_ADVANTAGE
+        
+        elo_diff = home_elo - away_elo
+        home_expected = 1 / (1 + 10 ** (-elo_diff / 400))
+        away_expected = 1 - home_expected
+        
+        return home_expected, away_expected
+
+    def update_elo_after_match(self, home_team: str, away_team: str, 
+                               home_goals: int, away_goals: int) -> dict:
+        """
+        Update ELO ratings after a match result.
+        Uses separate attack/defense ELO for more nuanced ratings.
+        """
+        home_rating = self.get_team_elo(home_team)
+        away_rating = self.get_team_elo(away_team)
+        
+        # Determine K-factor based on matches played
+        home_k = self.K_FACTOR_NEW if home_rating['matches'] < 30 else self.K_FACTOR_ESTABLISHED
+        away_k = self.K_FACTOR_NEW if away_rating['matches'] < 30 else self.K_FACTOR_ESTABLISHED
+        
+        # Calculate expected scores
+        home_exp, away_exp = self.calculate_expected_score(
+            home_rating['elo'], away_rating['elo']
+        )
+        
+        # Determine actual scores (1 = win, 0.5 = draw, 0 = loss)
+        if home_goals > away_goals:
+            home_actual, away_actual = 1.0, 0.0
+        elif home_goals < away_goals:
+            home_actual, away_actual = 0.0, 1.0
+        else:
+            home_actual, away_actual = 0.5, 0.5
+        
+        # Goal difference multiplier (bigger wins = bigger rating change)
+        goal_diff = abs(home_goals - away_goals)
+        gd_multiplier = 1.0 + (goal_diff - 1) * 0.1 if goal_diff > 1 else 1.0
+        gd_multiplier = min(1.5, gd_multiplier)  # Cap at 1.5x
+        
+        # Update main ELO
+        home_elo_change = home_k * gd_multiplier * (home_actual - home_exp)
+        away_elo_change = away_k * gd_multiplier * (away_actual - away_exp)
+        
+        # Update attack ELO based on goals scored
+        home_attack_change = home_k * 0.5 * (home_goals / max(1, home_goals + away_goals) - 0.5)
+        away_attack_change = away_k * 0.5 * (away_goals / max(1, home_goals + away_goals) - 0.5)
+        
+        # Update defense ELO based on goals conceded (inverted)
+        home_defense_change = home_k * 0.5 * (0.5 - away_goals / max(1, home_goals + away_goals))
+        away_defense_change = away_k * 0.5 * (0.5 - home_goals / max(1, home_goals + away_goals))
+        
+        # Apply updates
+        old_home = home_rating.copy()
+        old_away = away_rating.copy()
+        
+        self.elo_ratings[home_team]['elo'] += home_elo_change
+        self.elo_ratings[home_team]['attack_elo'] += home_attack_change
+        self.elo_ratings[home_team]['defense_elo'] += home_defense_change
+        self.elo_ratings[home_team]['matches'] += 1
+        self.elo_ratings[home_team]['last_updated'] = datetime.now().strftime('%Y-%m-%d')
+        
+        self.elo_ratings[away_team]['elo'] += away_elo_change
+        self.elo_ratings[away_team]['attack_elo'] += away_attack_change
+        self.elo_ratings[away_team]['defense_elo'] += away_defense_change
+        self.elo_ratings[away_team]['matches'] += 1
+        self.elo_ratings[away_team]['last_updated'] = datetime.now().strftime('%Y-%m-%d')
+        
+        # Refresh bayesian_ratings for compatibility
+        self.bayesian_ratings = self._elo_to_bayesian_format()
+        
+        # Save to file
+        self._save_elo_ratings()
+        
+        return {
+            'home_team': home_team,
+            'away_team': away_team,
+            'home_elo_change': round(home_elo_change, 1),
+            'away_elo_change': round(away_elo_change, 1),
+            'home_new_elo': round(self.elo_ratings[home_team]['elo'], 1),
+            'away_new_elo': round(self.elo_ratings[away_team]['elo'], 1)
+        }
+
+    def predict_match_elo(self, home_team: str, away_team: str) -> dict:
+        """
+        Predict match outcome using ELO ratings.
+        Returns probabilities for home win, draw, away win.
+        """
+        home_rating = self.get_team_elo(home_team)
+        away_rating = self.get_team_elo(away_team)
+        
+        home_exp, away_exp = self.calculate_expected_score(
+            home_rating['elo'], away_rating['elo']
+        )
+        
+        # Convert expected scores to win/draw/loss probabilities
+        # Using logistic distribution for draw probability
+        elo_diff = (home_rating['elo'] + self.HOME_ADVANTAGE) - away_rating['elo']
+        
+        # Draw probability peaks at elo_diff=0, decreases with larger differences
+        draw_base = 0.25
+        draw_decay = abs(elo_diff) / 800
+        draw_prob = max(0.10, draw_base * (1 - draw_decay))
+        
+        # Distribute remaining probability between home/away
+        remaining = 1.0 - draw_prob
+        home_win_prob = remaining * home_exp
+        away_win_prob = remaining * away_exp
+        
+        return {
+            'home_win_probability': round(home_win_prob * 100, 1),
+            'draw_probability': round(draw_prob * 100, 1),
+            'away_win_probability': round(away_win_prob * 100, 1),
+            'home_elo': round(home_rating['elo'], 0),
+            'away_elo': round(away_rating['elo'], 0),
+            'elo_difference': round(elo_diff, 0),
+            'confidence': min(0.95, (home_rating['matches'] + away_rating['matches']) / 200)
+        }
 
     def _initialize_models(self) -> Dict[str, Any]:
         """Initialize the ensemble of ML models"""
@@ -110,7 +347,7 @@ class MachineLearningEnhancer:
 
         features = []
 
-        # Basic team strength features
+        # ELO-based team strength features
         home_ratings = self.bayesian_ratings.get(home_team, {'attack': 0.5, 'defense': 0.5})
         away_ratings = self.bayesian_ratings.get(away_team, {'attack': 0.5, 'defense': 0.5})
 

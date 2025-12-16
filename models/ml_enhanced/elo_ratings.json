@@ -1,0 +1,303 @@
+{
+  "Real Madrid CF": {
+    "elo": 2050,
+    "attack_elo": 2100,
+    "defense_elo": 2000,
+    "matches": 100,
+    "last_updated": "2025-01-01"
+  },
+  "FC Barcelona": {
+    "elo": 2020,
+    "attack_elo": 2080,
+    "defense_elo": 1960,
+    "matches": 100,
+    "last_updated": "2025-01-01"
+  },
+  "Manchester City FC": {
+    "elo": 2080,
+    "attack_elo": 2100,
+    "defense_elo": 2060,
+    "matches": 100,
+    "last_updated": "2025-01-01"
+  },
+  "Liverpool FC": {
+    "elo": 2000,
+    "attack_elo": 2050,
+    "defense_elo": 1950,
+    "matches": 100,
+    "last_updated": "2025-01-01"
+  },
+  "FC Bayern M\u00fcnchen": {
+    "elo": 2040,
+    "attack_elo": 2100,
+    "defense_elo": 1980,
+    "matches": 100,
+    "last_updated": "2025-01-01"
+  },
+  "Paris Saint-Germain FC": {
+    "elo": 1980,
+    "attack_elo": 2050,
+    "defense_elo": 1910,
+    "matches": 100,
+    "last_updated": "2025-01-01"
+  },
+  "Inter Milan": {
+    "elo": 1950,
+    "attack_elo": 1920,
+    "defense_elo": 1980,
+    "matches": 100,
+    "last_updated": "2025-01-01"
+  },
+  "Arsenal FC": {
+    "elo": 1970,
+    "attack_elo": 1980,
+    "defense_elo": 1960,
+    "matches": 100,
+    "last_updated": "2025-01-01"
+  },
+  "Atl\u00e9tico Madrid": {
+    "elo": 1900,
+    "attack_elo": 1850,
+    "defense_elo": 1950,
+    "matches": 80,
+    "last_updated": "2025-01-01"
+  },
+  "Borussia Dortmund": {
+    "elo": 1880,
+    "attack_elo": 1920,
+    "defense_elo": 1840,
+    "matches": 80,
+    "last_updated": "2025-01-01"
+  },
+  "SSC Napoli": {
+    "elo": 1870,
+    "attack_elo": 1900,
+    "defense_elo": 1840,
+    "matches": 80,
+    "last_updated": "2025-01-01"
+  },
+  "Chelsea FC": {
+    "elo": 1860,
+    "attack_elo": 1870,
+    "defense_elo": 1850,
+    "matches": 80,
+    "last_updated": "2025-01-01"
+  },
+  "Tottenham Hotspur FC": {
+    "elo": 1840,
+    "attack_elo": 1870,
+    "defense_elo": 1810,
+    "matches": 80,
+    "last_updated": "2025-01-01"
+  },
+  "Juventus FC": {
+    "elo": 1850,
+    "attack_elo": 1830,
+    "defense_elo": 1870,
+    "matches": 80,
+    "last_updated": "2025-01-01"
+  },
+  "AC Milan": {
+    "elo": 1840,
+    "attack_elo": 1850,
+    "defense_elo": 1830,
+    "matches": 80,
+    "last_updated": "2025-01-01"
+  },
+  "RB Leipzig": {
+    "elo": 1820,
+    "attack_elo": 1850,
+    "defense_elo": 1790,
+    "matches": 80,
+    "last_updated": "2025-01-01"
+  },
+  "Sevilla FC": {
+    "elo": 1750,
+    "attack_elo": 1720,
+    "defense_elo": 1780,
+    "matches": 60,
+    "last_updated": "2025-01-01"
+  },
+  "Real Betis Balompi\u00e9": {
+    "elo": 1720,
+    "attack_elo": 1740,
+    "defense_elo": 1700,
+    "matches": 60,
+    "last_updated": "2025-01-01"
+  },
+  "Real Sociedad": {
+    "elo": 1740,
+    "attack_elo": 1760,
+    "defense_elo": 1720,
+    "matches": 60,
+    "last_updated": "2025-01-01"
+  },
+  "Villarreal CF": {
+    "elo": 1730,
+    "attack_elo": 1750,
+    "defense_elo": 1710,
+    "matches": 60,
+    "last_updated": "2025-01-01"
+  },
+  "Athletic Club": {
+    "elo": 1710,
+    "attack_elo": 1690,
+    "defense_elo": 1730,
+    "matches": 60,
+    "last_updated": "2025-01-01"
+  },
+  "Newcastle United FC": {
+    "elo": 1780,
+    "attack_elo": 1760,
+    "defense_elo": 1800,
+    "matches": 60,
+    "last_updated": "2025-01-01"
+  },
+  "Aston Villa FC": {
+    "elo": 1760,
+    "attack_elo": 1780,
+    "defense_elo": 1740,
+    "matches": 60,
+    "last_updated": "2025-01-01"
+  },
+  "SS Lazio": {
+    "elo": 1720,
+    "attack_elo": 1750,
+    "defense_elo": 1690,
+    "matches": 60,
+    "last_updated": "2025-01-01"
+  },
+  "AS Roma": {
+    "elo": 1730,
+    "attack_elo": 1710,
+    "defense_elo": 1750,
+    "matches": 60,
+    "last_updated": "2025-01-01"
+  },
+  "Bayer 04 Leverkusen": {
+    "elo": 1850,
+    "attack_elo": 1900,
+    "defense_elo": 1800,
+    "matches": 60,
+    "last_updated": "2025-01-01"
+  },
+  "Valencia CF": {
+    "elo": 1650,
+    "attack_elo": 1630,
+    "defense_elo": 1670,
+    "matches": 50,
+    "last_updated": "2025-01-01"
+  },
+  "Getafe CF": {
+    "elo": 1600,
+    "attack_elo": 1550,
+    "defense_elo": 1650,
+    "matches": 50,
+    "last_updated": "2025-01-01"
+  },
+  "Girona FC": {
+    "elo": 1700,
+    "attack_elo": 1750,
+    "defense_elo": 1650,
+    "matches": 40,
+    "last_updated": "2025-01-01"
+  },
+  "RCD Mallorca": {
+    "elo": 1580,
+    "attack_elo": 1550,
+    "defense_elo": 1610,
+    "matches": 50,
+    "last_updated": "2025-01-01"
+  },
+  "RC Celta de Vigo": {
+    "elo": 1620,
+    "attack_elo": 1650,
+    "defense_elo": 1590,
+    "matches": 50,
+    "last_updated": "2025-01-01"
+  },
+  "Rayo Vallecano de Madrid": {
+    "elo": 1590,
+    "attack_elo": 1610,
+    "defense_elo": 1570,
+    "matches": 50,
+    "last_updated": "2025-01-01"
+  },
+  "CA Osasuna": {
+    "elo": 1610,
+    "attack_elo": 1580,
+    "defense_elo": 1640,
+    "matches": 50,
+    "last_updated": "2025-01-01"
+  },
+  "Deportivo Alav\u00e9s": {
+    "elo": 1550,
+    "attack_elo": 1520,
+    "defense_elo": 1580,
+    "matches": 40,
+    "last_updated": "2025-01-01"
+  },
+  "UD Las Palmas": {
+    "elo": 1560,
+    "attack_elo": 1580,
+    "defense_elo": 1540,
+    "matches": 40,
+    "last_updated": "2025-01-01"
+  },
+  "RCD Espanyol de Barcelona": {
+    "elo": 1540,
+    "attack_elo": 1520,
+    "defense_elo": 1560,
+    "matches": 40,
+    "last_updated": "2025-01-01"
+  },
+  "Real Valladolid CF": {
+    "elo": 1520,
+    "attack_elo": 1500,
+    "defense_elo": 1540,
+    "matches": 40,
+    "last_updated": "2025-01-01"
+  },
+  "CD Legan\u00e9s": {
+    "elo": 1510,
+    "attack_elo": 1490,
+    "defense_elo": 1530,
+    "matches": 40,
+    "last_updated": "2025-01-01"
+  },
+  "Unknown Team FC": {
+    "elo": 1500,
+    "attack_elo": 1500,
+    "defense_elo": 1500,
+    "matches": 0,
+    "last_updated": "2025-12-14"
+  },
+  "Test Team": {
+    "elo": 1560.2227352914106,
+    "attack_elo": 1520.0,
+    "defense_elo": 1520.0,
+    "matches": 4,
+    "last_updated": "2025-12-14"
+  },
+  "Test Opponent": {
+    "elo": 1439.7772647085894,
+    "attack_elo": 1480.0,
+    "defense_elo": 1480.0,
+    "matches": 4,
+    "last_updated": "2025-12-14"
+  },
+  "Test High": {
+    "elo": 1562.3997961076327,
+    "attack_elo": 1530.0,
+    "defense_elo": 1530.0,
+    "matches": 3,
+    "last_updated": "2025-12-14"
+  },
+  "Test Low": {
+    "elo": 1437.6002038923673,
+    "attack_elo": 1470.0,
+    "defense_elo": 1470.0,
+    "matches": 3,
+    "last_updated": "2025-12-14"
+  }
+}

@@ -1,0 +1,803 @@
+{
+  "match_id": 544374,
+  "home_team": "Levante UD",
+  "away_team": "Real Sociedad de Fútbol",
+  "date": "2025-12-20",
+  "time": "15:15",
+  "league": "La Liga",
+  "confidence": 0.95,
+  "report_accuracy_probability": 0.95,
+  "home_win_probability": 51.01,
+  "draw_probability": 30.25,
+  "away_win_probability": 18.74,
+  "expected_home_goals": 1.1,
+  "expected_away_goals": 0.4,
+  "processing_time": 2.544,
+  "recommendation": "Home Win Likely",
+  "confidence_level": "95.0% (Excellent)",
+  "expected_final_score": "1-0",
+  "score_probability": 21.8,
+  "score_probability_normalized": 10.0,
+  "top3_combined_probability": 52.9,
+  "top3_probability_normalized": 10.0,
+  "alternative_scores": [
+    "0-0",
+    "2-0",
+    "1-1"
+  ],
+  "score_probabilities": [
+    [
+      "1-0",
+      21.8005834812459
+    ],
+    [
+      "0-0",
+      17.475417620237195
+    ],
+    [
+      "2-0",
+      13.598113946427132
+    ],
+    [
+      "1-1",
+      10.832164917244059
+    ],
+    [
+      "0-1",
+      8.683098130055358
+    ]
+  ],
+  "score_probabilities_normalized": [
+    [
+      "1-0",
+      10.0
+    ],
+    [
+      "0-0",
+      9.0
+    ],
+    [
+      "2-0",
+      8.0
+    ],
+    [
+      "1-1",
+      6.0
+    ],
+    [
+      "0-1",
+      5.0
+    ]
+  ],
+  "over_2_5_goals_probability": 25.5,
+  "both_teams_score_probability": 27.9,
+  "head_to_head_analysis": {
+    "total_meetings": 0,
+    "wins_when_home": 0,
+    "wins_when_away": 0,
+    "draws": 0,
+    "matches_as_home": 0,
+    "matches_as_away": 0,
+    "avg_goals_for_when_home": 0.0,
+    "avg_goals_against_when_home": 0.0,
+    "avg_goals_for_when_away": 0.0,
+    "avg_goals_against_when_away": 0.0,
+    "recent_form": [],
+    "home_advantage_vs_opponent": 0.0,
+    "away_record_vs_opponent": 0.0,
+    "data_sources": [
+      "Domestic PD"
+    ],
+    "total_sources": 1
+  },
+  "home_performance_analysis": {
+    "home": {
+      "matches": 6,
+      "win_rate": 0.0,
+      "draw_rate": 16.666666666666664,
+      "loss_rate": 83.33333333333334,
+      "avg_goals_for": 1.0,
+      "avg_goals_against": 2.6666666666666665,
+      "goal_difference": -1.6666666666666667,
+      "weighted_form_score": 0,
+      "momentum_direction": "Stable",
+      "momentum_slope": -0.0,
+      "form_pressure": "Extreme",
+      "current_streak": "3 games without a win",
+      "recent_5_performance": 0.0,
+      "form_quality": "Severe Crisis",
+      "consistency_score": 100.0,
+      "confidence_interval": {
+        "lower": 0,
+        "upper": 8.7
+      },
+      "regression_expected": true,
+      "scoring_form": 0.33,
+      "defensive_form": 2.33,
+      "sample_size": 3,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2025-11-29T17:30:00Z",
+          "opponent": "Athletic Club"
+        },
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 2,
+          "date": "2025-11-02T13:00:00Z",
+          "opponent": "RC Celta de Vigo"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 3,
+          "date": "2025-10-19T16:30:00Z",
+          "opponent": "Rayo Vallecano de Madrid"
+        }
+      ]
+    },
+    "away": {
+      "matches": 9,
+      "win_rate": 22.22222222222222,
+      "draw_rate": 22.22222222222222,
+      "loss_rate": 55.55555555555556,
+      "avg_goals_for": 1.1111111111111112,
+      "avg_goals_against": 1.3333333333333333,
+      "goal_difference": -0.2222222222222222,
+      "weighted_form_score": 13.6,
+      "momentum_direction": "Falling Sharply",
+      "momentum_slope": -0.7,
+      "form_pressure": "Extreme",
+      "current_streak": "3 games without a win",
+      "recent_5_performance": 26.7,
+      "form_quality": "Severe Crisis",
+      "consistency_score": 65.0,
+      "confidence_interval": {
+        "lower": 6.9,
+        "upper": 20.3
+      },
+      "regression_expected": true,
+      "scoring_form": 0.8,
+      "defensive_form": 1.4,
+      "sample_size": 5,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2025-12-08T20:00:00Z",
+          "opponent": "CA Osasuna"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-11-21T20:00:00Z",
+          "opponent": "Valencia CF"
+        },
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 3,
+          "date": "2025-11-08T17:30:00Z",
+          "opponent": "Club Atlético de Madrid"
+        },
+        {
+          "result": "D",
+          "goals_for": 1,
+          "goals_against": 1,
+          "date": "2025-10-26T13:00:00Z",
+          "opponent": "RCD Mallorca"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 0,
+          "date": "2025-10-04T12:00:00Z",
+          "opponent": "Real Oviedo"
+        }
+      ]
+    },
+    "home_advantage": -22.22222222222222,
+    "scoring_difference": -0.11111111111111116
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 8,
+      "win_rate": 37.5,
+      "draw_rate": 12.5,
+      "loss_rate": 50.0,
+      "avg_goals_for": 1.5,
+      "avg_goals_against": 1.625,
+      "goal_difference": -0.125,
+      "weighted_form_score": 31.5,
+      "momentum_direction": "Falling Sharply",
+      "momentum_slope": -1.2,
+      "form_pressure": "High",
+      "current_streak": "2 games without a win",
+      "recent_5_performance": 50.0,
+      "form_quality": "Crisis",
+      "consistency_score": 55.0,
+      "confidence_interval": {
+        "lower": 24.0,
+        "upper": 39.0
+      },
+      "regression_expected": true,
+      "scoring_form": 2.0,
+      "defensive_form": 2.0,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 2,
+          "date": "2025-12-12T20:00:00Z",
+          "opponent": "Girona FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 2,
+          "goals_against": 3,
+          "date": "2025-11-30T13:00:00Z",
+          "opponent": "Villarreal CF"
+        },
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 2,
+          "date": "2025-11-01T17:30:00Z",
+          "opponent": "Athletic Club"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2025-10-24T19:00:00Z",
+          "opponent": "Sevilla FC"
+        }
+      ]
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 14.285714285714285,
+      "draw_rate": 28.57142857142857,
+      "loss_rate": 57.14285714285714,
+      "avg_goals_for": 1.0,
+      "avg_goals_against": 1.4285714285714286,
+      "goal_difference": -0.42857142857142855,
+      "weighted_form_score": 33.2,
+      "momentum_direction": "Stable",
+      "momentum_slope": -0.1,
+      "form_pressure": "High",
+      "current_streak": "1 game without a win",
+      "recent_5_performance": 41.7,
+      "form_quality": "Struggling",
+      "consistency_score": 67.3,
+      "confidence_interval": {
+        "lower": 25.7,
+        "upper": 40.7
+      },
+      "regression_expected": true,
+      "scoring_form": 1.25,
+      "defensive_form": 1.0,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-12-06T15:15:00Z",
+          "opponent": "Deportivo Alavés"
+        },
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 1,
+          "date": "2025-11-22T17:30:00Z",
+          "opponent": "CA Osasuna"
+        },
+        {
+          "result": "D",
+          "goals_for": 1,
+          "goals_against": 1,
+          "date": "2025-11-07T20:00:00Z",
+          "opponent": "Elche CF"
+        },
+        {
+          "result": "D",
+          "goals_for": 1,
+          "goals_against": 1,
+          "date": "2025-10-19T14:15:00Z",
+          "opponent": "RC Celta de Vigo"
+        }
+      ]
+    },
+    "home_advantage": 23.214285714285715,
+    "scoring_difference": 0.5
+  },
+  "goal_timing_prediction": {
+    "first_half_goal_probability": 46.0,
+    "second_half_goal_probability": 54.0,
+    "late_goal_likelihood": 16.0,
+    "early_goal_likelihood": 10.4,
+    "home_attack_style": "defensive",
+    "away_attack_style": "balanced",
+    "period_probabilities": {
+      "0-15": 13.0,
+      "16-30": 15.0,
+      "31-45": 18.0,
+      "46-60": 16.0,
+      "61-75": 18.0,
+      "76-90": 20.0
+    },
+    "expected_goals_by_period": {
+      "0-15": 0.26,
+      "16-30": 0.3,
+      "31-45": 0.36,
+      "46-60": 0.32,
+      "61-75": 0.36,
+      "76-90": 0.4
+    },
+    "most_likely_goal_period": "76-90",
+    "scoring_tempo": "low"
+  },
+  "intelligence_summary": {
+    "h2h_meetings": 0,
+    "home_advantage_pct": -22.22222222222222,
+    "recent_h2h_form": "No recent meetings",
+    "key_factors": [
+      "No head-to-head history between teams",
+      "Poor home form (0% win rate)",
+      "Weak away form (14% win rate)",
+      "Poor home goal difference (-1.7)"
+    ]
+  },
+  "player_availability": {
+    "home_team": {
+      "data_available": true,
+      "team_name": "Levante UD",
+      "squad_size": 31,
+      "positions": {
+        "goalkeepers": 4,
+        "defenders": 11,
+        "midfielders": 8,
+        "attackers": 8
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 31 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "data_available": true,
+      "team_name": "Real Sociedad de Fútbol",
+      "squad_size": 35,
+      "positions": {
+        "goalkeepers": 4,
+        "defenders": 9,
+        "midfielders": 10,
+        "attackers": 12
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 35 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": 15.9,
+      "humidity": 56.7,
+      "wind_speed": 10.5,
+      "precipitation": 0.0,
+      "conditions": "clear",
+      "visibility": 18.0,
+      "pressure": 1013,
+      "source": "open-meteo",
+      "match_hour": 15,
+      "location": {
+        "lat": 39.4747,
+        "lon": -0.3583
+      }
+    },
+    "impact_assessment": {
+      "goal_modifier": 1.0677,
+      "playing_style_effect": "attacking",
+      "weather_advantage": "technical_teams",
+      "tactical_adjustments": [
+        "Normal playing conditions expected"
+      ],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MILD",
+      "conditions_summary": "Good playing conditions (15.9°C, 0.0mm rain, 10.5 km/h wind) minimal weather impact expected",
+      "modifier_components": {
+        "temperature": 0.9962,
+        "precipitation": 1.0,
+        "wind": 1.0719,
+        "humidity": 0.9999,
+        "interaction": 1.0,
+        "stadium": 1.0,
+        "team_style": 1.0
+      },
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 1.0677,
+    "style_impact": "attacking",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "data_available": false,
+    "name": "Referee TBD",
+    "home_bias_pct": null,
+    "cards_per_game": null,
+    "penalties_per_game": null,
+    "strict_level": "unknown",
+    "experience_level": "unknown",
+    "warning": "Referee data unavailable - appointment not announced"
+  },
+  "team_news": {
+    "home_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Levante UD"
+    },
+    "away_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Real Sociedad de Fútbol"
+    }
+  },
+  "data_quality_score": 54.0,
+  "reliability_metrics": {
+    "score": 69.3,
+    "level": "Moderate",
+    "indicator": "🟡 Moderate",
+    "recommendation": "Balanced reliability – treat as guidance with monitoring.",
+    "confidence_intervals": {
+      "home": [
+        48.8,
+        56.2
+      ],
+      "draw": [
+        26.3,
+        33.7
+      ],
+      "away": [
+        13.8,
+        21.2
+      ],
+      "margin_percent": 3.69
+    },
+    "spread_points": 34.9,
+    "factors": {
+      "model_confidence": 92.0,
+      "data_quality": 54.0,
+      "probability_clarity": 89.9,
+      "h2h_depth": 0.0,
+      "data_freshness": 55.0
+    },
+    "primary_driver": "model_confidence",
+    "notes": [
+      "Head-to-head sample is limited – emphasis on recent form.",
+      "Data quality below optimal threshold; confidence capped."
+    ]
+  },
+  "calibration_details": {
+    "applied": true,
+    "shrink_factor": 0.076,
+    "probabilities": {
+      "home_win_prob": 51.01,
+      "draw_prob": 30.25,
+      "away_win_prob": 18.74
+    },
+    "original_probabilities": {
+      "home_win_prob": 52.47,
+      "draw_prob": 30.0,
+      "away_win_prob": 17.53
+    },
+    "pre_calibration_probabilities": {
+      "home_win_prob": 0.5247,
+      "draw_prob": 0.3,
+      "away_win_prob": 0.1753
+    },
+    "neutral_anchor": 33.3,
+    "notes": [
+      "Applied 7.6% shrink toward neutral due to reliability score 69.3."
+    ],
+    "accuracy_adjustment": {
+      "original_probability": 0.77,
+      "calibrated_probability": 0.739
+    }
+  },
+  "confidence_intervals": {
+    "home": [
+      48.8,
+      56.2
+    ],
+    "draw": [
+      26.3,
+      33.7
+    ],
+    "away": [
+      13.8,
+      21.2
+    ],
+    "margin_percent": 3.69
+  },
+  "data_provenance": {
+    "weather": true,
+    "player_availability": true,
+    "referee": true,
+    "team_news": true,
+    "h2h": false,
+    "odds": false,
+    "flashscore": true,
+    "home_injury_clamped": false,
+    "away_injury_clamped": false,
+    "weather_clamped": false
+  },
+  "phase2_lite_enhanced": true,
+  "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+  "advanced_predictions": {
+    "btts": {
+      "btts_yes_probability": 44.5,
+      "btts_no_probability": 55.5,
+      "prediction": "No",
+      "confidence": 68.3,
+      "method_breakdown": {
+        "poisson": 28.7,
+        "historical": 60.0,
+        "league_base": 48.0
+      },
+      "factors": {
+        "home_scoring_chance": 71.9,
+        "away_scoring_chance": 40.0
+      }
+    },
+    "over_under": {
+      "expected_total_goals": 1.78,
+      "lines": {
+        "0.5": {
+          "over_probability": 83.1,
+          "under_probability": 16.9,
+          "prediction": "Over",
+          "fair_over_odds": 1.2,
+          "fair_under_odds": 5.93
+        },
+        "1.5": {
+          "over_probability": 53.1,
+          "under_probability": 46.9,
+          "prediction": "Over",
+          "fair_over_odds": 1.88,
+          "fair_under_odds": 2.13
+        },
+        "2.5": {
+          "over_probability": 26.4,
+          "under_probability": 73.6,
+          "prediction": "Under",
+          "fair_over_odds": 3.79,
+          "fair_under_odds": 1.36
+        },
+        "3.5": {
+          "over_probability": 10.6,
+          "under_probability": 89.4,
+          "prediction": "Under",
+          "fair_over_odds": 9.48,
+          "fair_under_odds": 1.12
+        },
+        "4.5": {
+          "over_probability": 3.5,
+          "under_probability": 96.5,
+          "prediction": "Under",
+          "fair_over_odds": 28.59,
+          "fair_under_odds": 1.04
+        },
+        "5.5": {
+          "over_probability": 1.0,
+          "under_probability": 99.0,
+          "prediction": "Under",
+          "fair_over_odds": 101.35,
+          "fair_under_odds": 1.01
+        }
+      },
+      "recommended_line": "1.5",
+      "main_prediction": "Over"
+    },
+    "exact_scores": [
+      {
+        "score": "1-0",
+        "probability": 21.4
+      },
+      {
+        "score": "0-0",
+        "probability": 16.9
+      },
+      {
+        "score": "2-0",
+        "probability": 13.6
+      },
+      {
+        "score": "1-1",
+        "probability": 10.9
+      },
+      {
+        "score": "0-1",
+        "probability": 8.6
+      },
+      {
+        "score": "2-1",
+        "probability": 6.9
+      },
+      {
+        "score": "3-0",
+        "probability": 5.8
+      },
+      {
+        "score": "3-1",
+        "probability": 2.9
+      },
+      {
+        "score": "1-2",
+        "probability": 2.8
+      },
+      {
+        "score": "0-2",
+        "probability": 2.2
+      }
+    ],
+    "two_stage_score": {
+      "expected_home": 1.27,
+      "expected_away": 0.51,
+      "most_likely": "0-1",
+      "probability": 43.9,
+      "alternatives": [
+        "1-2 (20.4%)",
+        "0-2 (17.4%)",
+        "1-3 (6.6%)"
+      ]
+    }
+  },
+  "shot_quality": {
+    "home": {
+      "team_name": "Levante UD",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.11000000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    },
+    "away": {
+      "team_name": "Real Sociedad de Fútbol",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.11000000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    }
+  },
+  "defensive_metrics": {},
+  "odds_movement": {
+    "match_id": "Levante UD_Real Sociedad de Fútbol_2025-12-20",
+    "home_team": "Levante UD",
+    "away_team": "Real Sociedad de Fútbol",
+    "opening_odds": {
+      "timestamp": "2025-12-16T12:45:22.444380",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "current_odds": {
+      "timestamp": "2025-12-16T12:45:22.444380",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "home_movement": "stable",
+    "away_movement": "stable",
+    "home_movement_pct": 0.0,
+    "away_movement_pct": 0.0,
+    "movement_strength": "minimal",
+    "sharp_money_detected": false,
+    "sharp_money_side": null,
+    "sharp_confidence": 0.0,
+    "market_favorite": "home",
+    "implied_home_prob": 0.3772968558595345,
+    "implied_draw_prob": 0.2858309514087382,
+    "implied_away_prob": 0.3368721927317272
+  },
+  "market_implied": {
+    "home": 0.3772968558595345,
+    "draw": 0.2858309514087382,
+    "away": 0.3368721927317272
+  },
+  "sharp_money_alert": {},
+  "player_impact": {},
+  "phase_enhancements": {
+    "phase1_enhanced": true,
+    "phase2_enhanced": false,
+    "phase3_enhanced": false,
+    "phase4_enhanced": true,
+    "phase5_enhanced": true,
+    "phase6_enhanced": true,
+    "phase7_enhanced": false
+  },
+  "optimization_metadata": {
+    "match_context": "unknown",
+    "model_agreement_factor": 0.5,
+    "optimization_applied": false,
+    "ensemble_weights": {}
+  },
+  "generated_at": "2025-12-16T12:45:45.402683",
+  "data_provenance_details": {
+    "home_injury_clamped": false,
+    "home_injury_clamped_fields": {},
+    "away_injury_clamped": false,
+    "away_injury_clamped_fields": {},
+    "weather_clamped": false,
+    "weather_clamped_fields": {}
+  }
+}

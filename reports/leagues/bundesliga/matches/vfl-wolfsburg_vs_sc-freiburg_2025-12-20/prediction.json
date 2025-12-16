@@ -1,0 +1,806 @@
+{
+  "match_id": 540536,
+  "home_team": "VfL Wolfsburg",
+  "away_team": "SC Freiburg",
+  "date": "2025-12-20",
+  "time": "14:30",
+  "league": "Bundesliga",
+  "confidence": 0.95,
+  "report_accuracy_probability": 0.95,
+  "home_win_probability": 50.7,
+  "draw_probability": 28.09,
+  "away_win_probability": 21.21,
+  "expected_home_goals": 1.3,
+  "expected_away_goals": 0.6,
+  "processing_time": 2.507,
+  "recommendation": "Home Win Likely",
+  "confidence_level": "95.0% (Excellent)",
+  "expected_final_score": "1-0",
+  "score_probability": 17.3,
+  "score_probability_normalized": 9.0,
+  "top3_combined_probability": 41.8,
+  "top3_probability_normalized": 10.0,
+  "alternative_scores": [
+    "0-0",
+    "2-0",
+    "1-1"
+  ],
+  "score_probabilities": [
+    [
+      "1-0",
+      17.32733708714888
+    ],
+    [
+      "0-0",
+      12.345176550640423
+    ],
+    [
+      "2-0",
+      12.160077634374122
+    ],
+    [
+      "1-1",
+      11.926983694987477
+    ],
+    [
+      "0-1",
+      8.497596525690824
+    ]
+  ],
+  "score_probabilities_normalized": [
+    [
+      "1-0",
+      9.0
+    ],
+    [
+      "0-0",
+      7.0
+    ],
+    [
+      "2-0",
+      7.0
+    ],
+    [
+      "1-1",
+      7.0
+    ],
+    [
+      "0-1",
+      5.0
+    ]
+  ],
+  "over_2_5_goals_probability": 34.8,
+  "both_teams_score_probability": 37.5,
+  "head_to_head_analysis": {
+    "total_meetings": 0,
+    "wins_when_home": 0,
+    "wins_when_away": 0,
+    "draws": 0,
+    "matches_as_home": 0,
+    "matches_as_away": 0,
+    "avg_goals_for_when_home": 0.0,
+    "avg_goals_against_when_home": 0.0,
+    "avg_goals_for_when_away": 0.0,
+    "avg_goals_against_when_away": 0.0,
+    "recent_form": [],
+    "home_advantage_vs_opponent": 0.0,
+    "away_record_vs_opponent": 0.0,
+    "data_sources": [
+      "Domestic BL1"
+    ],
+    "total_sources": 1
+  },
+  "home_performance_analysis": {
+    "home": {
+      "matches": 7,
+      "win_rate": 14.285714285714285,
+      "draw_rate": 28.57142857142857,
+      "loss_rate": 57.14285714285714,
+      "avg_goals_for": 1.4285714285714286,
+      "avg_goals_against": 2.142857142857143,
+      "goal_difference": -0.7142857142857143,
+      "weighted_form_score": 29.2,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 0.9,
+      "form_pressure": "High",
+      "current_streak": "1 game win streak",
+      "recent_5_performance": 25.0,
+      "form_quality": "Struggling",
+      "consistency_score": 61.0,
+      "confidence_interval": {
+        "lower": 21.7,
+        "upper": 36.7
+      },
+      "regression_expected": true,
+      "scoring_form": 1.5,
+      "defensive_form": 2.5,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 1,
+          "date": "2025-12-06T14:30:00Z",
+          "opponent": "1. FC Union Berlin"
+        },
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 3,
+          "date": "2025-11-22T14:30:00Z",
+          "opponent": "Bayer 04 Leverkusen"
+        },
+        {
+          "result": "L",
+          "goals_for": 2,
+          "goals_against": 3,
+          "date": "2025-11-02T16:30:00Z",
+          "opponent": "TSG 1899 Hoffenheim"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 3,
+          "date": "2025-10-18T13:30:00Z",
+          "opponent": "VfB Stuttgart"
+        }
+      ]
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 42.857142857142854,
+      "draw_rate": 14.285714285714285,
+      "loss_rate": 42.857142857142854,
+      "avg_goals_for": 1.4285714285714286,
+      "avg_goals_against": 1.2857142857142858,
+      "goal_difference": 0.14285714285714285,
+      "weighted_form_score": 50.5,
+      "momentum_direction": "Stable",
+      "momentum_slope": 0.1,
+      "form_pressure": "Medium",
+      "current_streak": "2 game winning streak",
+      "recent_5_performance": 58.3,
+      "form_quality": "Average",
+      "consistency_score": 61.0,
+      "confidence_interval": {
+        "lower": 43.0,
+        "upper": 58.0
+      },
+      "regression_expected": false,
+      "scoring_form": 1.5,
+      "defensive_form": 1.0,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 1,
+          "date": "2025-12-13T14:30:00Z",
+          "opponent": "Borussia Mönchengladbach"
+        },
+        {
+          "result": "D",
+          "goals_for": 1,
+          "goals_against": 1,
+          "date": "2025-11-30T16:30:00Z",
+          "opponent": "Eintracht Frankfurt"
+        },
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 2,
+          "date": "2025-11-07T19:30:00Z",
+          "opponent": "SV Werder Bremen"
+        },
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-10-25T13:30:00Z",
+          "opponent": "Hamburger SV"
+        }
+      ]
+    },
+    "home_advantage": -28.57142857142857,
+    "scoring_difference": 0.0
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 7,
+      "win_rate": 42.857142857142854,
+      "draw_rate": 42.857142857142854,
+      "loss_rate": 14.285714285714285,
+      "avg_goals_for": 2.0,
+      "avg_goals_against": 1.2857142857142858,
+      "goal_difference": 0.7142857142857143,
+      "weighted_form_score": 54.7,
+      "momentum_direction": "Stable",
+      "momentum_slope": -0.0,
+      "form_pressure": "Medium",
+      "current_streak": "2 consecutive draws",
+      "recent_5_performance": 66.7,
+      "form_quality": "Average",
+      "consistency_score": 70.0,
+      "confidence_interval": {
+        "lower": 47.2,
+        "upper": 62.2
+      },
+      "regression_expected": false,
+      "scoring_form": 2.25,
+      "defensive_form": 1.0,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "D",
+          "goals_for": 1,
+          "goals_against": 1,
+          "date": "2025-12-14T14:30:00Z",
+          "opponent": "Borussia Dortmund"
+        },
+        {
+          "result": "W",
+          "goals_for": 4,
+          "goals_against": 0,
+          "date": "2025-11-30T18:30:00Z",
+          "opponent": "1. FSV Mainz 05"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2025-11-09T14:30:00Z",
+          "opponent": "FC St. Pauli 1910"
+        },
+        {
+          "result": "D",
+          "goals_for": 2,
+          "goals_against": 2,
+          "date": "2025-10-19T13:30:00Z",
+          "opponent": "Eintracht Frankfurt"
+        }
+      ]
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 14.285714285714285,
+      "draw_rate": 28.57142857142857,
+      "loss_rate": 57.14285714285714,
+      "avg_goals_for": 1.0,
+      "avg_goals_against": 2.0,
+      "goal_difference": -1.0,
+      "weighted_form_score": 5.9,
+      "momentum_direction": "Stable",
+      "momentum_slope": -0.1,
+      "form_pressure": "Extreme",
+      "current_streak": "3 games without a win",
+      "recent_5_performance": 8.3,
+      "form_quality": "Severe Crisis",
+      "consistency_score": 87.0,
+      "confidence_interval": {
+        "lower": 0,
+        "upper": 13.4
+      },
+      "regression_expected": true,
+      "scoring_form": 0.75,
+      "defensive_form": 2.5,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 2,
+          "date": "2025-12-06T14:30:00Z",
+          "opponent": "1. FC Heidenheim 1846"
+        },
+        {
+          "result": "L",
+          "goals_for": 2,
+          "goals_against": 6,
+          "date": "2025-11-22T14:30:00Z",
+          "opponent": "FC Bayern München"
+        },
+        {
+          "result": "D",
+          "goals_for": 0,
+          "goals_against": 0,
+          "date": "2025-11-01T14:30:00Z",
+          "opponent": "1. FC Union Berlin"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2025-10-26T14:30:00Z",
+          "opponent": "Bayer 04 Leverkusen"
+        }
+      ]
+    },
+    "home_advantage": 28.57142857142857,
+    "scoring_difference": 1.0
+  },
+  "goal_timing_prediction": {
+    "first_half_goal_probability": 47.0,
+    "second_half_goal_probability": 53.0,
+    "late_goal_likelihood": 17.5,
+    "early_goal_likelihood": 14.6,
+    "home_attack_style": "balanced",
+    "away_attack_style": "balanced",
+    "period_probabilities": {
+      "0-15": 15.0,
+      "16-30": 16.0,
+      "31-45": 16.0,
+      "46-60": 17.0,
+      "61-75": 18.0,
+      "76-90": 18.0
+    },
+    "expected_goals_by_period": {
+      "0-15": 0.36,
+      "16-30": 0.39,
+      "31-45": 0.39,
+      "46-60": 0.41,
+      "61-75": 0.44,
+      "76-90": 0.44
+    },
+    "most_likely_goal_period": "61-75",
+    "scoring_tempo": "medium"
+  },
+  "intelligence_summary": {
+    "h2h_meetings": 0,
+    "home_advantage_pct": -28.57142857142857,
+    "recent_h2h_form": "No recent meetings",
+    "key_factors": [
+      "No head-to-head history between teams",
+      "Poor home form (14% win rate)",
+      "Weak away form (14% win rate)",
+      "Leaky away defense (2.0 conceded/game)",
+      "Negative away goal difference (-1.0)"
+    ]
+  },
+  "player_availability": {
+    "home_team": {
+      "data_available": true,
+      "team_name": "VfL Wolfsburg",
+      "squad_size": 33,
+      "positions": {
+        "goalkeepers": 4,
+        "defenders": 11,
+        "midfielders": 11,
+        "attackers": 7
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 33 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "data_available": true,
+      "team_name": "SC Freiburg",
+      "squad_size": 27,
+      "positions": {
+        "goalkeepers": 3,
+        "defenders": 10,
+        "midfielders": 3,
+        "attackers": 11
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org",
+        "Limited midfield depth"
+      ],
+      "key_players_available": "All 27 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org",
+        "Limited midfield depth"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": 7.2,
+      "humidity": 90.7,
+      "wind_speed": 7.7,
+      "precipitation": 0.0,
+      "conditions": "clear",
+      "visibility": 18.0,
+      "pressure": 1013,
+      "source": "open-meteo",
+      "match_hour": 14,
+      "location": {
+        "lat": 52.42452,
+        "lon": 10.7815
+      }
+    },
+    "impact_assessment": {
+      "goal_modifier": 0.9376,
+      "playing_style_effect": "cautious",
+      "weather_advantage": "none",
+      "tactical_adjustments": [
+        "Increased player fatigue expected"
+      ],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MILD",
+      "conditions_summary": "Mild weather impact (7.2°C, 0.0mm rain, 7.7 km/h wind) may slightly influence play",
+      "modifier_components": {
+        "temperature": 0.9167,
+        "precipitation": 1.0,
+        "wind": 1.077,
+        "humidity": 0.9496,
+        "interaction": 1.0,
+        "stadium": 1.0,
+        "team_style": 1.0
+      },
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 0.9376,
+    "style_impact": "cautious",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "data_available": false,
+    "name": "Referee TBD",
+    "home_bias_pct": null,
+    "cards_per_game": null,
+    "penalties_per_game": null,
+    "strict_level": "unknown",
+    "experience_level": "unknown",
+    "warning": "Referee data unavailable - appointment not announced"
+  },
+  "team_news": {
+    "home_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "VfL Wolfsburg"
+    },
+    "away_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "SC Freiburg"
+    }
+  },
+  "data_quality_score": 54.0,
+  "reliability_metrics": {
+    "score": 70.4,
+    "level": "Moderate",
+    "indicator": "🟡 Moderate",
+    "recommendation": "Balanced reliability – treat as guidance with monitoring.",
+    "confidence_intervals": {
+      "home": [
+        48.4,
+        55.5
+      ],
+      "draw": [
+        24.1,
+        31.3
+      ],
+      "away": [
+        16.8,
+        23.9
+      ],
+      "margin_percent": 3.56
+    },
+    "spread_points": 31.7,
+    "factors": {
+      "model_confidence": 92.0,
+      "data_quality": 54.0,
+      "probability_clarity": 97.1,
+      "h2h_depth": 0.0,
+      "data_freshness": 55.0
+    },
+    "primary_driver": "probability_clarity",
+    "notes": [
+      "Head-to-head sample is limited – emphasis on recent form.",
+      "Data quality below optimal threshold; confidence capped."
+    ]
+  },
+  "calibration_details": {
+    "applied": true,
+    "shrink_factor": 0.069,
+    "probabilities": {
+      "home_win_prob": 50.7,
+      "draw_prob": 28.09,
+      "away_win_prob": 21.21
+    },
+    "original_probabilities": {
+      "home_win_prob": 51.97,
+      "draw_prob": 27.7,
+      "away_win_prob": 20.32
+    },
+    "pre_calibration_probabilities": {
+      "home_win_prob": 0.5197,
+      "draw_prob": 0.277,
+      "away_win_prob": 0.2032
+    },
+    "neutral_anchor": 33.3,
+    "notes": [
+      "Applied 6.9% shrink toward neutral due to reliability score 70.4."
+    ],
+    "accuracy_adjustment": {
+      "original_probability": 0.77,
+      "calibrated_probability": 0.744
+    }
+  },
+  "confidence_intervals": {
+    "home": [
+      48.4,
+      55.5
+    ],
+    "draw": [
+      24.1,
+      31.3
+    ],
+    "away": [
+      16.8,
+      23.9
+    ],
+    "margin_percent": 3.56
+  },
+  "data_provenance": {
+    "weather": true,
+    "player_availability": true,
+    "referee": true,
+    "team_news": true,
+    "h2h": false,
+    "odds": false,
+    "flashscore": true,
+    "home_injury_clamped": false,
+    "away_injury_clamped": false,
+    "weather_clamped": false
+  },
+  "phase2_lite_enhanced": true,
+  "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+  "advanced_predictions": {
+    "btts": {
+      "btts_yes_probability": 50.3,
+      "btts_no_probability": 49.7,
+      "prediction": "Yes",
+      "confidence": 69.1,
+      "method_breakdown": {
+        "poisson": 38.3,
+        "historical": 60.0,
+        "league_base": 56.0
+      },
+      "factors": {
+        "home_scoring_chance": 76.1,
+        "away_scoring_chance": 50.3
+      }
+    },
+    "over_under": {
+      "expected_total_goals": 2.13,
+      "lines": {
+        "0.5": {
+          "over_probability": 88.1,
+          "under_probability": 11.9,
+          "prediction": "Over",
+          "fair_over_odds": 1.13,
+          "fair_under_odds": 8.41
+        },
+        "1.5": {
+          "over_probability": 62.8,
+          "under_probability": 37.2,
+          "prediction": "Over",
+          "fair_over_odds": 1.59,
+          "fair_under_odds": 2.69
+        },
+        "2.5": {
+          "over_probability": 35.8,
+          "under_probability": 64.2,
+          "prediction": "Under",
+          "fair_over_odds": 2.79,
+          "fair_under_odds": 1.56
+        },
+        "3.5": {
+          "over_probability": 16.7,
+          "under_probability": 83.3,
+          "prediction": "Under",
+          "fair_over_odds": 5.99,
+          "fair_under_odds": 1.2
+        },
+        "4.5": {
+          "over_probability": 6.5,
+          "under_probability": 93.5,
+          "prediction": "Under",
+          "fair_over_odds": 15.35,
+          "fair_under_odds": 1.07
+        },
+        "5.5": {
+          "over_probability": 2.2,
+          "under_probability": 97.8,
+          "prediction": "Under",
+          "fair_over_odds": 46.03,
+          "fair_under_odds": 1.02
+        }
+      },
+      "recommended_line": "1.5",
+      "main_prediction": "Over"
+    },
+    "exact_scores": [
+      {
+        "score": "1-0",
+        "probability": 17.0
+      },
+      {
+        "score": "2-0",
+        "probability": 12.2
+      },
+      {
+        "score": "1-1",
+        "probability": 11.9
+      },
+      {
+        "score": "0-0",
+        "probability": 11.9
+      },
+      {
+        "score": "2-1",
+        "probability": 8.5
+      },
+      {
+        "score": "0-1",
+        "probability": 8.3
+      },
+      {
+        "score": "3-0",
+        "probability": 5.8
+      },
+      {
+        "score": "1-2",
+        "probability": 4.2
+      },
+      {
+        "score": "3-1",
+        "probability": 4.1
+      },
+      {
+        "score": "2-2",
+        "probability": 3.0
+      }
+    ],
+    "two_stage_score": {
+      "expected_home": 1.43,
+      "expected_away": 0.7,
+      "most_likely": "1-0",
+      "probability": 31.1,
+      "alternatives": [
+        "2-0 (21.8%)",
+        "2-1 (17.3%)",
+        "3-0 (10.3%)"
+      ]
+    }
+  },
+  "shot_quality": {
+    "home": {
+      "team_name": "VfL Wolfsburg",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.12100000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 14
+    },
+    "away": {
+      "team_name": "SC Freiburg",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.12100000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 14
+    }
+  },
+  "defensive_metrics": {},
+  "odds_movement": {
+    "match_id": "VfL Wolfsburg_SC Freiburg_2025-12-20",
+    "home_team": "VfL Wolfsburg",
+    "away_team": "SC Freiburg",
+    "opening_odds": {
+      "timestamp": "2025-12-16T12:37:32.848580",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "current_odds": {
+      "timestamp": "2025-12-16T12:37:32.848580",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "home_movement": "stable",
+    "away_movement": "stable",
+    "home_movement_pct": 0.0,
+    "away_movement_pct": 0.0,
+    "movement_strength": "minimal",
+    "sharp_money_detected": false,
+    "sharp_money_side": null,
+    "sharp_confidence": 0.0,
+    "market_favorite": "home",
+    "implied_home_prob": 0.3772968558595345,
+    "implied_draw_prob": 0.2858309514087382,
+    "implied_away_prob": 0.3368721927317272
+  },
+  "market_implied": {
+    "home": 0.3772968558595345,
+    "draw": 0.2858309514087382,
+    "away": 0.3368721927317272
+  },
+  "sharp_money_alert": {},
+  "player_impact": {},
+  "phase_enhancements": {
+    "phase1_enhanced": true,
+    "phase2_enhanced": false,
+    "phase3_enhanced": false,
+    "phase4_enhanced": true,
+    "phase5_enhanced": true,
+    "phase6_enhanced": true,
+    "phase7_enhanced": false
+  },
+  "optimization_metadata": {
+    "match_context": "unknown",
+    "model_agreement_factor": 0.5,
+    "optimization_applied": false,
+    "ensemble_weights": {}
+  },
+  "generated_at": "2025-12-16T12:37:56.283503",
+  "data_provenance_details": {
+    "home_injury_clamped": false,
+    "home_injury_clamped_fields": {},
+    "away_injury_clamped": false,
+    "away_injury_clamped_fields": {},
+    "weather_clamped": false,
+    "weather_clamped_fields": {}
+  }
+}

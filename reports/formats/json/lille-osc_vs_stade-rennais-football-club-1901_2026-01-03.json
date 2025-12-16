@@ -1,0 +1,802 @@
+{
+  "match_id": 542556,
+  "home_team": "Lille OSC",
+  "away_team": "Stade Rennais Football Club 1901",
+  "date": "2026-01-03",
+  "time": "20:05",
+  "league": "Ligue 1",
+  "confidence": 0.95,
+  "report_accuracy_probability": 0.815,
+  "home_win_probability": 34.6,
+  "draw_probability": 24.02,
+  "away_win_probability": 41.38,
+  "expected_home_goals": 1.5,
+  "expected_away_goals": 1.9,
+  "processing_time": 2.458,
+  "recommendation": "Competitive (Away Edge)",
+  "confidence_level": "95.0% (Excellent)",
+  "expected_final_score": "1-1",
+  "score_probability": 9.7,
+  "score_probability_normalized": 6.0,
+  "top3_combined_probability": 26.0,
+  "top3_probability_normalized": 10.0,
+  "alternative_scores": [
+    "1-2",
+    "2-1",
+    "2-2"
+  ],
+  "score_probabilities": [
+    [
+      "1-1",
+      9.709167557079542
+    ],
+    [
+      "1-2",
+      8.92029769306683
+    ],
+    [
+      "2-1",
+      7.403240262273152
+    ],
+    [
+      "2-2",
+      6.801726990963458
+    ],
+    [
+      "0-1",
+      6.366667250543961
+    ]
+  ],
+  "score_probabilities_normalized": [
+    [
+      "1-1",
+      6.0
+    ],
+    [
+      "1-2",
+      5.0
+    ],
+    [
+      "2-1",
+      5.0
+    ],
+    [
+      "2-2",
+      4.0
+    ],
+    [
+      "0-1",
+      4.0
+    ]
+  ],
+  "over_2_5_goals_probability": 65.3,
+  "both_teams_score_probability": 65.8,
+  "head_to_head_analysis": {
+    "total_meetings": 0,
+    "wins_when_home": 0,
+    "wins_when_away": 0,
+    "draws": 0,
+    "matches_as_home": 0,
+    "matches_as_away": 0,
+    "avg_goals_for_when_home": 0.0,
+    "avg_goals_against_when_home": 0.0,
+    "avg_goals_for_when_away": 0.0,
+    "avg_goals_against_when_away": 0.0,
+    "recent_form": [],
+    "home_advantage_vs_opponent": 0.0,
+    "away_record_vs_opponent": 0.0,
+    "data_sources": [
+      "Domestic FL1"
+    ],
+    "total_sources": 1
+  },
+  "home_performance_analysis": {
+    "home": {
+      "matches": 8,
+      "win_rate": 75.0,
+      "draw_rate": 12.5,
+      "loss_rate": 12.5,
+      "avg_goals_for": 2.0,
+      "avg_goals_against": 0.75,
+      "goal_difference": 1.25,
+      "weighted_form_score": 83.3,
+      "momentum_direction": "Stable",
+      "momentum_slope": -0.0,
+      "form_pressure": "Low (Overperforming)",
+      "current_streak": "4 game winning streak",
+      "recent_5_performance": 100.0,
+      "form_quality": "Excellent",
+      "consistency_score": 100.0,
+      "confidence_interval": {
+        "lower": 75.8,
+        "upper": 90.8
+      },
+      "regression_expected": true,
+      "scoring_form": 3.0,
+      "defensive_form": 0.75,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-12-05T20:00:00Z",
+          "opponent": "Olympique de Marseille"
+        },
+        {
+          "result": "W",
+          "goals_for": 4,
+          "goals_against": 2,
+          "date": "2025-11-23T19:45:00Z",
+          "opponent": "Paris FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-11-02T16:15:00Z",
+          "opponent": "Angers SCO"
+        },
+        {
+          "result": "W",
+          "goals_for": 6,
+          "goals_against": 1,
+          "date": "2025-10-26T14:00:00Z",
+          "opponent": "FC Metz"
+        }
+      ]
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 57.14285714285714,
+      "draw_rate": 0.0,
+      "loss_rate": 42.857142857142854,
+      "avg_goals_for": 2.0,
+      "avg_goals_against": 1.5714285714285714,
+      "goal_difference": 0.42857142857142855,
+      "weighted_form_score": 51.9,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 1.2,
+      "form_pressure": "Medium",
+      "current_streak": "2 game winning streak",
+      "recent_5_performance": 50.0,
+      "form_quality": "Good",
+      "consistency_score": 55.0,
+      "confidence_interval": {
+        "lower": 44.4,
+        "upper": 59.4
+      },
+      "regression_expected": false,
+      "scoring_form": 1.25,
+      "defensive_form": 1.75,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 4,
+          "goals_against": 3,
+          "date": "2025-12-14T16:15:00Z",
+          "opponent": "AJ Auxerre"
+        },
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-11-30T16:15:00Z",
+          "opponent": "Le Havre AC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2025-11-09T16:15:00Z",
+          "opponent": "RC Strasbourg Alsace"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2025-10-29T18:00:00Z",
+          "opponent": "OGC Nice"
+        }
+      ]
+    },
+    "home_advantage": 17.85714285714286,
+    "scoring_difference": 0.0
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 7,
+      "win_rate": 57.14285714285714,
+      "draw_rate": 28.57142857142857,
+      "loss_rate": 14.285714285714285,
+      "avg_goals_for": 2.4285714285714284,
+      "avg_goals_against": 1.1428571428571428,
+      "goal_difference": 1.2857142857142858,
+      "weighted_form_score": 69.6,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 0.9,
+      "form_pressure": "Low",
+      "current_streak": "3 game winning streak",
+      "recent_5_performance": 75.0,
+      "form_quality": "Very Good",
+      "consistency_score": 61.0,
+      "confidence_interval": {
+        "lower": 62.1,
+        "upper": 77.1
+      },
+      "regression_expected": false,
+      "scoring_form": 3.0,
+      "defensive_form": 1.25,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 1,
+          "date": "2025-12-13T16:00:00Z",
+          "opponent": "Stade Brestois 29"
+        },
+        {
+          "result": "W",
+          "goals_for": 4,
+          "goals_against": 1,
+          "date": "2025-11-22T18:00:00Z",
+          "opponent": "AS Monaco FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 4,
+          "goals_against": 1,
+          "date": "2025-11-02T14:00:00Z",
+          "opponent": "RC Strasbourg Alsace"
+        },
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 2,
+          "date": "2025-10-26T16:15:00Z",
+          "opponent": "OGC Nice"
+        }
+      ]
+    },
+    "away": {
+      "matches": 8,
+      "win_rate": 25.0,
+      "draw_rate": 50.0,
+      "loss_rate": 25.0,
+      "avg_goals_for": 1.125,
+      "avg_goals_against": 2.0,
+      "goal_difference": -0.875,
+      "weighted_form_score": 45.0,
+      "momentum_direction": "Falling",
+      "momentum_slope": -0.3,
+      "form_pressure": "Medium",
+      "current_streak": "1 game without a win",
+      "recent_5_performance": 58.3,
+      "form_quality": "Poor",
+      "consistency_score": 61.0,
+      "confidence_interval": {
+        "lower": 37.5,
+        "upper": 52.5
+      },
+      "regression_expected": false,
+      "scoring_form": 1.0,
+      "defensive_form": 1.75,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 5,
+          "date": "2025-12-06T20:05:00Z",
+          "opponent": "Paris Saint-Germain FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-11-28T19:45:00Z",
+          "opponent": "FC Metz"
+        },
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-11-07T19:45:00Z",
+          "opponent": "Paris FC"
+        },
+        {
+          "result": "D",
+          "goals_for": 2,
+          "goals_against": 2,
+          "date": "2025-10-29T20:05:00Z",
+          "opponent": "Toulouse FC"
+        }
+      ]
+    },
+    "home_advantage": 32.14285714285714,
+    "scoring_difference": 1.3035714285714284
+  },
+  "goal_timing_prediction": {
+    "first_half_goal_probability": 46.5,
+    "second_half_goal_probability": 53.5,
+    "late_goal_likelihood": 25.4,
+    "early_goal_likelihood": 17.5,
+    "home_attack_style": "aggressive",
+    "away_attack_style": "counter-attacking",
+    "period_probabilities": {
+      "0-15": 14.0,
+      "16-30": 16.1,
+      "31-45": 16.4,
+      "46-60": 17.3,
+      "61-75": 15.9,
+      "76-90": 20.3
+    },
+    "expected_goals_by_period": {
+      "0-15": 0.44,
+      "16-30": 0.5,
+      "31-45": 0.51,
+      "46-60": 0.54,
+      "61-75": 0.5,
+      "76-90": 0.63
+    },
+    "most_likely_goal_period": "76-90",
+    "scoring_tempo": "high"
+  },
+  "intelligence_summary": {
+    "h2h_meetings": 0,
+    "home_advantage_pct": 17.85714285714286,
+    "recent_h2h_form": "No recent meetings",
+    "key_factors": [
+      "No head-to-head history between teams",
+      "Excellent home form (75% win rate)",
+      "High-scoring home team (2.0 goals/game)",
+      "Leaky away defense (2.0 conceded/game)",
+      "Strong home goal difference (+1.2)"
+    ]
+  },
+  "player_availability": {
+    "home_team": {
+      "data_available": true,
+      "team_name": "Lille OSC",
+      "squad_size": 34,
+      "positions": {
+        "goalkeepers": 6,
+        "defenders": 17,
+        "midfielders": 5,
+        "attackers": 6
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org",
+        "Limited midfield depth"
+      ],
+      "key_players_available": "All 34 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org",
+        "Limited midfield depth"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "data_available": true,
+      "team_name": "Stade Rennais FC 1901",
+      "squad_size": 27,
+      "positions": {
+        "goalkeepers": 5,
+        "defenders": 7,
+        "midfielders": 7,
+        "attackers": 8
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 27 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": -0.8,
+      "humidity": 55.3,
+      "wind_speed": 5.7,
+      "precipitation": 0.06,
+      "conditions": "cold",
+      "visibility": 13.766625990573845,
+      "pressure": 1018.5308267470699,
+      "source": "seasonal_fallback"
+    },
+    "impact_assessment": {
+      "goal_modifier": 0.8689,
+      "playing_style_effect": "cautious",
+      "weather_advantage": "physical_teams",
+      "tactical_adjustments": [
+        "Reduced technical play in cold conditions"
+      ],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MODERATE",
+      "conditions_summary": "Challenging conditions (-0.8°C, 0.06mm rain, 5.7 km/h wind) likely to affect match dynamics",
+      "modifier_components": {
+        "temperature": 0.8233,
+        "precipitation": 0.9985,
+        "wind": 1.057,
+        "humidity": 1.0,
+        "interaction": 1.0,
+        "stadium": 1.0,
+        "team_style": 1.0
+      },
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 0.8689,
+    "style_impact": "cautious",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "data_available": false,
+    "name": "Referee TBD",
+    "home_bias_pct": null,
+    "cards_per_game": null,
+    "penalties_per_game": null,
+    "strict_level": "unknown",
+    "experience_level": "unknown",
+    "warning": "Referee data unavailable - appointment not announced"
+  },
+  "team_news": {
+    "home_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Lille OSC"
+    },
+    "away_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Stade Rennais FC 1901"
+    }
+  },
+  "data_quality_score": 54.0,
+  "reliability_metrics": {
+    "score": 60.5,
+    "level": "Limited",
+    "indicator": "🟠 Limited",
+    "recommendation": "Limited reliability – supplement with manual review.",
+    "confidence_intervals": {
+      "home": [
+        30.1,
+        39.5
+      ],
+      "draw": [
+        17.8,
+        27.2
+      ],
+      "away": [
+        37.9,
+        47.4
+      ],
+      "margin_percent": 4.74
+    },
+    "spread_points": 20.2,
+    "factors": {
+      "model_confidence": 92.0,
+      "data_quality": 54.0,
+      "probability_clarity": 31.5,
+      "h2h_depth": 0.0,
+      "data_freshness": 55.0
+    },
+    "primary_driver": "model_confidence",
+    "notes": [
+      "Probability distribution fairly flat; monitor for volatility.",
+      "Head-to-head sample is limited – emphasis on recent form.",
+      "Data quality below optimal threshold; confidence capped."
+    ]
+  },
+  "calibration_details": {
+    "applied": true,
+    "shrink_factor": 0.139,
+    "probabilities": {
+      "home_win_prob": 34.6,
+      "draw_prob": 24.02,
+      "away_win_prob": 41.38
+    },
+    "original_probabilities": {
+      "home_win_prob": 34.81,
+      "draw_prob": 22.51,
+      "away_win_prob": 42.68
+    },
+    "pre_calibration_probabilities": {
+      "home_win_prob": 0.3481,
+      "draw_prob": 0.2251,
+      "away_win_prob": 0.4268
+    },
+    "neutral_anchor": 33.3,
+    "notes": [
+      "Applied 13.9% shrink toward neutral due to reliability score 60.5."
+    ],
+    "accuracy_adjustment": {
+      "original_probability": 0.67,
+      "calibrated_probability": 0.644
+    }
+  },
+  "confidence_intervals": {
+    "home": [
+      30.1,
+      39.5
+    ],
+    "draw": [
+      17.8,
+      27.2
+    ],
+    "away": [
+      37.9,
+      47.4
+    ],
+    "margin_percent": 4.74
+  },
+  "data_provenance": {
+    "weather": true,
+    "player_availability": true,
+    "referee": true,
+    "team_news": true,
+    "h2h": false,
+    "odds": false,
+    "flashscore": true,
+    "home_injury_clamped": false,
+    "away_injury_clamped": false,
+    "weather_clamped": false
+  },
+  "phase2_lite_enhanced": true,
+  "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+  "advanced_predictions": {
+    "btts": {
+      "btts_yes_probability": 61.0,
+      "btts_no_probability": 39.0,
+      "prediction": "Yes",
+      "confidence": 69.0,
+      "method_breakdown": {
+        "poisson": 70.6,
+        "historical": 60.0,
+        "league_base": 47.0
+      },
+      "factors": {
+        "home_scoring_chance": 81.4,
+        "away_scoring_chance": 86.7
+      }
+    },
+    "over_under": {
+      "expected_total_goals": 3.7,
+      "lines": {
+        "0.5": {
+          "over_probability": 97.5,
+          "under_probability": 2.5,
+          "prediction": "Over",
+          "fair_over_odds": 1.03,
+          "fair_under_odds": 40.45
+        },
+        "1.5": {
+          "over_probability": 88.4,
+          "under_probability": 11.6,
+          "prediction": "Over",
+          "fair_over_odds": 1.13,
+          "fair_under_odds": 8.61
+        },
+        "2.5": {
+          "over_probability": 71.5,
+          "under_probability": 28.5,
+          "prediction": "Over",
+          "fair_over_odds": 1.4,
+          "fair_under_odds": 3.5
+        },
+        "3.5": {
+          "over_probability": 50.6,
+          "under_probability": 49.4,
+          "prediction": "Over",
+          "fair_over_odds": 1.98,
+          "fair_under_odds": 2.02
+        },
+        "4.5": {
+          "over_probability": 31.3,
+          "under_probability": 68.7,
+          "prediction": "Under",
+          "fair_over_odds": 3.2,
+          "fair_under_odds": 1.46
+        },
+        "5.5": {
+          "over_probability": 17.0,
+          "under_probability": 83.0,
+          "prediction": "Under",
+          "fair_over_odds": 5.89,
+          "fair_under_odds": 1.2
+        }
+      },
+      "recommended_line": "3.5",
+      "main_prediction": "Over"
+    },
+    "exact_scores": [
+      {
+        "score": "1-2",
+        "probability": 8.5
+      },
+      {
+        "score": "1-1",
+        "probability": 8.4
+      },
+      {
+        "score": "2-2",
+        "probability": 7.1
+      },
+      {
+        "score": "2-1",
+        "probability": 7.0
+      },
+      {
+        "score": "1-3",
+        "probability": 5.7
+      },
+      {
+        "score": "0-2",
+        "probability": 5.0
+      },
+      {
+        "score": "0-1",
+        "probability": 5.0
+      },
+      {
+        "score": "2-3",
+        "probability": 4.8
+      },
+      {
+        "score": "1-0",
+        "probability": 4.2
+      },
+      {
+        "score": "3-2",
+        "probability": 4.0
+      }
+    ],
+    "two_stage_score": {
+      "expected_home": 1.68,
+      "expected_away": 2.02,
+      "most_likely": "2-1",
+      "probability": 23.1,
+      "alternatives": [
+        "1-0 (18.6%)",
+        "2-0 (13.8%)",
+        "3-1 (12.1%)"
+      ]
+    }
+  },
+  "shot_quality": {
+    "home": {
+      "team_name": "Lille OSC",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.099,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    },
+    "away": {
+      "team_name": "Stade Rennais FC 1901",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.099,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    }
+  },
+  "defensive_metrics": {},
+  "odds_movement": {
+    "match_id": "Lille OSC_Stade Rennais FC 1901_2026-01-03",
+    "home_team": "Lille OSC",
+    "away_team": "Stade Rennais FC 1901",
+    "opening_odds": {
+      "timestamp": "2025-12-16T12:54:59.733202",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "current_odds": {
+      "timestamp": "2025-12-16T12:54:59.733202",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "home_movement": "stable",
+    "away_movement": "stable",
+    "home_movement_pct": 0.0,
+    "away_movement_pct": 0.0,
+    "movement_strength": "minimal",
+    "sharp_money_detected": false,
+    "sharp_money_side": null,
+    "sharp_confidence": 0.0,
+    "market_favorite": "home",
+    "implied_home_prob": 0.3772968558595345,
+    "implied_draw_prob": 0.2858309514087382,
+    "implied_away_prob": 0.3368721927317272
+  },
+  "market_implied": {
+    "home": 0.3772968558595345,
+    "draw": 0.2858309514087382,
+    "away": 0.3368721927317272
+  },
+  "sharp_money_alert": {},
+  "player_impact": {},
+  "phase_enhancements": {
+    "phase1_enhanced": true,
+    "phase2_enhanced": false,
+    "phase3_enhanced": true,
+    "phase4_enhanced": true,
+    "phase5_enhanced": true,
+    "phase6_enhanced": true,
+    "phase7_enhanced": false
+  },
+  "optimization_metadata": {
+    "match_context": "unknown",
+    "model_agreement_factor": 0.5,
+    "optimization_applied": false,
+    "ensemble_weights": {}
+  },
+  "generated_at": "2025-12-16T12:55:26.934685",
+  "data_provenance_details": {
+    "home_injury_clamped": false,
+    "home_injury_clamped_fields": {},
+    "away_injury_clamped": false,
+    "away_injury_clamped_fields": {},
+    "weather_clamped": false,
+    "weather_clamped_fields": {}
+  }
+}

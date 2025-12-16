@@ -1,0 +1,600 @@
+{
+  "match_id": 544361,
+  "home_team": "Deportivo Alavés",
+  "away_team": "Real Madrid Club de Fútbol",
+  "date": "2025-12-14",
+  "time": "20:00",
+  "league": "La Liga",
+  "confidence": 0.768,
+  "report_accuracy_probability": 0.841,
+  "home_win_probability": 26.78,
+  "draw_probability": 21.3,
+  "away_win_probability": 51.92,
+  "expected_home_goals": 1.6,
+  "expected_away_goals": 3.0,
+  "processing_time": 0.004,
+  "recommendation": "Away Win Likely",
+  "confidence_level": "76.8% (Good)",
+  "expected_final_score": "1-3",
+  "score_probability": 7.3,
+  "score_probability_normalized": 5.0,
+  "top3_combined_probability": 20.3,
+  "top3_probability_normalized": 10.0,
+  "alternative_scores": [
+    "1-2",
+    "2-3",
+    "2-2"
+  ],
+  "score_probabilities": [
+    [
+      "1-3",
+      7.337601137334487
+    ],
+    [
+      "1-2",
+      7.268378485095484
+    ],
+    [
+      "2-3",
+      5.73135438836486
+    ],
+    [
+      "2-2",
+      5.677285007342551
+    ],
+    [
+      "1-4",
+      5.555612289696113
+    ]
+  ],
+  "score_probabilities_normalized": [
+    [
+      "1-3",
+      5.0
+    ],
+    [
+      "1-2",
+      5.0
+    ],
+    [
+      "2-3",
+      4.0
+    ],
+    [
+      "2-2",
+      4.0
+    ],
+    [
+      "1-4",
+      4.0
+    ]
+  ],
+  "over_2_5_goals_probability": 83.6,
+  "both_teams_score_probability": 75.2,
+  "head_to_head_analysis": {
+    "total_meetings": 0,
+    "wins_when_home": 0,
+    "wins_when_away": 0,
+    "draws": 0,
+    "matches_as_home": 0,
+    "matches_as_away": 0,
+    "avg_goals_for_when_home": 0.0,
+    "avg_goals_against_when_home": 0.0,
+    "avg_goals_for_when_away": 0.0,
+    "avg_goals_against_when_away": 0.0,
+    "recent_form": [],
+    "home_advantage_vs_opponent": 0.0,
+    "away_record_vs_opponent": 0.0,
+    "data_sources": [
+      "Domestic PD"
+    ],
+    "total_sources": 1
+  },
+  "home_performance_analysis": {
+    "home": {
+      "matches": 8,
+      "win_rate": 50.0,
+      "draw_rate": 25.0,
+      "loss_rate": 25.0,
+      "avg_goals_for": 1.25,
+      "avg_goals_against": 0.875,
+      "goal_difference": 0.375,
+      "weighted_form_score": 55.1,
+      "momentum_direction": "Stable",
+      "momentum_slope": -0.1,
+      "form_pressure": "Medium",
+      "current_streak": "3 game winning streak",
+      "recent_5_performance": 66.7,
+      "form_quality": "Average",
+      "consistency_score": 62.1,
+      "confidence_interval": {
+        "lower": 48.4,
+        "upper": 61.8
+      },
+      "regression_expected": false,
+      "scoring_form": 1.2,
+      "defensive_form": 0.6,
+      "sample_size": 5,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-12-06T15:15:00Z",
+          "opponent": "Real Sociedad de Fútbol"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-11-22T13:00:00Z",
+          "opponent": "RC Celta de Vigo"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2025-11-02T15:15:00Z",
+          "opponent": "RCD Espanyol de Barcelona"
+        },
+        {
+          "result": "D",
+          "goals_for": 0,
+          "goals_against": 0,
+          "date": "2025-10-20T19:00:00Z",
+          "opponent": "Valencia CF"
+        },
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 1,
+          "date": "2025-10-05T12:00:00Z",
+          "opponent": "Elche CF"
+        }
+      ]
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 14.285714285714285,
+      "draw_rate": 14.285714285714285,
+      "loss_rate": 71.42857142857143,
+      "avg_goals_for": 0.42857142857142855,
+      "avg_goals_against": 1.1428571428571428,
+      "goal_difference": -0.7142857142857143,
+      "weighted_form_score": 0,
+      "momentum_direction": "Stable",
+      "momentum_slope": -0.0,
+      "form_pressure": "Extreme",
+      "current_streak": "3 games without a win",
+      "recent_5_performance": 0.0,
+      "form_quality": "Severe Crisis",
+      "consistency_score": 100.0,
+      "confidence_interval": {
+        "lower": 0,
+        "upper": 8.7
+      },
+      "regression_expected": true,
+      "scoring_form": 0.33,
+      "defensive_form": 1.67,
+      "sample_size": 3,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 3,
+          "date": "2025-11-29T15:15:00Z",
+          "opponent": "FC Barcelona"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-11-08T13:00:00Z",
+          "opponent": "Girona FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-10-26T20:00:00Z",
+          "opponent": "Rayo Vallecano de Madrid"
+        }
+      ]
+    },
+    "home_advantage": 35.714285714285715,
+    "scoring_difference": 0.8214285714285714
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 6,
+      "win_rate": 66.66666666666666,
+      "draw_rate": 0.0,
+      "loss_rate": 33.33333333333333,
+      "avg_goals_for": 1.8333333333333333,
+      "avg_goals_against": 1.0,
+      "goal_difference": 0.8333333333333334,
+      "weighted_form_score": 0,
+      "momentum_direction": "Stable",
+      "momentum_slope": 0.0,
+      "form_pressure": "Extreme",
+      "current_streak": "2 games without a win",
+      "recent_5_performance": 0.0,
+      "form_quality": "Severe Crisis",
+      "consistency_score": 50.0,
+      "confidence_interval": {
+        "lower": 0,
+        "upper": 10.6
+      },
+      "regression_expected": true,
+      "scoring_form": 0.5,
+      "defensive_form": 2.0,
+      "sample_size": 2,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 2,
+          "date": "2025-12-10T20:00:00Z",
+          "opponent": "Manchester City FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2025-12-07T20:00:00Z",
+          "opponent": "RC Celta de Vigo"
+        }
+      ]
+    },
+    "away": {
+      "matches": 9,
+      "win_rate": 44.44444444444444,
+      "draw_rate": 33.33333333333333,
+      "loss_rate": 22.22222222222222,
+      "avg_goals_for": 2.0,
+      "avg_goals_against": 1.3333333333333333,
+      "goal_difference": 0.6666666666666666,
+      "weighted_form_score": 50.9,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 0.486,
+      "form_pressure": "Medium",
+      "current_streak": "2 game winning streak",
+      "recent_5_performance": 60.0,
+      "form_quality": "Good",
+      "consistency_score": 66.5,
+      "confidence_interval": {
+        "lower": 44.8,
+        "upper": 57.0
+      },
+      "regression_expected": false,
+      "scoring_form": 2.0,
+      "defensive_form": 1.2,
+      "sample_size": 6,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 0,
+          "date": "2025-12-03T18:00:00Z",
+          "opponent": "Athletic Club"
+        },
+        {
+          "result": "D",
+          "goals_for": 1,
+          "goals_against": 1,
+          "date": "2025-11-30T20:00:00Z",
+          "opponent": "Girona FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 4,
+          "goals_against": 3,
+          "date": "2025-11-26T20:00:00Z",
+          "opponent": "PAE Olympiakos SFP"
+        },
+        {
+          "result": "D",
+          "goals_for": 2,
+          "goals_against": 2,
+          "date": "2025-11-23T20:00:00Z",
+          "opponent": "Elche CF"
+        },
+        {
+          "result": "D",
+          "goals_for": 0,
+          "goals_against": 0,
+          "date": "2025-11-09T15:15:00Z",
+          "opponent": "Rayo Vallecano de Madrid"
+        }
+      ]
+    },
+    "home_advantage": 22.222222222222214,
+    "scoring_difference": -0.16666666666666674
+  },
+  "goal_timing_prediction": {
+    "first_half_goal_probability": 50.9,
+    "second_half_goal_probability": 49.1,
+    "late_goal_likelihood": 23.6,
+    "early_goal_likelihood": 18.7,
+    "home_attack_style": "defensive",
+    "away_attack_style": "aggressive",
+    "period_probabilities": {
+      "0-15": 14.4,
+      "16-30": 16.6,
+      "31-45": 19.9,
+      "46-60": 14.5,
+      "61-75": 16.4,
+      "76-90": 18.2
+    },
+    "expected_goals_by_period": {
+      "0-15": 0.47,
+      "16-30": 0.54,
+      "31-45": 0.65,
+      "46-60": 0.47,
+      "61-75": 0.53,
+      "76-90": 0.59
+    },
+    "most_likely_goal_period": "31-45",
+    "scoring_tempo": "high"
+  },
+  "intelligence_summary": {
+    "h2h_meetings": 0,
+    "home_advantage_pct": 35.714285714285715,
+    "recent_h2h_form": "No recent meetings",
+    "key_factors": [
+      "No head-to-head history between teams",
+      "Positive away goal difference (+0.7)"
+    ]
+  },
+  "player_availability": {
+    "home_team": {
+      "data_available": true,
+      "team_name": "Deportivo Alavés",
+      "squad_size": 33,
+      "positions": {
+        "goalkeepers": 4,
+        "defenders": 14,
+        "midfielders": 7,
+        "attackers": 8
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 33 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "data_available": true,
+      "team_name": "Real Madrid CF",
+      "squad_size": 37,
+      "positions": {
+        "goalkeepers": 5,
+        "defenders": 16,
+        "midfielders": 8,
+        "attackers": 8
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 37 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": 6.3,
+      "humidity": 86.3,
+      "wind_speed": 6.4,
+      "precipitation": 0.0,
+      "conditions": "clear",
+      "visibility": 18.0,
+      "pressure": 1013,
+      "source": "open-meteo",
+      "match_hour": 20,
+      "location": {
+        "lat": 42.84998,
+        "lon": -2.67268
+      }
+    },
+    "impact_assessment": {
+      "goal_modifier": 0.9261,
+      "playing_style_effect": "cautious",
+      "weather_advantage": "none",
+      "tactical_adjustments": [
+        "Increased player fatigue expected"
+      ],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MILD",
+      "conditions_summary": "Mild weather impact (6.3°C, 0.0mm rain, 6.4 km/h wind) may slightly influence play",
+      "modifier_components": {
+        "temperature": 0.9054,
+        "precipitation": 1.0,
+        "wind": 1.064,
+        "humidity": 0.9613,
+        "interaction": 1.0,
+        "stadium": 1.0,
+        "team_style": 1.0
+      },
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 0.9261,
+    "style_impact": "cautious",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "data_available": false,
+    "name": "Referee TBD",
+    "home_bias_pct": null,
+    "cards_per_game": null,
+    "penalties_per_game": null,
+    "strict_level": "unknown",
+    "experience_level": "unknown",
+    "warning": "Referee data unavailable - appointment not announced"
+  },
+  "team_news": {
+    "home_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Deportivo Alavés"
+    },
+    "away_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Real Madrid CF"
+    }
+  },
+  "data_quality_score": 54.0,
+  "reliability_metrics": {
+    "score": 62.0,
+    "level": "Limited",
+    "indicator": "🟠 Limited",
+    "recommendation": "Limited reliability – supplement with manual review.",
+    "confidence_intervals": {
+      "home": [
+        21.3,
+        30.4
+      ],
+      "draw": [
+        15.0,
+        24.1
+      ],
+      "away": [
+        50.1,
+        59.2
+      ],
+      "margin_percent": 4.56
+    },
+    "spread_points": 35.1,
+    "factors": {
+      "model_confidence": 58.7,
+      "data_quality": 54.0,
+      "probability_clarity": 100.0,
+      "h2h_depth": 0.0,
+      "data_freshness": 100.0
+    },
+    "primary_driver": "probability_clarity",
+    "notes": [
+      "Head-to-head sample is limited – emphasis on recent form.",
+      "Data quality below optimal threshold; confidence capped."
+    ]
+  },
+  "calibration_details": {
+    "applied": true,
+    "shrink_factor": 0.129,
+    "probabilities": {
+      "home_win_prob": 26.78,
+      "draw_prob": 21.3,
+      "away_win_prob": 51.92
+    },
+    "original_probabilities": {
+      "home_win_prob": 25.82,
+      "draw_prob": 19.52,
+      "away_win_prob": 54.66
+    },
+    "pre_calibration_probabilities": {
+      "home_win_prob": 0.258166,
+      "draw_prob": 0.195218,
+      "away_win_prob": 0.546616
+    },
+    "neutral_anchor": 33.3,
+    "notes": [
+      "Applied 12.9% shrink toward neutral due to reliability score 62.0."
+    ],
+    "accuracy_adjustment": {
+      "original_probability": 0.685,
+      "calibrated_probability": 0.659
+    }
+  },
+  "confidence_intervals": {
+    "home": [
+      21.3,
+      30.4
+    ],
+    "draw": [
+      15.0,
+      24.1
+    ],
+    "away": [
+      50.1,
+      59.2
+    ],
+    "margin_percent": 4.56
+  },
+  "data_provenance": {
+    "weather": true,
+    "player_availability": true,
+    "referee": true,
+    "team_news": true,
+    "h2h": false,
+    "odds": false,
+    "flashscore": true,
+    "home_injury_clamped": false,
+    "away_injury_clamped": false,
+    "weather_clamped": false
+  },
+  "phase2_lite_enhanced": true,
+  "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+  "optimization_metadata": {
+    "match_context": "competitive",
+    "model_agreement_factor": 0.5085627639900518,
+    "optimization_applied": true,
+    "ensemble_weights": {
+      "legacy": 0.18749999999999997,
+      "ml": 0.25,
+      "neural": 0.3125,
+      "monte_carlo": 0.25
+    }
+  },
+  "generated_at": "2025-12-14T19:46:20.218486",
+  "data_provenance_details": {
+    "home_injury_clamped": false,
+    "home_injury_clamped_fields": {},
+    "away_injury_clamped": false,
+    "away_injury_clamped_fields": {},
+    "weather_clamped": false,
+    "weather_clamped_fields": {}
+  }
+}

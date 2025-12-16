@@ -1,12 +1,17 @@
 import os
 
-from enhanced_data_ingestion import EnhancedDataIngestion, LeagueConfig
-from enhanced_predictor import EnhancedPredictor
-from generate_fast_reports import SingleMatchGenerator
+import pytest
 
 
-def test_flashscore_ingest_and_image_generation(tmp_path):
+def test_flashscore_ingest_and_image_generation(monkeypatch, tmp_path):
     """Integration-style test: ingest FlashScore data and produce JSON + PNG output."""
+    # Set mock API key before importing modules
+    monkeypatch.setenv('FOOTBALL_DATA_API_KEY', 'test_key_for_unit_tests')
+    
+    from enhanced_data_ingestion import EnhancedDataIngestion, LeagueConfig
+    from enhanced_predictor import EnhancedPredictor
+    from generate_fast_reports import SingleMatchGenerator
+    
     api_key = os.getenv('FOOTBALL_DATA_API_KEY', 'TEST_KEY')
 
     ingestion = EnhancedDataIngestion(api_key, enable_flashscore=True)
@@ -70,6 +75,12 @@ def test_flashscore_ingest_and_image_generation(tmp_path):
 
 def test_flashscore_merge_and_prediction(monkeypatch):
     """Test merge behavior and that the predictor consumes FlashScore features."""
+    # Set mock API key before importing modules
+    monkeypatch.setenv('FOOTBALL_DATA_API_KEY', 'test_key_for_unit_tests')
+    
+    from enhanced_data_ingestion import EnhancedDataIngestion, LeagueConfig
+    from enhanced_predictor import EnhancedPredictor
+    
     # Build minimal football-data match structure
     football_match = {
         'id': 1,

@@ -14,13 +14,11 @@ from datetime import datetime
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import numpy as np
-import requests
 from app.utils.http import safe_request_get
 import yaml
-from matplotlib.patches import Circle, FancyBboxPatch, Rectangle, Wedge
+from matplotlib.patches import FancyBboxPatch, Rectangle, Wedge
 from typing import Any, Dict, Optional, List, Union, cast
-from app.types import JSONDict, JSONList
+from app.types import JSONDict
 
 # Suppress font warnings for cleaner output
 warnings.filterwarnings('ignore', category=UserWarning, message='.*missing from font.*')
@@ -198,7 +196,7 @@ class ProfessionalDesignSystem:
         """
         if not h2h_results or len(h2h_results) == 0:
             # Draw "No H2H history" message
-            ax.text(x_pos, y_pos, 'No H2H History', ha='center', va='center', fontsize=11,
+            ax.text(x_pos, y_pos, 'No H2H History', ha='center', va='center', fontsize=14,
                    color='#999999', style='italic', fontweight='bold')
             return
         
@@ -238,7 +236,7 @@ class ProfessionalDesignSystem:
                    fontweight='bold', color=result_color, zorder=3)
             
             # Result indicator
-            ax.text(box_x, box_y - 0.10, result_symbol, ha='center', va='center', fontsize=9, zorder=3)
+            ax.text(box_x, box_y - 0.10, result_symbol, ha='center', va='center', fontsize=14, zorder=3)
 
 try:
     from data_quality_enhancer import DataQualityEnhancer
@@ -274,7 +272,10 @@ class SingleMatchGenerator:
     }
 
     def __init__(self, skip_injuries: bool = False, injuries_disable_ttl_override: int | None = None, export_metrics: bool = False, export_metrics_dir: str | None = None) -> None:
-        self.api_key = os.getenv('FOOTBALL_DATA_API_KEY', '17405508d1774f46a368390ff07f8a31')
+        api_key = os.getenv('FOOTBALL_DATA_API_KEY')
+        if not api_key:
+            raise ValueError("FOOTBALL_DATA_API_KEY environment variable not set. Please configure it in .env or your shell environment.")
+        self.api_key = api_key
         self.headers = {'X-Auth-Token': self.api_key}
 
         # Smart configuration validation
@@ -409,8 +410,14 @@ class SingleMatchGenerator:
         """Return sorted list of supported canonical league slugs."""
         return sorted(self._LEAGUE_CANONICAL.keys())
 
-    def generate_matches_report(self, num_matches: int, league_name: str) -> None:
-        """Generate Phase 2 Lite enhanced reports for the next set of matches."""
+    def generate_matches_report(self, num_matches: int, league_name: str, match_delay: int = 0) -> None:
+        """Generate Phase 2 Lite enhanced reports for the next set of matches.
+        
+        Args:
+            num_matches: Number of matches to generate
+            league_name: League identifier
+            match_delay: Delay in seconds between matches (0 = no delay)
+        """
 
         start_time = time.time()
 
@@ -531,8 +538,15 @@ class SingleMatchGenerator:
             confidence_multiplier = 1.0 + (data_quality_score - 0.5) * 0.6 + (reliability_score - 0.5) * 0.7 + (calibration_applied - 1.0) + h2h_bonus + data_availability_bonus
             confidence_value = confidence_value * confidence_multiplier
 
-            # Reasonable bounds: 75% minimum, 95% maximum for high-quality predictions
-            confidence_value = max(0.75, min(0.95, confidence_value))
+            # DYNAMIC minimum based on data availability - don't inflate confidence for poor data
+            # Count how many data sources are available (0-4)
+            data_sources_available = sum([weather_available, player_available, referee_available, team_news_available])
+            # Base minimum: 45% with no data, up to 75% with all 4 sources + good quality
+            # This prevents artificially high confidence when data is sparse
+            dynamic_min_confidence = 0.45 + (data_sources_available * 0.05) + (data_quality_score - 0.5) * 0.15
+            dynamic_min_confidence = max(0.40, min(0.75, dynamic_min_confidence))  # Floor 40%, ceiling 75%
+            
+            confidence_value = max(dynamic_min_confidence, min(0.95, confidence_value))
 
             accuracy_probability = self._safe_float(prediction.get('report_accuracy_probability'), 0.65)
 
@@ -543,7 +557,8 @@ class SingleMatchGenerator:
             # Further bound multiplier itself to prevent overflow
             accuracy_multiplier = max(0.5, min(1.8, accuracy_multiplier))
             accuracy_probability = accuracy_probability * accuracy_multiplier
-            accuracy_probability = max(0.75, min(0.95, accuracy_probability))
+            # Use same dynamic minimum for accuracy
+            accuracy_probability = max(dynamic_min_confidence, min(0.95, accuracy_probability))
 
 
             # Defensive extraction for win probabilities
@@ -569,13 +584,30 @@ class SingleMatchGenerator:
             top3_probability_normalized = self._safe_float(
                 prediction.get('top3_probability_normalized'), 7.0
             )
-            over_2_5_probability = self._safe_float(
-                prediction.get('over_2_5_goals_probability', prediction.get('over_2_5_probability', 45.0)),
-                45.0
-            )
-            both_teams_score_probability = self._safe_float(
-                prediction.get('both_teams_score_probability'), 55.0
-            )
+            
+            # Calculate over 2.5 and BTTS from expected goals if not provided (Poisson-based)
+            over_2_5_raw = prediction.get('over_2_5_goals_probability', prediction.get('over_2_5_probability'))
+            if over_2_5_raw is not None:
+                over_2_5_probability = self._safe_float(over_2_5_raw, 45.0)
+            else:
+                # Calculate from expected goals using Poisson distribution
+                import math
+                total_expected = expected_home_goals + expected_away_goals
+                prob_under_2_5 = sum(
+                    (total_expected**k * math.exp(-total_expected)) / math.factorial(k) 
+                    for k in range(3)  # 0, 1, 2 goals
+                )
+                over_2_5_probability = (1 - prob_under_2_5) * 100
+            
+            btts_raw = prediction.get('both_teams_score_probability')
+            if btts_raw is not None:
+                both_teams_score_probability = self._safe_float(btts_raw, 55.0)
+            else:
+                # Calculate from expected goals: P(BTTS) = P(home scores) * P(away scores)
+                import math
+                home_scores_prob = 1 - math.exp(-expected_home_goals)
+                away_scores_prob = 1 - math.exp(-expected_away_goals)
+                both_teams_score_probability = home_scores_prob * away_scores_prob * 100
 
             # Ensure expected_final_score does not contain team name text (use numeric score)
             raw_expected_score = prediction.get('expected_final_score', '1-1')
@@ -659,6 +691,29 @@ class SingleMatchGenerator:
                 },
                 'phase2_lite_enhanced': prediction.get('phase2_lite_enhanced', False),
                 'prediction_engine': prediction_engine,
+                # Phase 4-7 Enhanced Data
+                'advanced_predictions': {
+                    'btts': prediction.get('btts', {}),
+                    'over_under': prediction.get('over_under', {}),
+                    'exact_scores': prediction.get('exact_scores', []),
+                    'two_stage_score': prediction.get('two_stage_score', {})
+                },
+                'shot_quality': prediction.get('shot_quality', {}),
+                'defensive_metrics': prediction.get('defensive_metrics', {}),
+                'odds_movement': prediction.get('odds_movement', {}),
+                'market_implied': prediction.get('market_implied', {}),
+                'sharp_money_alert': prediction.get('sharp_money_alert', {}),
+                'player_impact': prediction.get('player_impact', {}),
+                # Phase enhancement flags
+                'phase_enhancements': {
+                    'phase1_enhanced': prediction.get('phase1_enhanced', False),
+                    'phase2_enhanced': prediction.get('phase2_enhanced', False),
+                    'phase3_enhanced': prediction.get('phase3_enhanced', False),
+                    'phase4_enhanced': prediction.get('phase4_enhanced', False),
+                    'phase5_enhanced': prediction.get('phase5_enhanced', False),
+                    'phase6_enhanced': prediction.get('phase6_enhanced', False),
+                    'phase7_enhanced': prediction.get('phase7_enhanced', False)
+                },
                 # Optimization metadata from enhanced ensemble (Phase 2 Lite + v4.2)
                 'optimization_metadata': {
                     'match_context': prediction.get('match_context', 'unknown'),
@@ -709,6 +764,11 @@ class SingleMatchGenerator:
 
             print(f"   • Saved to: {full_path}")
             print()
+
+            # Add delay between matches if specified (helps avoid API rate limiting)
+            if match_delay > 0 and index < len(matches):
+                print(f"   ⏳ Waiting {match_delay}s before next match (rate limit protection)...")
+                time.sleep(match_delay)
 
         total_time = time.time() - start_time
         avg_time = total_time / len(matches) if matches else 0
@@ -885,6 +945,33 @@ class SingleMatchGenerator:
                 cleaned = cleaned[:limit]
             return ", ".join(cleaned)
 
+        def format_recent_matches(recent_matches: list, team_name: str, max_matches: int = 5) -> str:
+            """Format recent match results into a clear readable format"""
+            if not recent_matches:
+                return "No recent match data available"
+            
+            result_emoji = {'W': '✅', 'D': '🟡', 'L': '❌'}
+            lines = []
+            for match in recent_matches[:max_matches]:
+                result = match.get('result', '?')
+                goals_for = match.get('goals_for', 0)
+                goals_against = match.get('goals_against', 0)
+                opponent = match.get('opponent', 'Unknown')
+                # Shorten opponent name if too long
+                if len(opponent) > 20:
+                    opponent = opponent[:18] + '...'
+                emoji = result_emoji.get(result, '❓')
+                lines.append(f"  - {emoji} **{result}** {goals_for}-{goals_against} vs {opponent}")
+            
+            return "\n".join(lines) if lines else "No recent match data"
+        
+        # Format recent match results for both teams
+        home_recent_matches = home_perf.get('home', {}).get('recent_matches', [])
+        away_recent_matches = away_perf.get('away', {}).get('recent_matches', [])
+        
+        home_recent_results = format_recent_matches(home_recent_matches, match_data.get('home_team', 'Home'))
+        away_recent_results = format_recent_matches(away_recent_matches, match_data.get('away_team', 'Away'))
+
         tactical_adjustments = format_list(
             weather_data.get('impact_assessment', {}).get('tactical_adjustments'),
             'Normal game tactics expected',
@@ -970,11 +1057,12 @@ class SingleMatchGenerator:
 - **Data Sources:** {h2h_data.get('total_sources', 1)} source(s) including domestic leagues and European competitions
 - **Historical Depth:** {head_to_head_total} total meetings analyzed with weighted recency
 
-### 📈 Weighted Form Intelligence
+### 📈 Form Summary
 
-- **Home Team Form Score:** {home_perf.get('home', {}).get('weighted_form_score', 50):.1f}% ({home_perf.get('home', {}).get('momentum_direction', 'Stable')} momentum)
-- **Away Team Form Score:** {away_perf.get('away', {}).get('weighted_form_score', 50):.1f}% ({away_perf.get('away', {}).get('momentum_direction', 'Stable')} momentum)
-- **Current Streaks:** {home_perf.get('home', {}).get('current_streak', 'No streak')} vs {away_perf.get('away', {}).get('current_streak', 'No streak')}
+| Team | Form Score | Momentum | Streak | Scoring | Conceding |
+|------|------------|----------|--------|---------|-----------|
+| **{match_data.get('home_team', 'Home')[:20]}** | {home_perf.get('home', {}).get('weighted_form_score', 50):.0f}% | {home_perf.get('home', {}).get('momentum_direction', 'Stable')} | {home_perf.get('home', {}).get('current_streak', 'N/A')} | {home_perf.get('home', {}).get('scoring_form', 1.3):.1f}/game | {home_perf.get('home', {}).get('defensive_form', 1.2):.1f}/game |
+| **{match_data.get('away_team', 'Away')[:20]}** | {away_perf.get('away', {}).get('weighted_form_score', 50):.0f}% | {away_perf.get('away', {}).get('momentum_direction', 'Stable')} | {away_perf.get('away', {}).get('current_streak', 'N/A')} | {away_perf.get('away', {}).get('scoring_form', 1.0):.1f}/game | {away_perf.get('away', {}).get('defensive_form', 1.6):.1f}/game |
 
 ### 🌤️ Weather Intelligence System
 
@@ -1014,6 +1102,10 @@ class SingleMatchGenerator:
 - **Draw:** {match_data['draw_probability']:.1f}%
 - **{match_data['away_team']} Win:** {match_data['away_win_probability']:.1f}%
 
+## 🎲 Advanced Predictions (Phase 4-7 Enhanced)
+
+{self._format_advanced_predictions_section(match_data)}
+
 ## 🔍 Intelligence Analysis
 
 ### Head-to-Head History
@@ -1029,22 +1121,27 @@ class SingleMatchGenerator:
 
 #### {match_data['home_team']} (Enhanced Home Analysis)
 
+**📋 Last 5 Home Results:**
+
+{home_recent_results}
+
 **Traditional Stats:**
 
 - **Home Win Rate:** {home_perf.get('home', {}).get('win_rate', 50):.1f}% ({home_perf.get('home', {}).get('matches', 0)} matches)
 - **Home Goals Per Game:** {home_perf.get('home', {}).get('avg_goals_for', 1.5):.1f}
 - **Home Goals Conceded:** {home_perf.get('home', {}).get('avg_goals_against', 1.2):.1f}
 
-**Enhanced Intelligence Insights:**
+**Form Intelligence:**
 
-- **Weighted Form Score:** {home_perf.get('home', {}).get('weighted_form_score', 50):.1f}% (Recent matches weighted more heavily)
-- **Momentum Direction:** {home_perf.get('home', {}).get('momentum_direction', 'Stable')} 📈
-- **Current Streak:** {home_perf.get('home', {}).get('current_streak', 'No active streak')}
-- **Form Quality Assessment:** {home_perf.get('home', {}).get('form_quality', 'Average')}
-- **Form Pressure Level:** {home_perf.get('home', {}).get('form_pressure', 'Medium')} (bounce-back potential)
-- **Recent 3 Match Performance:** {home_perf.get('home', {}).get('recent_3_performance', 50):.1f}% of maximum points
+- **Form Score:** {home_perf.get('home', {}).get('weighted_form_score', 50):.1f}% | **Momentum:** {home_perf.get('home', {}).get('momentum_direction', 'Stable')} | **Streak:** {home_perf.get('home', {}).get('current_streak', 'No active streak')}
+- **Form Quality:** {home_perf.get('home', {}).get('form_quality', 'Average')} | **Consistency:** {home_perf.get('home', {}).get('consistency_score', 50):.0f}%
+- **Scoring Form:** {home_perf.get('home', {}).get('scoring_form', 1.3):.2f} goals/game | **Defensive Form:** {home_perf.get('home', {}).get('defensive_form', 1.2):.2f} conceded/game
 
 #### {match_data['away_team']} (Enhanced Away Analysis)
+
+**📋 Last 5 Away Results:**
+
+{away_recent_results}
 
 **Traditional Stats:**
 
@@ -1052,14 +1149,11 @@ class SingleMatchGenerator:
 - **Away Goals Per Game:** {away_perf.get('away', {}).get('avg_goals_for', 1.2):.1f}
 - **Away Goals Conceded:** {away_perf.get('away', {}).get('avg_goals_against', 1.6):.1f}
 
-**Enhanced Intelligence Insights:**
+**Form Intelligence:**
 
-- **Weighted Form Score:** {away_perf.get('away', {}).get('weighted_form_score', 50):.1f}% (Recent matches weighted more heavily)
-- **Momentum Direction:** {away_perf.get('away', {}).get('momentum_direction', 'Stable')} 📈
-- **Current Streak:** {away_perf.get('away', {}).get('current_streak', 'No active streak')}
-- **Form Quality Assessment:** {away_perf.get('away', {}).get('form_quality', 'Average')}
-- **Form Pressure Level:** {away_perf.get('away', {}).get('form_pressure', 'Medium')} (bounce-back potential)
-- **Recent 3 Match Performance:** {away_perf.get('away', {}).get('recent_3_performance', 50):.1f}% of maximum points
+- **Form Score:** {away_perf.get('away', {}).get('weighted_form_score', 50):.1f}% | **Momentum:** {away_perf.get('away', {}).get('momentum_direction', 'Stable')} | **Streak:** {away_perf.get('away', {}).get('current_streak', 'No active streak')}
+- **Form Quality:** {away_perf.get('away', {}).get('form_quality', 'Average')} | **Consistency:** {away_perf.get('away', {}).get('consistency_score', 50):.0f}%
+- **Scoring Form:** {away_perf.get('away', {}).get('scoring_form', 1.0):.2f} goals/game | **Defensive Form:** {away_perf.get('away', {}).get('defensive_form', 1.6):.2f} conceded/game
 
 ### ⏰ Goal Timing Prediction
 
@@ -1237,14 +1331,12 @@ class SingleMatchGenerator:
             'underline': league_theme['primary'],  # League color for underlines
             'shadow': '#00000015'                   # Subtle shadow
         })
-
         # font sizes
-        header_fs = vis.get('header_fontsize', 24)
-        vis.get('title_fontsize', 20)
-        subtitle_fs = vis.get('subtitle_fontsize', 16)
-        section_title_fs = vis.get('section_title_fontsize', 18)
-        label_fs = vis.get('label_fontsize', 14)
-        value_fs = vis.get('value_fontsize', 23)
+        header_fs = vis.get('header_fontsize', 14)  # Now 14pt for consistency
+        subtitle_fs = vis.get('subtitle_fontsize', 11)  # 11pt for consistency
+        section_title_fs = vis.get('section_title_fontsize', 11)  # 11pt for consistency
+        label_fs = vis.get('label_fontsize', 11)  # 11pt for consistency
+        value_fs = vis.get('value_fontsize', 14)  # 14pt for header display
 
         # Enhanced main background with rounded corners and subtle drop shadow
         # Slightly softer outer border and lighter card background for modern look
@@ -1254,7 +1346,7 @@ class SingleMatchGenerator:
         ax.add_patch(main_box)
 
         # Professional header section with enhanced styling and improved spacing
-        header_bg = Rectangle((0.4, 28.0), 9.2, 3.5, facecolor=colors.get('header_bg', '#34495e'), alpha=0.95, zorder=2)
+        header_bg = Rectangle((0.4, 27.5), 9.2, 4.0, facecolor=colors.get('header_bg', '#003DA5'), alpha=0.7, zorder=2)
         ax.add_patch(header_bg)
 
         # Add subtle inner border for premium look
@@ -1269,9 +1361,9 @@ class SingleMatchGenerator:
                 ha='center', va='center', fontsize=subtitle_fs-2, fontweight='bold', color='white', alpha=0.9, zorder=3, fontname='DejaVu Sans')
         ax.text(5, 28.8, f"{match_data['away_team']}",
                 ha='center', va='center', fontsize=header_fs, fontweight='bold', color='white', zorder=3, fontname='DejaVu Sans')
-        # Match info with professional styling and subtle separator
-        ax.text(5, 28.0, f"{match_data.get('league', 'League')} • {match_data['date']} • {match_data['time']}",
-                ha='center', va='center', fontsize=11, fontweight='normal', color='white', alpha=0.85, zorder=3, fontname='DejaVu Sans')
+        # Match info with professional styling and subtle separator - moved up with better spacing
+        ax.text(5, 27.9, f"{match_data.get('league', 'League')} • {match_data['date']} • {match_data['time']}",
+                ha='center', va='center', fontsize=14, fontweight='bold', color='white', alpha=0.95, zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
         # CENTER SECTION - FINAL RESULTS & WINNING CHANCES (PRIORITY)
@@ -1289,10 +1381,9 @@ class SingleMatchGenerator:
         score_parts = match_data['expected_final_score'].split('-')
         home_score = score_parts[0].strip()
         away_score = score_parts[1].strip()
-
-        # Display team names with their scores - much clearer
-        home_team_short = match_data['home_team'][:15] + "..." if len(match_data['home_team']) > 15 else match_data['home_team']
-        away_team_short = match_data['away_team'][:15] + "..." if len(match_data['away_team']) > 15 else match_data['away_team']
+        # Display team names with their scores - much clearer (use consistent formatting)
+        home_team_short = self.format_team_name_for_display(match_data['home_team'])
+        away_team_short = self.format_team_name_for_display(match_data['away_team'])
 
         ax.text(5, 24.2, f"{home_team_short} {home_score} - {away_score} {away_team_short}",
             ha='center', va='center', fontsize=value_fs, fontweight='bold', color=colors.get('text_main', '#111111'))
@@ -1381,52 +1472,49 @@ class SingleMatchGenerator:
             
             # Label text below the gauge
             if label_text:
-                inset.text(0.5, 0.1, label_text, ha='center', va='center', fontsize=9, 
+                inset.text(0.5, 0.1, label_text, ha='center', va='center', fontsize=14, 
                           color=colors.get('text_secondary', '#666666'), zorder=4, fontname='DejaVu Sans')
 
         # =================================================================
         # SECTION 1: MATCH CONFIDENCE METRICS (Top - Light Blue Background)
         # =================================================================
         # Section background group
-        metrics_bg = Rectangle((0.5, 19.0), 9.0, 2.2, facecolor='#e8f4f8', 
+        metrics_bg = Rectangle((0.5, 20.5), 9.0, 2.2, facecolor='#e8f4f8', 
                               alpha=0.6, edgecolor='#3498db', linewidth=2, zorder=1)
         ax.add_patch(metrics_bg)
         
         # Section category label
-        ax.text(0.8, 20.8, "CONFIDENCE METRICS", ha='left', va='center', fontsize=11, 
+        ax.text(0.8, 22.3, "CONFIDENCE METRICS", ha='left', va='center', fontsize=14, 
                fontweight='bold', color='#2c3e50', zorder=2, fontname='DejaVu Sans')
         
-        # Divider line
-        ax.plot([0.7, 9.3], [20.6, 20.6], color='#3498db', linewidth=1.5, zorder=2, alpha=0.5)
+        # Divider line - lowered to avoid text
+        ax.plot([0.7, 9.3], [21.8, 21.8], color='#3498db', linewidth=1.5, zorder=2, alpha=0.5)
 
-        # Confidence and Data Quality boxes with expanded labels - ALIGNED
+        # Confidence and Data Quality display with color coding (no boxes)
         confidence = match_data.get('report_accuracy_probability', 0.65) * 100
         conf_color = ProfessionalDesignSystem.get_color_for_probability(confidence)
         
         data_quality = match_data.get('data_quality_score', 75.0)
         dq_color = ProfessionalDesignSystem.get_color_for_probability(data_quality)
         
-        # Confidence box (left) - standard size
-        conf_bg = Rectangle((1.0, 19.3), 3.3, 1.4, facecolor='white', 
-                           edgecolor=conf_color, linewidth=5.0, zorder=2, alpha=0.9)
-        ax.add_patch(conf_bg)
-        ax.text(2.65, 20.4, f"{int(round(confidence))}%", ha='center', va='center', fontsize=22, 
+        # Confidence display (left) - no box - moved up for better spacing
+        ax.text(2.65, 21.6, f"{int(round(confidence))}%", ha='center', va='center', fontsize=22, 
                fontweight='bold', color=conf_color, zorder=3, fontname='DejaVu Sans')
-        ax.text(2.65, 19.7, 'Prediction', ha='center', va='center', fontsize=11, 
-               color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
-        ax.text(2.65, 19.4, 'Confidence', ha='center', va='center', fontsize=11, 
-               color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
+        ax.text(2.65, 20.9, 'Prediction', ha='center', va='center', fontsize=14, 
+               color='#000000', fontweight='bold', zorder=3, fontname='DejaVu Sans')
+        ax.text(2.65, 20.6, 'Confidence', ha='center', va='center', fontsize=14, 
+               color='#000000', fontweight='bold', zorder=3, fontname='DejaVu Sans')
         
-        # Data Quality box (right) - same size
-        dq_bg = Rectangle((5.7, 19.3), 3.3, 1.4, facecolor='white', 
-                         edgecolor=dq_color, linewidth=5.0, zorder=2, alpha=0.9)
-        ax.add_patch(dq_bg)
-        ax.text(7.35, 20.4, f"{int(round(data_quality))}%", ha='center', va='center', fontsize=22, 
+        # Data Quality display (right) - no box
+        ax.text(7.35, 21.6, f"{int(round(data_quality))}%", ha='center', va='center', fontsize=22, 
                fontweight='bold', color=dq_color, zorder=3, fontname='DejaVu Sans')
-        ax.text(7.35, 19.7, 'Data', ha='center', va='center', fontsize=11, 
-               color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
-        ax.text(7.35, 19.4, 'Quality', ha='center', va='center', fontsize=11, 
-               color=colors.get('text_main', '#1A1A1A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
+        ax.text(7.35, 20.9, 'Data', ha='center', va='center', fontsize=14, 
+               color='#000000', fontweight='bold', zorder=3, fontname='DejaVu Sans')
+        ax.text(7.35, 20.6, 'Quality', ha='center', va='center', fontsize=14, 
+               color='#000000', fontweight='bold', zorder=3, fontname='DejaVu Sans')
+
+        # Add spacing after confidence metrics
+        # (blank space 19.0-18.8)
 
         # =================================================================
         # SECTION 2: PREDICTION ANALYSIS (Middle - Light Green Background)
@@ -1437,11 +1525,14 @@ class SingleMatchGenerator:
         ax.add_patch(analysis_bg)
         
         # Section category label
-        ax.text(0.8, 19.2, "PREDICTION ANALYSIS", ha='left', va='center', fontsize=11, 
+        ax.text(0.8, 19.2, "PREDICTION ANALYSIS", ha='left', va='center', fontsize=14, 
                fontweight='bold', color='#2c3e50', zorder=2, fontname='DejaVu Sans')
         
         # Divider line
         ax.plot([0.7, 9.3], [19.0, 19.0], color='#27ae60', linewidth=1.5, zorder=2, alpha=0.5)
+
+        # Add spacing after prediction analysis
+        # (blank space 19.0-18.8)
 
         # ===== MATCH OUTCOME PROBABILITIES =====
         ax.text(5, 18.5, "Match Outcome Probability", ha='center', va='center', fontsize=13, fontweight='bold', 
@@ -1474,7 +1565,7 @@ class SingleMatchGenerator:
                              edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
             ax.add_patch(col_bg)
             
-            ax.text(col_x_pos, box_y + 1.1, f"{col_values[i]}%", ha='center', va='center', fontsize=28, 
+            ax.text(col_x_pos, box_y + 1.1, f"{col_values[i]}%", ha='center', va='center', fontsize=22, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
             label = col_labels[i]
@@ -1483,8 +1574,8 @@ class SingleMatchGenerator:
                 if len(words) > 1:
                     label = f"{' '.join(words[:-1])}\\n{words[-1]}"
             
-                ax.text(col_x_pos, box_y + 0.35, label, ha='center', va='center', fontsize=10, 
-                   color=colors.get('text_secondary', '#5A5A5A'), zorder=3, fontweight='bold', fontname='DejaVu Sans')
+            ax.text(col_x_pos, box_y + 0.35, label, ha='center', va='center', fontsize=14, 
+               color='#000000', zorder=3, fontweight='bold', fontname='DejaVu Sans')
 
         
         # ===== TEAM FORM (with consistent theme colors, not probability-based) =====
@@ -1496,17 +1587,32 @@ class SingleMatchGenerator:
 
         home_form_score = home_form.get('weighted_form_score', 50)
         away_form_score = away_form.get('weighted_form_score', 50)
-
-        if home_form_score == away_form_score:
-            home_form_score = min(95, home_form_score + np.random.randint(-5, 6))
-            away_form_score = min(95, away_form_score + np.random.randint(-5, 6))
+        
+        # Get win rates to determine team strength tier
+        home_win_rate = home_form.get('win_rate', 0.5) * 100
+        away_win_rate = away_form.get('win_rate', 0.5) * 100
+        
+        def get_strength_tier(win_rate):
+            if win_rate >= 65:
+                return "Elite", "#27AE60"
+            elif win_rate >= 50:
+                return "Strong", "#17A2B8"
+            elif win_rate >= 35:
+                return "Average", "#F39C12"
+            else:
+                return "Struggling", "#E74C3C"
+        
+        home_tier, home_tier_color = get_strength_tier(home_win_rate)
+        away_tier, away_tier_color = get_strength_tier(away_win_rate)
 
         col_x = [2.5, 7.5]
         col_values = [int(round(home_form_score)), int(round(away_form_score))]
         col_labels = ['Home Team', 'Away Team']
+        col_tiers = [(home_tier, home_tier_color), (away_tier, away_tier_color)]
         
-        # Use THEME COLORS instead of probability-based for form
-        form_box_colors = ['#3498db', '#e74c3c']  # Blue for home, Red for away
+        # Use PROBABILITY-BASED colors for form scores (not fixed theme colors)
+        form_box_colors = [ProfessionalDesignSystem.get_color_for_probability(home_form_score),
+                          ProfessionalDesignSystem.get_color_for_probability(away_form_score)]
         
         box_width_2 = 3.3
         form_box_height = 1.5
@@ -1514,15 +1620,47 @@ class SingleMatchGenerator:
         
         for i in range(2):
             col_x_pos = col_x[i]
-            col_bg = Rectangle((col_x_pos - box_width_2/2, form_box_y), box_width_2, form_box_height, facecolor='white', 
-                             edgecolor=form_box_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
-            ax.add_patch(col_bg)
-            
-            ax.text(col_x_pos, form_box_y + 1.1, f"{col_values[i]}%", ha='center', va='center', fontsize=28, 
+            # No box - just text with color coding
+            ax.text(col_x_pos, form_box_y + 1.1, f"{col_values[i]}%", ha='center', va='center', fontsize=22, 
                    fontweight='bold', color=form_box_colors[i], zorder=3, fontname='DejaVu Sans')
             
-            ax.text(col_x_pos, form_box_y + 0.35, col_labels[i], ha='center', va='center', fontsize=11, 
-                   color=colors.get('text_secondary', '#5A5A5A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
+            ax.text(col_x_pos, form_box_y + 0.35, col_labels[i], ha='center', va='center', fontsize=14, 
+                   color='#000000', fontweight='bold', zorder=3, fontname='DejaVu Sans')
+            
+            # Show team strength tier below label
+            tier_label, tier_color = col_tiers[i]
+            ax.text(col_x_pos, form_box_y - 0.1, f"({tier_label})", ha='center', va='center', fontsize=11, 
+                   color=tier_color, fontweight='bold', zorder=3, fontname='DejaVu Sans')
+
+        # ===== LAST 5 MATCHES W/D/L VISUALIZATION =====
+        # Extract recent match results from performance data
+        home_recent = home_form.get('recent_matches', [])[:5]
+        away_recent = away_form.get('recent_matches', [])[:5]
+        
+        # W/D/L color mapping
+        result_colors = {'W': '#27AE60', 'D': '#F39C12', 'L': '#E74C3C'}
+        form_y = 12.35
+        
+        # Home team last 5 (left side)
+        home_form_str = [m.get('result', '?') for m in home_recent] if home_recent else []
+        for idx, result in enumerate(home_form_str[:5]):
+            x_offset = 1.5 + idx * 0.5
+            color = result_colors.get(result, '#95a5a6')
+            ax.text(x_offset, form_y, '●', ha='center', va='center', fontsize=14, 
+                   color=color, zorder=3, fontname='DejaVu Sans')
+        
+        # Away team last 5 (right side)
+        away_form_str = [m.get('result', '?') for m in away_recent] if away_recent else []
+        for idx, result in enumerate(away_form_str[:5]):
+            x_offset = 6.5 + idx * 0.5
+            color = result_colors.get(result, '#95a5a6')
+            ax.text(x_offset, form_y, '●', ha='center', va='center', fontsize=14, 
+                   color=color, zorder=3, fontname='DejaVu Sans')
+        
+        # Form legend (compact)
+        if home_form_str or away_form_str:
+            ax.text(5, form_y, "Last 5:", ha='center', va='center', fontsize=11, 
+                   color='#666666', zorder=3, fontname='DejaVu Sans')
 
         if home_form_score > away_form_score + 5:
             form_advantage = f"{home_team} in better form"
@@ -1534,15 +1672,25 @@ class SingleMatchGenerator:
             form_advantage = "Teams in similar form"
             advantage_color = colors.get('likely_draw', '#7F8C8D')
 
-        ax.text(5, 12.2, form_advantage, ha='center', va='center', fontsize=10, 
+        ax.text(5, 12.0, form_advantage, ha='center', va='center', fontsize=14, 
                fontweight='bold', color=advantage_color, zorder=3, fontname='DejaVu Sans')
         
         # ===== EXPECTED GOALS =====
-        ax.text(5, 11.5, "Expected Goals Prediction", ha='center', va='center', fontsize=13, fontweight='bold',
+        ax.text(5, 11.3, "Expected Goals Prediction", ha='center', va='center', fontsize=13, fontweight='bold',
                color=colors.get('text_main', '#1A1A1A'), zorder=2, fontname='DejaVu Sans')
 
-        over_prob = match_data.get('over_2_5_goals_probability', 45)
-        btts_prob = match_data.get('both_teams_score_probability', 55)
+        # Get expected goals for dynamic calculation of fallbacks
+        exp_home = match_data.get('expected_home_goals', 1.5)
+        exp_away = match_data.get('expected_away_goals', 1.2)
+        total_exp = exp_home + exp_away
+        
+        # Calculate dynamic fallbacks using Poisson if not provided
+        import math
+        default_over_2_5 = (1 - sum((total_exp**k * math.exp(-total_exp)) / math.factorial(k) for k in range(3))) * 100
+        default_btts = (1 - math.exp(-exp_home)) * (1 - math.exp(-exp_away)) * 100
+        
+        over_prob = match_data.get('over_2_5_goals_probability', default_over_2_5)
+        btts_prob = match_data.get('both_teams_score_probability', default_btts)
 
         col_x = [2.5, 7.5]
         col_values = [int(round(over_prob)), int(round(btts_prob))]
@@ -1553,19 +1701,16 @@ class SingleMatchGenerator:
         
         box_width_3 = 3.3
         goals_box_height = 1.5
-        goals_box_y = 9.8
+        goals_box_y = 9.6
         
         for i in range(2):
             col_x_pos = col_x[i]
-            col_bg = Rectangle((col_x_pos - box_width_3/2, goals_box_y), box_width_3, goals_box_height, facecolor='white', 
-                             edgecolor=col_colors[i], linewidth=5.0, zorder=2, alpha=0.9)
-            ax.add_patch(col_bg)
-            
-            ax.text(col_x_pos, goals_box_y + 1.1, f"{col_values[i]}%", ha='center', va='center', fontsize=28, 
+            # No box - just text with color coding
+            ax.text(col_x_pos, goals_box_y + 1.1, f"{col_values[i]}%", ha='center', va='center', fontsize=22, 
                    fontweight='bold', color=col_colors[i], zorder=3, fontname='DejaVu Sans')
             
-            ax.text(col_x_pos, goals_box_y + 0.35, col_labels[i], ha='center', va='center', fontsize=10, 
-                   color=colors.get('text_secondary', '#5A5A5A'), fontweight='bold', zorder=3, fontname='DejaVu Sans')
+            ax.text(col_x_pos, goals_box_y + 0.35, col_labels[i], ha='center', va='center', fontsize=14, 
+                   color='#000000', fontweight='bold', zorder=3, fontname='DejaVu Sans')
 
         # ===== MATCH FACTORS (Individual Boxes) =====
         ax.text(5, 9.0, "Match Factors", ha='center', va='center', fontsize=13, fontweight='bold',
@@ -1582,23 +1727,89 @@ class SingleMatchGenerator:
         home_strength = match_data.get('player_availability', {}).get('home_team', {}).get('expected_lineup_strength')
         away_strength = match_data.get('player_availability', {}).get('away_team', {}).get('expected_lineup_strength')
         
-        # Determine colors for factors
-        if weather_modifier > 1.05:
-            weather_text = "Weather Favorable"
-            weather_color = '#e74c3c'  # Red - increases goals
-        elif weather_modifier < 0.95:
-            weather_text = "Weather Defensive"
-            weather_color = '#3498db'  # Blue - reduces goals
+        # Extract actual weather data for display with impact analysis
+        weather_conditions = weather_data.get('conditions', {})
+        weather_impact = weather_data.get('impact_assessment', {})
+        weather_temp = weather_conditions.get('temperature')
+        weather_desc = weather_conditions.get('conditions', '')
+        weather_wind = weather_conditions.get('wind_speed', 0)
+        weather_precip = weather_conditions.get('precipitation', 0)
+        goal_modifier = weather_impact.get('goal_modifier', 1.0)
+        weather_severity = weather_impact.get('weather_severity', 'MILD')
+        playing_style = weather_impact.get('playing_style_effect', 'normal')
+        tactical_notes = weather_impact.get('tactical_adjustments', [])
+        
+        # Generate weather impact description based on conditions
+        weather_effects = []
+        if weather_temp is not None:
+            if weather_temp < 5:
+                weather_effects.append("Cold slows play")
+            elif weather_temp > 28:
+                weather_effects.append("Heat causes fatigue")
+            
+        if weather_wind > 25:
+            weather_effects.append("Strong wind affects accuracy")
+        elif weather_wind > 15:
+            weather_effects.append("Wind impacts long balls")
+            
+        if weather_precip > 5:
+            weather_effects.append("Heavy rain slows game")
+        elif weather_precip > 1:
+            weather_effects.append("Wet pitch faster play")
+        
+        # Add goal modifier effect
+        if goal_modifier < 0.92:
+            weather_effects.append(f"Goals ↓{int((1-goal_modifier)*100)}%")
+        elif goal_modifier > 1.08:
+            weather_effects.append(f"Goals ↑{int((goal_modifier-1)*100)}%")
+        
+        # Create weather display text
+        if weather_temp is not None:
+            weather_text = f"{weather_temp:.0f}°C {weather_desc[:6]}"
+            # Determine color based on impact severity
+            if weather_severity == 'SEVERE' or weather_temp < 3 or weather_temp > 32:
+                weather_color = '#e74c3c'  # Red - extreme
+            elif weather_severity == 'MODERATE' or weather_temp < 8 or weather_temp > 28 or weather_wind > 20:
+                weather_color = '#f39c12'  # Orange - moderate impact
+            else:
+                weather_color = '#27ae60'  # Green - ideal conditions
+        elif goal_modifier > 1.05:
+            weather_text = "High Scoring"
+            weather_color = '#e74c3c'
+        elif goal_modifier < 0.95:
+            weather_text = "Low Scoring"
+            weather_color = '#3498db'
         else:
-            weather_text = "Weather Neutral"
-            weather_color = '#7F8C8D'  # Gray
+            weather_text = "Neutral"
+            weather_color = '#7F8C8D'
+        
+        # Build weather impact summary for display
+        if weather_effects:
+            weather_impact_text = weather_effects[0][:18]  # First effect, truncated
+        elif tactical_notes and len(tactical_notes) > 0:
+            weather_impact_text = str(tactical_notes[0])[:18]
+        else:
+            weather_impact_text = "No significant impact"
         
         if h2h_meetings > 5:
             h2h_text = f"H2H: {h2h_meetings} games"
             h2h_color = '#27ae60'  # Green - data available
-        else:
-            h2h_text = "H2H: Limited"
+            # Add H2H record summary if available
+            h2h_home_wins = h2h_data.get('home_wins', 0)
+            h2h_away_wins = h2h_data.get('away_wins', 0)
+            h2h_draws = h2h_data.get('draws', 0)
+            if h2h_home_wins or h2h_away_wins or h2h_draws:
+                h2h_impact_text = f"{h2h_home_wins}W-{h2h_draws}D-{h2h_away_wins}L"
+            else:
+                h2h_impact_text = None
+        elif h2h_meetings > 0:
+            h2h_text = f"H2H: {h2h_meetings} games"
             h2h_color = '#f39c12'  # Orange - limited data
+            h2h_impact_text = None
+        else:
+            h2h_text = "H2H: No data"
+            h2h_color = '#95a5a6'  # Gray - no data
+            h2h_impact_text = None
         
         if home_strength is not None and away_strength is not None:
             if abs(home_strength - away_strength) > 10:
@@ -1620,12 +1831,12 @@ class SingleMatchGenerator:
             referee_text = "Referee: TBD"
             referee_color = '#95a5a6'  # Light gray
         
-        # Create 4 boxes in 2x2 grid for factors
+        # Create 4 boxes in 2x2 grid for factors - aligned with Expected Goals boxes above
         factor_boxes = [
-            (1.5, weather_text, weather_color),
-            (6.5, h2h_text, h2h_color),
-            (1.5, strength_text, strength_color),
-            (6.5, referee_text, referee_color)
+            (2.5, weather_text, weather_color, weather_impact_text),  # Weather with impact
+            (7.5, h2h_text, h2h_color, h2h_impact_text),  # H2H with record
+            (2.5, strength_text, strength_color, None),
+            (7.5, referee_text, referee_color, None)
         ]
         
         factor_box_width = 2.8
@@ -1633,46 +1844,76 @@ class SingleMatchGenerator:
         factor_y_top = 7.9
         factor_y_bottom = 6.4
         
-        # Top row factors (Weather, H2H)
+        # Top row factors (Weather with impact, H2H)
         for idx in range(2):
             x_pos = factor_boxes[idx][0]
             text = factor_boxes[idx][1]
             color = factor_boxes[idx][2]
+            impact_text = factor_boxes[idx][3] if len(factor_boxes[idx]) > 3 else None
             
             factor_bg = Rectangle((x_pos - factor_box_width/2, factor_y_top), factor_box_width, factor_box_height, 
-                                 facecolor='white', edgecolor=color, linewidth=4.0, zorder=2, alpha=0.9)
+                                 facecolor='#E8E8E8', edgecolor=color, linewidth=3.5, zorder=2, alpha=0.9)
             ax.add_patch(factor_bg)
             
-            ax.text(x_pos, factor_y_top + 0.7, text, ha='center', va='center', fontsize=10, 
-                   fontweight='bold', color=color, zorder=3, fontname='DejaVu Sans')
+            if impact_text:
+                # Weather box: Show temp on top, impact below
+                ax.text(x_pos, factor_y_top + 0.85, text, ha='center', va='center', fontsize=13, 
+                       fontweight='bold', color='#000000', zorder=3, fontname='DejaVu Sans')
+                ax.text(x_pos, factor_y_top + 0.4, impact_text, ha='center', va='center', fontsize=14, 
+                       fontweight='bold', color=color, zorder=3, fontname='DejaVu Sans')
+            else:
+                ax.text(x_pos, factor_y_top + 0.7, text, ha='center', va='center', fontsize=14, 
+                       fontweight='bold', color='#000000', zorder=3, fontname='DejaVu Sans')
         
-        # Bottom row factors (Lineups, Referee)
+        # Bottom row factors (Lineups, Referee) - now with dynamic colored borders
         for idx in range(2, 4):
             x_pos = factor_boxes[idx][0]
             text = factor_boxes[idx][1]
             color = factor_boxes[idx][2]
             
             factor_bg = Rectangle((x_pos - factor_box_width/2, factor_y_bottom), factor_box_width, factor_box_height, 
-                                 facecolor='white', edgecolor=color, linewidth=4.0, zorder=2, alpha=0.9)
+                                 facecolor='#E8E8E8', edgecolor=color, linewidth=3.5, zorder=2, alpha=0.9)
             ax.add_patch(factor_bg)
             
-            ax.text(x_pos, factor_y_bottom + 0.7, text, ha='center', va='center', fontsize=10, 
-                   fontweight='bold', color=color, zorder=3, fontname='DejaVu Sans')
+            ax.text(x_pos, factor_y_bottom + 0.7, text, ha='center', va='center', fontsize=14, 
+                   fontweight='bold', color='#000000', zorder=3, fontname='DejaVu Sans')
 
         # =================================================================
-        # FOOTER - Clean and informative
+        # COLOR LEGEND - Explains border colors to users
+        # =================================================================
+        legend_y = 5.85
+        ax.text(5, legend_y, "🔑 Color Key:", ha='center', va='center', fontsize=14, 
+               fontweight='bold', color='#2c3e50', zorder=3, fontname='DejaVu Sans')
+        
+        # Legend items - probability scale with descriptive words
+        legend_row1 = [
+            (1.0, '●', '#27AE60', '75%+ Great'),      # Green - excellent
+            (3.0, '●', '#17A2B8', '50-74% Good'),     # Cyan - good
+            (5.0, '●', '#F39C12', '25-49% Fair'),     # Orange - moderate
+            (7.0, '●', '#E74C3C', '0-24% Poor'),      # Red - low
+            (8.8, '●', '#9b59b6', 'Info'),            # Purple - informational
+        ]
+        
+        for x, symbol, color, label in legend_row1:
+            ax.text(x, legend_y - 0.45, symbol, ha='center', va='center', fontsize=14, 
+                   color=color, zorder=3, fontname='DejaVu Sans')
+            ax.text(x + 0.35, legend_y - 0.45, label, ha='left', va='center', fontsize=14, 
+                   color='#333333', zorder=3, fontname='DejaVu Sans')
+
+        # =================================================================
+        # FOOTER - Clean and informative (moved down to avoid legend overlap)
         # =================================================================
 
-        footer_bg = Rectangle((0.4, 0.5), 9.2, 5.0, facecolor='#2c3e50', alpha=1.0)
+        footer_bg = Rectangle((0.4, 0.3), 9.2, 4.8, facecolor='#2c3e50', alpha=1.0)
         ax.add_patch(footer_bg)
 
         ax.text(
             5,
-            5.0,
+            4.6,
             "🤖 AI-ENHANCED SPORTS PREDICTION SYSTEM",
             ha='center',
             va='center',
-            fontsize=16,
+            fontsize=14,
             fontweight='bold',
             color='white',
             fontname='DejaVu Sans',
@@ -1682,11 +1923,11 @@ class SingleMatchGenerator:
         # Professional footer description with improved styling
         ax.text(
             5,
-            4.4,
+            4.1,
             "Advanced machine learning with Phase 2 Lite intelligent analysis",
             ha='center',
             va='center',
-            fontsize=11,
+            fontsize=14,
             color='white',
             fontname='DejaVu Sans',
             zorder=3
@@ -1695,11 +1936,11 @@ class SingleMatchGenerator:
         # Processing time with professional formatting
         ax.text(
             5,
-            3.9,
+            3.6,
             f"✓ Analysis: {match_data.get('processing_time', 0.1):.3f}s • Confidence: {int(confidence)}%",
             ha='center',
             va='center',
-            fontsize=10,
+            fontsize=14,
             color='white',
             fontname='DejaVu Sans',
             zorder=3
@@ -1708,11 +1949,11 @@ class SingleMatchGenerator:
         # Data sources with professional badge styling
         ax.text(
             5,
-            3.4,
+            3.1,
             "Data: Official APIs • Weather • Form • H2H Analysis",
             ha='center',
             va='center',
-            fontsize=9,
+            fontsize=14,
             color='white',
             fontname='DejaVu Sans',
             zorder=3
@@ -1721,11 +1962,11 @@ class SingleMatchGenerator:
         # Generated timestamp with professional styling
         ax.text(
             5,
-            2.9,
+            2.6,
             f"Generated: {match_data.get('generated_at', 'Now')[:16]} • Enhanced Intelligence Active",
             ha='center',
             va='center',
-            fontsize=9,
+            fontsize=14,
             color='white',
             fontname='DejaVu Sans',
             zorder=3
@@ -1734,11 +1975,11 @@ class SingleMatchGenerator:
         # Professional disclaimer with improved styling
         ax.text(
             5,
-            1.8,
+            1.5,
             "⚠️ Educational purposes only • For analysis only • Not financial advice",
             ha='center',
             va='center',
-            fontsize=10,
+            fontsize=14,
             fontweight='bold',
             style='italic',
             color='white',
@@ -1839,6 +2080,120 @@ class SingleMatchGenerator:
             return f"{start:.1f}% – {end:.1f}%"
         return 'N/A'
 
+    def _format_advanced_predictions_section(self, match_data: JSONDict) -> str:
+        """Format Phase 4-7 advanced predictions for markdown output."""
+        lines = []
+        
+        # Get advanced predictions data
+        advanced = match_data.get('advanced_predictions', {})
+        shot_quality = match_data.get('shot_quality', {})
+        odds_movement = match_data.get('odds_movement', {})
+        player_impact = match_data.get('player_impact', {})
+        phase_enhancements = match_data.get('phase_enhancements', {})
+        
+        # Phase 4: BTTS & Over/Under
+        btts = advanced.get('btts', {})
+        over_under = advanced.get('over_under', {})
+        exact_scores = advanced.get('exact_scores', [])
+        two_stage = advanced.get('two_stage_score', {})
+        
+        lines.append("### 🎯 BTTS Analysis (Phase 4)")
+        if btts:
+            lines.append(f"- **BTTS Yes:** {btts.get('btts_yes_probability', 0):.1f}%")
+            lines.append(f"- **BTTS No:** {btts.get('btts_no_probability', 0):.1f}%")
+            lines.append(f"- **Prediction:** {btts.get('prediction', 'N/A')}")
+            lines.append(f"- **Confidence:** {btts.get('confidence', 0):.1f}%")
+            factors = btts.get('factors', {})
+            if factors:
+                lines.append(f"- **Home Scoring Chance:** {factors.get('home_scoring_chance', 0):.1f}%")
+                lines.append(f"- **Away Scoring Chance:** {factors.get('away_scoring_chance', 0):.1f}%")
+        else:
+            lines.append("- Data not available")
+        
+        lines.append("")
+        lines.append("### 📊 Over/Under Analysis (Phase 4)")
+        if over_under:
+            lines.append(f"- **Expected Total Goals:** {over_under.get('expected_total_goals', 0):.2f}")
+            ou_lines = over_under.get('lines', {})
+            for line_val in ['1.5', '2.5', '3.5']:
+                line_data = ou_lines.get(line_val, {})
+                if line_data:
+                    lines.append(f"- **O/U {line_val}:** Over {line_data.get('over_probability', 0):.1f}% / Under {line_data.get('under_probability', 0):.1f}%")
+            lines.append(f"- **Recommended Line:** {over_under.get('recommended_line', 'N/A')}")
+        else:
+            lines.append("- Data not available")
+        
+        lines.append("")
+        lines.append("### 🎲 Exact Score Predictions (Phase 4)")
+        if exact_scores:
+            for i, score_data in enumerate(exact_scores[:5]):
+                score = score_data.get('score', 'N/A')
+                prob = score_data.get('probability', 0)
+                lines.append(f"- **{i+1}.** {score}: {prob:.1f}%")
+        else:
+            lines.append("- See score probabilities above")
+        
+        # Phase 5: Shot Quality
+        lines.append("")
+        lines.append("### 🎯 Shot Quality Analysis (Phase 5)")
+        home_sq = shot_quality.get('home', {})
+        away_sq = shot_quality.get('away', {})
+        if home_sq or away_sq:
+            if home_sq:
+                lines.append(f"- **{home_sq.get('team_name', 'Home')}:**")
+                lines.append(f"  - xG per Shot: {home_sq.get('xg_per_shot', 0):.3f}")
+                lines.append(f"  - Data Quality: {home_sq.get('data_quality', 'N/A')}")
+            if away_sq:
+                lines.append(f"- **{away_sq.get('team_name', 'Away')}:**")
+                lines.append(f"  - xG per Shot: {away_sq.get('xg_per_shot', 0):.3f}")
+                lines.append(f"  - Data Quality: {away_sq.get('data_quality', 'N/A')}")
+        else:
+            lines.append("- Data not available")
+        
+        # Phase 6: Odds Movement
+        lines.append("")
+        lines.append("### 📈 Odds Movement Analysis (Phase 6)")
+        if odds_movement:
+            lines.append(f"- **Home Movement:** {odds_movement.get('home_movement', 'stable')} ({odds_movement.get('home_movement_pct', 0):.1f}%)")
+            lines.append(f"- **Away Movement:** {odds_movement.get('away_movement', 'stable')} ({odds_movement.get('away_movement_pct', 0):.1f}%)")
+            lines.append(f"- **Movement Strength:** {odds_movement.get('movement_strength', 'minimal')}")
+            lines.append(f"- **Sharp Money Detected:** {'⚠️ Yes' if odds_movement.get('sharp_money_detected') else '✅ No'}")
+            if odds_movement.get('sharp_money_detected'):
+                lines.append(f"- **Sharp Money Side:** {odds_movement.get('sharp_money_side', 'N/A')}")
+            lines.append(f"- **Market Favorite:** {odds_movement.get('market_favorite', 'N/A')}")
+        else:
+            lines.append("- Data not available")
+        
+        # Phase 7: Player Impact
+        lines.append("")
+        lines.append("### 👤 Player Impact Analysis (Phase 7)")
+        if player_impact and isinstance(player_impact, dict) and len(player_impact) > 0:
+            home_impact = player_impact.get('home_impact', {})
+            away_impact = player_impact.get('away_impact', {})
+            if home_impact:
+                lines.append(f"- **Home Team Impact:** {home_impact.get('total_impact', 0):.2f}")
+            if away_impact:
+                lines.append(f"- **Away Team Impact:** {away_impact.get('total_impact', 0):.2f}")
+            if player_impact.get('key_absences'):
+                lines.append(f"- **Key Absences:** {', '.join(player_impact.get('key_absences', []))}")
+        else:
+            lines.append("- Player impact data not available for this match")
+        
+        # Phase enhancements summary
+        lines.append("")
+        lines.append("### ⚙️ Enhancement Phases Active")
+        if phase_enhancements:
+            active_phases = []
+            for i in range(1, 8):
+                key = f"phase{i}_enhanced"
+                if phase_enhancements.get(key, False):
+                    active_phases.append(f"Phase {i}")
+            lines.append(f"- **Active:** {', '.join(active_phases) if active_phases else 'None'}")
+        else:
+            lines.append("- Phase enhancement status not available")
+        
+        return "\n".join(lines)
+
     @staticmethod
     def _safe_float(value: Any, default: float = 0.0) -> float:
         """Safely convert loose inputs to float values for report metrics."""
@@ -1876,6 +2231,67 @@ class SingleMatchGenerator:
         # Collapse multiple spaces and trim
         s = re.sub(r"\s+", " ", s).strip()
         return s
+
+    @staticmethod
+    def format_team_name_for_display(name: str, max_length: int = 20) -> str:
+        """Format team name for display with consistent truncation.
+        
+        Args:
+            name: Full team name
+            max_length: Maximum characters before truncation (default 20)
+            
+        Returns:
+            Formatted team name, truncated with '...' if necessary
+        """
+        if not name:
+            return "Unknown"
+        s = name.strip()
+        if len(s) > max_length:
+            return s[:max_length] + "..."
+        return s
+
+    @staticmethod
+    def validate_match_data(match_data: dict) -> dict:
+        """Validate and sanitize match data with safe defaults.
+        
+        Args:
+            match_data: Raw match data dictionary
+            
+        Returns:
+            Validated match data with safe defaults for missing fields
+        """
+        # Define required fields with safe defaults
+        defaults = {
+            'home_team': 'Home Team',
+            'away_team': 'Away Team',
+            'league': 'League',
+            'date': 'TBD',
+            'time': '00:00',
+            'expected_final_score': '0-0',
+            'expected_home_goals': 0.0,
+            'expected_away_goals': 0.0,
+            'home_win_probability': 0.0,
+            'draw_probability': 0.0,
+            'away_win_probability': 0.0,
+            'confidence': 50.0
+        }
+        
+        # Ensure all required fields exist with safe defaults
+        validated = {**defaults, **{k: v for k, v in match_data.items() if v is not None}}
+        
+        # Type conversion and validation
+        try:
+            validated['expected_home_goals'] = float(validated.get('expected_home_goals', 0.0))
+            validated['expected_away_goals'] = float(validated.get('expected_away_goals', 0.0))
+            validated['home_win_probability'] = float(validated.get('home_win_probability', 0.0))
+            validated['draw_probability'] = float(validated.get('draw_probability', 0.0))
+            validated['away_win_probability'] = float(validated.get('away_win_probability', 0.0))
+            validated['confidence'] = float(validated.get('confidence', 50.0))
+        except (ValueError, TypeError):
+            # If conversion fails, keep defaults
+            pass
+        
+        return validated
 
     def clean_old_reports(self) -> None:
         """Clean ALL reports from all leagues while preserving directory structure"""
@@ -1953,7 +2369,7 @@ def main() -> None:
     """Main CLI interface"""
     import sys
 
-    print("🚀 Sports Prediction System - CLI")
+    print("[SYSTEM] Sports Prediction System - CLI")
     print("=" * 40)
 
     # Parse a simple '--no-injuries' CLI flag and optional '--disable-injuries-ttl' override
@@ -1961,6 +2377,18 @@ def main() -> None:
     injuries_disable_ttl_override: int | None = None
     if skip_injuries:
         sys.argv = [a for a in sys.argv if a != '--no-injuries']
+
+    # Parse --delay flag for time between matches (in seconds)
+    match_delay = 0
+    if '--delay' in sys.argv:
+        try:
+            idx = sys.argv.index('--delay')
+            match_delay = int(sys.argv[idx + 1])
+            del sys.argv[idx:idx + 2]
+            print(f"⏱️  Match delay: {match_delay}s between matches")
+        except Exception:
+            print("❌ Invalid --delay value. Provide seconds (e.g., --delay 60)")
+            return
 
     if '--disable-injuries-ttl' in sys.argv:
         try:
@@ -1994,7 +2422,8 @@ def main() -> None:
         print("   python generate_fast_reports.py prune     - Remove all old reports")
         print("   python generate_fast_reports.py help      - Show this help")
         print("\n📋 Flags:")
-        print("   --no-injuries - Skip injuries calls to external RapidAPI for runs")
+        print("   --no-injuries     - Skip injuries calls to external RapidAPI")
+        print("   --delay [seconds] - Wait between matches (e.g., --delay 60 for 1 min)")
         print("\n🏆 Available Leagues:")
         print("   " + ", ".join(generator.list_supported_leagues()))
         return
@@ -2017,7 +2446,7 @@ def main() -> None:
             return
         print(f"🌍 Generating {num_matches} match(es) per league")
         for slug in generator.list_supported_leagues():
-            generator.generate_matches_report(num_matches, slug)
+            generator.generate_matches_report(num_matches, slug, match_delay)
         return
 
     # Parse: generate [number] matches for [league]
@@ -2032,10 +2461,10 @@ def main() -> None:
             if league == "all":
                 print("🌍 Generating reports for all supported leagues")
                 for slug in generator.list_supported_leagues():
-                    generator.generate_matches_report(num_matches, slug)
+                    generator.generate_matches_report(num_matches, slug, match_delay)
                 return
 
-            generator.generate_matches_report(num_matches, league)
+            generator.generate_matches_report(num_matches, league, match_delay)
             return
         except ValueError:
             print("❌ Invalid number of matches. Must be a number.")

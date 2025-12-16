@@ -1,6 +1,6 @@
 import os
 
-import generate_fast_reports
+import pytest
 
 
 class FakeResponse:
@@ -15,6 +15,11 @@ class FakeResponse:
 
 
 def test_generate_dryrun(monkeypatch, tmp_path):
+    # Set mock API key before importing module
+    monkeypatch.setenv('FOOTBALL_DATA_API_KEY', 'test_key_for_unit_tests')
+    
+    import generate_fast_reports
+    
     # Prepare fake matches payload
     matches = [
         {
