@@ -9,7 +9,7 @@
 
 An **advanced, AI-enhanced, and professional-grade** sports forecasting system that uses historical data, machine learning algorithms, enhanced intelligence, and probabilistic modeling to generate comprehensive reports on upcoming matches. Features **Enhanced Intelligence v4.1** with **Phase 2 Lite** for **+18% confidence improvements**.
 
-## ✨ **System Overview**
+## ✨ **System Overview** {#system-overview}
 
 **Enhanced Intelligence v4.1 + Phase 2 Lite** delivers measurable improvements in prediction confidence and reliability:
 
@@ -20,7 +20,15 @@ An **advanced, AI-enhanced, and professional-grade** sports forecasting system t
 - ⚡ **Optimized Performance**: ~3-4 seconds per match with enhanced features
 - 📈 **Professional Reports**: JSON, PNG, Markdown with enhanced metadata and reliability metrics
 
-## 🚀 **Quick Start - Enhanced Intelligence v4.1 + Phase 2 Lite**
+## � **Table of Contents**
+
+- [System Overview](#system-overview)
+- [Quick Start](#-quick-start---enhanced-intelligence-v41--phase-2-lite)
+- [Local-only Manual Workflow](docs/manual_local_workflow.md)- [Scripts Guide](scripts/README.md)- [Documentation Index](docs/README.md)
+
+---
+
+## �🚀 **Quick Start - Enhanced Intelligence v4.1 + Phase 2 Lite**
 
 ### Prerequisites
 
@@ -234,6 +242,90 @@ grep -r "Report Accuracy:" reports/
 grep -r "Phase 2 Lite Intelligence" reports/
 ```
 
+### ✅ **Fetch results & backfill provider IDs**
+
+Run the collector to fetch finished match results and update historical data (can be scheduled via the included GitHub Action):
+
+```bash
+# Fetch finished results for a single league (debug mode prints matching diagnostics)
+python scripts/collect_historical_results.py --fetch --league la-liga --debug
+
+# Fetch for all supported leagues
+python scripts/collect_historical_results.py --fetch-all --debug
+
+# Backfill provider IDs from existing reports into historical files
+python scripts/collect_historical_results.py --backfill-provider-ids --league la-liga --debug
+```
+
+The collector now prefers provider-id exact matches and has robust normalization (diacritics & punctuation removal), a ±1 day date tolerance, and improved fuzzy matching for robust automated updates.
+
+## Enabling the scheduled workflow on GitHub (quick)
+
+If you want the scheduled daily fetch/regeneration enabled in the repository Actions:
+
+1. Ensure `.github/workflows/fetch-results.yml` is committed (it already is).
+2. You can enable and trigger the workflow using the helper PowerShell script:
+
+```powershell
+# GitHub authentication options
+
+## Option A: OAuth (recommended for VS Code extension sign-in)
+If you prefer using the VS Code sign-in dialog and OAuth, register an OAuth App on GitHub and add the local redirect URI printed by VS Code as the **Authorization callback URL** (example: `http://127.0.0.1:33418/`). After registering, paste the Client ID into the VS Code sign-in dialog when prompted.
+
+## Option B: Personal Access Token (PAT) — simple fallback (works without OAuth client registration)
+If you prefer a simpler approach or are blocked on OAuth registration, create a GitHub Personal Access Token (PAT) with the following scopes as required (e.g., `repo`, `workflow`) and store it in your environment as `GITHUB_TOKEN`.
+
+PowerShell example (temporary for session):
+
+$env:GITHUB_TOKEN = 'ghp_xxx'
+
+Or use the helper script to store it locally in `.env` (safer for local dev):
+
+powershell -ExecutionPolicy Bypass -File scripts/setup_github_pat.ps1
+
+Then verify the token works:
+
+python scripts/verify_github_token.py
+
+.\scripts\enable_github_workflow.ps1 -Owner <your-github-owner> -Repo <your-repo-name> -WorkflowFile fetch-results.yml -Ref main
+```
+
+This will call the GitHub API to enable the workflow and trigger a manual `workflow_dispatch` run. If you prefer, enable it from the GitHub UI under Actions → click the workflow → enable.
+
+If you want, provide a token and repo info and I can trigger the enable + dispatch for you now.
+
+---
+
+## Local-only Manual Workflow (No Cloud)
+
+If you prefer to run everything manually on your local machine (no GitHub Actions or cloud automation), follow the detailed guide in the repo:
+
+- See: `docs/manual_local_workflow.md` for full step-by-step instructions, commands, and troubleshooting.
+
+Quick commands you will use frequently:
+
+```powershell
+# Activate environment
+& .\.venv\Scripts\Activate.ps1
+
+# Collect predictions into history
+python scripts/collect_historical_results.py --league la-liga
+
+# Update a match result (example)
+python scripts/collect_historical_results.py --update-result la-liga <match_id> <home> <away>
+
+# Run the optimizer
+python scripts/optimize_accuracy.py --mode full --league la-liga
+
+# dot-source convenience aliases (optional)
+. .\scripts\helpers\ps_aliases.ps1
+# Then use: sps-collect, sps-optimize, sps-daily, sps-weekly
+```
+
+Note: Scheduled task registration is available in `scripts/automation/register_scheduled_tasks.ps1` (requires admin) but is optional — the system is fully usable manually.
+
+---
+
 ## ⚙️ **Configuration - Zero Setup Required**
 
 ### 🎯 **Automatic Setup (Phase 2 Lite)**
@@ -378,6 +470,16 @@ Access performance metrics via:
 - **Weather**: [Open-Meteo](https://open-meteo.com/) - Free weather API
 - **Odds**: [The Odds API](https://the-odds-api.com/) - Betting odds snapshot
 - **Schedules**: [SportsRadar](https://www.sportsradar.com/) - Comprehensive schedules
+
+## 🛠️ Recent fixes & improvements
+
+- Fixed Football-Data processing loop that only updated the final match (indentation bug) — now every fetched match is processed. ✅
+- Improved name normalization: removes diacritics, punctuation and common tokens (CF/Club/De/Fútbol) for robust matching across providers. ✅
+- Added ±1 day date tolerance and slightly relaxed fuzzy matching threshold to reduce false negatives during matching. ✅
+- Persist provider IDs both when updating by provider id and when matching by name (backfill available). ✅
+- Added `--backfill-provider-ids` CLI option to copy provider ids from `reports` into `data/historical` when available. ✅
+- Preserve existing `actual_result`/`provider_ids` when saving new collected results. ✅
+- Added tests for matching, provider ID backfill, and merge behavior.
 
 ## 🤝 Contributing
 
