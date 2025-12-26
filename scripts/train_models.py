@@ -2,12 +2,12 @@
 """
 Train models using the ML enhancer from processed historical dataset
 """
+
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
-
 
 
 def main():
@@ -18,5 +18,6 @@ def main():
     result = enhancer.train_from_processed_dataset()
     print("Train from processed dataset result:", result)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

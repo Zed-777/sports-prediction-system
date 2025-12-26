@@ -24,22 +24,33 @@ class DummyLogger:
 
 
 def test_fetch_team_home_away_stats_uses_safe_http(monkeypatch):
-    api_key = 'test_key'
+    api_key = "test_key"
     ep = EnhancedPredictor(api_key)
     ep.logger = DummyLogger()
 
-    called = {'count': 0}
+    called = {"count": 0}
 
-    def fake_safe_request_get(url, headers=None, params=None, timeout=15, retries=3, backoff=0.5, min_interval=None, session=None, logger=None):
-        called['count'] += 1
-        payload = {'matches': []}
+    def fake_safe_request_get(
+        url,
+        headers=None,
+        params=None,
+        timeout=15,
+        retries=3,
+        backoff=0.5,
+        min_interval=None,
+        session=None,
+        logger=None,
+    ):
+        called["count"] += 1
+        payload = {"matches": []}
         return DummyResponse(payload)
 
     # Monkeypatch the safe_request_get in the enhanced_predictor module
     import enhanced_predictor as epmod
-    monkeypatch.setattr('app.utils.http.safe_request_get', fake_safe_request_get)
-    monkeypatch.setattr(epmod, 'safe_request_get', fake_safe_request_get)
 
-    res = ep.fetch_team_home_away_stats(1, 'PL')
+    monkeypatch.setattr("app.utils.http.safe_request_get", fake_safe_request_get)
+    monkeypatch.setattr(epmod, "safe_request_get", fake_safe_request_get)
+
+    res = ep.fetch_team_home_away_stats(1, "PL")
     assert isinstance(res, dict)
-    assert called['count'] == 1
+    assert called["count"] == 1

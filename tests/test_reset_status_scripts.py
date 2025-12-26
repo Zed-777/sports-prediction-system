@@ -7,8 +7,8 @@ from app.utils import state_sync
 def test_list_and_clear_file_flags(tmp_path: Path):
     # Ensure clean starting state
     state_sync.clear_all_disabled_flags()
-    host = 'listclear.example'
-    path = '/v1/x'
+    host = "listclear.example"
+    path = "/v1/x"
     state_sync.set_disabled_flag(host, path, 9999999999)
     flags = state_sync.list_disabled_flags()
     assert host in flags

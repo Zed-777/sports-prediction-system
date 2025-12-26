@@ -15,7 +15,8 @@
         {"cmd": "python scripts/collect_historical_results.py --league la-liga", "desc": "Collect predictions from reports into historical staging for La Liga."},
         {"cmd": "python scripts/collect_historical_results.py --fetch --league la-liga", "desc": "Fetch finished match results from APIs and update historical file for La Liga."},
         {"cmd": "python scripts/collect_historical_results.py --fetch-all --auto-optimize 50 --notify --report", "desc": "Fetch all leagues, auto-run optimizer when ≥50 completed matches, send email and generate report."},
-        {"cmd": "python scripts/optimize_accuracy.py --mode backtest --league la-liga", "desc": "Run backtest / optimization (simulated if no history)."}
+        {"cmd": "python scripts/optimize_accuracy.py --mode backtest --league la-liga", "desc": "Run backtest / optimization (simulated if no history)."},
+        {"cmd": "powershell .\\scripts\\run_daily_fetch.ps1", "desc": "Run the daily local pipeline: fetch, backfill provider IDs, prune + regenerate reports (recommended local scheduler)."}
       ]
     },
     {
@@ -54,6 +55,15 @@
         "3. Run sample report: python generate_fast_reports.py generate 1 matches for la-liga",
         "4. Collect and fetch results: python scripts/collect_historical_results.py --fetch --league la-liga",
         "5. Check reports at reports/leagues and summary at reports/historical/"
+      ]
+    },
+    {
+      "heading": "Local scheduler (recommended)",
+      "items": [
+        {"cmd": "powershell .\\scripts\\run_daily_fetch.ps1", "desc": "Run everything now (fetch, backfill, regenerate)."},
+        {"cmd": "schtasks /Create /SC DAILY /TN \"SportsPredictionSystem - Daily Fetch\" /TR \"powershell -ExecutionPolicy Bypass -File \"C:\\Path\\To\\STATS\\scripts\\run_daily_fetch.ps1\"\" /ST 03:00 /RL LIMITED", "desc": "Schedule the script to run daily at 03:00 (replace path and time as needed)."},
+        {"cmd": "powershell .\\scripts\\run_daily_fetch.ps1 -Debug", "desc": "Run in debug mode to capture verbose logs in logs/daily/."},
+        {"cmd": "powershell .\\scripts\\install_schtask.ps1 -TaskTime 03:00 -Replace", "desc": "Install the Windows scheduled task to run the daily pipeline (run this locally once)."}
       ]
     },
     {

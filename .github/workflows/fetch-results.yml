@@ -34,12 +34,20 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: |
-          python scripts/collect_historical_results.py --fetch-all --auto-optimize 50 --notify
+          python scripts/collect_historical_results.py --fetch-all --auto-optimize 50 --notify || true
 
-      - name: Commit updated historical files
+      - name: Backfill provider IDs
+        run: |
+          python scripts/collect_historical_results.py --backfill-provider-ids --debug || true
+
+      - name: Regenerate recent reports (prune + regen)
+        run: |
+          python scripts/regenerate_reports.py --all --count 5 --delay 60 --prune-keep 50 --debug || true
+
+      - name: Commit updated historical files and reports
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add data/historical/*.json || true
-          git commit -m 'ci: update historical results (automated fetch)' || true
+          git add data/historical/*.json reports/leagues/** || true
+          git commit -m 'ci: update historical results and regenerated reports (automated)' || true
           git push || true

@@ -12,12 +12,13 @@ from pathlib import Path
 # Add current directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+
 def test_enhanced_ingestion():
     """Test the enhanced data ingestion system"""
     print("=== Enhanced Data Ingestion System Test ===\n")
 
     # Check if FlashScore scraper is available
-    flashscore_available = importlib.util.find_spec('flashscore_scraper') is not None
+    flashscore_available = importlib.util.find_spec("flashscore_scraper") is not None
     if flashscore_available:
         print("✓ FlashScore integration available")
     else:
@@ -26,6 +27,7 @@ def test_enhanced_ingestion():
     # Import the enhanced ingestion system
     try:
         from enhanced_data_ingestion import EnhancedDataIngestion, LeagueConfig
+
         print("✓ Enhanced data ingestion system imported successfully")
     except ImportError as e:
         print(f"✗ Failed to import enhanced data ingestion: {e}")
@@ -45,7 +47,9 @@ def test_enhanced_ingestion():
 
     # Initialize ingestion system
     try:
-        ingestion = EnhancedDataIngestion(api_key, enable_flashscore=flashscore_available)
+        ingestion = EnhancedDataIngestion(
+            api_key, enable_flashscore=flashscore_available
+        )
         print("✓ Enhanced data ingestion system initialized")
     except Exception as e:
         print(f"✗ Failed to initialize ingestion system: {e}")
@@ -56,9 +60,9 @@ def test_enhanced_ingestion():
         "data_source": "football-data.org",
         "matches": [
             {"homeTeam": {"name": "Real Madrid"}, "awayTeam": {"name": "Barcelona"}},
-            {"homeTeam": {"name": "Atletico Madrid"}, "awayTeam": {"name": "Sevilla"}}
+            {"homeTeam": {"name": "Atletico Madrid"}, "awayTeam": {"name": "Sevilla"}},
         ],
-        "flashscore_metadata": {"integrated": flashscore_available}
+        "flashscore_metadata": {"integrated": flashscore_available},
     }
 
     quality_score = ingestion._calculate_data_quality(test_data)
@@ -69,7 +73,9 @@ def test_enhanced_ingestion():
         try:
             flashscore_data = ingestion.fetch_flashscore_data(league, days_ahead=7)
             if flashscore_data:
-                print(f"✓ FlashScore data fetching works: {len(flashscore_data.get('matches', []))} matches")
+                print(
+                    f"✓ FlashScore data fetching works: {len(flashscore_data.get('matches', []))} matches"
+                )
             else:
                 print("⚠ FlashScore data fetching returned no data (may be normal)")
         except Exception as e:
@@ -100,6 +106,7 @@ def test_enhanced_ingestion():
     print("python enhanced_data_ingestion.py --league bundesliga --force")
 
     return True
+
 
 if __name__ == "__main__":
     success = test_enhanced_ingestion()

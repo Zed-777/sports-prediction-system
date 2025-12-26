@@ -12,14 +12,14 @@ class _DummyIntegrator:
     def enhance_match_data(self, match, league_key):
         self.received_match = copy.deepcopy(match)
         # Ensure keys needed by downstream consumers exist
-        assert 'home_team' in match
-        assert 'away_team' in match
+        assert "home_team" in match
+        assert "away_team" in match
         return {
-            'home_team_stats': {},
-            'away_team_stats': {},
-            'advanced_metrics': {},
-            'odds_data': {},
-            'data_quality_score': 82
+            "home_team_stats": {},
+            "away_team_stats": {},
+            "advanced_metrics": {},
+            "odds_data": {},
+            "data_quality_score": 82,
         }
 
 
@@ -38,7 +38,10 @@ def enhancer(monkeypatch):
     monkeypatch.setattr(
         instance,
         "get_weather_impact",
-        lambda *args, **kwargs: {**instance.get_default_weather_data(), "provenance": {}},
+        lambda *args, **kwargs: {
+            **instance.get_default_weather_data(),
+            "provenance": {},
+        },
     )
     monkeypatch.setattr(
         instance,
@@ -64,7 +67,10 @@ def test_comprehensive_handles_mixed_team_keys(enhancer):
 
     result = instance.comprehensive_data_enhancement(match_payload)
 
-    assert result["player_availability"]["home_team"]["key_players_available"] == instance.get_default_injury_data()["key_players_available"]
+    assert (
+        result["player_availability"]["home_team"]["key_players_available"]
+        == instance.get_default_injury_data()["key_players_available"]
+    )
     assert result["team_news"]["home_team"]["formation_expected"]
     assert result["weather_conditions"]["impact_assessment"]
     assert dummy.received_match["home_team"] == "Test FC"

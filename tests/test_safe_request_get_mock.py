@@ -22,19 +22,28 @@ class FakeSession:
     def get(self, url, headers=None, params=None, timeout=None):
         self.called = True
         # Return something that has status_code and json() method
-        return SimpleNamespace(status_code=200, text='{}', json=lambda: {}, raise_for_status=lambda: None)
+        return SimpleNamespace(
+            status_code=200, text="{}", json=lambda: {}, raise_for_status=lambda: None
+        )
 
 
 def test_safe_request_get_uses_token_bucket(monkeypatch):
     bucket = FakeBucket()
+
     # Monkeypatch manager to return our bucket for the host
     def fake_get_bucket(url):
         return bucket
 
-    monkeypatch.setattr(_GLOBAL_THROTTLE_MANAGER, 'get_bucket', fake_get_bucket)
+    monkeypatch.setattr(_GLOBAL_THROTTLE_MANAGER, "get_bucket", fake_get_bucket)
     fake_session = FakeSession()
     # Call safe_request_get
-    resp = safe_request_get('https://api.football-data.org/v4/competitions/PD/matches', session=fake_session, timeout=1, retries=1, logger=None)
+    resp = safe_request_get(
+        "https://api.football-data.org/v4/competitions/PD/matches",
+        session=fake_session,
+        timeout=1,
+        retries=1,
+        logger=None,
+    )
     # Assert bucket consumed and session called
     assert bucket.consumed
     assert fake_session.called

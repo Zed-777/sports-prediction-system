@@ -1,0 +1,1 @@
+[{"id": "m1", "date": "2025-01-01", "league": "test-league", "home_team": "A", "away_team": "B", "home_goals": 1, "away_goals": 0}, {"id": "m2", "date": "2025-01-05", "league": "test-league", "home_team": "C", "away_team": "D", "home_goals": 0, "away_goals": 0}]

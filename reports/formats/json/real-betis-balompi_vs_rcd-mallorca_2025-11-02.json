@@ -93,7 +93,11 @@
     "optimization_applied": false,
     "ensemble_weights": {}
   },
-  "generated_at": "2025-12-16T16:53:50.174983",
+  "generated_at": "2025-12-26T16:11:00.299583",
+  "provider_ids": {
+    "football_data_id": 9999,
+    "flashscore_id": null
+  },
   "data_provenance_details": {
     "weather_clamped": true,
     "weather_clamped_fields": {
@@ -103,5 +107,17 @@
       }
     },
     "home_injury_clamped": false
+  },
+  "advanced_model": {
+    "mode": "shadow",
+    "model_artifact": "models\\advanced\\rf_baseline_42.joblib",
+    "prediction": {
+      "home_win_prob": 0.12,
+      "draw_prob": 0.07,
+      "away_win_prob": 0.81,
+      "meta": {
+        "model": "models\\advanced\\rf_baseline_42.joblib"
+      }
+    }
   }
 }

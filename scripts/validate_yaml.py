@@ -7,6 +7,7 @@ Checks:
 
 Exit code: 0 if all files parse and have no tabs; 1 otherwise.
 """
+
 import sys
 from pathlib import Path
 
@@ -19,6 +20,7 @@ except Exception:  # pragma: no cover - best-effort in local dev
 root = Path(__file__).resolve().parents[1]
 errors = 0
 
+
 def check_file(p: Path):
     global errors
     text = p.read_text(encoding="utf-8")
@@ -30,6 +32,7 @@ def check_file(p: Path):
     except Exception as e:
         print(f"YAML_ERROR: {p}: {e}")
         errors += 1
+
 
 wf_dir = root / ".github" / "workflows"
 for f in sorted(wf_dir.glob("*.yml")):

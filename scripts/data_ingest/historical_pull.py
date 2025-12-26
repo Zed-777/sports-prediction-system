@@ -12,6 +12,7 @@ To call the football-data.org API you must set the FOOTBALL_DATA_API_KEY
 environment variable (or supply --api-key). The script is defensive about
 rate limits and adds a lightweight retry with exponential back-off.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -61,8 +62,14 @@ class LeagueInfo:
 
 
 def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Fetch historical fixtures and cache snapshots.")
-    parser.add_argument("--league", required=True, help="League identifier (e.g. la-liga, premier-league).")
+    parser = argparse.ArgumentParser(
+        description="Fetch historical fixtures and cache snapshots."
+    )
+    parser.add_argument(
+        "--league",
+        required=True,
+        help="League identifier (e.g. la-liga, premier-league).",
+    )
     parser.add_argument(
         "--seasons",
         help="Comma-separated list of seasons (e.g. 2021,2022). Overrides --years-back if provided.",
@@ -109,7 +116,9 @@ def resolve_seasons(raw: str | None, years_back: int) -> list[int]:
             try:
                 seasons.append(int(chunk))
             except ValueError as exc:
-                raise SystemExit(f"Invalid season value '{chunk}'. Must be an integer like 2023.") from exc
+                raise SystemExit(
+                    f"Invalid season value '{chunk}'. Must be an integer like 2023."
+                ) from exc
         return sorted(set(seasons))
     # Football seasons refer to starting year; assume we want completed seasons.
     return [current_year - offset for offset in range(1, years_back + 1)]
@@ -123,10 +132,14 @@ def fetch_matches(api_key: str, league: LeagueInfo, season: int) -> dict[str, An
     attempt = 0
     while True:
         attempt += 1
-        response = safe_request_get(url, headers=headers, params=params, timeout=30, logger=None)
+        response = safe_request_get(
+            url, headers=headers, params=params, timeout=30, logger=None
+        )
         if response.status_code == RATE_LIMIT_STATUS and attempt <= DEFAULT_RETRIES:
             wait = min(5 * attempt, 20)
-            print(f"[RATE LIMIT] 429 received for season {season}. Sleeping {wait}s before retry {attempt}/{DEFAULT_RETRIES}...")
+            print(
+                f"[RATE LIMIT] 429 received for season {season}. Sleeping {wait}s before retry {attempt}/{DEFAULT_RETRIES}..."
+            )
             time.sleep(wait)
             continue
         try:
@@ -142,7 +155,9 @@ def fetch_matches(api_key: str, league: LeagueInfo, season: int) -> dict[str, An
         return payload
 
 
-def write_snapshot(league: LeagueInfo, season: int, payload: dict[str, Any], force: bool) -> Path:
+def write_snapshot(
+    league: LeagueInfo, season: int, payload: dict[str, Any], force: bool
+) -> Path:
     base_dir = Path("data") / "snapshots" / league.folder
     base_dir.mkdir(parents=True, exist_ok=True)
     target = base_dir / f"season_{season}.json"
@@ -167,7 +182,9 @@ def main(argv: Iterable[str] | None = None) -> None:
 
     api_key = resolve_api_key(args.api_key)
     seasons = resolve_seasons(args.seasons, args.years_back)
-    print(f"[START] Fetching {len(seasons)} season(s) for {args.league} -> competition {league.code}")
+    print(
+        f"[START] Fetching {len(seasons)} season(s) for {args.league} -> competition {league.code}"
+    )
 
     for index, season in enumerate(seasons, start=1):
         print(f"[FETCH] ({index}/{len(seasons)}) Season {season}")

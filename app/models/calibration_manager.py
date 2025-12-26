@@ -35,7 +35,10 @@ class CalibrationManager:
         self.training_size = 0
 
     def add_calibration_sample(
-        self, predicted_prob: float, actual_outcome: float, timestamp: Optional[float] = None
+        self,
+        predicted_prob: float,
+        actual_outcome: float,
+        timestamp: Optional[float] = None,
     ):
         """
         Add a prediction-outcome pair for calibration.
@@ -51,10 +54,15 @@ class CalibrationManager:
 
         self.calibration_data["predictions"].append(predicted_prob)
         self.calibration_data["outcomes"].append(actual_outcome)
-        self.calibration_data["timestamps"].append(timestamp or datetime.now().timestamp())
+        self.calibration_data["timestamps"].append(
+            timestamp or datetime.now().timestamp()
+        )
 
     def add_batch_calibration_samples(
-        self, predictions: List[float], outcomes: List[float], timestamps: Optional[List[float]] = None
+        self,
+        predictions: List[float],
+        outcomes: List[float],
+        timestamps: Optional[List[float]] = None,
     ):
         """
         Add multiple prediction-outcome pairs.
@@ -169,11 +177,16 @@ class CalibrationManager:
             "mean_prediction": float(np.mean(predictions)),
             "mean_outcome": float(np.mean(outcomes)),
             "expected_calibration_error": ece,
-            "prediction_range": (float(np.min(predictions)), float(np.max(predictions))),
+            "prediction_range": (
+                float(np.min(predictions)),
+                float(np.max(predictions)),
+            ),
             "outcome_range": (float(np.min(outcomes)), float(np.max(outcomes))),
         }
 
-    def _calculate_ece(self, predictions: np.ndarray, outcomes: np.ndarray, num_bins: int = 10) -> float:
+    def _calculate_ece(
+        self, predictions: np.ndarray, outcomes: np.ndarray, num_bins: int = 10
+    ) -> float:
         """
         Calculate expected calibration error.
 
@@ -277,11 +290,19 @@ class ModelPerformanceTracker:
             model_names: List of model names to track
         """
         self.model_names = model_names
-        self.performance_history: Dict[str, List[Dict]] = {name: [] for name in model_names}
-        self.current_weights: Dict[str, float] = {name: 1.0 / len(model_names) for name in model_names}
+        self.performance_history: Dict[str, List[Dict]] = {
+            name: [] for name in model_names
+        }
+        self.current_weights: Dict[str, float] = {
+            name: 1.0 / len(model_names) for name in model_names
+        }
 
     def record_prediction(
-        self, model_name: str, prediction: float, actual_outcome: float, context: Optional[Dict] = None
+        self,
+        model_name: str,
+        prediction: float,
+        actual_outcome: float,
+        context: Optional[Dict] = None,
     ):
         """
         Record a model prediction and outcome.
@@ -336,7 +357,9 @@ class ModelPerformanceTracker:
             "max_error": float(np.max(errors)),
         }
 
-    def calculate_dynamic_weights(self, window: int = 50, power: float = 2.0) -> Dict[str, float]:
+    def calculate_dynamic_weights(
+        self, window: int = 50, power: float = 2.0
+    ) -> Dict[str, float]:
         """
         Calculate dynamic weights based on recent performance.
 
@@ -394,7 +417,9 @@ class ModelPerformanceTracker:
                 history_dict = json.load(f)
 
             self.model_names = history_dict.get("model_names", self.model_names)
-            self.current_weights = history_dict.get("current_weights", self.current_weights)
+            self.current_weights = history_dict.get(
+                "current_weights", self.current_weights
+            )
             self.performance_history = history_dict.get("performance_history", {})
 
             return True

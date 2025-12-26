@@ -5,7 +5,8 @@ Test fixtures and configuration for the Sports Prediction System tests
 # Use a non-interactive matplotlib backend for tests to avoid GUI/tk issues on CI
 try:
     import matplotlib
-    matplotlib.use('Agg')
+
+    matplotlib.use("Agg")
 except Exception:
     # If matplotlib is not available at config time, tests that need it will import and skip accordingly
     pass
@@ -35,24 +36,17 @@ def test_config() -> dict[str, Any]:
     Provide a test configuration dictionary.
     """
     config = create_default_config()
-    config.update({
-        'environment': 'test',
-        'database': {
-            'type': 'sqlite',
-            'path': ':memory:'
-        },
-        'logging': {
-            'level': 'WARNING'
-        },
-        'data_engineering': {
-            'caching': {
-                'enabled': False
+    config.update(
+        {
+            "environment": "test",
+            "database": {"type": "sqlite", "path": ":memory:"},
+            "logging": {"level": "WARNING"},
+            "data_engineering": {
+                "caching": {"enabled": False},
+                "retry_policy": {"max_attempts": 2},
             },
-            'retry_policy': {
-                'max_attempts': 2
-            }
         }
-    })
+    )
     return config
 
 
@@ -88,7 +82,7 @@ def sample_match_data():
             "date": "2025-10-20",
             "home_score": None,
             "away_score": None,
-            "status": "scheduled"
+            "status": "scheduled",
         },
         {
             "id": 2,
@@ -97,8 +91,8 @@ def sample_match_data():
             "date": "2025-10-20",
             "home_score": None,
             "away_score": None,
-            "status": "scheduled"
-        }
+            "status": "scheduled",
+        },
     ]
 
 
@@ -113,15 +107,15 @@ def sample_team_data():
             "name": "Real Madrid",
             "league": "La Liga",
             "founded": 1902,
-            "venue": "Santiago Bernabéu"
+            "venue": "Santiago Bernabéu",
         },
         {
             "id": 2,
             "name": "Barcelona",
             "league": "La Liga",
             "founded": 1899,
-            "venue": "Camp Nou"
-        }
+            "venue": "Camp Nou",
+        },
     ]
 
 
@@ -142,7 +136,7 @@ def sample_predictions():
             "expected_home_score": 1.8,
             "expected_away_score": 1.2,
             "model_version": "1.0.0",
-            "prediction_date": "2025-10-19"
+            "prediction_date": "2025-10-19",
         }
     ]
 

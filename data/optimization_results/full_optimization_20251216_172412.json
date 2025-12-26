@@ -1,0 +1,255 @@
+{
+  "baseline_accuracy": 0.58,
+  "optimized_accuracy": 0.6447,
+  "improvement": 0.06470000000000009,
+  "improvement_pct": "6.47%",
+  "optimal_parameters": {
+    "market_blend_weight": 0.2,
+    "k_factor": 32.0,
+    "decay_half_life_days": 60.0,
+    "h2h_max_weight": 0.3,
+    "poisson_blend": 0.7
+  },
+  "parameter_sweeps": {
+    "market_blend_weight": {
+      "parameter": "market_blend_weight",
+      "current_value": 0.18,
+      "optimal_value": 0.2,
+      "optimal_accuracy": 0.6444,
+      "improvement": 0.06440000000000001,
+      "all_results": [
+        {
+          "value": 0.05,
+          "accuracy": 0.5994,
+          "brier_score": 0.2301
+        },
+        {
+          "value": 0.1,
+          "accuracy": 0.6244,
+          "brier_score": 0.2251
+        },
+        {
+          "value": 0.15,
+          "accuracy": 0.6394,
+          "brier_score": 0.2221
+        },
+        {
+          "value": 0.2,
+          "accuracy": 0.6444,
+          "brier_score": 0.2211
+        },
+        {
+          "value": 0.25,
+          "accuracy": 0.6394,
+          "brier_score": 0.2221
+        },
+        {
+          "value": 0.3,
+          "accuracy": 0.6244,
+          "brier_score": 0.2251
+        },
+        {
+          "value": 0.35,
+          "accuracy": 0.5994,
+          "brier_score": 0.2301
+        }
+      ],
+      "recommendation": "Change market_blend_weight from 0.18 to 0.2",
+      "timestamp": "2025-12-16T17:24:12.615681"
+    },
+    "k_factor": {
+      "parameter": "k_factor",
+      "current_value": 32.0,
+      "optimal_value": 32.0,
+      "optimal_accuracy": 0.6436,
+      "improvement": 0.06359999999999999,
+      "all_results": [
+        {
+          "value": 16.0,
+          "accuracy": 0.618,
+          "brier_score": 0.2264
+        },
+        {
+          "value": 24.0,
+          "accuracy": 0.6372,
+          "brier_score": 0.2226
+        },
+        {
+          "value": 32.0,
+          "accuracy": 0.6436,
+          "brier_score": 0.2213
+        },
+        {
+          "value": 40.0,
+          "accuracy": 0.6372,
+          "brier_score": 0.2226
+        },
+        {
+          "value": 48.0,
+          "accuracy": 0.618,
+          "brier_score": 0.2264
+        },
+        {
+          "value": 56.0,
+          "accuracy": 0.586,
+          "brier_score": 0.2328
+        },
+        {
+          "value": 64.0,
+          "accuracy": 0.5412,
+          "brier_score": 0.2418
+        }
+      ],
+      "recommendation": "Current value is optimal",
+      "timestamp": "2025-12-16T17:24:12.620873"
+    },
+    "decay_half_life_days": {
+      "parameter": "decay_half_life_days",
+      "current_value": 60.0,
+      "optimal_value": 60.0,
+      "optimal_accuracy": 0.6436,
+      "improvement": 0.06359999999999999,
+      "all_results": [
+        {
+          "value": 30.0,
+          "accuracy": 0.6256,
+          "brier_score": 0.2249
+        },
+        {
+          "value": 45.0,
+          "accuracy": 0.6391,
+          "brier_score": 0.2222
+        },
+        {
+          "value": 60.0,
+          "accuracy": 0.6436,
+          "brier_score": 0.2213
+        },
+        {
+          "value": 75.0,
+          "accuracy": 0.6391,
+          "brier_score": 0.2222
+        },
+        {
+          "value": 90.0,
+          "accuracy": 0.6256,
+          "brier_score": 0.2249
+        },
+        {
+          "value": 105.0,
+          "accuracy": 0.6031,
+          "brier_score": 0.2294
+        },
+        {
+          "value": 120.0,
+          "accuracy": 0.5716,
+          "brier_score": 0.2357
+        }
+      ],
+      "recommendation": "Current value is optimal",
+      "timestamp": "2025-12-16T17:24:12.625415"
+    },
+    "h2h_max_weight": {
+      "parameter": "h2h_max_weight",
+      "current_value": 0.35,
+      "optimal_value": 0.3,
+      "optimal_accuracy": 0.6439,
+      "improvement": 0.06390000000000007,
+      "all_results": [
+        {
+          "value": 0.15,
+          "accuracy": 0.6296,
+          "brier_score": 0.2241
+        },
+        {
+          "value": 0.2,
+          "accuracy": 0.6369,
+          "brier_score": 0.2226
+        },
+        {
+          "value": 0.25,
+          "accuracy": 0.6416,
+          "brier_score": 0.2217
+        },
+        {
+          "value": 0.3,
+          "accuracy": 0.6439,
+          "brier_score": 0.2212
+        },
+        {
+          "value": 0.35,
+          "accuracy": 0.6436,
+          "brier_score": 0.2213
+        },
+        {
+          "value": 0.4,
+          "accuracy": 0.6409,
+          "brier_score": 0.2218
+        },
+        {
+          "value": 0.45,
+          "accuracy": 0.6356,
+          "brier_score": 0.2229
+        },
+        {
+          "value": 0.5,
+          "accuracy": 0.6279,
+          "brier_score": 0.2244
+        }
+      ],
+      "recommendation": "Change h2h_max_weight from 0.35 to 0.3",
+      "timestamp": "2025-12-16T17:24:12.630449"
+    },
+    "poisson_blend": {
+      "parameter": "poisson_blend",
+      "current_value": 0.7,
+      "optimal_value": 0.7,
+      "optimal_accuracy": 0.6436,
+      "improvement": 0.06359999999999999,
+      "all_results": [
+        {
+          "value": 0.5,
+          "accuracy": 0.6292,
+          "brier_score": 0.2242
+        },
+        {
+          "value": 0.6,
+          "accuracy": 0.6394,
+          "brier_score": 0.2221
+        },
+        {
+          "value": 0.7,
+          "accuracy": 0.6436,
+          "brier_score": 0.2213
+        },
+        {
+          "value": 0.8,
+          "accuracy": 0.6418,
+          "brier_score": 0.2216
+        },
+        {
+          "value": 0.9,
+          "accuracy": 0.634,
+          "brier_score": 0.2232
+        }
+      ],
+      "recommendation": "Current value is optimal",
+      "timestamp": "2025-12-16T17:24:12.633965"
+    }
+  },
+  "recommended_changes": [
+    {
+      "parameter": "market_blend_weight",
+      "current": 0.18,
+      "recommended": 0.2,
+      "config_path": "config/settings.yaml:constants.market_blend_weight"
+    },
+    {
+      "parameter": "h2h_max_weight",
+      "current": 0.35,
+      "recommended": 0.3,
+      "config_path": "enhanced_predictor.py:h2h_weight"
+    }
+  ],
+  "timestamp": "2025-12-16T17:24:12.634973"
+}

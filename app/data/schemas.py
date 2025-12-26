@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ValidationResult:
     """Result of data validation"""
+
     is_valid: bool
     errors: list[str]
     warnings: list[str]
@@ -40,11 +41,11 @@ def validate_raw_data(data: Any, data_type: str) -> ValidationResult:
         return ValidationResult(True, errors, warnings)
 
     # Validate based on data type
-    if data_type == 'matches':
+    if data_type == "matches":
         errors.extend(_validate_matches(data))
-    elif data_type == 'teams':
+    elif data_type == "teams":
         errors.extend(_validate_teams(data))
-    elif data_type == 'players':
+    elif data_type == "players":
         errors.extend(_validate_players(data))
     else:
         warnings.append(f"Unknown data type: {data_type}")
@@ -56,7 +57,7 @@ def validate_raw_data(data: Any, data_type: str) -> ValidationResult:
 def _validate_matches(data: Any) -> List[str]:
     """Validate match data"""
     errors = []
-    required_fields = ['home_team', 'away_team', 'date']
+    required_fields = ["home_team", "away_team", "date"]
 
     for i, match in enumerate(data):
         if not isinstance(match, dict):
@@ -75,7 +76,7 @@ def _validate_matches(data: Any) -> List[str]:
 def _validate_teams(data: Any) -> List[str]:
     """Validate team data"""
     errors = []
-    required_fields = ['name']
+    required_fields = ["name"]
 
     for i, team in enumerate(data):
         if not isinstance(team, dict):
@@ -94,7 +95,7 @@ def _validate_teams(data: Any) -> List[str]:
 def _validate_players(data: Any) -> List[str]:
     """Validate player data"""
     errors = []
-    required_fields = ['name', 'team']
+    required_fields = ["name", "team"]
 
     for i, player in enumerate(data):
         if not isinstance(player, dict):

@@ -12,8 +12,13 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 
-def retry_with_backoff(max_attempts: int = 3, backoff_strategy: str = 'exponential',
-                      base_delay: float = 1.0, max_delay: float = 60.0, jitter: bool = True) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+def retry_with_backoff(
+    max_attempts: int = 3,
+    backoff_strategy: str = "exponential",
+    base_delay: float = 1.0,
+    max_delay: float = 60.0,
+    jitter: bool = True,
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """Decorator for retrying functions with backoff.
 
     Args:
@@ -23,6 +28,7 @@ def retry_with_backoff(max_attempts: int = 3, backoff_strategy: str = 'exponenti
         max_delay: Maximum delay in seconds
         jitter: Add random jitter to delay
     """
+
     def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(func)
         async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -35,12 +41,14 @@ def retry_with_backoff(max_attempts: int = 3, backoff_strategy: str = 'exponenti
                     last_exception = e
 
                     if attempt == max_attempts - 1:
-                        logger.error(f"All {max_attempts} attempts failed for {func.__name__}: {e}")
+                        logger.error(
+                            f"All {max_attempts} attempts failed for {func.__name__}: {e}"
+                        )
                         raise e
 
                     # Calculate delay
-                    if backoff_strategy == 'exponential':
-                        delay = min(base_delay * (2 ** attempt), max_delay)
+                    if backoff_strategy == "exponential":
+                        delay = min(base_delay * (2**attempt), max_delay)
                     else:  # linear
                         delay = min(base_delay * (attempt + 1), max_delay)
 
@@ -48,14 +56,18 @@ def retry_with_backoff(max_attempts: int = 3, backoff_strategy: str = 'exponenti
                     if jitter:
                         delay += random.uniform(0, delay * 0.1)
 
-                    logger.warning(f"Attempt {attempt + 1} failed for {func.__name__}: {e}. Retrying in {delay:.2f}s")
+                    logger.warning(
+                        f"Attempt {attempt + 1} failed for {func.__name__}: {e}. Retrying in {delay:.2f}s"
+                    )
                     await asyncio.sleep(delay)
 
             # Should never reach here, but just in case
             if last_exception:
                 raise last_exception
             else:
-                raise RuntimeError("All retry attempts failed without capturing exception")
+                raise RuntimeError(
+                    "All retry attempts failed without capturing exception"
+                )
 
         @wraps(func)
         def sync_wrapper(*args: Any, **kwargs: Any) -> Any:

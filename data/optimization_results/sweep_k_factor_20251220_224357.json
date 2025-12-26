@@ -1,0 +1,46 @@
+{
+  "parameter": "k_factor",
+  "current_value": 32.0,
+  "optimal_value": 16.0,
+  "optimal_accuracy": 0.0,
+  "improvement": 0.0,
+  "all_results": [
+    {
+      "value": 16.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 24.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 32.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 40.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 48.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 56.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 64.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    }
+  ],
+  "recommendation": "Change k_factor from 32.0 to 16.0",
+  "timestamp": "2025-12-20T22:43:57.236798"
+}

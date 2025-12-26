@@ -18,11 +18,11 @@ class ThrottleManager:
     def __init__(self) -> None:
         self._last_call: Dict[str, float] = {}
         self._locks: Dict[str, threading.Lock] = {}
-        self._buckets: Dict[str, 'TokenBucket'] = {}
+        self._buckets: Dict[str, "TokenBucket"] = {}
         # Endpoint specific mappings: host -> {path_prefix: min_interval}
         self._endpoint_min_intervals: Dict[str, Dict[str, float]] = {}
         # Endpoint specific token buckets: host -> {path_prefix: TokenBucket}
-        self._endpoint_buckets: Dict[str, Dict[str, 'TokenBucket']] = {}
+        self._endpoint_buckets: Dict[str, Dict[str, "TokenBucket"]] = {}
 
     def _get_host(self, url: str) -> str:
         parsed = urlparse(url)
@@ -43,31 +43,37 @@ class ThrottleManager:
                 time.sleep(sleep_for)
             self._last_call[host] = time.time()
 
-    def set_bucket(self, host: str, bucket: 'TokenBucket') -> None:
+    def set_bucket(self, host: str, bucket: "TokenBucket") -> None:
         self._buckets[host] = bucket
 
-    def set_endpoint_bucket(self, host: str, path_prefix: str, bucket: 'TokenBucket') -> None:
+    def set_endpoint_bucket(
+        self, host: str, path_prefix: str, bucket: "TokenBucket"
+    ) -> None:
         m = self._endpoint_buckets.get(host)
         if m is None:
             m = {}
             self._endpoint_buckets[host] = m
         m[path_prefix] = bucket
 
-    def set_endpoint_min_interval(self, host: str, path_prefix: str, min_interval: float) -> None:
+    def set_endpoint_min_interval(
+        self, host: str, path_prefix: str, min_interval: float
+    ) -> None:
         m = self._endpoint_min_intervals.get(host)
         if m is None:
             m = {}
             self._endpoint_min_intervals[host] = m
         m[path_prefix] = float(min_interval)
 
-    def get_bucket(self, url: str) -> 'TokenBucket | None':
+    def get_bucket(self, url: str) -> "TokenBucket | None":
         host = self._get_host(url)
         # Prefer endpoint-specific bucket matching the longest path prefix
         path = urlparse(url).path
         endpoint_buckets = self._endpoint_buckets.get(host) or {}
         if endpoint_buckets:
             # Find the longest matching prefix
-            matching = [(p, b) for p, b in endpoint_buckets.items() if path.startswith(p)]
+            matching = [
+                (p, b) for p, b in endpoint_buckets.items() if path.startswith(p)
+            ]
             if matching:
                 matching.sort(key=lambda x: len(x[0]), reverse=True)
                 return matching[0][1]
@@ -162,4 +168,3 @@ class TokenBucket:
                 return False
             # Wait a bit and try again
             time.sleep(max(0.01, 1.0 / (self.rate or 1.0)))
-

@@ -19,27 +19,27 @@ class JSONFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         log_entry = {
-            'timestamp': datetime.utcnow().isoformat(),
-            'level': record.levelname,
-            'logger': record.name,
-            'message': record.getMessage(),
-            'module': record.module,
-            'function': record.funcName,
-            'line': record.lineno,
+            "timestamp": datetime.utcnow().isoformat(),
+            "level": record.levelname,
+            "logger": record.name,
+            "message": record.getMessage(),
+            "module": record.module,
+            "function": record.funcName,
+            "line": record.lineno,
         }
 
         # Add correlation ID if present
-        if hasattr(record, 'correlation_id'):
-            log_entry['correlation_id'] = getattr(record, 'correlation_id', None)
+        if hasattr(record, "correlation_id"):
+            log_entry["correlation_id"] = getattr(record, "correlation_id", None)
 
         # Add exception info if present
         if record.exc_info:
-            log_entry['exception'] = self.formatException(record.exc_info)
+            log_entry["exception"] = self.formatException(record.exc_info)
 
         return json.dumps(log_entry)
 
 
-def setup_logging(level: str = 'INFO', config: Optional[Dict[str, Any]] = None) -> None:
+def setup_logging(level: str = "INFO", config: Optional[Dict[str, Any]] = None) -> None:
     """Set up logging configuration for the application.
 
     Args:
@@ -50,11 +50,11 @@ def setup_logging(level: str = 'INFO', config: Optional[Dict[str, Any]] = None) 
         config = {}
 
     # Ensure logs directory exists
-    logs_dir = Path(config.get('location', 'logs'))
+    logs_dir = Path(config.get("location", "logs"))
     logs_dir.mkdir(exist_ok=True)
 
     # Determine if we should use JSON formatting
-    use_json = config.get('format', 'json') == 'json'
+    use_json = config.get("format", "json") == "json"
 
     # Create formatters
     formatter: logging.Formatter
@@ -62,7 +62,7 @@ def setup_logging(level: str = 'INFO', config: Optional[Dict[str, Any]] = None) 
         formatter = JSONFormatter()
     else:
         formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
 
     # Create handlers
@@ -75,16 +75,14 @@ def setup_logging(level: str = 'INFO', config: Optional[Dict[str, Any]] = None) 
 
     # File handler
     file_handler = logging.FileHandler(
-        logs_dir / 'sports_prediction.log',
-        encoding='utf-8'
+        logs_dir / "sports_prediction.log", encoding="utf-8"
     )
     file_handler.setFormatter(formatter)
     handlers.append(file_handler)
 
     # Error file handler
     error_handler = logging.FileHandler(
-        logs_dir / 'sports_prediction_errors.log',
-        encoding='utf-8'
+        logs_dir / "sports_prediction_errors.log", encoding="utf-8"
     )
     error_handler.setLevel(logging.ERROR)
     error_handler.setFormatter(formatter)
@@ -92,13 +90,11 @@ def setup_logging(level: str = 'INFO', config: Optional[Dict[str, Any]] = None) 
 
     # Configure root logger
     logging.basicConfig(
-        level=getattr(logging, level.upper()),
-        handlers=handlers,
-        force=True
+        level=getattr(logging, level.upper()), handlers=handlers, force=True
     )
 
     # Set up correlation ID context
-    if config.get('correlation_ids', True):
+    if config.get("correlation_ids", True):
         setup_correlation_id_filter()
 
 

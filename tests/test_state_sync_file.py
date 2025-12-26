@@ -10,22 +10,22 @@ def _cleanup_file():
     except Exception:
         pass
     try:
-        os.remove('data/cache/disabled_flags.json')
+        os.remove("data/cache/disabled_flags.json")
     except Exception:
         pass
 
 
 def test_state_sync_file_ops():
     _cleanup_file()
-    host = 'filehost.example'
-    path = '/v1/test'
+    host = "filehost.example"
+    path = "/v1/test"
     ts = time.time() + 1800
 
     # Ensure no flag set
     assert state_sync.get_disabled_flag(host, path) is None
 
     # Set with host/path
-    state_sync.set_disabled_flag(host, path, ts, reason='429', set_by='test')
+    state_sync.set_disabled_flag(host, path, ts, reason="429", set_by="test")
     val = state_sync.get_disabled_flag(host, path)
     assert val is not None and val > time.time()
 
@@ -34,7 +34,7 @@ def test_state_sync_file_ops():
     assert state_sync.get_disabled_flag(host, path) is None
 
     # Legacy path-only
-    legacy_path = '/v2/legacy'
+    legacy_path = "/v2/legacy"
     ts2 = time.time() + 900
     state_sync.set_disabled_flag(legacy_path, ts2)
     val = state_sync.get_disabled_flag(legacy_path)
@@ -45,7 +45,7 @@ def test_state_sync_file_ops():
     assert state_sync.get_disabled_flag(legacy_path) is None
 
     # TTL expiration: set a short TTL and ensure it expires
-    short_path = '/v2/shortttl'
+    short_path = "/v2/shortttl"
     ts_short = time.time() + 1
     state_sync.set_disabled_flag(short_path, ts_short)
     assert state_sync.get_disabled_flag(short_path) is not None

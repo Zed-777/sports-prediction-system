@@ -24,7 +24,7 @@ class DashboardServer:
         app = FastAPI(
             title="Sports Prediction Dashboard",
             description="Interactive dashboard for sports predictions",
-            version="1.0.0"
+            version="1.0.0",
         )
 
         @app.get("/")
@@ -113,8 +113,8 @@ class DashboardServer:
                 "components": {
                     "database": "connected",
                     "models": "loaded",
-                    "data_sources": "available"
-                }
+                    "data_sources": "available",
+                },
             }
 
         @app.get("/predictions/{league}/{date}")
@@ -130,7 +130,7 @@ class DashboardServer:
                     "home_win_prob": 0.45,
                     "draw_prob": 0.25,
                     "away_win_prob": 0.30,
-                    "confidence": 0.85
+                    "confidence": 0.85,
                 },
                 {
                     "match_id": 2,
@@ -140,8 +140,8 @@ class DashboardServer:
                     "home_win_prob": 0.55,
                     "draw_prob": 0.30,
                     "away_win_prob": 0.15,
-                    "confidence": 0.78
-                }
+                    "confidence": 0.78,
+                },
             ]
 
             return {
@@ -151,13 +151,15 @@ class DashboardServer:
                 "metadata": {
                     "model_version": "1.0.0",
                     "generated_at": "2025-10-14T12:00:00Z",
-                    "total_matches": len(predictions)
-                }
+                    "total_matches": len(predictions),
+                },
             }
 
         return app
 
-    def run(self, host: str = "127.0.0.1", port: int = 8000, debug: bool = False) -> None:
+    def run(
+        self, host: str = "127.0.0.1", port: int = 8000, debug: bool = False
+    ) -> None:
         """Run the dashboard server"""
         logger.info(f"Starting dashboard on http://{host}:{port}")
 
@@ -166,5 +168,5 @@ class DashboardServer:
             host=host,
             port=port,
             reload=debug,
-            log_level="info" if not debug else "debug"
+            log_level="info" if not debug else "debug",
         )

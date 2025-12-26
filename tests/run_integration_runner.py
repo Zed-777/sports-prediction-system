@@ -6,15 +6,15 @@ import pytest
 def main():
     """Run the integration tests via pytest for environments that don't run pytest directly."""
     # Run the specific integration test file and return exit code
-    ret = pytest.main(['-q', 'tests/test_integration_flashscore.py'])
+    ret = pytest.main(["-q", "tests/test_integration_flashscore.py"])
     if ret == 0:
-        print('TEST_RUN_OK')
+        print("TEST_RUN_OK")
     else:
-        print(f'TESTS_FAILED (exit {ret})')
+        print(f"TESTS_FAILED (exit {ret})")
     return ret
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     code = main()
     sys.exit(code)
 

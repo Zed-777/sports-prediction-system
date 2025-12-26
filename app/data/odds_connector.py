@@ -52,7 +52,9 @@ class OddsDataConnector:
 
         api_key = os.getenv(self.env_key)
         if not api_key:
-            self.logger.debug("[Odds] Skipping fetch: environment key %s missing", self.env_key)
+            self.logger.debug(
+                "[Odds] Skipping fetch: environment key %s missing", self.env_key
+            )
             return None
 
         cache_key = self._build_cache_key(league_slug, home_team, away_team, match_date)
@@ -70,11 +72,15 @@ class OddsDataConnector:
         }
 
         try:
-            response = safe_request_get(url, params=params, timeout=10, logger=self.logger)
+            response = safe_request_get(
+                url, params=params, timeout=10, logger=self.logger
+            )
             response.raise_for_status()
             data = response.json()
         except Exception as exc:  # requests raises multiple exception types
-            self.logger.warning("[Odds] Fetch failed for %s vs %s: %s", home_team, away_team, exc)
+            self.logger.warning(
+                "[Odds] Fetch failed for %s vs %s: %s", home_team, away_team, exc
+            )
             return None
 
         normalized_home = self._normalize_name(home_team)
@@ -92,7 +98,9 @@ class OddsDataConnector:
 
         market = self._extract_market(event)
         if not market:
-            self.logger.info("[Odds] H2H market missing for %s vs %s", home_team, away_team)
+            self.logger.info(
+                "[Odds] H2H market missing for %s vs %s", home_team, away_team
+            )
             return None
 
         probabilities = self._compute_probabilities(market)
@@ -106,12 +114,17 @@ class OddsDataConnector:
             bookmaker_count=market.get("bookmaker_count", 0),
         )
 
-        self._cache[cache_key] = {"payload": odds_payload, "fetched_at": odds_payload.fetched_at}
+        self._cache[cache_key] = {
+            "payload": odds_payload,
+            "fetched_at": odds_payload.fetched_at,
+        }
         return odds_payload
 
     # Internal helpers -------------------------------------------------
 
-    def _build_cache_key(self, league: str, home: str, away: str, match_date: str | None) -> str:
+    def _build_cache_key(
+        self, league: str, home: str, away: str, match_date: str | None
+    ) -> str:
         date_part = match_date or "na"
         return f"{league.lower()}::{self._normalize_name(home)}::{self._normalize_name(away)}::{date_part}"
 
@@ -128,7 +141,9 @@ class OddsDataConnector:
         result: str = "".join(chars)
         return result
 
-    def _match_event(self, events: Any, home_norm: str, away_norm: str) -> dict[str, Any] | None:
+    def _match_event(
+        self, events: Any, home_norm: str, away_norm: str
+    ) -> dict[str, Any] | None:
         if not isinstance(events, list):
             return None
         for event in events:

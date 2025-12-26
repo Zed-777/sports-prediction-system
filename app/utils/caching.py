@@ -16,12 +16,12 @@ class CacheManager:
     """Simple disk-based cache manager"""
 
     def __init__(self, config: dict[str, Any]):
-        self.enabled = config.get('enabled', True)
-        self.ttl_seconds = config.get('ttl_seconds', 3600)
-        self.store_type = config.get('store', 'disk')
+        self.enabled = config.get("enabled", True)
+        self.ttl_seconds = config.get("ttl_seconds", 3600)
+        self.store_type = config.get("store", "disk")
 
         # Set up cache directory
-        self.cache_dir = Path('data/cache')
+        self.cache_dir = Path("data/cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
     async def get(self, key: str) -> Any | None:
@@ -36,13 +36,15 @@ class CacheManager:
                 return None
 
             # Check if cache is expired
-            file_age = datetime.now() - datetime.fromtimestamp(cache_file.stat().st_mtime)
+            file_age = datetime.now() - datetime.fromtimestamp(
+                cache_file.stat().st_mtime
+            )
             if file_age.total_seconds() > self.ttl_seconds:
                 cache_file.unlink()  # Remove expired cache
                 return None
 
             # Load cached data
-            with open(cache_file, encoding='utf-8') as f:
+            with open(cache_file, encoding="utf-8") as f:
                 data = json.load(f)
 
             logger.debug(f"Cache hit for key: {key}")
@@ -60,7 +62,7 @@ class CacheManager:
         try:
             cache_file = self._get_cache_file(key)
 
-            with open(cache_file, 'w', encoding='utf-8') as f:
+            with open(cache_file, "w", encoding="utf-8") as f:
                 json.dump(value, f, default=str)
 
             logger.debug(f"Cache set for key: {key}")
@@ -85,7 +87,7 @@ class CacheManager:
     async def clear(self) -> bool:
         """Clear all cache"""
         try:
-            for cache_file in self.cache_dir.glob('*.json'):
+            for cache_file in self.cache_dir.glob("*.json"):
                 cache_file.unlink()
             return True
         except Exception as e:

@@ -48,45 +48,42 @@ def generate_synthetic_training_data(n_samples: int = 500):
 
         # Create match data
         match = {
-            'home_team': {
-                'name': f'Home Team {i}',
-                'strength': home_strength
+            "home_team": {"name": f"Home Team {i}", "strength": home_strength},
+            "away_team": {"name": f"Away Team {i}", "strength": away_strength},
+            "home_form": {
+                "win_rate": np.clip(home_strength + np.random.normal(0, 0.1), 0, 1),
+                "goals_per_game": 1.0 + home_strength * 1.5,
+                "goals_conceded_per_game": 1.5 - home_strength * 0.8,
             },
-            'away_team': {
-                'name': f'Away Team {i}',
-                'strength': away_strength
+            "away_form": {
+                "win_rate": np.clip(away_strength + np.random.normal(0, 0.1), 0, 1),
+                "goals_per_game": 0.8 + away_strength * 1.2,
+                "goals_conceded_per_game": 1.8 - away_strength * 0.7,
             },
-            'home_form': {
-                'win_rate': np.clip(home_strength + np.random.normal(0, 0.1), 0, 1),
-                'goals_per_game': 1.0 + home_strength * 1.5,
-                'goals_conceded_per_game': 1.5 - home_strength * 0.8
+            "h2h": {
+                "home_wins": 0.45 + (strength_diff * 0.3),
+                "draws": 0.30,
+                "away_wins": 0.25 - (strength_diff * 0.3),
             },
-            'away_form': {
-                'win_rate': np.clip(away_strength + np.random.normal(0, 0.1), 0, 1),
-                'goals_per_game': 0.8 + away_strength * 1.2,
-                'goals_conceded_per_game': 1.8 - away_strength * 0.7
+            "is_derby": np.random.choice([0, 1], p=[0.9, 0.1]),
+            "league_position_diff": np.random.randint(-15, 15),
+            "weather": {
+                "temperature": 18.0 + np.random.normal(0, 5),
+                "precipitation": max(0, np.random.normal(2, 3)),
             },
-            'h2h': {
-                'home_wins': 0.45 + (strength_diff * 0.3),
-                'draws': 0.30,
-                'away_wins': 0.25 - (strength_diff * 0.3)
-            },
-            'is_derby': np.random.choice([0, 1], p=[0.9, 0.1]),
-            'league_position_diff': np.random.randint(-15, 15),
-            'weather': {
-                'temperature': 18.0 + np.random.normal(0, 5),
-                'precipitation': max(0, np.random.normal(2, 3))
-            },
-            'league': 'la-liga'
+            "league": "la-liga",
         }
 
         training_data.append(match)
         labels.append(outcome)
 
     print(f"✓ Generated {len(training_data)} training samples")
-    print(f"  Outcome distribution: Home={labels.count(2)}, Draw={labels.count(1)}, Away={labels.count(0)}")
+    print(
+        f"  Outcome distribution: Home={labels.count(2)}, Draw={labels.count(1)}, Away={labels.count(0)}"
+    )
 
     return training_data, labels
+
 
 def main():
     """Train initial models"""
@@ -122,26 +119,26 @@ def main():
     print("=" * 60)
 
     test_match = {
-        'home_team': {'name': 'FC Barcelona', 'strength': 0.9},
-        'away_team': {'name': 'Test Team', 'strength': 0.5},
-        'home_form': {
-            'win_rate': 0.75,
-            'goals_per_game': 2.3,
-            'goals_conceded_per_game': 0.8
+        "home_team": {"name": "FC Barcelona", "strength": 0.9},
+        "away_team": {"name": "Test Team", "strength": 0.5},
+        "home_form": {
+            "win_rate": 0.75,
+            "goals_per_game": 2.3,
+            "goals_conceded_per_game": 0.8,
         },
-        'away_form': {
-            'win_rate': 0.40,
-            'goals_per_game': 1.1,
-            'goals_conceded_per_game': 1.5
+        "away_form": {
+            "win_rate": 0.40,
+            "goals_per_game": 1.1,
+            "goals_conceded_per_game": 1.5,
         },
-        'h2h': {'home_wins': 0.60, 'draws': 0.25, 'away_wins': 0.15},
-        'is_derby': 0,
-        'league_position_diff': 10,
-        'weather': {'temperature': 20.0, 'precipitation': 0.0},
-        'league': 'la-liga'
+        "h2h": {"home_wins": 0.60, "draws": 0.25, "away_wins": 0.15},
+        "is_derby": 0,
+        "league_position_diff": 10,
+        "weather": {"temperature": 20.0, "precipitation": 0.0},
+        "league": "la-liga",
     }
 
-    result = engine.enhanced_prediction(test_match, 'la-liga')
+    result = engine.enhanced_prediction(test_match, "la-liga")
     print("\nTest match prediction:")
     print(f"  Home Win: {result['home_win_prob']:.1%}")
     print(f"  Draw: {result['draw_prob']:.1%}")
@@ -150,5 +147,6 @@ def main():
     print(f"  Models Used: {result.get('models_used', [])}")
     print(f"  Enhanced: {result['enhanced']}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

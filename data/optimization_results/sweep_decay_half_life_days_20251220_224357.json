@@ -1,0 +1,46 @@
+{
+  "parameter": "decay_half_life_days",
+  "current_value": 60.0,
+  "optimal_value": 30.0,
+  "optimal_accuracy": 0.0,
+  "improvement": 0.0,
+  "all_results": [
+    {
+      "value": 30.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 45.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 60.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 75.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 90.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 105.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    },
+    {
+      "value": 120.0,
+      "accuracy": 0.0,
+      "brier_score": 1.0
+    }
+  ],
+  "recommendation": "Change decay_half_life_days from 60.0 to 30.0",
+  "timestamp": "2025-12-20T22:43:57.357237"
+}

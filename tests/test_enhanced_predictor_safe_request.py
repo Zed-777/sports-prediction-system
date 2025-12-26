@@ -16,13 +16,13 @@ class FakeResp:
 def test_fetch_team_home_away_stats_uses_safe_request(monkeypatch):
     # Replace safe_request_get with a fake that returns controlled data
     payload = {
-        'matches': [
+        "matches": [
             {
-                'utcDate': '2025-11-01T18:00:00Z',
-                'homeTeam': {'id': 1, 'name': 'Test Home'},
-                'awayTeam': {'id': 2, 'name': 'Test Away'},
-                'score': {'fullTime': {'home': 2, 'away': 1}},
-                'referees': []
+                "utcDate": "2025-11-01T18:00:00Z",
+                "homeTeam": {"id": 1, "name": "Test Home"},
+                "awayTeam": {"id": 2, "name": "Test Away"},
+                "score": {"fullTime": {"home": 2, "away": 1}},
+                "referees": [],
             }
         ]
     }
@@ -41,10 +41,10 @@ def test_fetch_team_home_away_stats_uses_safe_request(monkeypatch):
 
     fake_resp = lambda *args, **kwargs: FakeRespObj(payload)
     # Patch both the http utils and the already-imported symbol inside enhanced_predictor
-    monkeypatch.setattr(http_utils, 'safe_request_get', fake_resp)
-    monkeypatch.setattr(enhanced_predictor, 'safe_request_get', fake_resp)
+    monkeypatch.setattr(http_utils, "safe_request_get", fake_resp)
+    monkeypatch.setattr(enhanced_predictor, "safe_request_get", fake_resp)
 
-    ep = EnhancedPredictor('test_key')
-    stats = ep.fetch_team_home_away_stats(1, 'PD')
-    assert 'home' in stats
-    assert stats['home']['matches'] >= 1
+    ep = EnhancedPredictor("test_key")
+    stats = ep.fetch_team_home_away_stats(1, "PD")
+    assert "home" in stats
+    assert stats["home"]["matches"] >= 1

@@ -1,4 +1,5 @@
 """Reliability and calibration utilities for prediction outputs."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -13,14 +14,26 @@ class ReliabilityCalculator:
     """Compute reliability metrics and probability calibrations."""
 
     _LEVELS: list[tuple[float, str, str, str]] = [
-        (88.0, "Very High", "Highly reliable prediction – ideal for confident usage.", "🟢"),
+        (
+            88.0,
+            "Very High",
+            "Highly reliable prediction – ideal for confident usage.",
+            "🟢",
+        ),
         (78.0, "High", "Reliable outlook with minor variance expected.", "🟢"),
-        (68.0, "Moderate", "Balanced reliability – treat as guidance with monitoring.", "🟡"),
+        (
+            68.0,
+            "Moderate",
+            "Balanced reliability – treat as guidance with monitoring.",
+            "🟡",
+        ),
         (58.0, "Limited", "Limited reliability – supplement with manual review.", "🟠"),
         (0.0, "Low", "Low reliability – informational use only.", "🔴"),
     ]
 
-    def calculate(self, prediction: dict[str, Any], enhanced_data: dict[str, Any]) -> dict[str, Any]:
+    def calculate(
+        self, prediction: dict[str, Any], enhanced_data: dict[str, Any]
+    ) -> dict[str, Any]:
         """Return reliability metrics by blending confidence, data quality, and coverage."""
 
         confidence = float(prediction.get("confidence", 0.6))
@@ -28,7 +41,9 @@ class ReliabilityCalculator:
         probabilities = self._extract_probabilities(prediction)
         clarity_component = self._calculate_probability_clarity(probabilities)
         h2h_component = self._calculate_h2h_component(prediction)
-        freshness_component = self._calculate_freshness_component(enhanced_data, prediction)
+        freshness_component = self._calculate_freshness_component(
+            enhanced_data, prediction
+        )
 
         score = (
             confidence * 0.4
@@ -51,7 +66,9 @@ class ReliabilityCalculator:
 
         notes: list[str] = []
         if clarity_component < 0.35:
-            notes.append("Probability distribution fairly flat; monitor for volatility.")
+            notes.append(
+                "Probability distribution fairly flat; monitor for volatility."
+            )
         if h2h_component < 0.25:
             notes.append("Head-to-head sample is limited – emphasis on recent form.")
         if factors["data_quality"] < 70:
@@ -94,7 +111,9 @@ class ReliabilityCalculator:
         calibrated: list[float] = []
         if shrink_factor > 0.0:
             for prob in probabilities:
-                calibrated.append((1.0 - shrink_factor) * prob + shrink_factor * neutral_anchor)
+                calibrated.append(
+                    (1.0 - shrink_factor) * prob + shrink_factor * neutral_anchor
+                )
         else:
             calibrated = probabilities[:]
 
@@ -195,7 +214,9 @@ class ReliabilityCalculator:
     def _calculate_freshness_component(
         enhanced_data: dict[str, Any], prediction: dict[str, Any]
     ) -> float:
-        processing_time = enhanced_data.get("processing_time") or prediction.get("processing_time")
+        processing_time = enhanced_data.get("processing_time") or prediction.get(
+            "processing_time"
+        )
         if processing_time is None:
             return 0.7
         try:

@@ -9,10 +9,13 @@ Files created:
 How to regenerate PNG:
 
 1. Ensure Pillow is installed:
+
    ```powershell
    pip install pillow
    ```
+
 2. Run the generator:
+
    ```powershell
    python scripts/generate_pamphlet_png.py
    ```

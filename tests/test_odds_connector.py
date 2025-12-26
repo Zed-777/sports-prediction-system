@@ -66,9 +66,19 @@ def test_get_match_odds_parses_market(monkeypatch):
 
     assert odds is not None
     assert odds.bookmaker_count == 1
-    assert math.isclose(odds.probabilities["home"], (1 / 1.8) / (1 / 1.8 + 1 / 3.6 + 1 / 4.2), rel_tol=1e-3)
-    assert math.isclose(odds.probabilities["draw"], (1 / 3.6) / (1 / 1.8 + 1 / 3.6 + 1 / 4.2), rel_tol=1e-3)
-    assert odds.probabilities["home"] + odds.probabilities["draw"] + odds.probabilities["away"] == pytest.approx(1.0, rel=1e-3)
+    assert math.isclose(
+        odds.probabilities["home"],
+        (1 / 1.8) / (1 / 1.8 + 1 / 3.6 + 1 / 4.2),
+        rel_tol=1e-3,
+    )
+    assert math.isclose(
+        odds.probabilities["draw"],
+        (1 / 3.6) / (1 / 1.8 + 1 / 3.6 + 1 / 4.2),
+        rel_tol=1e-3,
+    )
+    assert odds.probabilities["home"] + odds.probabilities["draw"] + odds.probabilities[
+        "away"
+    ] == pytest.approx(1.0, rel=1e-3)
 
     # Ensure caching avoids a second HTTP call
     call_count = {"count": 0}
@@ -78,7 +88,9 @@ def test_get_match_odds_parses_market(monkeypatch):
         return _FakeResponse(sample_payload)
 
     monkeypatch.setattr("app.data.odds_connector.requests.get", counting_get)
-    cached = connector.get_match_odds("premier-league", "Team A", "Team B", "2025-11-03")
+    cached = connector.get_match_odds(
+        "premier-league", "Team A", "Team B", "2025-11-03"
+    )
 
     assert cached is odds  # cached object reused
     assert call_count["count"] == 0

@@ -1,0 +1,1421 @@
+{
+  "match_id": 537946,
+  "home_team": "Aston Villa Football Club",
+  "away_team": "Manchester United Football Club",
+  "date": "2025-12-21",
+  "time": "16:30",
+  "league": "Premier League",
+  "confidence": 0.92,
+  "report_accuracy_probability": 0.739,
+  "home_win_probability": 29.53,
+  "draw_probability": 20.4,
+  "away_win_probability": 50.07,
+  "expected_home_goals": 1.7,
+  "expected_away_goals": 2.7,
+  "expected_final_score": "1-2",
+  "score_probability": 7.0,
+  "score_probability_normalized": 4.0,
+  "top3_combined_probability": 19.9,
+  "top3_probability_normalized": 9.0,
+  "over_2_5_goals_probability": 84.2,
+  "both_teams_score_probability": 79.0,
+  "recommendation": "Away Win Likely",
+  "confidence_level": "92.0% (Excellent)",
+  "head_to_head_analysis": {
+    "total_meetings": 0,
+    "wins_when_home": 0,
+    "wins_when_away": 0,
+    "draws": 0,
+    "matches_as_home": 0,
+    "matches_as_away": 0,
+    "avg_goals_for_when_home": 0.0,
+    "avg_goals_against_when_home": 0.0,
+    "avg_goals_for_when_away": 0.0,
+    "avg_goals_against_when_away": 0.0,
+    "recent_form": [],
+    "home_advantage_vs_opponent": 0.0,
+    "away_record_vs_opponent": 0.0,
+    "data_sources": [
+      "Domestic PL"
+    ],
+    "total_sources": 1
+  },
+  "home_performance_analysis": {
+    "home": {
+      "matches": 7,
+      "win_rate": 85.71428571428571,
+      "draw_rate": 0.0,
+      "loss_rate": 14.285714285714285,
+      "avg_goals_for": 1.8571428571428572,
+      "avg_goals_against": 0.8571428571428571,
+      "goal_difference": 1.0,
+      "weighted_form_score": 83.3,
+      "momentum_direction": "Stable",
+      "momentum_slope": -0.0,
+      "form_pressure": "Low (Overperforming)",
+      "current_streak": "4 game winning streak",
+      "recent_5_performance": 100.0,
+      "form_quality": "Excellent",
+      "consistency_score": 100.0,
+      "confidence_interval": {
+        "lower": 75.8,
+        "upper": 90.8
+      },
+      "regression_expected": true,
+      "scoring_form": 2.0,
+      "defensive_form": 0.25,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2025-12-06T12:30:00Z",
+          "opponent": "Arsenal FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-11-30T14:05:00Z",
+          "opponent": "Wolverhampton Wanderers FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 4,
+          "goals_against": 0,
+          "date": "2025-11-09T14:00:00Z",
+          "opponent": "AFC Bournemouth"
+        },
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-10-26T14:00:00Z",
+          "opponent": "Manchester City FC"
+        }
+      ]
+    },
+    "away": {
+      "matches": 8,
+      "win_rate": 50.0,
+      "draw_rate": 25.0,
+      "loss_rate": 25.0,
+      "avg_goals_for": 1.5,
+      "avg_goals_against": 1.375,
+      "goal_difference": 0.125,
+      "weighted_form_score": 69.6,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 0.9,
+      "form_pressure": "Low",
+      "current_streak": "3 game winning streak",
+      "recent_5_performance": 75.0,
+      "form_quality": "Very Good",
+      "consistency_score": 61.0,
+      "confidence_interval": {
+        "lower": 62.1,
+        "upper": 77.1
+      },
+      "regression_expected": false,
+      "scoring_form": 2.25,
+      "defensive_form": 2.0,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 2,
+          "date": "2025-12-14T14:00:00Z",
+          "opponent": "West Ham United FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 4,
+          "goals_against": 3,
+          "date": "2025-12-03T19:30:00Z",
+          "opponent": "Brighton & Hove Albion FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2025-11-23T14:00:00Z",
+          "opponent": "Leeds United FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2025-11-01T20:00:00Z",
+          "opponent": "Liverpool FC"
+        }
+      ]
+    },
+    "home_advantage": 35.71428571428571,
+    "scoring_difference": 0.3571428571428572
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 7,
+      "win_rate": 57.14285714285714,
+      "draw_rate": 28.57142857142857,
+      "loss_rate": 14.285714285714285,
+      "avg_goals_for": 2.2857142857142856,
+      "avg_goals_against": 1.5714285714285714,
+      "goal_difference": 0.7142857142857143,
+      "weighted_form_score": 31.1,
+      "momentum_direction": "Falling Sharply",
+      "momentum_slope": -0.5,
+      "form_pressure": "High",
+      "current_streak": "2 consecutive draws",
+      "recent_5_performance": 41.7,
+      "form_quality": "Crisis",
+      "consistency_score": 67.3,
+      "confidence_interval": {
+        "lower": 23.6,
+        "upper": 38.6
+      },
+      "regression_expected": true,
+      "scoring_form": 2.25,
+      "defensive_form": 2.0,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "D",
+          "goals_for": 4,
+          "goals_against": 4,
+          "date": "2025-12-15T20:00:00Z",
+          "opponent": "AFC Bournemouth"
+        },
+        {
+          "result": "D",
+          "goals_for": 1,
+          "goals_against": 1,
+          "date": "2025-12-04T20:00:00Z",
+          "opponent": "West Ham United FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2025-11-24T20:00:00Z",
+          "opponent": "Everton FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 4,
+          "goals_against": 2,
+          "date": "2025-10-25T16:30:00Z",
+          "opponent": "Brighton & Hove Albion FC"
+        }
+      ]
+    },
+    "away": {
+      "matches": 8,
+      "win_rate": 37.5,
+      "draw_rate": 37.5,
+      "loss_rate": 25.0,
+      "avg_goals_for": 1.75,
+      "avg_goals_against": 1.75,
+      "goal_difference": 0.0,
+      "weighted_form_score": 62.4,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 0.8,
+      "form_pressure": "Medium",
+      "current_streak": "2 game winning streak",
+      "recent_5_performance": 66.7,
+      "form_quality": "Good",
+      "consistency_score": 70.0,
+      "confidence_interval": {
+        "lower": 54.9,
+        "upper": 69.9
+      },
+      "regression_expected": false,
+      "scoring_form": 2.5,
+      "defensive_form": 1.5,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 4,
+          "goals_against": 1,
+          "date": "2025-12-08T20:00:00Z",
+          "opponent": "Wolverhampton Wanderers FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2025-11-30T12:00:00Z",
+          "opponent": "Crystal Palace FC"
+        },
+        {
+          "result": "D",
+          "goals_for": 2,
+          "goals_against": 2,
+          "date": "2025-11-08T12:30:00Z",
+          "opponent": "Tottenham Hotspur FC"
+        },
+        {
+          "result": "D",
+          "goals_for": 2,
+          "goals_against": 2,
+          "date": "2025-11-01T15:00:00Z",
+          "opponent": "Nottingham Forest FC"
+        }
+      ]
+    },
+    "home_advantage": 19.64285714285714,
+    "scoring_difference": 0.5357142857142856
+  },
+  "intelligence_summary": {
+    "h2h_meetings": 0,
+    "home_advantage_pct": 35.71428571428571,
+    "recent_h2h_form": "No recent meetings",
+    "key_factors": [
+      "No head-to-head history between teams",
+      "Excellent home form (86% win rate)",
+      "Strong home goal difference (+1.0)"
+    ]
+  },
+  "player_availability": {
+    "home_team": {
+      "data_available": true,
+      "team_name": "Aston Villa FC",
+      "squad_size": 33,
+      "positions": {
+        "goalkeepers": 6,
+        "defenders": 12,
+        "midfielders": 11,
+        "attackers": 4
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 33 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "data_available": true,
+      "team_name": "Manchester United FC",
+      "squad_size": 28,
+      "positions": {
+        "goalkeepers": 3,
+        "defenders": 14,
+        "midfielders": 4,
+        "attackers": 7
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org",
+        "Limited midfield depth"
+      ],
+      "key_players_available": "All 28 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org",
+        "Limited midfield depth"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": 8.7,
+      "humidity": 88.0,
+      "wind_speed": 10.2,
+      "precipitation": 0.0,
+      "conditions": "clear",
+      "visibility": 18.0,
+      "pressure": 1013,
+      "source": "open-meteo",
+      "match_hour": 16,
+      "location": {
+        "lat": 52.509,
+        "lon": -1.8847
+      }
+    },
+    "impact_assessment": {
+      "goal_modifier": 0.9604,
+      "playing_style_effect": "normal",
+      "weather_advantage": "none",
+      "tactical_adjustments": [
+        "Increased player fatigue expected"
+      ],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MILD",
+      "conditions_summary": "Good playing conditions (8.7°C, 0.0mm rain, 10.2 km/h wind) minimal weather impact expected",
+      "modifier_components": {
+        "temperature": 0.9351,
+        "precipitation": 1.0,
+        "wind": 1.0732,
+        "humidity": 0.957,
+        "interaction": 1.0,
+        "stadium": 1.0,
+        "team_style": 1.0
+      },
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 0.9604,
+    "style_impact": "normal",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "data_available": false,
+    "name": "Referee TBD",
+    "home_bias_pct": null,
+    "cards_per_game": null,
+    "penalties_per_game": null,
+    "strict_level": "unknown",
+    "experience_level": "unknown",
+    "warning": "Referee data unavailable - appointment not announced"
+  },
+  "team_news": {
+    "home_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Aston Villa FC"
+    },
+    "away_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Manchester United FC"
+    }
+  },
+  "data_quality_score": 54.0,
+  "reliability_metrics": {},
+  "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+  "generated_at": "2025-12-20T22:12:55.545728",
+  "raw_prediction": {
+    "confidence": 0.92,
+    "report_accuracy_probability": 0.7388,
+    "home_win_prob": 29.53,
+    "draw_prob": 20.4,
+    "away_win_prob": 50.07,
+    "expected_home_goals": 1.69,
+    "expected_away_goals": 2.66,
+    "processing_time": 2.782092809677124,
+    "expected_final_score": "1-2",
+    "score_probability": 6.953950257675373,
+    "score_probability_normalized": 4.0,
+    "top3_combined_probability": 19.856001683954965,
+    "top3_probability_normalized": 9.0,
+    "alternative_scores": [
+      "1-3",
+      "2-2",
+      "2-3"
+    ],
+    "score_probabilities": [
+      [
+        "1-2",
+        6.953950257675373
+      ],
+      [
+        "1-3",
+        6.507255536262196
+      ],
+      [
+        "2-2",
+        6.394795890017395
+      ],
+      [
+        "2-3",
+        5.984019070693359
+      ],
+      [
+        "1-1",
+        4.954205749438485
+      ]
+    ],
+    "score_probabilities_normalized": [
+      [
+        "1-2",
+        4.0
+      ],
+      [
+        "1-3",
+        4.0
+      ],
+      [
+        "2-2",
+        4.0
+      ],
+      [
+        "2-3",
+        4.0
+      ],
+      [
+        "1-1",
+        3.0
+      ]
+    ],
+    "over_2_5_probability": 84.22393599087059,
+    "both_teams_score_probability": 79.02799682875755,
+    "head_to_head": {
+      "total_meetings": 0,
+      "wins_when_home": 0,
+      "wins_when_away": 0,
+      "draws": 0,
+      "matches_as_home": 0,
+      "matches_as_away": 0,
+      "avg_goals_for_when_home": 0.0,
+      "avg_goals_against_when_home": 0.0,
+      "avg_goals_for_when_away": 0.0,
+      "avg_goals_against_when_away": 0.0,
+      "recent_form": [],
+      "home_advantage_vs_opponent": 0.0,
+      "away_record_vs_opponent": 0.0,
+      "data_sources": [
+        "Domestic PL"
+      ],
+      "total_sources": 1
+    },
+    "home_performance": {
+      "home": {
+        "matches": 7,
+        "win_rate": 85.71428571428571,
+        "draw_rate": 0.0,
+        "loss_rate": 14.285714285714285,
+        "avg_goals_for": 1.8571428571428572,
+        "avg_goals_against": 0.8571428571428571,
+        "goal_difference": 1.0,
+        "weighted_form_score": 83.3,
+        "momentum_direction": "Stable",
+        "momentum_slope": -0.0,
+        "form_pressure": "Low (Overperforming)",
+        "current_streak": "4 game winning streak",
+        "recent_5_performance": 100.0,
+        "form_quality": "Excellent",
+        "consistency_score": 100.0,
+        "confidence_interval": {
+          "lower": 75.8,
+          "upper": 90.8
+        },
+        "regression_expected": true,
+        "scoring_form": 2.0,
+        "defensive_form": 0.25,
+        "sample_size": 4,
+        "recent_matches": [
+          {
+            "result": "W",
+            "goals_for": 2,
+            "goals_against": 1,
+            "date": "2025-12-06T12:30:00Z",
+            "opponent": "Arsenal FC"
+          },
+          {
+            "result": "W",
+            "goals_for": 1,
+            "goals_against": 0,
+            "date": "2025-11-30T14:05:00Z",
+            "opponent": "Wolverhampton Wanderers FC"
+          },
+          {
+            "result": "W",
+            "goals_for": 4,
+            "goals_against": 0,
+            "date": "2025-11-09T14:00:00Z",
+            "opponent": "AFC Bournemouth"
+          },
+          {
+            "result": "W",
+            "goals_for": 1,
+            "goals_against": 0,
+            "date": "2025-10-26T14:00:00Z",
+            "opponent": "Manchester City FC"
+          }
+        ]
+      },
+      "away": {
+        "matches": 8,
+        "win_rate": 50.0,
+        "draw_rate": 25.0,
+        "loss_rate": 25.0,
+        "avg_goals_for": 1.5,
+        "avg_goals_against": 1.375,
+        "goal_difference": 0.125,
+        "weighted_form_score": 69.6,
+        "momentum_direction": "Rising Strongly",
+        "momentum_slope": 0.9,
+        "form_pressure": "Low",
+        "current_streak": "3 game winning streak",
+        "recent_5_performance": 75.0,
+        "form_quality": "Very Good",
+        "consistency_score": 61.0,
+        "confidence_interval": {
+          "lower": 62.1,
+          "upper": 77.1
+        },
+        "regression_expected": false,
+        "scoring_form": 2.25,
+        "defensive_form": 2.0,
+        "sample_size": 4,
+        "recent_matches": [
+          {
+            "result": "W",
+            "goals_for": 3,
+            "goals_against": 2,
+            "date": "2025-12-14T14:00:00Z",
+            "opponent": "West Ham United FC"
+          },
+          {
+            "result": "W",
+            "goals_for": 4,
+            "goals_against": 3,
+            "date": "2025-12-03T19:30:00Z",
+            "opponent": "Brighton & Hove Albion FC"
+          },
+          {
+            "result": "W",
+            "goals_for": 2,
+            "goals_against": 1,
+            "date": "2025-11-23T14:00:00Z",
+            "opponent": "Leeds United FC"
+          },
+          {
+            "result": "L",
+            "goals_for": 0,
+            "goals_against": 2,
+            "date": "2025-11-01T20:00:00Z",
+            "opponent": "Liverpool FC"
+          }
+        ]
+      },
+      "home_advantage": 35.71428571428571,
+      "scoring_difference": 0.3571428571428572
+    },
+    "away_performance": {
+      "home": {
+        "matches": 7,
+        "win_rate": 57.14285714285714,
+        "draw_rate": 28.57142857142857,
+        "loss_rate": 14.285714285714285,
+        "avg_goals_for": 2.2857142857142856,
+        "avg_goals_against": 1.5714285714285714,
+        "goal_difference": 0.7142857142857143,
+        "weighted_form_score": 31.1,
+        "momentum_direction": "Falling Sharply",
+        "momentum_slope": -0.5,
+        "form_pressure": "High",
+        "current_streak": "2 consecutive draws",
+        "recent_5_performance": 41.7,
+        "form_quality": "Crisis",
+        "consistency_score": 67.3,
+        "confidence_interval": {
+          "lower": 23.6,
+          "upper": 38.6
+        },
+        "regression_expected": true,
+        "scoring_form": 2.25,
+        "defensive_form": 2.0,
+        "sample_size": 4,
+        "recent_matches": [
+          {
+            "result": "D",
+            "goals_for": 4,
+            "goals_against": 4,
+            "date": "2025-12-15T20:00:00Z",
+            "opponent": "AFC Bournemouth"
+          },
+          {
+            "result": "D",
+            "goals_for": 1,
+            "goals_against": 1,
+            "date": "2025-12-04T20:00:00Z",
+            "opponent": "West Ham United FC"
+          },
+          {
+            "result": "L",
+            "goals_for": 0,
+            "goals_against": 1,
+            "date": "2025-11-24T20:00:00Z",
+            "opponent": "Everton FC"
+          },
+          {
+            "result": "W",
+            "goals_for": 4,
+            "goals_against": 2,
+            "date": "2025-10-25T16:30:00Z",
+            "opponent": "Brighton & Hove Albion FC"
+          }
+        ]
+      },
+      "away": {
+        "matches": 8,
+        "win_rate": 37.5,
+        "draw_rate": 37.5,
+        "loss_rate": 25.0,
+        "avg_goals_for": 1.75,
+        "avg_goals_against": 1.75,
+        "goal_difference": 0.0,
+        "weighted_form_score": 62.4,
+        "momentum_direction": "Rising Strongly",
+        "momentum_slope": 0.8,
+        "form_pressure": "Medium",
+        "current_streak": "2 game winning streak",
+        "recent_5_performance": 66.7,
+        "form_quality": "Good",
+        "consistency_score": 70.0,
+        "confidence_interval": {
+          "lower": 54.9,
+          "upper": 69.9
+        },
+        "regression_expected": false,
+        "scoring_form": 2.5,
+        "defensive_form": 1.5,
+        "sample_size": 4,
+        "recent_matches": [
+          {
+            "result": "W",
+            "goals_for": 4,
+            "goals_against": 1,
+            "date": "2025-12-08T20:00:00Z",
+            "opponent": "Wolverhampton Wanderers FC"
+          },
+          {
+            "result": "W",
+            "goals_for": 2,
+            "goals_against": 1,
+            "date": "2025-11-30T12:00:00Z",
+            "opponent": "Crystal Palace FC"
+          },
+          {
+            "result": "D",
+            "goals_for": 2,
+            "goals_against": 2,
+            "date": "2025-11-08T12:30:00Z",
+            "opponent": "Tottenham Hotspur FC"
+          },
+          {
+            "result": "D",
+            "goals_for": 2,
+            "goals_against": 2,
+            "date": "2025-11-01T15:00:00Z",
+            "opponent": "Nottingham Forest FC"
+          }
+        ]
+      },
+      "home_advantage": 19.64285714285714,
+      "scoring_difference": 0.5357142857142856
+    },
+    "goal_timing": {
+      "first_half_goal_probability": 50.9,
+      "second_half_goal_probability": 49.1,
+      "late_goal_likelihood": 24.9,
+      "early_goal_likelihood": 22.4,
+      "home_attack_style": "aggressive",
+      "away_attack_style": "aggressive",
+      "period_probabilities": {
+        "0-15": 15.5,
+        "16-30": 16.6,
+        "31-45": 18.8,
+        "46-60": 15.5,
+        "61-75": 16.4,
+        "76-90": 17.3
+      },
+      "expected_goals_by_period": {
+        "0-15": 0.56,
+        "16-30": 0.6,
+        "31-45": 0.68,
+        "46-60": 0.56,
+        "61-75": 0.59,
+        "76-90": 0.62
+      },
+      "most_likely_goal_period": "31-45",
+      "scoring_tempo": "high"
+    },
+    "intelligence_summary": {
+      "h2h_meetings": 0,
+      "home_advantage_pct": 35.71428571428571,
+      "recent_h2h_form": "No recent meetings",
+      "key_factors": [
+        "No head-to-head history between teams",
+        "Excellent home form (86% win rate)",
+        "Strong home goal difference (+1.0)"
+      ]
+    },
+    "ai_features_active": false,
+    "market_intelligence_active": false,
+    "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+    "match_context": "unknown",
+    "model_agreement_factor": 0.5,
+    "optimization_applied": false,
+    "component_weights": {},
+    "betting_market_analysis": {
+      "market_intelligence_active": false,
+      "note": "Market intelligence not available - install API keys for enhanced accuracy"
+    },
+    "phase1_enhancements": [
+      "ELO adjustment applied (diff: 100)",
+      "Kickoff: sunday afternoon",
+      "League calibration: PL (predictability=65%)"
+    ],
+    "phase1_enhanced": true,
+    "original_prediction": {
+      "home_prob": 25.58537624335156,
+      "draw_prob": 17.292255079288573,
+      "away_prob": 57.12236867735986
+    },
+    "context_description": "Standard league match",
+    "upset_alert": false,
+    "upset_probability": 29.2,
+    "btts": {
+      "btts_yes_probability": 65.6,
+      "btts_no_probability": 34.4,
+      "prediction": "Yes",
+      "confidence": 68.7,
+      "method_breakdown": {
+        "poisson": 79.1,
+        "historical": 60.0,
+        "league_base": 52.0
+      },
+      "factors": {
+        "home_scoring_chance": 84.1,
+        "away_scoring_chance": 94.0
+      }
+    },
+    "over_under": {
+      "expected_total_goals": 4.65,
+      "lines": {
+        "0.5": {
+          "over_probability": 99.0,
+          "under_probability": 1.0,
+          "prediction": "Over",
+          "fair_over_odds": 1.01,
+          "fair_under_odds": 104.58
+        },
+        "1.5": {
+          "over_probability": 94.6,
+          "under_probability": 5.4,
+          "prediction": "Over",
+          "fair_over_odds": 1.06,
+          "fair_under_odds": 18.51
+        },
+        "2.5": {
+          "over_probability": 84.3,
+          "under_probability": 15.7,
+          "prediction": "Over",
+          "fair_over_odds": 1.19,
+          "fair_under_odds": 6.35
+        },
+        "3.5": {
+          "over_probability": 68.2,
+          "under_probability": 31.8,
+          "prediction": "Over",
+          "fair_over_odds": 1.47,
+          "fair_under_odds": 3.15
+        },
+        "4.5": {
+          "over_probability": 49.6,
+          "under_probability": 50.4,
+          "prediction": "Under",
+          "fair_over_odds": 2.02,
+          "fair_under_odds": 1.98
+        },
+        "5.5": {
+          "over_probability": 32.3,
+          "under_probability": 67.7,
+          "prediction": "Under",
+          "fair_over_odds": 3.1,
+          "fair_under_odds": 1.48
+        }
+      },
+      "recommended_line": "4.5",
+      "main_prediction": "Under"
+    },
+    "exact_scores": [
+      {
+        "score": "1-2",
+        "probability": 6.9
+      },
+      {
+        "score": "1-3",
+        "probability": 6.5
+      },
+      {
+        "score": "2-2",
+        "probability": 6.4
+      },
+      {
+        "score": "2-3",
+        "probability": 6.0
+      },
+      {
+        "score": "1-1",
+        "probability": 4.9
+      },
+      {
+        "score": "1-4",
+        "probability": 4.6
+      },
+      {
+        "score": "2-1",
+        "probability": 4.5
+      },
+      {
+        "score": "2-4",
+        "probability": 4.2
+      },
+      {
+        "score": "3-2",
+        "probability": 3.9
+      },
+      {
+        "score": "0-2",
+        "probability": 3.8
+      }
+    ],
+    "two_stage_score": {
+      "expected_home": 1.84,
+      "expected_away": 2.81,
+      "most_likely": "2-1",
+      "probability": 21.9,
+      "alternatives": [
+        "1-0 (16.6%)",
+        "3-2 (13.4%)",
+        "2-0 (12.0%)"
+      ]
+    },
+    "phase4_enhanced": true,
+    "shot_quality": {
+      "home": {
+        "team_name": "Aston Villa FC",
+        "shots_per_game": 0.0,
+        "shots_on_target_per_game": 0.0,
+        "big_chances_per_game": 0.0,
+        "big_chances_missed_per_game": 0.0,
+        "shot_conversion_rate": 0.0,
+        "shot_accuracy": 0.0,
+        "xg_per_shot": 0.12100000000000001,
+        "is_overperforming": false,
+        "is_underperforming": false,
+        "performance_deviation": 0.0,
+        "data_quality": "partial",
+        "matches_analyzed": 15
+      },
+      "away": {
+        "team_name": "Manchester United FC",
+        "shots_per_game": 0.0,
+        "shots_on_target_per_game": 0.0,
+        "big_chances_per_game": 0.0,
+        "big_chances_missed_per_game": 0.0,
+        "shot_conversion_rate": 0.0,
+        "shot_accuracy": 0.0,
+        "xg_per_shot": 0.12100000000000001,
+        "is_overperforming": false,
+        "is_underperforming": false,
+        "performance_deviation": 0.0,
+        "data_quality": "partial",
+        "matches_analyzed": 15
+      }
+    },
+    "defensive_stats": {
+      "home": {
+        "team_name": "Aston Villa FC",
+        "clean_sheet_rate": 0.0,
+        "goals_conceded_per_game": 0.0,
+        "shots_faced_per_game": 0.0,
+        "shots_on_target_faced_per_game": 0.0,
+        "big_chances_conceded_per_game": 0.0,
+        "blocks_per_game": 3.5,
+        "interceptions_per_game": 10.0,
+        "tackles_won_per_game": 16.0,
+        "tackles_success_rate": 0.65,
+        "xga_per_game": 0.0,
+        "defensive_rating": 100,
+        "is_over_conceding": false,
+        "is_under_conceding": false,
+        "concession_deviation": 0.0,
+        "data_quality": "partial",
+        "matches_analyzed": 15
+      },
+      "away": {
+        "team_name": "Manchester United FC",
+        "clean_sheet_rate": 0.0,
+        "goals_conceded_per_game": 0.0,
+        "shots_faced_per_game": 0.0,
+        "shots_on_target_faced_per_game": 0.0,
+        "big_chances_conceded_per_game": 0.0,
+        "blocks_per_game": 3.5,
+        "interceptions_per_game": 10.0,
+        "tackles_won_per_game": 16.0,
+        "tackles_success_rate": 0.65,
+        "xga_per_game": 0.0,
+        "defensive_rating": 100,
+        "is_over_conceding": false,
+        "is_under_conceding": false,
+        "concession_deviation": 0.0,
+        "data_quality": "partial",
+        "matches_analyzed": 15
+      }
+    },
+    "phase5_enhanced": true,
+    "phase5_adjustments": [
+      "Home attack: low shot volume, poor shot accuracy",
+      "Away defense: strong defensive rating, low clean sheet rate",
+      "Away attack: low shot volume, poor shot accuracy",
+      "Home defense: strong defensive rating, low clean sheet rate"
+    ],
+    "market_implied": {
+      "home": 0.3772968558595345,
+      "draw": 0.2858309514087382,
+      "away": 0.3368721927317272
+    },
+    "odds_movement": {
+      "match_id": "Aston Villa FC_Manchester United FC_2025-12-21",
+      "home_team": "Aston Villa FC",
+      "away_team": "Manchester United FC",
+      "opening_odds": {
+        "timestamp": "2025-12-20T15:12:00.922175",
+        "home_odds": 2.5,
+        "draw_odds": 3.3,
+        "away_odds": 2.8,
+        "source": "api"
+      },
+      "current_odds": {
+        "timestamp": "2025-12-20T22:12:32.608581",
+        "home_odds": 2.5,
+        "draw_odds": 3.3,
+        "away_odds": 2.8,
+        "source": "api"
+      },
+      "home_movement": "stable",
+      "away_movement": "stable",
+      "home_movement_pct": 0.0,
+      "away_movement_pct": 0.0,
+      "movement_strength": "minimal",
+      "sharp_money_detected": false,
+      "sharp_money_side": null,
+      "sharp_confidence": 0.0,
+      "market_favorite": "home",
+      "implied_home_prob": 0.3772968558595345,
+      "implied_draw_prob": 0.2858309514087382,
+      "implied_away_prob": 0.3368721927317272
+    },
+    "phase6_enhanced": true,
+    "confidence_enhancement_factors": {
+      "data_quality": -0.042,
+      "match_history": 0.0,
+      "h2h_data": 0.0,
+      "consistency": 0.03066691729323309,
+      "freshness": 0.02
+    },
+    "confidence_boost_applied": 0.008666917293233087,
+    "original_confidence": 25.0,
+    "reliability_metrics": {
+      "score": 69.2,
+      "level": "Moderate",
+      "indicator": "🟡 Moderate",
+      "recommendation": "Balanced reliability – treat as guidance with monitoring.",
+      "confidence_intervals": {
+        "home": [
+          25.5,
+          32.9
+        ],
+        "draw": [
+          15.6,
+          23.0
+        ],
+        "away": [
+          47.8,
+          55.2
+        ],
+        "margin_percent": 3.7
+      },
+      "spread_points": 32.1,
+      "factors": {
+        "model_confidence": 92.0,
+        "data_quality": 54.0,
+        "probability_clarity": 89.0,
+        "h2h_depth": 0.0,
+        "data_freshness": 55.0
+      },
+      "primary_driver": "model_confidence",
+      "notes": [
+        "Head-to-head sample is limited – emphasis on recent form.",
+        "Data quality below optimal threshold; confidence capped."
+      ]
+    },
+    "prediction_reliability": {
+      "score": 69.2,
+      "level": "Moderate",
+      "indicator": "🟡 Moderate",
+      "recommendation": "Balanced reliability – treat as guidance with monitoring.",
+      "confidence_intervals": {
+        "home": [
+          25.5,
+          32.9
+        ],
+        "draw": [
+          15.6,
+          23.0
+        ],
+        "away": [
+          47.8,
+          55.2
+        ],
+        "margin_percent": 3.7
+      },
+      "spread_points": 32.1,
+      "factors": {
+        "model_confidence": 92.0,
+        "data_quality": 54.0,
+        "probability_clarity": 89.0,
+        "h2h_depth": 0.0,
+        "data_freshness": 55.0
+      },
+      "primary_driver": "model_confidence",
+      "notes": [
+        "Head-to-head sample is limited – emphasis on recent form.",
+        "Data quality below optimal threshold; confidence capped."
+      ]
+    },
+    "calibration_details": {
+      "applied": true,
+      "shrink_factor": 0.077,
+      "probabilities": {
+        "home_win_prob": 29.53,
+        "draw_prob": 20.4,
+        "away_win_prob": 50.07
+      },
+      "original_probabilities": {
+        "home_win_prob": 29.22,
+        "draw_prob": 19.32,
+        "away_win_prob": 51.47
+      },
+      "pre_calibration_probabilities": {
+        "home_win_prob": 0.2922,
+        "draw_prob": 0.1932,
+        "away_win_prob": 0.5147
+      },
+      "neutral_anchor": 33.3,
+      "notes": [
+        "Applied 7.7% shrink toward neutral due to reliability score 69.2."
+      ],
+      "accuracy_adjustment": {
+        "original_probability": 0.77,
+        "calibrated_probability": 0.739
+      }
+    },
+    "confidence_intervals": {
+      "home": [
+        25.5,
+        32.9
+      ],
+      "draw": [
+        15.6,
+        23.0
+      ],
+      "away": [
+        47.8,
+        55.2
+      ],
+      "margin_percent": 3.7
+    },
+    "home_win_probability": 29.53,
+    "draw_probability": 20.4,
+    "away_win_probability": 50.07,
+    "phase2_lite_enhanced": true,
+    "phase2_processing_time": 14.729125022888184,
+    "confidence_assessment": {
+      "level": "Excellent",
+      "description": "Very high confidence - suitable for important decisions",
+      "color": "#27ae60"
+    },
+    "data_quality_assessment": {
+      "score": 54.0,
+      "level": "Poor",
+      "description": "Insufficient data quality - use with caution",
+      "data_sources": 1,
+      "processing_time": 0
+    }
+  },
+  "data_enhancement": {
+    "player_availability": {
+      "home_team": {
+        "data_available": true,
+        "team_name": "Aston Villa FC",
+        "squad_size": 33,
+        "positions": {
+          "goalkeepers": 6,
+          "defenders": 12,
+          "midfielders": 11,
+          "attackers": 4
+        },
+        "squad_insights": [
+          "Full squad available in Football-Data.org"
+        ],
+        "key_players_available": "All 33 registered players (no injury data)",
+        "key_players_injured": "Unknown - no injury API configured",
+        "strength_reduction_pct": 0.0,
+        "injury_areas": [],
+        "expected_lineup_strength": 100.0,
+        "injury_concerns": [
+          "Full squad available in Football-Data.org"
+        ],
+        "data_source": "Football-Data.org squad list (no injury status)",
+        "recommendation": "Add injury tracking API for availability data",
+        "provenance": {
+          "injury_clamped": false,
+          "clamped_fields": {}
+        }
+      },
+      "away_team": {
+        "data_available": true,
+        "team_name": "Manchester United FC",
+        "squad_size": 28,
+        "positions": {
+          "goalkeepers": 3,
+          "defenders": 14,
+          "midfielders": 4,
+          "attackers": 7
+        },
+        "squad_insights": [
+          "Full squad available in Football-Data.org",
+          "Limited midfield depth"
+        ],
+        "key_players_available": "All 28 registered players (no injury data)",
+        "key_players_injured": "Unknown - no injury API configured",
+        "strength_reduction_pct": 0.0,
+        "injury_areas": [],
+        "expected_lineup_strength": 100.0,
+        "injury_concerns": [
+          "Full squad available in Football-Data.org",
+          "Limited midfield depth"
+        ],
+        "data_source": "Football-Data.org squad list (no injury status)",
+        "recommendation": "Add injury tracking API for availability data",
+        "provenance": {
+          "injury_clamped": false,
+          "clamped_fields": {}
+        }
+      }
+    },
+    "weather_conditions": {
+      "conditions": {
+        "temperature": 8.7,
+        "humidity": 88.0,
+        "wind_speed": 10.2,
+        "precipitation": 0.0,
+        "conditions": "clear",
+        "visibility": 18.0,
+        "pressure": 1013,
+        "source": "open-meteo",
+        "match_hour": 16,
+        "location": {
+          "lat": 52.509,
+          "lon": -1.8847
+        }
+      },
+      "impact_assessment": {
+        "goal_modifier": 0.9604,
+        "playing_style_effect": "normal",
+        "weather_advantage": "none",
+        "tactical_adjustments": [
+          "Increased player fatigue expected"
+        ],
+        "stadium_effects": [],
+        "adaptability_notes": [],
+        "weather_severity": "MILD",
+        "conditions_summary": "Good playing conditions (8.7°C, 0.0mm rain, 10.2 km/h wind) minimal weather impact expected",
+        "modifier_components": {
+          "temperature": 0.9351,
+          "precipitation": 1.0,
+          "wind": 1.0732,
+          "humidity": 0.957,
+          "interaction": 1.0,
+          "stadium": 1.0,
+          "team_style": 1.0
+        },
+        "weather_clamped": false,
+        "clamped_fields": {}
+      },
+      "goal_adjustment": 0.9604,
+      "style_impact": "normal",
+      "provenance": {
+        "weather_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "referee_analysis": {
+      "data_available": false,
+      "name": "Referee TBD",
+      "home_bias_pct": null,
+      "cards_per_game": null,
+      "penalties_per_game": null,
+      "strict_level": "unknown",
+      "experience_level": "unknown",
+      "warning": "Referee data unavailable - appointment not announced"
+    },
+    "team_news": {
+      "home_team": {
+        "data_available": false,
+        "formation_expected": "TBD",
+        "key_changes": [
+          "Team news unavailable"
+        ],
+        "tactical_approach": "unknown",
+        "lineup_strength": null,
+        "news_sentiment": "unknown",
+        "warning": "Team news requires press conference/lineup API integration",
+        "team_name": "Aston Villa FC"
+      },
+      "away_team": {
+        "data_available": false,
+        "formation_expected": "TBD",
+        "key_changes": [
+          "Team news unavailable"
+        ],
+        "tactical_approach": "unknown",
+        "lineup_strength": null,
+        "news_sentiment": "unknown",
+        "warning": "Team news requires press conference/lineup API integration",
+        "team_name": "Manchester United FC"
+      }
+    },
+    "flashscore_data": {
+      "flashscore_enhanced": true,
+      "team_statistics": {
+        "home": {
+          "team": "Aston Villa FC",
+          "league": "premier-league",
+          "season_stats": {
+            "matches_played": 20,
+            "wins": 12,
+            "draws": 4,
+            "losses": 4,
+            "goals_for": 35,
+            "goals_against": 20,
+            "clean_sheets": 8,
+            "failed_to_score": 2
+          },
+          "recent_form": [
+            "W",
+            "W",
+            "D",
+            "W",
+            "L"
+          ],
+          "home_away_stats": {
+            "home": {
+              "wins": 8,
+              "draws": 2,
+              "losses": 1
+            },
+            "away": {
+              "wins": 4,
+              "draws": 2,
+              "losses": 3
+            }
+          }
+        },
+        "away": {
+          "team": "Manchester United FC",
+          "league": "premier-league",
+          "season_stats": {
+            "matches_played": 20,
+            "wins": 12,
+            "draws": 4,
+            "losses": 4,
+            "goals_for": 35,
+            "goals_against": 20,
+            "clean_sheets": 8,
+            "failed_to_score": 2
+          },
+          "recent_form": [
+            "W",
+            "W",
+            "D",
+            "W",
+            "L"
+          ],
+          "home_away_stats": {
+            "home": {
+              "wins": 8,
+              "draws": 2,
+              "losses": 1
+            },
+            "away": {
+              "wins": 4,
+              "draws": 2,
+              "losses": 3
+            }
+          }
+        }
+      },
+      "advanced_metrics": {
+        "home_form_score": 66.66666666666666,
+        "away_form_score": 66.66666666666666,
+        "h2h_advantage": 50.0,
+        "home_advantage": 400.0,
+        "scoring_patterns": {
+          "home_goals_per_game": 1.75,
+          "away_goals_per_game": 1.75,
+          "home_conceded_per_game": 1.0,
+          "away_conceded_per_game": 1.0
+        },
+        "momentum_indicator": "Balanced momentum",
+        "defensive_strength": {
+          "home_clean_sheet_rate": 40.0,
+          "away_clean_sheet_rate": 40.0,
+          "defensive_differential": 0.0
+        }
+      },
+      "odds_data": {
+        "available": false,
+        "home_win": null,
+        "draw": null,
+        "away_win": null,
+        "bookmaker": null
+      },
+      "flashscore_quality_score": 100
+    },
+    "data_quality_score": 54.0,
+    "data_provenance": {
+      "home_injury_clamped": false,
+      "home_injury_clamped_fields": {},
+      "away_injury_clamped": false,
+      "away_injury_clamped_fields": {},
+      "weather_clamped": false,
+      "weather_clamped_fields": {}
+    }
+  }
+}

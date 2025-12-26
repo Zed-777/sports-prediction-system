@@ -1,35 +1,45 @@
 #!/usr/bin/env python3
 """Verify all 21 enhancement items are implemented and working."""
 
+
 def main():
     print("=" * 60)
     print("SPORTS PREDICTION SYSTEM - COMPLETE VERIFICATION")
     print("=" * 60)
     print()
-    
+
     # Test 1: Initialize EnhancedPredictor
     print("1. Testing EnhancedPredictor initialization...")
     try:
         from enhanced_predictor import EnhancedPredictor
-        p = EnhancedPredictor('test_key')
+
+        p = EnhancedPredictor("test_key")
         print("   ✅ EnhancedPredictor initialized successfully")
     except Exception as e:
         print(f"   ❌ EnhancedPredictor failed: {e}")
         return
-    
+
     # Test 2: Check all 7 phases
     print()
     print("2. Checking all 7 enhancement phases...")
     phases = [
         ("Phase 1 - Quick Wins", p.prediction_enhancer, "prediction_enhancer"),
         ("Phase 2 - xG Integration", p.xg_adjuster, "xg_adjuster"),
-        ("Phase 3 - Model Improvements", p.model_enhancement_suite, "model_enhancement_suite"),
-        ("Phase 4 - Advanced Predictions", p.advanced_predictions, "advanced_predictions"),
+        (
+            "Phase 3 - Model Improvements",
+            p.model_enhancement_suite,
+            "model_enhancement_suite",
+        ),
+        (
+            "Phase 4 - Advanced Predictions",
+            p.advanced_predictions,
+            "advanced_predictions",
+        ),
         ("Phase 5 - Advanced Stats", p.advanced_stats, "advanced_stats"),
         ("Phase 6 - Odds Movement", p.odds_tracker, "odds_tracker"),
         ("Phase 7 - Player Impact", p.player_impact, "player_impact"),
     ]
-    
+
     all_ok = True
     for name, module, attr in phases:
         if module is not None:
@@ -37,11 +47,11 @@ def main():
         else:
             print(f"   ⚠️  {name}: Not available ({attr})")
             all_ok = False
-    
+
     # Test 3: Test individual modules
     print()
     print("3. Testing individual enhancement modules...")
-    
+
     modules_to_test = [
         ("prediction_enhancements", "PredictionEnhancer"),
         ("prediction_tracker", "PredictionTracker"),
@@ -54,18 +64,19 @@ def main():
         ("ab_testing", "ABTestingFramework"),
         ("player_impact", "PlayerImpactSuite"),
     ]
-    
+
     for module_name, class_name in modules_to_test:
         try:
             exec(f"from app.models.{module_name} import {class_name}")
             print(f"   ✅ {module_name}.{class_name}")
         except Exception as e:
             print(f"   ❌ {module_name}: {e}")
-    
+
     # Test 4: Count lines of code
     print()
     print("4. Enhancement modules code summary...")
     import os
+
     total_lines = 0
     module_files = [
         "app/models/prediction_enhancements.py",
@@ -79,16 +90,16 @@ def main():
         "app/models/ab_testing.py",
         "app/models/player_impact.py",
     ]
-    
+
     for filepath in module_files:
         if os.path.exists(filepath):
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 lines = len(f.readlines())
                 total_lines += lines
                 print(f"   📄 {os.path.basename(filepath)}: {lines} lines")
-    
+
     print(f"   📊 Total: {total_lines:,} lines of enhancement code")
-    
+
     # Test 5: Summary
     print()
     print("=" * 60)
@@ -121,7 +132,7 @@ def main():
     ]
     for item in items:
         print(f"   • {item}")
-    
+
     print()
     print("🎯 Target accuracy: 75-80%")
     print("📈 Enhancement phases: 7 fully integrated")

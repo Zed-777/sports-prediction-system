@@ -1,0 +1,46 @@
+{
+  "parameter": "market_blend_weight",
+  "current_value": 0.18,
+  "optimal_value": 0.2,
+  "optimal_accuracy": 0.6444,
+  "improvement": 0.06440000000000001,
+  "all_results": [
+    {
+      "value": 0.05,
+      "accuracy": 0.5994,
+      "brier_score": 0.2301
+    },
+    {
+      "value": 0.1,
+      "accuracy": 0.6244,
+      "brier_score": 0.2251
+    },
+    {
+      "value": 0.15,
+      "accuracy": 0.6394,
+      "brier_score": 0.2221
+    },
+    {
+      "value": 0.2,
+      "accuracy": 0.6444,
+      "brier_score": 0.2211
+    },
+    {
+      "value": 0.25,
+      "accuracy": 0.6394,
+      "brier_score": 0.2221
+    },
+    {
+      "value": 0.3,
+      "accuracy": 0.6244,
+      "brier_score": 0.2251
+    },
+    {
+      "value": 0.35,
+      "accuracy": 0.5994,
+      "brier_score": 0.2301
+    }
+  ],
+  "recommendation": "Change market_blend_weight from 0.18 to 0.2",
+  "timestamp": "2025-12-16T17:24:12.615681"
+}
