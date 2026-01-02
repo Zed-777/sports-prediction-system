@@ -407,6 +407,8 @@ class Phase2LitePredictor:
             "confidence": confidence,
             "phase2_lite_enhanced": False,
             "fallback_used": True,
+            "is_synthetic": True,
+            "synthetic_reason": "phase2_safe_fallback",
             "confidence_assessment": self._assess_confidence_level(0.4),
             "prediction_reliability": self.reliability_calculator.fallback_metrics(),
             "reliability_metrics": self.reliability_calculator.fallback_metrics(),

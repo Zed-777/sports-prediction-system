@@ -1554,7 +1554,42 @@ class SingleMatchGenerator:
             return
 
     def save_json(self, match_data: JSONDict, path: Union[str, Path]) -> None:
-        """Save match data as JSON"""
+        """Save match data as JSON. Synthetic reports are redirected to `reports/simulated/` to avoid publishing made-up data in the normal reports area."""
+        is_synthetic = bool(
+            match_data.get("is_synthetic")
+            or match_data.get("fallback_used")
+            or (match_data.get("prediction_method") or "").startswith("fallback")
+            or (match_data.get("mode") or "") == "simulated"
+        )
+        if is_synthetic:
+            # Annotate and write to a simulated-reports folder instead
+            match_data = dict(match_data)
+            match_data["synthetic_notice"] = (
+                "This report is synthetic/fallback and is NOT driven by live or sufficient historical data. "
+                "It has been written to the simulated reports directory to avoid accidental publication."
+            )
+            safe_print("⚠️ Synthetic/fallback prediction detected - saving to reports/simulated to avoid publication")
+            # Determine league subfolder from original path if possible
+            try:
+                p = Path(path)
+                parts = p.parts
+                if "leagues" in parts:
+                    idx = parts.index("leagues")
+                    league = parts[idx + 1]
+                else:
+                    league = "unknown"
+            except Exception:
+                league = "unknown"
+            synthetic_dir = Path("reports") / "simulated" / league / "matches" / (Path(path).name + "_synthetic")
+            synthetic_dir.mkdir(parents=True, exist_ok=True)
+            with open(synthetic_dir / "prediction.json", "w", encoding="utf-8") as f:
+                json.dump(match_data, f, indent=2, ensure_ascii=False)
+            # Also write a small marker file for quick inspection
+            with open(synthetic_dir / "SYNTHETIC_NOTICE.txt", "w", encoding="utf-8") as f:
+                f.write(match_data["synthetic_notice"])
+            return
+
+        # Normal (non-synthetic) path
         with open(f"{path}/prediction.json", "w", encoding="utf-8") as f:
             json.dump(match_data, f, indent=2, ensure_ascii=False)
 
@@ -1663,6 +1698,35 @@ class SingleMatchGenerator:
         away_team = match_data.get("away_team", match_data.get("away", "Away"))
         date_display = match_data.get("date", "TBD")
         time_display = match_data.get("time", "TBD")
+
+        # If this report is synthetic/fallback, add a visible banner and avoid making a full public summary
+        is_synthetic = bool(
+            match_data.get("is_synthetic")
+            or match_data.get("fallback_used")
+            or (match_data.get("prediction_method") or "").startswith("fallback")
+            or (match_data.get("mode") or "") == "simulated"
+        )
+        if is_synthetic:
+            synth_notice = match_data.get("synthetic_notice", "Synthetic/fallback report - not data-driven")
+            synth_banner = [
+                "# ⚠️ SYNTHETIC / FALLBACK REPORT",
+                "",
+                f"> {synth_notice}",
+                "",
+                "This report is intentionally segregated and should not be used for decision-making.",
+            ]
+            try:
+                synthetic_summary_dir = Path("reports") / "simulated"
+                synthetic_summary_dir.mkdir(parents=True, exist_ok=True)
+                # Write a brief summary file to the synthetic area for auditing
+                league = match_data.get("league") or match_data.get("competition", {}).get("code") or "unknown"
+                out_dir = Path("reports") / "simulated" / league
+                out_dir.mkdir(parents=True, exist_ok=True)
+                with open(out_dir / f"{match_data.get('id', 'match')}_SYNTHETIC_SUMMARY.md", "w", encoding="utf-8") as out:
+                    out.write("\n".join(synth_banner))
+            except Exception:
+                pass
+            # Proceed to still build local variables for internal use, but do not add other public signals
 
         # Score probability breakdown (defensive to missing/invalid structures)
         score_probabilities = match_data.get("score_probabilities", [])

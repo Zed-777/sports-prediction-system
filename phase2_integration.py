@@ -301,6 +301,8 @@ class HighConfidencePredictor:
             "prediction_method": "fallback_league_baseline",
             "phase2_enhanced": False,
             "fallback_reason": "phase2_system_unavailable",
+            "is_synthetic": True,
+            "synthetic_reason": "phase2_fallback_league_baseline",
             "league_code": league_code,
         }
 
