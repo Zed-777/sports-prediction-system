@@ -1,0 +1,37 @@
+name: Synthetic Detection & Publication Gate Tests
+
+on:
+  push:
+    branches: [ main, master, feature/** ]
+  pull_request:
+  schedule:
+    - cron: '0 3 * * *'  # daily at 03:00 UTC
+
+jobs:
+  check:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: [3.11]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run synthetic tests
+        run: |
+          pytest -q tests/test_publication_gate.py tests/test_synthetic_report_handling.py
+      - name: Run synthetic audit script
+        run: |
+          python scripts/audit_synthetic_reports.py --days 7 --out reports/metrics/simulated_ci_summary.json
+      - name: Upload synthetic summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-summary
+          path: reports/metrics/simulated_ci_summary.json
