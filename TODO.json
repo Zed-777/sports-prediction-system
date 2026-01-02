@@ -441,11 +441,12 @@
       "id": 45,
       "title": "Historical backfill & re-run optimizer",
       "description": "Backfill missing historical match results (use `scripts/collect_historical_results.py` and fallback connectors), then re-run optimization sweeps and save artifacts under `data/optimization_results/`.",
-      "status": "not-started",
+      "status": "in-progress",
       "category": "data_quality",
       "impact": "high",
       "effort": "medium",
-      "files": ["scripts/collect_historical_results.py","scripts/optimize_accuracy.py"]
+      "files": ["scripts/collect_historical_results.py","scripts/optimize_accuracy.py"],
+      "started_date": "2026-01-02"
     },
     {
       "id": 46,
