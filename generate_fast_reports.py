@@ -1071,7 +1071,7 @@ class SingleMatchGenerator:
                 self.save_image(match_data, full_path)
             except Exception as e:
                 # Ensure image generation failures do not stop report generation
-                print(f"⚠️  Image generation failed for match {match_folder}: {e}")
+                safe_print(f"⚠️  Image generation failed for match {match_folder}: {e}")
                 # Attempt to write a placeholder image to indicate failure
                 try:
                     placeholder_fig = plt.figure(figsize=(6, 4))
@@ -1103,18 +1103,17 @@ class SingleMatchGenerator:
                 if ensure_prediction_image_exists(full_path, match_data, match_folder):
                     print(f"   • Verified/created prediction image for: {match_folder}")
                 else:
-                    print(f"⚠️ Could not create a fallback prediction image for: {match_folder}")
+                    safe_print(f"⚠️ Could not create a fallback prediction image for: {match_folder}")
             except Exception as fallback_ex:
-                print(f"⚠️ Could not write fallback image for match {match_folder}: {fallback_ex}")
-
+                safe_print(f"⚠️ Could not write fallback image for match {match_folder}: {fallback_ex}")
             print("   Phase 2 Lite report generated")
             print(
                 f"   Expected Score: {match_data['expected_final_score']} ({match_data['score_probability']:.1f}%)"
             )
-            print(
+            safe_print(
                 f"   ⚽ Expected Goals: {match_data['expected_home_goals']:.1f} - {match_data['expected_away_goals']:.1f}"
             )
-            print(
+            safe_print(
                 f"   📊 Data Confidence: {match_data['confidence']:.1%} | Accuracy {match_data['report_accuracy_probability']:.1%}"
             )
 
@@ -1124,16 +1123,16 @@ class SingleMatchGenerator:
                 ) or reliability_metrics.get("level", "Reliability")
                 rel_score = reliability_metrics.get("score")
                 if rel_score is not None:
-                    print(f"   🔒 Reliability: {rel_indicator} ({rel_score:.1f})")
+                    safe_print(f"   🔒 Reliability: {rel_indicator} ({rel_score:.1f})")
                 else:
-                    print(f"   🔒 Reliability: {rel_indicator}")
+                    safe_print(f"   🔒 Reliability: {rel_indicator}")
                 recommendation = reliability_metrics.get("recommendation")
                 if recommendation:
-                    print(f"   💡 Reliability Note: {recommendation}")
+                    safe_print(f"   💡 Reliability Note: {recommendation}")
 
             if calibration_details.get("applied"):
                 shrink = calibration_details.get("shrink_factor", 0.0) * 100
-                print(f"   🧭 Calibration applied ({shrink:.1f}% neutral blend)")
+                safe_print(f"   🧭 Calibration applied ({shrink:.1f}% neutral blend)")
 
             print(f"   • Saved to: {full_path}")
             print()
@@ -1148,10 +1147,10 @@ class SingleMatchGenerator:
         total_time = time.time() - start_time
         avg_time = total_time / len(matches) if matches else 0
 
-        print(f"[COMPLETE] All {len(matches)} {league_info['name']} reports completed!")
-        print(f"⏱️  Total execution time: {total_time:.2f}s")
-        print(f"⚡ Average per match: {avg_time:.2f}s")
-        print(f"🎯 Finished at: {datetime.now().strftime('%H:%M:%S')}")
+        safe_print(f"[COMPLETE] All {len(matches)} {league_info['name']} reports completed!")
+        safe_print(f"⏱️  Total execution time: {total_time:.2f}s")
+        safe_print(f"⚡ Average per match: {avg_time:.2f}s")
+        safe_print(f"🎯 Finished at: {datetime.now().strftime('%H:%M:%S')}")
 
         # Aggregate API stats from the predictor for quick debugging and quality analysis
         try:
@@ -1185,7 +1184,7 @@ class SingleMatchGenerator:
 
                     export_metrics_main(self.export_metrics_dir)
                 except Exception as e:
-                    print(f"⚠️  Could not export metrics: {e}")
+                    safe_print(f"⚠️  Could not export metrics: {e}")
         except Exception:
             pass
 
@@ -1274,7 +1273,7 @@ class SingleMatchGenerator:
                         print("ℹ️  Found a match in fallback search (no status filter).")
                         break
             except Exception as exc:
-                print(f"❌ Fallback fetch failed: {exc}")
+                safe_print(f"❌ Fallback fetch failed: {exc}")
 
             if not found:
                 return
@@ -1542,7 +1541,7 @@ class SingleMatchGenerator:
                             "prediction": adv_pred,
                         }
                     except Exception as e:
-                        print(f"⚠️ Advanced model prediction failed (non-blocking): {e}")
+                        safe_print(f"⚠️ Advanced model prediction failed (non-blocking): {e}")
             except Exception:
                 pass
 
@@ -2356,7 +2355,7 @@ class SingleMatchGenerator:
             # Saving deferred to the end of the function
             pass
         except Exception as e:
-            print(f"⚠️  save_image encountered an error: {e}")
+            safe_print(f"⚠️  save_image encountered an error: {e}")
             # Attempt to create a minimal placeholder image so callers can rely on file existence
             try:
                 from PIL import Image, ImageDraw, ImageFont
@@ -3844,7 +3843,7 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
                             shutil.rmtree(match_path)
                             match_directories_removed += 1
                         except Exception as e:
-                            print(f"⚠️ Could not forcibly remove {match_path}: {e}")
+                            safe_print(f"⚠️ Could not forcibly remove {match_path}: {e}")
 
                 except Exception as e:
                     print(f"⚠️ Could not clean {league_dir}: {e}")
