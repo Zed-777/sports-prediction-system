@@ -473,11 +473,12 @@
       "id": 48,
       "title": "Integrate PredictionTracker into production",
       "description": "Wire `app/models/prediction_tracker.py` into `enhanced_predictor.py` and report generation to ensure every prediction is recorded and updated when results arrive.",
-      "status": "not-started",
+      "status": "in-progress",
       "category": "calibration_confidence",
       "impact": "critical",
       "effort": "medium",
-      "files": ["app/models/prediction_tracker.py","enhanced_predictor.py","generate_fast_reports.py"]
+      "files": ["app/models/prediction_tracker.py","enhanced_predictor.py","generate_fast_reports.py"],
+      "started_date": "2026-01-02"
     },
     {
       "id": 49,
