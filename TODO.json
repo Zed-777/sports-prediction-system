@@ -1,0 +1,491 @@
+{
+  "generated_at": "2026-01-01T00:00:00Z",
+  "source": "merged_ideas_v1",
+  "todos": [
+    {
+      "id": 1,
+      "title": "Add scheduled tasks",
+      "description": "Create PowerShell scripts to register Windows Scheduled Tasks that run daily collection and weekly optimization. Files: scripts/automation/register_scheduled_tasks.ps1, scripts/automation/run_daily_job.ps1. Ensure tasks log output to data/logs/ and handle failures.",
+      "status": "completed",
+      "category": "automation"
+    },
+    {
+      "id": 2,
+      "title": "Add GitHub Actions workflow",
+      "description": "Add a workflow `.github/workflows/auto-optimize.yml` to run the optimizer weekly and upload optimization results as artifacts. Use secrets for any API keys; workflow must be no-op if historical data missing.",
+      "status": "completed",
+      "category": "ci"
+    },
+    {
+      "id": 3,
+      "title": "Add unit tests",
+      "description": "Add tests for `scripts/optimize_accuracy.py` and `scripts/collect_historical_results.py` under `tests/` and update CI to run them. Use small sample data in `tests/data/` for reliability.",
+      "status": "completed",
+      "category": "testing"
+    },
+    {
+      "id": 4,
+      "title": "Add safe commit script",
+      "description": "Create `scripts/commit_optimization_results.ps1` to create a branch, add optimization results, commit, and push only if remote exists. Do not push by default; allow an env var `AUTO_PUSH=true` to enable pushing.",
+      "status": "not-started",
+      "category": "automation"
+    },
+    {
+      "id": 5,
+      "title": "Documentation & README updates",
+      "description": "Update `README.md` and add `docs/automation.md` describing scheduled tasks, workflows, and how to enable GitHub Actions securely using `scripts/setup_github_with_gh.ps1`.",
+      "status": "not-started",
+      "category": "docs"
+    },
+    {
+      "id": 6,
+      "title": "Run full test suite and lint",
+      "description": "Execute pytest and linter (ruff/mypy if configured), fix any issues discovered.",
+      "status": "in-progress",
+      "category": "maintenance"
+    },
+
+    {
+      "id": 7,
+      "external_id": "DQ-001",
+      "title": "Real-time lineup confirmation integration",
+      "description": "Integrate confirmed starting XI data 1 hour before match and trigger re-prediction when lineups are confirmed. Add connectors to SofaScore/FotMob and implement re-run hooks.",
+      "status": "not-started",
+      "category": "data_quality",
+      "impact": "high",
+      "effort": "medium"
+    },
+    {
+      "id": 8,
+      "external_id": "DQ-002",
+      "title": "Player-level impact scoring",
+      "description": "Implement player importance weights based on goals, assists, xG, defensive contributions; add `app/models/player_impact.py` and integrate with `enhanced_predictor.py`.",
+      "status": "completed",
+      "category": "data_quality",
+      "impact": "high",
+      "effort": "high",
+      "completed_date": "2025-01-18"
+    },
+    {
+      "id": 9,
+      "external_id": "DQ-003",
+      "title": "Referee tendency database",
+      "description": "Scrape referee historical data, build tendency profiles (cards, penalties, home favoritism), apply adjustments to predictions.",
+      "status": "not-started",
+      "category": "data_quality",
+      "impact": "medium",
+      "effort": "low"
+    },
+    {
+      "id": 10,
+      "external_id": "DQ-004",
+      "title": "Travel fatigue modeling",
+      "description": "Track fixture congestion and rest days; apply fatigue penalties when teams play in quick turnarounds (e.g., Thursday→Sunday).",
+      "status": "not-started",
+      "category": "data_quality",
+      "impact": "medium",
+      "effort": "medium"
+    },
+    {
+      "id": 11,
+      "external_id": "DQ-005",
+      "title": "Historical data depth expansion",
+      "description": "Backfill 3-5 seasons of historical data for seasonal trend detection and long-term modeling; store as `data/historical/` snapshots.",
+      "status": "not-started",
+      "category": "data_quality",
+      "impact": "medium",
+      "effort": "medium"
+    },
+
+    {
+      "id": 12,
+      "external_id": "MI-001",
+      "title": "Ensemble model with disagreement detection",
+      "description": "Measure agreement between ELO, Poisson, and ML models and lower confidence when models diverge; flag matches as 'uncertain'.",
+      "status": "not-started",
+      "category": "model_improvements",
+      "impact": "high",
+      "effort": "medium"
+    },
+    {
+      "id": 13,
+      "external_id": "MI-002",
+      "title": "Match context classification",
+      "description": "Classify match context (title race, relegation, derby) and apply motivation multipliers to predictions.",
+      "status": "not-started",
+      "category": "model_improvements",
+      "impact": "high",
+      "effort": "medium"
+    },
+    {
+      "id": 14,
+      "external_id": "MI-003",
+      "title": "Score prediction vs outcome prediction separation",
+      "description": "Build a two-stage model: outcome classifier then conditional score predictor; use Bayesian updating to combine.",
+      "status": "not-started",
+      "category": "model_improvements",
+      "impact": "high",
+      "effort": "high"
+    },
+    {
+      "id": 15,
+      "external_id": "MI-004",
+      "title": "Dynamic ELO with recency weighting",
+      "description": "Implement time-decayed ELO where recent matches have higher weight and tune decay via backtesting.",
+      "status": "completed",
+      "category": "model_improvements",
+      "impact": "medium",
+      "effort": "low",
+      "completed_date": "2025-01-18"
+    },
+    {
+      "id": 16,
+      "external_id": "MI-005",
+      "title": "Upset detection model",
+      "description": "Train a classifier to detect upset conditions (cups, derbies, manager bounce) and increase underdog probability when detected.",
+      "status": "not-started",
+      "category": "model_improvements",
+      "impact": "high",
+      "effort": "high"
+    },
+    {
+      "id": 17,
+      "external_id": "MI-006",
+      "title": "First goal importance modeling",
+      "description": "Model first-goal probability separately and chain conditional outcome probabilities based on first-goal likelihood.",
+      "status": "not-started",
+      "category": "model_improvements",
+      "impact": "medium",
+      "effort": "medium"
+    },
+
+    {
+      "id": 18,
+      "external_id": "FE-001",
+      "title": "Expected goals (xG) integration",
+      "description": "Integrate xG from FBref/Understat and use xG for form calculations and xG differential features.",
+      "status": "not-started",
+      "category": "feature_engineering",
+      "impact": "critical",
+      "effort": "medium"
+    },
+    {
+      "id": 19,
+      "external_id": "FE-002",
+      "title": "Shot quality metrics",
+      "description": "Add shot quality and big-chances metrics as features for forward-looking performance modeling.",
+      "status": "not-started",
+      "category": "feature_engineering",
+      "impact": "high",
+      "effort": "medium"
+    },
+    {
+      "id": 20,
+      "external_id": "FE-003",
+      "title": "Defensive solidity metrics",
+      "description": "Add defensive stats (clean sheets, interceptions) and encode defensive ratings for goals-against predictions.",
+      "status": "not-started",
+      "category": "feature_engineering",
+      "impact": "medium",
+      "effort": "medium"
+    },
+    {
+      "id": 21,
+      "external_id": "FE-004",
+      "title": "Manager tactical style encoding",
+      "description": "Build manager profiles (possession, pressing) and encode tactical style as features for matchup effects.",
+      "status": "not-started",
+      "category": "feature_engineering",
+      "impact": "medium",
+      "effort": "high"
+    },
+    {
+      "id": 22,
+      "external_id": "FE-005",
+      "title": "Venue-specific performance",
+      "description": "Track team performance at specific stadiums, apply venue adjustments where appropriate.",
+      "status": "not-started",
+      "category": "feature_engineering",
+      "impact": "low",
+      "effort": "low"
+    },
+    {
+      "id": 23,
+      "external_id": "FE-006",
+      "title": "Time-of-day and day-of-week effects",
+      "description": "Analyze historical performance by kickoff time and encode as categorical features.",
+      "status": "not-started",
+      "category": "feature_engineering",
+      "impact": "low",
+      "effort": "low"
+    },
+
+    {
+      "id": 24,
+      "external_id": "CC-001",
+      "title": "Isotonic regression calibration",
+      "description": "Apply isotonic regression to calibrate confidence scores against historical accuracy using tracked predictions.",
+      "status": "not-started",
+      "category": "calibration_confidence",
+      "impact": "high",
+      "effort": "medium"
+    },
+    {
+      "id": 25,
+      "external_id": "CC-002",
+      "title": "Prediction tracking and feedback loop",
+      "description": "Store predictions and results in a DB, auto-fetch results, calculate accuracy by league/team/confidence and feed back to model improvements.",
+      "status": "in-progress",
+      "category": "calibration_confidence",
+      "impact": "critical",
+      "effort": "medium"
+    },
+    {
+      "id": 26,
+      "external_id": "CC-003",
+      "title": "Confidence interval bounds",
+      "description": "Provide prediction intervals (e.g., 70% home win [60-80%]) via bootstrapping and report uncertainty bands.",
+      "status": "not-started",
+      "category": "calibration_confidence",
+      "impact": "medium",
+      "effort": "medium"
+    },
+    {
+      "id": 27,
+      "external_id": "CC-004",
+      "title": "League-specific calibration",
+      "description": "Calibrate confidence separately per league based on historical accuracy.",
+      "status": "not-started",
+      "category": "calibration_confidence",
+      "impact": "medium",
+      "effort": "low"
+    },
+    {
+      "id": 28,
+      "external_id": "CC-005",
+      "title": "Avoid overconfidence on favorites",
+      "description": "Apply soft caps on extreme probabilities and adjust upset likelihoods based on backtesting evidence.",
+      "status": "completed",
+      "category": "calibration_confidence",
+      "impact": "high",
+      "effort": "low",
+      "completed_date": "2025-01-18"
+    },
+
+    {
+      "id": 29,
+      "external_id": "RT-001",
+      "title": "Pre-match odds movement tracking",
+      "description": "Poll odds APIs hourly pre-match to detect sharp movements and adjust predictions when significant shifts occur.",
+      "status": "not-started",
+      "category": "real_time_features",
+      "impact": "high",
+      "effort": "medium"
+    },
+    {
+      "id": 30,
+      "external_id": "RT-002",
+      "title": "Social media sentiment analysis",
+      "description": "Monitor Twitter/X for injury rumors and team sentiment that may affect last-minute changes.",
+      "status": "not-started",
+      "category": "real_time_features",
+      "impact": "medium",
+      "effort": "high"
+    },
+    {
+      "id": 31,
+      "external_id": "RT-003",
+      "title": "Weather impact refinement",
+      "description": "Refine weather models by team style (passing teams vs direct teams) for conditional penalties.",
+      "status": "not-started",
+      "category": "real_time_features",
+      "impact": "low",
+      "effort": "medium"
+    },
+
+    {
+      "id": 32,
+      "external_id": "VB-001",
+      "title": "Historical backtesting framework",
+      "description": "Implement time-series cross-validation backtesting (rolling windows), track accuracy and Brier scores. This is in-progress and prioritized.",
+      "status": "in-progress",
+      "category": "validation_backtesting",
+      "impact": "critical",
+      "effort": "high"
+    },
+    {
+      "id": 33,
+      "external_id": "VB-002",
+      "title": "A/B testing infrastructure",
+      "description": "Run parallel predictions of control vs treatment and compare accuracy with statistical testing (z-tests). Implement recording and evaluation flows.",
+      "status": "completed",
+      "category": "validation_backtesting",
+      "impact": "high",
+      "effort": "medium",
+      "completed_date": "2025-01-18"
+    },
+    {
+      "id": 34,
+      "external_id": "VB-003",
+      "title": "Brier score optimization",
+      "description": "Optimize model parameters to minimize Brier score in addition to accuracy metrics.",
+      "status": "not-started",
+      "category": "validation_backtesting",
+      "impact": "high",
+      "effort": "medium"
+    },
+    {
+      "id": 35,
+      "external_id": "VB-004",
+      "title": "Edge case documentation",
+      "description": "Flag high-confidence misses and document root causes (lineups, referee, red cards) for manual review and model improvements.",
+      "status": "not-started",
+      "category": "validation_backtesting",
+      "impact": "medium",
+      "effort": "low"
+    },
+
+    {
+      "id": 36,
+      "external_id": "SR-001",
+      "title": "Graceful degradation on data gaps",
+      "description": "Implement tiered fallbacks and confidence penalties for missing data sources to prevent crashes and poor predictions.",
+      "status": "not-started",
+      "category": "system_robustness",
+      "impact": "high",
+      "effort": "medium"
+    },
+    {
+      "id": 37,
+      "external_id": "SR-002",
+      "title": "Anomaly detection on inputs",
+      "description": "Detect impossible statistics and anomalous inputs; build a human review queue for flagged matches.",
+      "status": "not-started",
+      "category": "system_robustness",
+      "impact": "medium",
+      "effort": "medium"
+    },
+    {
+      "id": 38,
+      "external_id": "SR-003",
+      "title": "Model staleness detection",
+      "description": "Alert on declines in rolling accuracy and trigger retraining when drift is detected.",
+      "status": "not-started",
+      "category": "system_robustness",
+      "impact": "medium",
+      "effort": "medium"
+    },
+
+    {
+      "id": 39,
+      "external_id": "NF-001",
+      "title": "Multi-match accumulators",
+      "description": "Calculate joint probabilities for accumulators and model correlations between matches.",
+      "status": "not-started",
+      "category": "new_features",
+      "impact": "medium",
+      "effort": "medium"
+    },
+    {
+      "id": 40,
+      "external_id": "NF-002",
+      "title": "Goal timing predictions",
+      "description": "Predict goal timing distributions (first half vs second half) for in-play strategies.",
+      "status": "not-started",
+      "category": "new_features",
+      "impact": "medium",
+      "effort": "high"
+    },
+    {
+      "id": 41,
+      "external_id": "NF-003",
+      "title": "Cards and corners predictions",
+      "description": "Add models for yellow cards, red cards and corners based on team style and referee tendencies.",
+      "status": "not-started",
+      "category": "new_features",
+      "impact": "low",
+      "effort": "medium"
+    },
+    {
+      "id": 42,
+      "external_id": "NF-004",
+      "title": "Both teams to score (BTTS) prediction",
+      "description": "Create a dedicated BTTS model to improve binary outcome accuracy for this market.",
+      "status": "not-started",
+      "category": "new_features",
+      "impact": "medium",
+      "effort": "low"
+    },
+    {
+      "id": 43,
+      "external_id": "NF-005",
+      "title": "Over/under goals at multiple lines",
+      "description": "Add O/U probability outputs for common lines (1.5, 2.5, 3.5, 4.5) using Poisson or simulated distributions.",
+      "status": "not-started",
+      "category": "new_features",
+      "impact": "medium",
+      "effort": "low"
+    },
+    {
+      "id": 44,
+      "title": "Publication gate & thresholds",
+      "description": "Enforce publication thresholds (min confidence, min data_quality_score) from `config/settings.yaml`; redirect failing reports to `reports/simulated/` and add tests to prevent regressions.",
+      "status": "completed",
+      "category": "validation_backtesting",
+      "impact": "critical",
+      "effort": "low",
+      "files": ["config/settings.yaml","generate_fast_reports.py","tests/test_publication_gate.py"],
+      "completed_date": "2026-01-02"
+    },
+    {
+      "id": 45,
+      "title": "Historical backfill & re-run optimizer",
+      "description": "Backfill missing historical match results (use `scripts/collect_historical_results.py` and fallback connectors), then re-run optimization sweeps and save artifacts under `data/optimization_results/`.",
+      "status": "not-started",
+      "category": "data_quality",
+      "impact": "high",
+      "effort": "medium",
+      "files": ["scripts/collect_historical_results.py","scripts/optimize_accuracy.py"]
+    },
+    {
+      "id": 46,
+      "title": "CI: synthetic detection & Windows runner",
+      "description": "Add a CI job to run the synthetic detection test and include a Windows runner to catch encoding/encoding-like issues and ensure the publish gate behaves correctly on Windows.",
+      "status": "in-progress",
+      "category": "ci",
+      "impact": "medium",
+      "effort": "low",
+      "files": [".github/workflows/*"],
+      "started_date": "2026-01-02"
+    },
+    {
+      "id": 47,
+      "title": "Audit script for simulated reports",
+      "description": "Add `scripts/audit_synthetic_reports.py` to list `reports/simulated/` contents, flag items older than N days, and optionally open an issue or email maintainers.",
+      "status": "not-started",
+      "category": "maintenance",
+      "impact": "medium",
+      "effort": "low",
+      "files": ["scripts/audit_synthetic_reports.py"]
+    },
+    {
+      "id": 48,
+      "title": "Integrate PredictionTracker into production",
+      "description": "Wire `app/models/prediction_tracker.py` into `enhanced_predictor.py` and report generation to ensure every prediction is recorded and updated when results arrive.",
+      "status": "not-started",
+      "category": "calibration_confidence",
+      "impact": "critical",
+      "effort": "medium",
+      "files": ["app/models/prediction_tracker.py","enhanced_predictor.py","generate_fast_reports.py"]
+    },
+    {
+      "id": 49,
+      "title": "Monitoring: synthetic rate alert",
+      "description": "Add monitoring to track the fraction of synthetic reports and alert via webhook if synthetic rate exceeds a threshold (e.g., 10% over 7 days).",
+      "status": "not-started",
+      "category": "monitoring",
+      "impact": "high",
+      "effort": "medium"
+    }
+  ]
+}
