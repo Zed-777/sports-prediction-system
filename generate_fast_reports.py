@@ -407,6 +407,19 @@ class SingleMatchGenerator:
         self.data_quality_enhancer = DataQualityEnhancer(self.api_key)
         # Respect CLI preference to skip injury API calls
         self.data_quality_enhancer.skip_injuries = skip_injuries
+
+        # Initialize PredictionTracker and attach to predictor for production recording
+        try:
+            from app.models.prediction_tracker import PredictionTracker
+
+            self.prediction_tracker = PredictionTracker()
+            # Attach tracker to enhanced predictor if attribute present
+            try:
+                self.enhanced_predictor.prediction_tracker = self.prediction_tracker
+            except Exception:
+                pass
+        except Exception:
+            self.prediction_tracker = None
         # If CLI override present, pass it to the enhancer
         self.data_quality_enhancer.injuries_disable_ttl_override = (
             injuries_disable_ttl_override
