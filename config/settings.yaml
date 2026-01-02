@@ -305,6 +305,11 @@ reporting:
     include_reliability_diagram: true
   filenames:
     pattern: reports/{league}_{date}_{model_version}.{ext}
+  # Publication gate: control when a report is allowed to be published to the public reports area.
+  publication_gate:
+    enabled: true            # When true, reports failing thresholds are redirected to reports/simulated
+    min_confidence: 0.50    # Minimum required confidence (0.0 - 1.0) to publish
+    min_data_quality_score: 60.0  # Minimum data quality score (0 - 100) to publish
   localization:
     enabled: true
     languages:

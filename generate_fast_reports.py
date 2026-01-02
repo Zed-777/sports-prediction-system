@@ -1555,12 +1555,37 @@ class SingleMatchGenerator:
 
     def save_json(self, match_data: JSONDict, path: Union[str, Path]) -> None:
         """Save match data as JSON. Synthetic reports are redirected to `reports/simulated/` to avoid publishing made-up data in the normal reports area."""
+        # Base synthetic detection from existing flags
         is_synthetic = bool(
             match_data.get("is_synthetic")
             or match_data.get("fallback_used")
             or (match_data.get("prediction_method") or "").startswith("fallback")
             or (match_data.get("mode") or "") == "simulated"
         )
+
+        # Publication gate: treat low-confidence or low data-quality reports as synthetic
+        try:
+            pub_gate = self._settings.get("reporting", {}).get("publication_gate", {}) if getattr(self, "_settings", None) else {}
+            if pub_gate.get("enabled", True) and not is_synthetic:
+                min_conf = float(pub_gate.get("min_confidence", 0.5))
+                min_dq = float(pub_gate.get("min_data_quality_score", 60.0))
+                # canonical confidence field preferences
+                confidence = match_data.get("report_accuracy_probability")
+                if confidence is None:
+                    confidence = match_data.get("confidence")
+                confidence = float(confidence or 0.0)
+                data_quality = float(match_data.get("data_quality_score") or 0.0)
+                if confidence < min_conf or data_quality < min_dq:
+                    is_synthetic = True
+                    # annotate reason
+                    match_data = dict(match_data)
+                    match_data.setdefault("synthetic_reason", "publication_gate_threshold")
+                    match_data.setdefault("is_synthetic", True)
+                    match_data.setdefault("synthetic_notice", "Report did not meet publication thresholds and was segregated to reports/simulated for audit.")
+                    safe_print("⚠️ Publication gate: report below thresholds - redirecting to reports/simulated")
+        except Exception:
+            # Fail safe: if config inaccessible, proceed with existing flags
+            pass
         if is_synthetic:
             # Annotate and write to a simulated-reports folder instead
             match_data = dict(match_data)
