@@ -9,7 +9,7 @@
 
 An **advanced, AI-enhanced, and professional-grade** sports forecasting system that uses historical data, machine learning algorithms, enhanced intelligence, and probabilistic modeling to generate comprehensive reports on upcoming matches. Features **Enhanced Intelligence v4.1** with **Phase 2 Lite** for **+18% confidence improvements**.
 
-## ✨ **System Overview** {#system-overview}
+## ✨ **System Overview**
 
 **Enhanced Intelligence v4.1 + Phase 2 Lite** delivers measurable improvements in prediction confidence and reliability:
 
@@ -20,15 +20,7 @@ An **advanced, AI-enhanced, and professional-grade** sports forecasting system t
 - ⚡ **Optimized Performance**: ~3-4 seconds per match with enhanced features
 - 📈 **Professional Reports**: JSON, PNG, Markdown with enhanced metadata and reliability metrics
 
-## � **Table of Contents**
-
-- [System Overview](#system-overview)
-- [Quick Start](#-quick-start---enhanced-intelligence-v41--phase-2-lite)
-- [Local-only Manual Workflow](docs/manual_local_workflow.md)- [Scripts Guide](scripts/README.md)- [Documentation Index](docs/README.md)
-
----
-
-## �🚀 **Quick Start - Enhanced Intelligence v4.1 + Phase 2 Lite**
+## 🚀 **Quick Start - Enhanced Intelligence v4.1 + Phase 2 Lite**
 
 ### Prerequisites
 
@@ -62,14 +54,49 @@ An **advanced, AI-enhanced, and professional-grade** sports forecasting system t
    ODDS_API_KEY=your_key python generate_fast_reports.py generate 1 matches for premier-league
    ```
 
+### 🧪 Backtesting & Optimization
+
+You can run historical backtests or the optimizer to evaluate accuracy and tune parameters.
+
+- Run the local backtest CLI (uses `scripts/optimize_accuracy.py` under the hood):
+
+```bash
+# Run a backtest for La Liga (CLI wrapper)
+sports-forecast backtest --league "la-liga" --min-matches 50
+
+# Or directly with the optimizer script (produces JSON output):
+python scripts/optimize_accuracy.py --mode backtest --league la-liga
+```
+
+- Run a full optimization sweep (may be slow):
+
+```bash
+python scripts/optimize_accuracy.py --mode full --league la-liga
+```
+
+Results are saved to `data/optimization_results/` and `reports/backtests/` and are also uploaded by the weekly CI job when available.
+
 ### 📊 **Output Formats Generated**
 
 Each prediction creates comprehensive professional reports:
 
-- **🖼️ PNG Visual Card**: Professional match analysis with AI/Market Intelligence indicators
+- **🖼️ PNG Visual Card (guaranteed)**: A PNG prediction card (`prediction_card.png`) is always created in the match folder. If normal rendering fails, a placeholder PNG is written automatically so the visual card is always available for downstream consumers.
+- **🖼️ Formats copy**: A copy of the PNG is saved to `reports/formats/images/{match}.png` for quick access and aggregation.
 - **📝 Markdown Report**: Detailed analysis with betting market intelligence  
 - **💾 JSON Data**: Complete structured data with all analytics and recommendations
 - **📍 Location**: `reports/leagues/{league}/matches/{team1}_vs_{team2}_{date}/`
+
+Quick verification (run after generation):
+
+```powershell
+# Check the per-match image
+Test-Path "reports\leagues\{league}\matches\{match_folder}\prediction_card.png"
+
+# Check the formats aggregate directory
+Test-Path "reports\formats\images\{match_folder}.png"
+```
+
+If you prefer different placeholder styling or additional formats (e.g., WebP), I can add that too.
 
 ### 🎯 **Supported Leagues**
 
@@ -255,6 +282,10 @@ python scripts/collect_historical_results.py --fetch-all --debug
 
 # Backfill provider IDs from existing reports into historical files
 python scripts/collect_historical_results.py --backfill-provider-ids --league la-liga --debug
+
+# Run the end-to-end backfill runner (dry-run by default; use --execute to perform API updates). Use --debug to save raw HTTP pages for diagnosis when parsing fails.
+python scripts/run_historical_backfill.py --leagues la-liga --days 365 --debug
+python scripts/run_historical_backfill.py --leagues la-liga --days 365 --execute --commit
 ```
 
 The collector now prefers provider-id exact matches and has robust normalization (diacritics & punctuation removal), a ±1 day date tolerance, and improved fuzzy matching for robust automated updates.
@@ -293,38 +324,6 @@ python scripts/verify_github_token.py
 This will call the GitHub API to enable the workflow and trigger a manual `workflow_dispatch` run. If you prefer, enable it from the GitHub UI under Actions → click the workflow → enable.
 
 If you want, provide a token and repo info and I can trigger the enable + dispatch for you now.
-
----
-
-## Local-only Manual Workflow (No Cloud)
-
-If you prefer to run everything manually on your local machine (no GitHub Actions or cloud automation), follow the detailed guide in the repo:
-
-- See: `docs/manual_local_workflow.md` for full step-by-step instructions, commands, and troubleshooting.
-
-Quick commands you will use frequently:
-
-```powershell
-# Activate environment
-& .\.venv\Scripts\Activate.ps1
-
-# Collect predictions into history
-python scripts/collect_historical_results.py --league la-liga
-
-# Update a match result (example)
-python scripts/collect_historical_results.py --update-result la-liga <match_id> <home> <away>
-
-# Run the optimizer
-python scripts/optimize_accuracy.py --mode full --league la-liga
-
-# dot-source convenience aliases (optional)
-. .\scripts\helpers\ps_aliases.ps1
-# Then use: sps-collect, sps-optimize, sps-daily, sps-weekly
-```
-
-Note: Scheduled task registration is available in `scripts/automation/register_scheduled_tasks.ps1` (requires admin) but is optional — the system is fully usable manually.
-
----
 
 ## ⚙️ **Configuration - Zero Setup Required**
 

@@ -488,6 +488,28 @@
       "category": "monitoring",
       "impact": "high",
       "effort": "medium"
+    },
+    {
+      "id": 50,
+      "title": "FlashScore debug mode & decompression heuristics",
+      "description": "Add `--debug` support to backfill, save raw FlashScore responses under `reports/debug/flashscore/`, add decompression heuristics (brotli/zlib) and retries; add tests and a diagnostic inspector script.",
+      "status": "completed",
+      "category": "data_engineering",
+      "impact": "high",
+      "effort": "low",
+      "files": ["flashscore_scraper.py","scripts/run_historical_backfill.py","scripts/debug_flashscore_inspect.py","tests/test_flashscore_debug.py"],
+      "completed_date": "2026-01-03"
+    },
+    {
+      "id": 51,
+      "title": "Refine FlashScore parsing from debug files",
+      "description": "Analyze debug sample files and implement robust extraction for observed payload types (script payload vs decompressed JSON vs consent pages). Add tests and CI checks.",
+      "status": "in-progress",
+      "category": "data_engineering",
+      "impact": "high",
+      "effort": "medium",
+      "files": ["flashscore_scraper.py","scripts/debug_flashscore_inspect.py"],
+      "started_date": "2026-01-03"
     }
   ]
 }

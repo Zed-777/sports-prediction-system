@@ -70,11 +70,22 @@ class FlashScoreScraper:
         "europa-league": "/futbol/europa/europa-league/",
     }
 
-    def __init__(self, cache_dir: str = "data/cache/flashscore"):
+    def __init__(self, cache_dir: str = "data/cache/flashscore", debug_dir: str | None = None, max_attempts: int = 3):
         self.cache_dir = cache_dir
         self.session = requests.Session()
         self.setup_session()
         self.setup_cache()
+
+        # Debugging: where to save raw HTML responses when parsing fails
+        self.debug_dir = debug_dir
+        if self.debug_dir:
+            try:
+                os.makedirs(self.debug_dir, exist_ok=True)
+            except Exception:
+                logger.warning(f"Could not create debug dir: {self.debug_dir}")
+
+        # Retries
+        self.max_attempts = max_attempts
 
         # Rate limiting
         self.last_request: float = 0.0
@@ -140,8 +151,24 @@ class FlashScoreScraper:
         except Exception as e:
             logger.warning(f"Failed to save cache {cache_path}: {e}")
 
+    def _save_debug_html(self, url: str, content: str, tag: str = "failed") -> str | None:
+        """Save raw HTML for debugging and return the path if successful"""
+        if not self.debug_dir:
+            return None
+        try:
+            safe_name = re.sub(r"[^a-zA-Z0-9_-]", "_", url.replace("https://", "").replace("http://", ""))
+            filename = f"{safe_name}_{tag}_{int(time.time())}.html"
+            out_path = os.path.join(self.debug_dir, filename)
+            with open(out_path, "w", encoding="utf-8") as f:
+                f.write(content or "")
+            logger.info(f"Saved debug HTML to {out_path}")
+            return out_path
+        except Exception as e:
+            logger.warning(f"Failed to save debug HTML: {e}")
+            return None
+
     def get_page(self, url: str, use_cache: bool = True) -> str | None:
-        """Fetch page with caching, compression handling, and error handling"""
+        """Fetch page with caching, compression handling, retries, and debug saving on failures"""
         cache_path = self._get_cache_path(url, "page_")
 
         if use_cache:
@@ -150,42 +177,59 @@ class FlashScoreScraper:
                 logger.debug(f"Using cached page: {url}")
                 return cached.get("content")
 
-        self._rate_limit()
+        attempt = 0
+        while attempt < max(1, self.max_attempts):
+            attempt += 1
+            self._rate_limit()
+            try:
+                logger.info(f"Fetching (attempt {attempt}/{self.max_attempts}): {url}")
+                response = self.session.get(url, timeout=30)
+                response.raise_for_status()
 
-        try:
-            logger.info(f"Fetching: {url}")
-            response = self.session.get(url, timeout=30)
-            response.raise_for_status()
+                html = response.text or ""
 
-            # Get the HTML content (requests handles decompression automatically)
-            html = response.text
+                # If HTML is suspiciously short or missing tags, optionally save for debug and retry
+                if not html or len(html) < 1000 or "<html" not in html.lower():
+                    logger.warning(
+                        f"Suspicious response (len={len(html)}); attempt {attempt}/{self.max_attempts}"
+                    )
+                    if self.debug_dir:
+                        self._save_debug_html(url, html, tag=f"attempt{attempt}")
+                    # exponential backoff with jitter
+                    if attempt < self.max_attempts:
+                        wait = min(self.max_delay, 2 ** attempt) + random.random()
+                        logger.debug(f"Retrying after {wait:.1f}s")
+                        time.sleep(wait)
+                        continue
+                    else:
+                        return None
 
-            # Verify we got valid HTML
-            if not html or len(html) < 1000:
-                logger.warning(
-                    f"Suspiciously short HTML content: {len(html)} characters"
-                )
+                if use_cache:
+                    self._save_cache(
+                        cache_path,
+                        {
+                            "url": url,
+                            "content": html,
+                            "timestamp": datetime.now().isoformat(),
+                        },
+                    )
+
+                return html
+
+            except requests.RequestException as e:
+                logger.error(f"Failed to fetch {url} (attempt {attempt}): {e}")
+                if self.debug_dir and hasattr(e, 'response') and e.response is not None:
+                    try:
+                        self._save_debug_html(url, e.response.text, tag=f"error{attempt}")
+                    except Exception:
+                        pass
+                # exponential backoff with jitter
+                if attempt < self.max_attempts:
+                    wait = min(self.max_delay, 2 ** attempt) + random.random()
+                    logger.debug(f"Retrying after {wait:.1f}s")
+                    time.sleep(wait)
+                    continue
                 return None
-
-            if "<html" not in html.lower():
-                logger.warning("Response does not appear to be valid HTML")
-                return None
-
-            if use_cache:
-                self._save_cache(
-                    cache_path,
-                    {
-                        "url": url,
-                        "content": html,
-                        "timestamp": datetime.now().isoformat(),
-                    },
-                )
-
-            return html
-
-        except requests.RequestException as e:
-            logger.error(f"Failed to fetch {url}: {e}")
-            return None
 
     def parse_match_list(self, html: str | bytes, league: str) -> JSONList:
         """Parse match list from league page HTML using FlashScore's encoding"""
@@ -227,6 +271,41 @@ class FlashScoreScraper:
 
         # Use sliding/window block extractor to be tolerant to format variations
         total_found = 0
+
+        # If no candidate script-like blocks found and the HTML is large but lacks <html>,
+        # try common decompression heuristics (brotli/zlib) and re-run extraction on decompressed content
+        if not candidate_texts or (len(candidate_texts) == 1 and len(candidate_texts[0]) > 20000 and '<html' not in candidate_texts[0].lower()):
+            tried = False
+            for raw in candidate_texts:
+                try:
+                    # Try brotli
+                    if 'brotli' in globals() and brotli is not None:
+                        try:
+                            decompressed = brotli.decompress(raw.encode('latin-1'))
+                            decoded = decompressed.decode('utf-8', errors='ignore')
+                            candidate_texts = [decoded]
+                            tried = True
+                            logger.info('Decompressed content using brotli and re-attempting extraction')
+                            break
+                        except Exception:
+                            pass
+                    # Try zlib
+                    try:
+                        import zlib
+
+                        decompressed = zlib.decompress(raw.encode('latin-1'))
+                        decoded = decompressed.decode('utf-8', errors='ignore')
+                        candidate_texts = [decoded]
+                        tried = True
+                        logger.info('Decompressed content using zlib and re-attempting extraction')
+                        break
+                    except Exception:
+                        pass
+                except Exception:
+                    continue
+            if not tried:
+                logger.debug('No decompression heuristics applied; continuing with raw candidate_texts')
+
         for text in candidate_texts:
             blocks = self._extract_encoded_blocks(text)
             total_found += len(blocks)
@@ -241,7 +320,6 @@ class FlashScoreScraper:
                             )
                 except Exception as e:
                     logger.warning(f"Failed to build match from fields: {e}")
-
         logger.info(
             f"Inspected {len(candidate_texts)} candidate script(s), extracted {total_found} raw blocks, parsed {len(matches)} matches before filtering"
         )

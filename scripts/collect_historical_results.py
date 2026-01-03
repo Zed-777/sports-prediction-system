@@ -736,7 +736,10 @@ class HistoricalResultsCollector:
             try:
                 from flashscore_scraper import FlashScoreScraper
 
-                fs = FlashScoreScraper()
+                debug_dir = None
+                if debug_local:
+                    debug_dir = str(PROJECT_ROOT / "reports" / "debug" / "flashscore")
+                fs = FlashScoreScraper(debug_dir=debug_dir)
                 html = fs.get_page(
                     fs.BASE_URL + fs.LEAGUE_URLS.get(league_slug, ""), use_cache=True
                 )
