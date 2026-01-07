@@ -20,6 +20,15 @@ try:
 except ImportError:
     FLASHSCORE_AVAILABLE = False
 
+# Injuries connector (fallbacks for injury data)
+try:
+    from app.data.connectors.injuries import InjuriesConnector
+
+    INJURIES_CONNECTOR_AVAILABLE = True
+except Exception:
+    InjuriesConnector = None  # type: ignore
+    INJURIES_CONNECTOR_AVAILABLE = False
+
 if TYPE_CHECKING:
     # Type-only imports for static checking
     from flashscore_scraper import AdvancedDataIntegrator, FlashScoreScraper
@@ -59,6 +68,14 @@ class DataQualityEnhancer:
             print(
                 "FlashScore.es integration active - enhanced data collection enabled!"
             )
+
+        # Injuries connector instance (primary + fallbacks)
+        self.injuries_connector: Optional["InjuriesConnector"] = None
+        if INJURIES_CONNECTOR_AVAILABLE:
+            try:
+                self.injuries_connector = InjuriesConnector()
+            except Exception:
+                self.injuries_connector = None
         # Disable injuries endpoint for a period if we see repeated 429s
         self._injuries_disabled_until = 0.0
         # Persistent disable flag for injuries endpoint - use state_sync to coordinate across processes
@@ -118,6 +135,16 @@ class DataQualityEnhancer:
         except Exception:
             # Best effort - don't let cache errors stop fetching
             pass
+        # Prefer using the InjuriesConnector (it handles API primary + fallbacks and caching)
+        try:
+            if self.injuries_connector is not None:
+                injury_data = self.injuries_connector.fetch_injuries(team_id, team_name)
+                if injury_data:
+                    return self._analyze_injury_data(injury_data, team_name)
+        except Exception as e:
+            print(f"Could not fetch injury data from InjuriesConnector for {team_name}: {e}")
+
+        # Backwards-compatible: fall back to legacy API-Football method
         try:
             injury_data = self._fetch_injury_data_api_football(team_id)
             if injury_data:

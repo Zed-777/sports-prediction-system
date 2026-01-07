@@ -504,12 +504,184 @@
       "id": 51,
       "title": "Refine FlashScore parsing from debug files",
       "description": "Analyze debug sample files and implement robust extraction for observed payload types (script payload vs decompressed JSON vs consent pages). Add tests and CI checks.",
-      "status": "in-progress",
+      "status": "completed",
       "category": "data_engineering",
       "impact": "high",
       "effort": "medium",
       "files": ["flashscore_scraper.py","scripts/debug_flashscore_inspect.py"],
-      "started_date": "2026-01-03"
+      "completed_date": "2026-01-03"
+    },
+    {
+      "id": 52,
+      "title": "Prepare PR & release notes",
+      "description": "Push `feature/flashscore-debug`, open a PR with summary, add release notes and CI notes. If origin isn't configured, provide instructions to maintainer. Ensure branch name and commit message are clear.",
+      "status": "not-started",
+      "category": "release",
+      "impact": "low",
+      "effort": "low"
+    },
+    {
+      "id": 53,
+      "external_id": "DQ-006",
+      "title": "Injury feed connector",
+      "description": "Implement `app/data/connectors/injuries.py` to fetch and normalize injury data from API-Football (primary) with fallbacks to official club feeds and scrapers (SofaScore/FlashScore). Include caching, backoff, and normalization for the DataQualityEnhancer.",
+      "status": "not-started",
+      "category": "data_quality",
+      "impact": "critical",
+      "effort": "medium",
+      "files": ["app/data/connectors/injuries.py","data/cache","scripts/run_with_secrets.ps1"]
+    },
+    {
+      "id": 54,
+      "external_id": "DQ-007",
+      "title": "Team news & lineup scrapers",
+      "description": "Create scrapers/connectors for team news and confirmed lineups (official club sites, X/Twitter, SofaScore/FotMob) and add a pre-match recheck hook to trigger re-prediction when lineups are confirmed.",
+      "status": "not-started",
+      "category": "data_quality",
+      "impact": "high",
+      "effort": "high",
+      "files": ["app/data/connectors/team_news.py","app/data/connectors/lineups.py","scripts/run_with_secrets.ps1"]
+    },
+    {
+      "id": 55,
+      "external_id": "RT-004",
+      "title": "Betting odds connectors & pre-match polling",
+      "description": "Implement/extend `market_data_connectors.py` to integrate ODDS_API_KEY and other market providers, add hourly pre-match polling, detect sharp movements, and surface changes to the prediction engine.",
+      "status": "not-started",
+      "category": "real_time_features",
+      "impact": "high",
+      "effort": "medium",
+      "files": ["market_data_connectors.py","generate_fast_reports.py","scripts/run_with_secrets.ps1"]
+    },
+    {
+      "id": 56,
+      "external_id": "RT-005",
+      "title": "Social rumor monitoring (expand)",
+      "description": "Expand social media monitoring to include pre-match injury rumors and verified team announcements; add a lightweight rumor scoring system and source provenance for manual review.",
+      "status": "not-started",
+      "category": "real_time_features",
+      "impact": "medium",
+      "effort": "high",
+      "files": ["scripts/social_monitor.py","docs/SECRET_GUIDE.md"]
+    },
+    {
+      "id": 57,
+      "title": "Rate-limit, caching & resilience improvements",
+      "description": "Add centralized request throttling (respect provider rate-limits), exponential backoff, persistent caching of responses under `data/cache/`, and alerting for repeated 429s. Add tests that simulate 429/500 failures and verify fallbacks.",
+      "status": "not-started",
+      "category": "system_robustness",
+      "impact": "high",
+      "effort": "medium",
+      "files": ["app/utils/http.py","data/cache","tests/test_rate_limit_handling.py"]
+    },
+    {
+      "id": 58,
+      "title": "Connector tests & CI integration",
+      "description": "Add unit and integration tests for new connectors and update CI to run integration tests conditionally (only when secrets are available). Add canary/monitoring jobs to detect API changes/failures.",
+      "status": "not-started",
+      "category": "testing",
+      "impact": "high",
+      "effort": "medium",
+      "files": ["tests/test_injuries_connector.py",".github/workflows/*"]
+    },
+    {
+      "id": 59,
+      "title": "Prioritize, schedule & assign",
+      "description": "Group the new data/connectors tasks into a prioritized roadmap, estimate effort, and create issues/PR templates to start implementation and reviews.",
+      "status": "not-started",
+      "category": "management",
+      "impact": "high",
+      "effort": "low"
+    },
+    {
+      "id": 60,
+      "title": "Model explainability & SHAP reports",
+      "description": "Generate per-prediction explainability using SHAP, add aggregate feature importance reports, and include interpretability sections in markdown outputs for human review.",
+      "status": "not-started",
+      "category": "model_improvements",
+      "impact": "high",
+      "effort": "medium",
+      "files": ["requirements.txt","generate_fast_reports.py","app/models/advanced_predictor.py","reports/formats/markdown"]
+    },
+    {
+      "id": 61,
+      "title": "Model registry & artifact versioning",
+      "description": "Add a simple model registry to track model artifacts, metadata (git commit, training data snapshot, metrics) and enable rollback. Persist artifacts under `models/` with manifest files.",
+      "status": "not-started",
+      "category": "model_governance",
+      "impact": "high",
+      "effort": "medium",
+      "files": ["models/","scripts/register_model_artifact.py","app/models/advanced_predictor.py"]
+    },
+    {
+      "id": 62,
+      "title": "Feature store & feature versioning",
+      "description": "Create a lightweight feature registry / store (under `data/features/`) to record feature generation code, versions, and data lineage for reproducibility.",
+      "status": "not-started",
+      "category": "data_infrastructure",
+      "impact": "high",
+      "effort": "high",
+      "files": ["data/features/","app/features_registry.py"]
+    },
+    {
+      "id": 63,
+      "title": "Programmatic prediction API + auth",
+      "description": "Add a small REST API to serve predictions programmatically with authentication (token-based) and rate-limiting; include an example client and Docs.",
+      "status": "not-started",
+      "category": "api",
+      "impact": "high",
+      "effort": "medium",
+      "files": ["app/api.py","docs/API.md","Dockerfile"]
+    },
+    {
+      "id": 64,
+      "title": "Secret scanning & CI policies",
+      "description": "Add detect-secrets/pre-commit hook and a GitHub Actions job to scan for secrets; add docs on key rotation and emergency revocation procedures.",
+      "status": "not-started",
+      "category": "security",
+      "impact": "critical",
+      "effort": "low",
+      "files": [".pre-commit-config.yaml",".github/workflows/secret-scan.yml","docs/SECRET_GUIDE.md"]
+    },
+    {
+      "id": 65,
+      "title": "Provider SLA & usage monitoring",
+      "description": "Track API usage & costs for paid providers, set thresholds/alerts for over-usage, and add a strategy for failover or request throttling when budgets or rate limits are reached.",
+      "status": "not-started",
+      "category": "ops",
+      "impact": "medium",
+      "effort": "medium",
+      "files": ["scripts/monitor_api_usage.py","docs/ops_runbook.md"]
+    },
+    {
+      "id": 66,
+      "title": "Data retention & backup policy",
+      "description": "Define retention policies for reports, caches, and snapshots; add automated backup scripts and an archival strategy for long-term storage.",
+      "status": "not-started",
+      "category": "maintenance",
+      "impact": "medium",
+      "effort": "low",
+      "files": ["scripts/backup_reports.ps1","docs/ops_runbook.md"]
+    },
+    {
+      "id": 67,
+      "title": "End-to-end smoke tests & CI canary",
+      "description": "Add a small E2E smoke test that runs a minimal report generation using recorded fixtures or secrets-managed credentials; add a canary job to CI to catch breakages early.",
+      "status": "not-started",
+      "category": "testing",
+      "impact": "high",
+      "effort": "medium",
+      "files": ["tests/e2e_smoke.py",".github/workflows/e2e-smoke.yml"]
+    },
+    {
+      "id": 68,
+      "title": "Onboarding docs & ops runbooks",
+      "description": "Add `docs/onboarding.md` and `docs/ops_runbook.md` with instructions for setting up local dev, secrets, rotating keys, and responding to incidents (e.g., API outages, high synthetic rate).",
+      "status": "not-started",
+      "category": "docs",
+      "impact": "high",
+      "effort": "low",
+      "files": ["docs/onboarding.md","docs/ops_runbook.md"]
     }
   ]
 }

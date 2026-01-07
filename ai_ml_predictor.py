@@ -36,3 +36,43 @@ class AIMLPredictor:
             "away_win_probability": 0.2,
             "accuracy_estimate": 0.6,
         }
+
+    def calculate_advanced_accuracy(
+        self,
+        prediction_strength: float,
+        data_quality: float,
+        h2h_quality: float,
+        form_consistency: float,
+    ) -> float:
+        """Estimate a normalized accuracy score [0.0, 1.0].
+
+        This method is deliberately simple for the shim: it
+        accepts inputs in mixed ranges and normalizes them as needed.
+        It must be robust to None/missing values for testing environments.
+        """
+        try:
+            # Normalize inputs to [0,1]
+            ps = float(prediction_strength) if prediction_strength is not None else 0.5
+        except Exception:
+            ps = 0.5
+
+        try:
+            dq = float(data_quality) / 100.0 if data_quality is not None else 0.75
+        except Exception:
+            dq = 0.75
+
+        try:
+            h2h = float(h2h_quality) if h2h_quality is not None else 0.5
+        except Exception:
+            h2h = 0.5
+
+        try:
+            fc = float(form_consistency) / 100.0 if form_consistency is not None else 0.5
+        except Exception:
+            fc = 0.5
+
+        # Weighted linear combination (safe, interpretable)
+        score = (0.5 * ps) + (0.25 * dq) + (0.15 * h2h) + (0.10 * fc)
+
+        # Clamp to [0.0, 1.0]
+        return max(0.0, min(1.0, float(score)))
