@@ -1,0 +1,45 @@
+{
+	"name": "SportsPredictionSystem",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": ".."
+	},
+	"remoteUser": "vscode",
+	"workspaceFolder": "/workspaces/sports-prediction",
+	"runArgs": ["--init"],
+	"containerEnv": {
+		"PYTHONUNBUFFERED": "1",
+		"PYTHONDONTWRITEBYTECODE": "1",
+		"MPLBACKEND": "Agg",
+		"PYTHONPATH": "/workspaces/sports-prediction"
+	},
+	"mounts": [
+		"source=${localWorkspaceFolder}/data,target=/workspaces/sports-prediction/data,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/models,target=/workspaces/sports-prediction/models,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/reports,target=/workspaces/sports-prediction/reports,type=bind,consistency=cached"
+	],
+	"forwardPorts": [8000],
+	"postCreateCommand": "bash scripts/bootstrap_devcontainer.sh",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"python.defaultInterpreterPath": "/usr/local/bin/python",
+				"python.testing.pytestEnabled": true,
+				"python.testing.pytestArgs": [
+					"tests"
+				],
+				"python.formatting.provider": "ruff",
+				"python.linting.enabled": true,
+				"python.linting.ruffEnabled": true,
+				"terminal.integrated.defaultProfile.linux": "bash"
+			},
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"charliermarsh.ruff",
+				"ms-toolsai.jupyter",
+				"ms-azuretools.vscode-docker"
+			]
+		}
+	}
+}

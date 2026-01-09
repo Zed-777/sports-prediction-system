@@ -1,0 +1,46 @@
+{
+  "parameter": "k_factor",
+  "current_value": 32.0,
+  "optimal_value": 32.0,
+  "optimal_accuracy": 0.6436,
+  "improvement": 0.06359999999999999,
+  "all_results": [
+    {
+      "value": 16.0,
+      "accuracy": 0.618,
+      "brier_score": 0.2264
+    },
+    {
+      "value": 24.0,
+      "accuracy": 0.6372,
+      "brier_score": 0.2226
+    },
+    {
+      "value": 32.0,
+      "accuracy": 0.6436,
+      "brier_score": 0.2213
+    },
+    {
+      "value": 40.0,
+      "accuracy": 0.6372,
+      "brier_score": 0.2226
+    },
+    {
+      "value": 48.0,
+      "accuracy": 0.618,
+      "brier_score": 0.2264
+    },
+    {
+      "value": 56.0,
+      "accuracy": 0.586,
+      "brier_score": 0.2328
+    },
+    {
+      "value": 64.0,
+      "accuracy": 0.5412,
+      "brier_score": 0.2418
+    }
+  ],
+  "recommendation": "Current value is optimal",
+  "timestamp": "2025-12-15T20:07:04.436790"
+}

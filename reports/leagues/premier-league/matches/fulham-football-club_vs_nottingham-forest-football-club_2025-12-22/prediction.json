@@ -1,0 +1,816 @@
+{
+  "match_id": 537949,
+  "home_team": "Fulham Football Club",
+  "away_team": "Nottingham Forest Football Club",
+  "date": "2025-12-22",
+  "time": "20:00",
+  "league": "Premier League",
+  "confidence": 0.95,
+  "report_accuracy_probability": 0.95,
+  "home_win_probability": 55.42,
+  "draw_probability": 24.06,
+  "away_win_probability": 20.52,
+  "expected_home_goals": 1.9,
+  "expected_away_goals": 0.7,
+  "processing_time": 2.417,
+  "recommendation": "Home Win Likely",
+  "confidence_level": "95.0% (Excellent)",
+  "expected_final_score": "1-0",
+  "score_probability": 11.3,
+  "score_probability_normalized": 7.0,
+  "top3_combined_probability": 32.5,
+  "top3_probability_normalized": 10.0,
+  "alternative_scores": [
+    "2-0",
+    "1-1",
+    "2-1"
+  ],
+  "score_probabilities": [
+    [
+      "1-0",
+      11.315828864819052
+    ],
+    [
+      "2-0",
+      11.226245219639232
+    ],
+    [
+      "1-1",
+      9.957929401040765
+    ],
+    [
+      "2-1",
+      9.879095793282525
+    ],
+    [
+      "3-0",
+      7.424913852211391
+    ]
+  ],
+  "score_probabilities_normalized": [
+    [
+      "1-0",
+      7.0
+    ],
+    [
+      "2-0",
+      7.0
+    ],
+    [
+      "1-1",
+      6.0
+    ],
+    [
+      "2-1",
+      6.0
+    ],
+    [
+      "3-0",
+      5.0
+    ]
+  ],
+  "over_2_5_goals_probability": 54.6,
+  "both_teams_score_probability": 50.5,
+  "head_to_head_analysis": {
+    "total_meetings": 0,
+    "wins_when_home": 0,
+    "wins_when_away": 0,
+    "draws": 0,
+    "matches_as_home": 0,
+    "matches_as_away": 0,
+    "avg_goals_for_when_home": 0.0,
+    "avg_goals_against_when_home": 0.0,
+    "avg_goals_for_when_away": 0.0,
+    "avg_goals_against_when_away": 0.0,
+    "recent_form": [],
+    "home_advantage_vs_opponent": 0.0,
+    "away_record_vs_opponent": 0.0,
+    "data_sources": [
+      "Domestic PL"
+    ],
+    "total_sources": 1
+  },
+  "home_performance_analysis": {
+    "home": {
+      "matches": 8,
+      "win_rate": 50.0,
+      "draw_rate": 12.5,
+      "loss_rate": 37.5,
+      "avg_goals_for": 1.75,
+      "avg_goals_against": 1.25,
+      "goal_difference": 0.5,
+      "weighted_form_score": 31.5,
+      "momentum_direction": "Falling Sharply",
+      "momentum_slope": -1.2,
+      "form_pressure": "High",
+      "current_streak": "2 games without a win",
+      "recent_5_performance": 50.0,
+      "form_quality": "Crisis",
+      "consistency_score": 55.0,
+      "confidence_interval": {
+        "lower": 24.0,
+        "upper": 39.0
+      },
+      "regression_expected": true,
+      "scoring_form": 2.25,
+      "defensive_form": 1.75,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 2,
+          "date": "2025-12-07T16:30:00Z",
+          "opponent": "Crystal Palace FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 4,
+          "goals_against": 5,
+          "date": "2025-12-02T19:30:00Z",
+          "opponent": "Manchester City FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-11-22T15:00:00Z",
+          "opponent": "Sunderland AFC"
+        },
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 0,
+          "date": "2025-11-01T15:00:00Z",
+          "opponent": "Wolverhampton Wanderers FC"
+        }
+      ]
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 28.57142857142857,
+      "draw_rate": 0.0,
+      "loss_rate": 71.42857142857143,
+      "avg_goals_for": 1.1428571428571428,
+      "avg_goals_against": 2.142857142857143,
+      "goal_difference": -1.0,
+      "weighted_form_score": 51.9,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 1.2,
+      "form_pressure": "Medium",
+      "current_streak": "2 game winning streak",
+      "recent_5_performance": 50.0,
+      "form_quality": "Good",
+      "consistency_score": 55.0,
+      "confidence_interval": {
+        "lower": 44.4,
+        "upper": 59.4
+      },
+      "regression_expected": false,
+      "scoring_form": 1.5,
+      "defensive_form": 1.75,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 2,
+          "date": "2025-12-13T17:30:00Z",
+          "opponent": "Burnley FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2025-11-29T20:00:00Z",
+          "opponent": "Tottenham Hotspur FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2025-11-08T15:00:00Z",
+          "opponent": "Everton FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 2,
+          "date": "2025-10-25T14:00:00Z",
+          "opponent": "Newcastle United FC"
+        }
+      ]
+    },
+    "home_advantage": 21.42857142857143,
+    "scoring_difference": 0.6071428571428572
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 7,
+      "win_rate": 28.57142857142857,
+      "draw_rate": 14.285714285714285,
+      "loss_rate": 57.14285714285714,
+      "avg_goals_for": 1.1428571428571428,
+      "avg_goals_against": 1.7142857142857142,
+      "goal_difference": -0.5714285714285714,
+      "weighted_form_score": 51.4,
+      "momentum_direction": "Rising",
+      "momentum_slope": 0.3,
+      "form_pressure": "Medium",
+      "current_streak": "2 game winning streak",
+      "recent_5_performance": 58.3,
+      "form_quality": "Good",
+      "consistency_score": 61.0,
+      "confidence_interval": {
+        "lower": 43.9,
+        "upper": 58.9
+      },
+      "regression_expected": false,
+      "scoring_form": 2.0,
+      "defensive_form": 1.25,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 0,
+          "date": "2025-12-14T14:00:00Z",
+          "opponent": "Tottenham Hotspur FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2025-11-30T14:05:00Z",
+          "opponent": "Brighton & Hove Albion FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 1,
+          "date": "2025-11-09T14:00:00Z",
+          "opponent": "Leeds United FC"
+        },
+        {
+          "result": "D",
+          "goals_for": 2,
+          "goals_against": 2,
+          "date": "2025-11-01T15:00:00Z",
+          "opponent": "Manchester United FC"
+        }
+      ]
+    },
+    "away": {
+      "matches": 8,
+      "win_rate": 25.0,
+      "draw_rate": 25.0,
+      "loss_rate": 50.0,
+      "avg_goals_for": 0.75,
+      "avg_goals_against": 1.5,
+      "goal_difference": -0.75,
+      "weighted_form_score": 40.4,
+      "momentum_direction": "Stable",
+      "momentum_slope": -0.0,
+      "form_pressure": "Medium",
+      "current_streak": "2 games without a win",
+      "recent_5_performance": 50.0,
+      "form_quality": "Below Average",
+      "consistency_score": 55.0,
+      "confidence_interval": {
+        "lower": 32.9,
+        "upper": 47.9
+      },
+      "regression_expected": false,
+      "scoring_form": 1.0,
+      "defensive_form": 1.25,
+      "sample_size": 4,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 3,
+          "date": "2025-12-06T15:00:00Z",
+          "opponent": "Everton FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2025-12-03T19:30:00Z",
+          "opponent": "Wolverhampton Wanderers FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 0,
+          "date": "2025-11-22T15:00:00Z",
+          "opponent": "Liverpool FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2025-10-26T14:00:00Z",
+          "opponent": "AFC Bournemouth"
+        }
+      ]
+    },
+    "home_advantage": 3.5714285714285694,
+    "scoring_difference": 0.3928571428571428
+  },
+  "goal_timing_prediction": {
+    "first_half_goal_probability": 46.0,
+    "second_half_goal_probability": 54.0,
+    "late_goal_likelihood": 18.8,
+    "early_goal_likelihood": 12.8,
+    "home_attack_style": "possession-heavy",
+    "away_attack_style": "defensive",
+    "period_probabilities": {
+      "0-15": 12.8,
+      "16-30": 16.4,
+      "31-45": 16.9,
+      "46-60": 15.5,
+      "61-75": 19.6,
+      "76-90": 18.8
+    },
+    "expected_goals_by_period": {
+      "0-15": 0.32,
+      "16-30": 0.41,
+      "31-45": 0.42,
+      "46-60": 0.39,
+      "61-75": 0.49,
+      "76-90": 0.47
+    },
+    "most_likely_goal_period": "61-75",
+    "scoring_tempo": "medium"
+  },
+  "intelligence_summary": {
+    "h2h_meetings": 0,
+    "home_advantage_pct": 21.42857142857143,
+    "recent_h2h_form": "No recent meetings",
+    "key_factors": [
+      "No head-to-head history between teams"
+    ]
+  },
+  "player_availability": {
+    "home_team": {
+      "data_available": true,
+      "team_name": "Fulham FC",
+      "squad_size": 26,
+      "positions": {
+        "goalkeepers": 2,
+        "defenders": 10,
+        "midfielders": 6,
+        "attackers": 8
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 26 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "data_available": true,
+      "team_name": "Nottingham Forest FC",
+      "squad_size": 35,
+      "positions": {
+        "goalkeepers": 5,
+        "defenders": 13,
+        "midfielders": 9,
+        "attackers": 8
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 35 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": 9.3,
+      "humidity": 92.7,
+      "wind_speed": 7.4,
+      "precipitation": 0.0,
+      "conditions": "clear",
+      "visibility": 18.0,
+      "pressure": 1013,
+      "source": "open-meteo",
+      "match_hour": 20,
+      "location": {
+        "lat": 51.555,
+        "lon": -0.1084
+      }
+    },
+    "impact_assessment": {
+      "goal_modifier": 0.9551,
+      "playing_style_effect": "normal",
+      "weather_advantage": "none",
+      "tactical_adjustments": [
+        "Increased player fatigue expected"
+      ],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MILD",
+      "conditions_summary": "Good playing conditions (9.3°C, 0.0mm rain, 7.4 km/h wind) minimal weather impact expected",
+      "modifier_components": {
+        "temperature": 0.9422,
+        "precipitation": 1.0,
+        "wind": 1.074,
+        "humidity": 0.9439,
+        "interaction": 1.0,
+        "stadium": 1.0,
+        "team_style": 1.0
+      },
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 0.9551,
+    "style_impact": "normal",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "data_available": false,
+    "name": "Referee TBD",
+    "home_bias_pct": null,
+    "cards_per_game": null,
+    "penalties_per_game": null,
+    "strict_level": "unknown",
+    "experience_level": "unknown",
+    "warning": "Referee data unavailable - appointment not announced"
+  },
+  "team_news": {
+    "home_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Fulham FC"
+    },
+    "away_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Nottingham Forest FC"
+    }
+  },
+  "data_quality_score": 54.0,
+  "reliability_metrics": {
+    "score": 70.8,
+    "level": "Moderate",
+    "indicator": "🟡 Moderate",
+    "recommendation": "Balanced reliability – treat as guidance with monitoring.",
+    "confidence_intervals": {
+      "home": [
+        53.5,
+        60.5
+      ],
+      "draw": [
+        19.9,
+        26.9
+      ],
+      "away": [
+        16.1,
+        23.1
+      ],
+      "margin_percent": 3.5
+    },
+    "spread_points": 37.3,
+    "factors": {
+      "model_confidence": 92.0,
+      "data_quality": 54.0,
+      "probability_clarity": 100.0,
+      "h2h_depth": 0.0,
+      "data_freshness": 55.0
+    },
+    "primary_driver": "probability_clarity",
+    "notes": [
+      "Head-to-head sample is limited – emphasis on recent form.",
+      "Data quality below optimal threshold; confidence capped."
+    ]
+  },
+  "calibration_details": {
+    "applied": true,
+    "shrink_factor": 0.066,
+    "probabilities": {
+      "home_win_prob": 55.42,
+      "draw_prob": 24.06,
+      "away_win_prob": 20.52
+    },
+    "original_probabilities": {
+      "home_win_prob": 56.97,
+      "draw_prob": 23.41,
+      "away_win_prob": 19.62
+    },
+    "pre_calibration_probabilities": {
+      "home_win_prob": 0.5697,
+      "draw_prob": 0.2341,
+      "away_win_prob": 0.1962
+    },
+    "neutral_anchor": 33.3,
+    "notes": [
+      "Applied 6.6% shrink toward neutral due to reliability score 70.8."
+    ],
+    "accuracy_adjustment": {
+      "original_probability": 0.85,
+      "calibrated_probability": 0.793
+    }
+  },
+  "confidence_intervals": {
+    "home": [
+      53.5,
+      60.5
+    ],
+    "draw": [
+      19.9,
+      26.9
+    ],
+    "away": [
+      16.1,
+      23.1
+    ],
+    "margin_percent": 3.5
+  },
+  "data_provenance": {
+    "weather": true,
+    "player_availability": true,
+    "referee": true,
+    "team_news": true,
+    "h2h": false,
+    "odds": false,
+    "flashscore": true,
+    "home_injury_clamped": false,
+    "away_injury_clamped": false,
+    "weather_clamped": false
+  },
+  "phase2_lite_enhanced": true,
+  "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+  "advanced_predictions": {
+    "btts": {
+      "btts_yes_probability": 54.4,
+      "btts_no_probability": 45.6,
+      "prediction": "Yes",
+      "confidence": 69.8,
+      "method_breakdown": {
+        "poisson": 51.0,
+        "historical": 60.0,
+        "league_base": 52.0
+      },
+      "factors": {
+        "home_scoring_chance": 86.6,
+        "away_scoring_chance": 58.9
+      }
+    },
+    "over_under": {
+      "expected_total_goals": 2.9,
+      "lines": {
+        "0.5": {
+          "over_probability": 94.5,
+          "under_probability": 5.5,
+          "prediction": "Over",
+          "fair_over_odds": 1.06,
+          "fair_under_odds": 18.17
+        },
+        "1.5": {
+          "over_probability": 78.5,
+          "under_probability": 21.5,
+          "prediction": "Over",
+          "fair_over_odds": 1.27,
+          "fair_under_odds": 4.66
+        },
+        "2.5": {
+          "over_probability": 55.4,
+          "under_probability": 44.6,
+          "prediction": "Over",
+          "fair_over_odds": 1.8,
+          "fair_under_odds": 2.24
+        },
+        "3.5": {
+          "over_probability": 33.0,
+          "under_probability": 67.0,
+          "prediction": "Under",
+          "fair_over_odds": 3.03,
+          "fair_under_odds": 1.49
+        },
+        "4.5": {
+          "over_probability": 16.8,
+          "under_probability": 83.2,
+          "prediction": "Under",
+          "fair_over_odds": 5.94,
+          "fair_under_odds": 1.2
+        },
+        "5.5": {
+          "over_probability": 7.4,
+          "under_probability": 92.6,
+          "prediction": "Under",
+          "fair_over_odds": 13.48,
+          "fair_under_odds": 1.08
+        }
+      },
+      "recommended_line": "2.5",
+      "main_prediction": "Over"
+    },
+    "exact_scores": [
+      {
+        "score": "2-0",
+        "probability": 11.1
+      },
+      {
+        "score": "1-0",
+        "probability": 11.1
+      },
+      {
+        "score": "2-1",
+        "probability": 9.9
+      },
+      {
+        "score": "1-1",
+        "probability": 9.8
+      },
+      {
+        "score": "3-0",
+        "probability": 7.4
+      },
+      {
+        "score": "3-1",
+        "probability": 6.6
+      },
+      {
+        "score": "0-0",
+        "probability": 5.5
+      },
+      {
+        "score": "0-1",
+        "probability": 4.9
+      },
+      {
+        "score": "2-2",
+        "probability": 4.4
+      },
+      {
+        "score": "1-2",
+        "probability": 4.4
+      }
+    ],
+    "two_stage_score": {
+      "expected_home": 2.01,
+      "expected_away": 0.89,
+      "most_likely": "1-0",
+      "probability": 20.9,
+      "alternatives": [
+        "2-0 (18.9%)",
+        "2-1 (18.1%)",
+        "3-0 (11.8%)"
+      ]
+    }
+  },
+  "shot_quality": {
+    "home": {
+      "team_name": "Fulham FC",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.12100000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    },
+    "away": {
+      "team_name": "Nottingham Forest FC",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.12100000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    }
+  },
+  "defensive_metrics": {},
+  "odds_movement": {
+    "match_id": "Fulham FC_Nottingham Forest FC_2025-12-22",
+    "home_team": "Fulham FC",
+    "away_team": "Nottingham Forest FC",
+    "opening_odds": {
+      "timestamp": "2025-12-22T09:37:06.343933",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "current_odds": {
+      "timestamp": "2025-12-22T09:37:06.343933",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "home_movement": "stable",
+    "away_movement": "stable",
+    "home_movement_pct": 0.0,
+    "away_movement_pct": 0.0,
+    "movement_strength": "minimal",
+    "sharp_money_detected": false,
+    "sharp_money_side": null,
+    "sharp_confidence": 0.0,
+    "market_favorite": "home",
+    "implied_home_prob": 0.3772968558595345,
+    "implied_draw_prob": 0.2858309514087382,
+    "implied_away_prob": 0.3368721927317272
+  },
+  "market_implied": {
+    "home": 0.3772968558595345,
+    "draw": 0.2858309514087382,
+    "away": 0.3368721927317272
+  },
+  "sharp_money_alert": {},
+  "player_impact": {},
+  "phase_enhancements": {
+    "phase1_enhanced": true,
+    "phase2_enhanced": false,
+    "phase3_enhanced": true,
+    "phase4_enhanced": true,
+    "phase5_enhanced": true,
+    "phase6_enhanced": true,
+    "phase7_enhanced": false
+  },
+  "optimization_metadata": {
+    "match_context": "unknown",
+    "model_agreement_factor": 0.5,
+    "optimization_applied": false,
+    "ensemble_weights": {}
+  },
+  "generated_at": "2025-12-22T09:37:22.019296",
+  "provider_ids": {
+    "football_data_id": 537949,
+    "flashscore_id": null
+  },
+  "data_provenance_details": {
+    "home_injury_clamped": false,
+    "home_injury_clamped_fields": {},
+    "away_injury_clamped": false,
+    "away_injury_clamped_fields": {},
+    "weather_clamped": false,
+    "weather_clamped_fields": {}
+  },
+  "advanced_model": {
+    "mode": "shadow",
+    "model_artifact": "models\\advanced\\rf_baseline_42.joblib",
+    "prediction": {
+      "home_win_prob": 0.12,
+      "draw_prob": 0.08,
+      "away_win_prob": 0.8,
+      "meta": {
+        "model": "models\\advanced\\rf_baseline_42.joblib"
+      }
+    }
+  }
+}

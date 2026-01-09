@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  phase2-lite:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sports-prediction-runtime
+    working_dir: /app
+    command: ["python", "phase2_lite.py"]
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - MPLBACKEND=Agg
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+

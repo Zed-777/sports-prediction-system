@@ -1,0 +1,123 @@
+{
+  "match_id": 9999,
+  "home_team": "Real Betis Balompié",
+  "away_team": "RCD Mallorca",
+  "date": "2025-11-02",
+  "time": "15:00",
+  "league": "La Liga",
+  "confidence": 0.51,
+  "report_accuracy_probability": 0.785,
+  "home_win_probability": 45.0,
+  "draw_probability": 27.0,
+  "away_win_probability": 28.0,
+  "expected_home_goals": 1.2,
+  "expected_away_goals": 0.9,
+  "processing_time": 0.0,
+  "recommendation": "Home Win Possible",
+  "confidence_level": "51.0% (Very Poor)",
+  "expected_final_score": "1-1",
+  "score_probability": 10.0,
+  "score_probability_normalized": 5.0,
+  "top3_combined_probability": 25.0,
+  "top3_probability_normalized": 7.0,
+  "alternative_scores": [],
+  "score_probabilities": [],
+  "score_probabilities_normalized": [],
+  "over_2_5_goals_probability": 35.0,
+  "both_teams_score_probability": 41.5,
+  "head_to_head_analysis": {},
+  "home_performance_analysis": {},
+  "away_performance_analysis": {},
+  "goal_timing_prediction": {},
+  "intelligence_summary": {},
+  "player_availability": {
+    "home_team": {},
+    "away_team": {}
+  },
+  "weather_conditions": {},
+  "referee_analysis": {},
+  "team_news": {},
+  "data_quality_score": 90,
+  "reliability_metrics": {
+    "score": 48.0,
+    "level": "Low",
+    "indicator": "🔴 Low",
+    "recommendation": "Fallback prediction – informational use only.",
+    "confidence_intervals": {},
+    "spread_points": 0.0,
+    "factors": {},
+    "primary_driver": "insufficient_data",
+    "notes": [
+      "Reliability defaults applied due to missing data."
+    ]
+  },
+  "calibration_details": {},
+  "confidence_intervals": {},
+  "data_provenance": {
+    "weather": false,
+    "player_availability": false,
+    "referee": false,
+    "team_news": false,
+    "h2h": false,
+    "odds": false,
+    "flashscore": false,
+    "weather_clamped": true,
+    "home_injury_clamped": false
+  },
+  "phase2_lite_enhanced": false,
+  "prediction_engine": "Enhanced Intelligence v4.1 + Phase 2 Lite",
+  "advanced_predictions": {
+    "btts": {},
+    "over_under": {},
+    "exact_scores": [],
+    "two_stage_score": {}
+  },
+  "shot_quality": {},
+  "defensive_metrics": {},
+  "odds_movement": {},
+  "market_implied": {},
+  "sharp_money_alert": {},
+  "player_impact": {},
+  "phase_enhancements": {
+    "phase1_enhanced": false,
+    "phase2_enhanced": false,
+    "phase3_enhanced": false,
+    "phase4_enhanced": false,
+    "phase5_enhanced": false,
+    "phase6_enhanced": false,
+    "phase7_enhanced": false
+  },
+  "optimization_metadata": {
+    "match_context": "unknown",
+    "model_agreement_factor": 0.5,
+    "optimization_applied": false,
+    "ensemble_weights": {}
+  },
+  "generated_at": "2025-12-26T16:11:00.299583",
+  "provider_ids": {
+    "football_data_id": 9999,
+    "flashscore_id": null
+  },
+  "data_provenance_details": {
+    "weather_clamped": true,
+    "weather_clamped_fields": {
+      "wind_speed": {
+        "original": 120.0,
+        "clamped_to": 60.0
+      }
+    },
+    "home_injury_clamped": false
+  },
+  "advanced_model": {
+    "mode": "shadow",
+    "model_artifact": "models\\advanced\\rf_baseline_42.joblib",
+    "prediction": {
+      "home_win_prob": 0.12,
+      "draw_prob": 0.07,
+      "away_win_prob": 0.81,
+      "meta": {
+        "model": "models\\advanced\\rf_baseline_42.joblib"
+      }
+    }
+  }
+}
