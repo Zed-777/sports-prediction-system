@@ -1,0 +1,11 @@
+{
+  "id": "m_low_conf",
+  "league": "premier-league",
+  "home_team": "A Team",
+  "away_team": "B Team",
+  "report_accuracy_probability": 0.2,
+  "data_quality_score": 20.0,
+  "synthetic_reason": "publication_gate_threshold",
+  "is_synthetic": true,
+  "synthetic_notice": "This report is synthetic/fallback and is NOT driven by live or sufficient historical data. It has been written to the simulated reports directory to avoid accidental publication."
+}

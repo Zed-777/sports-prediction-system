@@ -1,6 +1,4 @@
 import json
-from datetime import datetime
-import pytest
 from scripts.collect_historical_results import HistoricalResultsCollector
 
 

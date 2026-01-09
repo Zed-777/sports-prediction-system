@@ -25,9 +25,9 @@ import sys
 import json
 import logging
 from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Dict, Any, Optional
+from dataclasses import dataclass
 import argparse
 import os
 
@@ -247,9 +247,30 @@ class AccuracyOptimizer:
 
                 predictor_fn = create_simple_predictor(enhanced_pred)
 
+                # If tracker exists, wrap the predictor to record predictions for later evaluation
+                if self.tracker:
+                    def tracked_predictor(match):
+                        pred = predictor_fn(match)
+                        # Add experiment/prediction metadata
+                        try:
+                            self.tracker.record_prediction(
+                                match_id=str(match.get("id", "")),
+                                league=match.get("league", "unknown"),
+                                home_team=match.get("home_team"),
+                                away_team=match.get("away_team"),
+                                prediction=pred,
+                            )
+                        except Exception:
+                            pass
+                        return pred
+
+                    predictor_to_use = tracked_predictor
+                else:
+                    predictor_to_use = predictor_fn
+
                 # Run actual backtest using BacktestingFramework (uses rolling windows internally)
                 results = self.backtester.run_backtest(
-                    predictor=predictor_fn,
+                    predictor=predictor_to_use,
                     model_name=f"optimizer_{league}",
                     test_matches=historical_data,
                     train_window_days=(

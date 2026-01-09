@@ -7,10 +7,9 @@ Phase 1: Enhanced data collection with player injuries, team form, weather, and 
 import json
 import os
 from dataclasses import dataclass
-from typing import Any, Union, Dict, List
+from typing import Any, Union, Dict
 
 import numpy as np
-import requests
 from app.utils.http import safe_request_get
 
 

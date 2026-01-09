@@ -1,4 +1,3 @@
-import json
 from types import SimpleNamespace
 from app.utils.metrics import get_metrics
 from enhanced_predictor import EnhancedPredictor

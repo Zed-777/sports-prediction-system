@@ -6,7 +6,6 @@ Usage:
     python scripts/init_historical_files.py
 """
 
-import json
 import logging
 from pathlib import Path
 import sys

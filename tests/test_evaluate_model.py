@@ -1,9 +1,7 @@
 import json
-from pathlib import Path
 import joblib
 import numpy as np
 from scripts.evaluate_model import evaluate
-import app.data.advanced_model_features as amf
 
 
 class SimpleHeuristicModel:

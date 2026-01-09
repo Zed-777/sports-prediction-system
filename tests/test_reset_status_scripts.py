@@ -1,6 +1,4 @@
 from pathlib import Path
-import pytest
-import json
 from app.utils import state_sync
 
 

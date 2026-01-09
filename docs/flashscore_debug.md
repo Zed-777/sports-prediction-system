@@ -19,3 +19,16 @@ Common troubleshooting steps:
   ```
 
 - If you need help analyzing the debug files, run `scripts/debug_flashscore_inspect.py` and share the `reports/metrics/flashscore_debug_summary.json` output.
+
+## Branch & PR
+
+The debug work is on a local branch `feature/flashscore-debug` and is ready to push. To publish and open a PR from PowerShell (if you use GitHub CLI):
+
+```powershell
+# Push branch to your origin
+git push --set-upstream origin feature/flashscore-debug
+# Create a PR (automatically fills title & description)
+gh pr create --fill
+```
+
+If you do not have `gh` installed, push the branch and open a PR from the GitHub web UI. The `synthetic-detection` workflow will run on PRs and will open an issue if synthetic report counts exceed the configured `SYNTHETIC_ALERT_THRESHOLD`.

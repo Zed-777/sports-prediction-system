@@ -1,5 +1,4 @@
 from pathlib import Path
-import re
 
 
 def test_no_duplicate_footer_texts_in_generate_fast_reports():

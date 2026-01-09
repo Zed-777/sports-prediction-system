@@ -10,7 +10,6 @@ import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
-from types import ModuleType
 
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier

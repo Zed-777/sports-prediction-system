@@ -12,7 +12,7 @@ import json
 import os
 import time
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 from app.types import JSONDict
 from app.utils.http import safe_request_get

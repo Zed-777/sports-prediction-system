@@ -515,22 +515,27 @@
       "id": 52,
       "title": "Prepare PR & release notes",
       "description": "Push `feature/flashscore-debug`, open a PR with summary, add release notes and CI notes. If origin isn't configured, provide instructions to maintainer. Ensure branch name and commit message are clear.",
-      "status": "not-started",
+      "status": "in-progress",
       "category": "release",
       "impact": "low",
-      "effort": "low"
-    },
+      "effort": "low",
+      "started_date": "2026-01-09",
+      "pr": "https://github.com/Zed-777/sports-prediction-system/pull/1",
+      "notes": "Draft PR created for `feature/injuries-connector` with compliance section added and labels `legal-review` and `data-fetch`."
+    }
     {
       "id": 53,
       "external_id": "DQ-006",
       "title": "Injury feed connector",
       "description": "Implement `app/data/connectors/injuries.py` to fetch and normalize injury data from API-Football (primary) with fallbacks to official club feeds and scrapers (SofaScore/FlashScore). Include caching, backoff, and normalization for the DataQualityEnhancer.",
-      "status": "not-started",
+      "status": "completed",
       "category": "data_quality",
       "impact": "critical",
       "effort": "medium",
-      "files": ["app/data/connectors/injuries.py","data/cache","scripts/run_with_secrets.ps1"]
-    },
+      "files": ["app/data/connectors/injuries.py","data/cache","scripts/run_with_secrets.ps1","tests/test_injuries_connector.py","tests/test_injuries_parser.py","tests/test_integration_injuries.py"],
+      "completed_date": "2026-01-09",
+      "notes": "Implemented connector, parsers, fixtures, and tests; added fallback parsing and 429 handling; PR #1 created."
+    }
     {
       "id": 54,
       "external_id": "DQ-007",
@@ -568,22 +573,25 @@
       "id": 57,
       "title": "Rate-limit, caching & resilience improvements",
       "description": "Add centralized request throttling (respect provider rate-limits), exponential backoff, persistent caching of responses under `data/cache/`, and alerting for repeated 429s. Add tests that simulate 429/500 failures and verify fallbacks.",
-      "status": "not-started",
+      "status": "completed",
       "category": "system_robustness",
       "impact": "high",
       "effort": "medium",
-      "files": ["app/utils/http.py","data/cache","tests/test_rate_limit_handling.py"]
+      "files": ["app/utils/http.py","data/cache","tests/test_rate_limit_handling.py"],
+      "completed_date": "2026-01-09",
+      "notes": "Added persistent disable flag on 429, token bucket throttling, and tests simulating 429s."
     },
     {
       "id": 58,
       "title": "Connector tests & CI integration",
       "description": "Add unit and integration tests for new connectors and update CI to run integration tests conditionally (only when secrets are available). Add canary/monitoring jobs to detect API changes/failures.",
-      "status": "not-started",
+      "status": "in-progress",
       "category": "testing",
       "impact": "high",
       "effort": "medium",
-      "files": ["tests/test_injuries_connector.py",".github/workflows/*"]
-    },
+      "files": ["tests/test_injuries_connector.py",".github/workflows/*"],
+      "notes": "Unit and integration tests added; CI conditional gating for integration tests still pending."
+    }
     {
       "id": 59,
       "title": "Prioritize, schedule & assign",
@@ -682,6 +690,39 @@
       "impact": "high",
       "effort": "low",
       "files": ["docs/onboarding.md","docs/ops_runbook.md"]
+    },
+    {
+      "id": 69,
+      "title": "Draft PR: Injuries connector",
+      "description": "Create a draft PR for `feature/injuries-connector`, attach robots report, add compliance notes and reviewer labels.",
+      "status": "completed",
+      "category": "release",
+      "impact": "low",
+      "effort": "low",
+      "pr": "https://github.com/Zed-777/sports-prediction-system/pull/1",
+      "completed_date": "2026-01-09",
+      "notes": "Compliance section appended to PR body; labels `legal-review` and `data-fetch` created and applied; awaiting reviewer assignments."
+    },
+    {
+      "id": 70,
+      "title": "Request reviewers for PR #1",
+      "description": "Request review from legal/compliance and data engineering GitHub usernames for PR #1. Await usernames from repository owner before requesting.",
+      "status": "not-started",
+      "category": "release",
+      "impact": "low",
+      "effort": "low",
+      "pr": "https://github.com/Zed-777/sports-prediction-system/pull/1",
+      "notes": "Waiting for owner to provide reviewer usernames or consent to use CODEOWNERS."
+    },
+    {
+      "id": 71,
+      "title": "Large file remediation (Git LFS)",
+      "description": "Investigate large files flagged during push and create a migration plan to Git LFS or remove history; document steps and create an issue/PR to perform migration.",
+      "status": "not-started",
+      "category": "maintenance",
+      "impact": "medium",
+      "effort": "medium",
+      "notes": "Git push reported large file warnings; recommend `git lfs migrate import` or BFG to rewrite history. I can create the issue with detection commands and migration steps."
     }
   ]
 }

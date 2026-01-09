@@ -1,9 +1,5 @@
-import os
-from types import SimpleNamespace
 
-import pytest
 
-from app.data.connectors.injuries import InjuriesConnector
 from data_quality_enhancer import DataQualityEnhancer
 
 

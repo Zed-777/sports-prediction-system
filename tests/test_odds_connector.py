@@ -60,7 +60,7 @@ def test_get_match_odds_parses_market(monkeypatch):
         return _FakeResponse(sample_payload)
 
     monkeypatch.setenv("ODDS_API_KEY", "test-key")
-    monkeypatch.setattr("app.data.odds_connector.requests.get", fake_get)
+    monkeypatch.setattr("app.utils.http.requests.get", fake_get)
 
     odds = connector.get_match_odds("premier-league", "Team A", "Team B", "2025-11-03")
 
@@ -87,7 +87,7 @@ def test_get_match_odds_parses_market(monkeypatch):
         call_count["count"] += 1
         return _FakeResponse(sample_payload)
 
-    monkeypatch.setattr("app.data.odds_connector.requests.get", counting_get)
+    monkeypatch.setattr("app.utils.http.requests.get", counting_get)
     cached = connector.get_match_odds(
         "premier-league", "Team A", "Team B", "2025-11-03"
     )

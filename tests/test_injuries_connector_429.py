@@ -1,9 +1,7 @@
-import os
 import json
 import time
 from types import SimpleNamespace
 
-import pytest
 
 from app.data.connectors.injuries import InjuriesConnector
 

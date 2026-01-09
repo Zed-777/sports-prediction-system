@@ -1,0 +1,8 @@
+{
+  "id": "m_test",
+  "home_team": "A Team",
+  "away_team": "B Team",
+  "is_synthetic": true,
+  "synthetic_notice": "This report is synthetic/fallback and is NOT driven by live or sufficient historical data. It has been written to the simulated reports directory to avoid accidental publication.",
+  "league": "premier-league"
+}
