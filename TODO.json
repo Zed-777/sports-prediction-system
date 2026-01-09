@@ -41,8 +41,10 @@
       "id": 6,
       "title": "Run full test suite and lint",
       "description": "Execute pytest and linter (ruff/mypy if configured), fix any issues discovered.",
-      "status": "in-progress",
-      "category": "maintenance"
+      "status": "completed",
+      "category": "maintenance",
+      "completed_date": "2026-01-09",
+      "notes": "All tests pass (no failures, 4 expected skips). Ran ruff auto-fix: 149 unused imports removed (F401). Fixed test mocks to use correct import paths after auto-fix."
     },
 
     {
