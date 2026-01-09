@@ -1,0 +1,8 @@
+# Disabled legacy workflow (moved to ci.yml)
+# The repository now uses .github/workflows/ci.yml for unified CI (lint + tests + smoke).
+# If you need the old standalone Python-tests workflow, restore from Git history
+# or create a new workflow file named python-tests.yml.
+
+# NOTE: This file was created by an automated maintenance change to avoid
+# duplicate GitHub Actions diagnostics in the editor while preserving the
+# previous workflow content in the repository history.

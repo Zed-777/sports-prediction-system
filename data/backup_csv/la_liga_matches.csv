@@ -1,0 +1,8 @@
+id,home_team,away_team,date,home_score,away_score,status
+1,Real Madrid,Barcelona,2024-10-20,2,1,finished
+2,Atletico Madrid,Sevilla,2024-10-19,3,0,finished
+3,Valencia,Athletic Bilbao,2024-10-18,1,1,finished
+4,Real Sociedad,Getafe,2024-10-17,2,0,finished
+5,Espanyol,Alaves,2024-10-16,0,2,finished
+6,Real Madrid,Osasuna,2025-10-20,,,"scheduled"
+7,Barcelona,Atletico Madrid,2025-10-20,,,"scheduled"

@@ -1,0 +1,31 @@
+[
+  {
+    "match_id": "tottenham-hotspur-football-club_vs_liverpool-football-club_2025-12-20",
+    "league": "premier-league",
+    "home_team": "Tottenham Hotspur Football Club",
+    "away_team": "Liverpool Football Club",
+    "match_date": "2025-12-20T17:30",
+    "prediction": {
+      "home_win_prob": 34.18,
+      "draw_prob": 22.96,
+      "away_win_prob": 42.86,
+      "predicted_outcome": "Competitive (Away Edge)",
+      "confidence": 0.92,
+      "expected_home_goals": 1.8,
+      "expected_away_goals": 2.1
+    },
+    "actual_result": {
+      "home_score": 1,
+      "away_score": 2,
+      "outcome": "away_win",
+      "updated_at": "2025-12-20T22:49:45.562058"
+    },
+    "parameters_used": {
+      "market_blend_weight": 0.18
+    },
+    "collected_at": "2025-12-20T22:49:40.958024",
+    "prediction_correct": true,
+    "exact_score_correct": false,
+    "score_in_top3": false
+  }
+]

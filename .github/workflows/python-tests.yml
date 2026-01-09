@@ -1,0 +1,12 @@
+name: disabled-python-tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      - name: Disabled noop step
+        run: echo "This workflow is intentionally disabled."

@@ -1,0 +1,74 @@
+{
+  "title": "SportsPredictionSystem - Quick Start Pamphlet",
+  "version": "2025-12-16",
+  "overview": "A compact instruction pamphlet to onboard users: what the system does, main commands, and how to read outputs.",
+  "sections": [
+    {
+      "heading": "What it does",
+      "body": "Generates match predictions (Phase 2 Lite), collects match results, computes accuracy, and runs automated optimization experiments. It can fetch finished match results, create historical datasets, run parameter sweeps, and optionally notify and generate reports."
+    },
+    {
+      "heading": "Quick Commands",
+      "items": [
+        {"cmd": "python generate_fast_reports.py generate 1 matches for la-liga", "desc": "Generate 1 match report for La Liga."},
+        {"cmd": "python generate_fast_reports.py generate 6 matches for all --delay 60", "desc": "Generate 6 matches per league with 60s delay between match runs to avoid API rate limits."},
+        {"cmd": "python scripts/collect_historical_results.py --league la-liga", "desc": "Collect predictions from reports into historical staging for La Liga."},
+        {"cmd": "python scripts/collect_historical_results.py --fetch --league la-liga", "desc": "Fetch finished match results from APIs and update historical file for La Liga."},
+        {"cmd": "python scripts/collect_historical_results.py --fetch-all --auto-optimize 50 --notify --report", "desc": "Fetch all leagues, auto-run optimizer when ≥50 completed matches, send email and generate report."},
+        {"cmd": "python scripts/optimize_accuracy.py --mode backtest --league la-liga", "desc": "Run backtest / optimization (simulated if no history)."},
+        {"cmd": "powershell .\\scripts\\run_daily_fetch.ps1", "desc": "Run the daily local pipeline: fetch, backfill provider IDs, prune + regenerate reports (recommended local scheduler)."}
+      ]
+    },
+    {
+      "heading": "Flags & What They Do",
+      "items": [
+        {"flag": "--delay SECONDS", "desc": "Wait between matches when generating multiple reports to avoid API limits."},
+        {"flag": "--no-injuries", "desc": "Skip injury API calls to reduce rate-limit risk and speed up runs."},
+        {"flag": "--fetch", "desc": "Fetch finished match results from configured APIs for the provided --league."},
+        {"flag": "--fetch-all", "desc": "Fetch finished match results for all supported leagues."},
+        {"flag": "--auto-optimize N", "desc": "If league completed matches ≥ N, run full optimization automatically."},
+        {"flag": "--notify", "desc": "Send notification email summary after fetch (requires SMTP env vars)."},
+        {"flag": "--report", "desc": "Generate a human-readable Markdown summary report in reports/historical/."}
+      ]
+    },
+    {
+      "heading": "Where to look for results",
+      "body": "Reports saved under reports/leagues/<league>/matches/<match_folder>/ (prediction.json and summary), and summary reports at reports/historical/" 
+    },
+    {
+      "heading": "How matching works (simple)",
+      "body": "To link API results to predictions we match date + home/away team names using a canonical team-name map (config/team_name_map.yaml). If names differ slightly a fuzzy match (small string distance) is used as a fallback." 
+    },
+    {
+      "heading": "Troubleshooting Tips",
+      "items": [
+        {"issue": "API rate-limits (429)", "fix": "Use --delay between matches or --no-injuries, and set throttle values in config/settings.yaml (api.football-data.org: 6.0)."},
+        {"issue": "Missing historical results after fetch", "fix": "Ensure API keys (FOOTBALL_DATA_API_KEY or API_FOOTBALL_KEY) are set and that prediction reports exist for the matches."},
+        {"issue": "Notification email not sent", "fix": "Set SMTP env vars (SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_TO)."}
+      ]
+    },
+    {
+      "heading": "Quick Onboarding Checklist",
+      "items": [
+        "1. Install requirements: pip install -r requirements.txt",
+        "2. Add API keys to .env or environment: FOOTBALL_DATA_API_KEY, API_FOOTBALL_KEY",
+        "3. Run sample report: python generate_fast_reports.py generate 1 matches for la-liga",
+        "4. Collect and fetch results: python scripts/collect_historical_results.py --fetch --league la-liga",
+        "5. Check reports at reports/leagues and summary at reports/historical/"
+      ]
+    },
+    {
+      "heading": "Local scheduler (recommended)",
+      "items": [
+        {"cmd": "powershell .\\scripts\\run_daily_fetch.ps1", "desc": "Run everything now (fetch, backfill, regenerate)."},
+        {"cmd": "schtasks /Create /SC DAILY /TN \"SportsPredictionSystem - Daily Fetch\" /TR \"powershell -ExecutionPolicy Bypass -File \"C:\\Path\\To\\STATS\\scripts\\run_daily_fetch.ps1\"\" /ST 03:00 /RL LIMITED", "desc": "Schedule the script to run daily at 03:00 (replace path and time as needed)."},
+        {"cmd": "powershell .\\scripts\\run_daily_fetch.ps1 -Debug", "desc": "Run in debug mode to capture verbose logs in logs/daily/."},
+        {"cmd": "powershell .\\scripts\\install_schtask.ps1 -TaskTime 03:00 -Replace", "desc": "Install the Windows scheduled task to run the daily pipeline (run this locally once)."}
+      ]
+    },
+    {
+      "heading": "Support & Contacts",
+      "body": "Add a contact or README note here for the team responsible for the system and where to send issues (e.g., GitHub issues or internal tracker)."
+    }
+  ]
+}

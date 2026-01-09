@@ -1,0 +1,273 @@
+{
+  "baseline_accuracy": 0.0,
+  "optimized_accuracy": 0.0,
+  "improvement": 0.0,
+  "improvement_pct": "0.00%",
+  "optimal_parameters": {
+    "market_blend_weight": 0.05,
+    "k_factor": 16.0,
+    "decay_half_life_days": 30.0,
+    "h2h_max_weight": 0.15,
+    "poisson_blend": 0.5
+  },
+  "parameter_sweeps": {
+    "market_blend_weight": {
+      "parameter": "market_blend_weight",
+      "current_value": 0.18,
+      "optimal_value": 0.05,
+      "optimal_accuracy": 0.0,
+      "improvement": 0.0,
+      "all_results": [
+        {
+          "value": 0.05,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.1,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.15,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.2,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.25,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.3,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.35,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        }
+      ],
+      "recommendation": "Change market_blend_weight from 0.18 to 0.05",
+      "timestamp": "2025-12-20T22:49:55.851569"
+    },
+    "k_factor": {
+      "parameter": "k_factor",
+      "current_value": 32.0,
+      "optimal_value": 16.0,
+      "optimal_accuracy": 0.0,
+      "improvement": 0.0,
+      "all_results": [
+        {
+          "value": 16.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 24.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 32.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 40.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 48.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 56.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 64.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        }
+      ],
+      "recommendation": "Change k_factor from 32.0 to 16.0",
+      "timestamp": "2025-12-20T22:49:55.974008"
+    },
+    "decay_half_life_days": {
+      "parameter": "decay_half_life_days",
+      "current_value": 60.0,
+      "optimal_value": 30.0,
+      "optimal_accuracy": 0.0,
+      "improvement": 0.0,
+      "all_results": [
+        {
+          "value": 30.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 45.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 60.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 75.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 90.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 105.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 120.0,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        }
+      ],
+      "recommendation": "Change decay_half_life_days from 60.0 to 30.0",
+      "timestamp": "2025-12-20T22:49:56.122939"
+    },
+    "h2h_max_weight": {
+      "parameter": "h2h_max_weight",
+      "current_value": 0.35,
+      "optimal_value": 0.15,
+      "optimal_accuracy": 0.0,
+      "improvement": 0.0,
+      "all_results": [
+        {
+          "value": 0.15,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.2,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.25,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.3,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.35,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.4,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.45,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.5,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        }
+      ],
+      "recommendation": "Change h2h_max_weight from 0.35 to 0.15",
+      "timestamp": "2025-12-20T22:49:56.277030"
+    },
+    "poisson_blend": {
+      "parameter": "poisson_blend",
+      "current_value": 0.7,
+      "optimal_value": 0.5,
+      "optimal_accuracy": 0.0,
+      "improvement": 0.0,
+      "all_results": [
+        {
+          "value": 0.5,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.6,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.7,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.8,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        },
+        {
+          "value": 0.9,
+          "accuracy": 0.0,
+          "brier_score": 1.0
+        }
+      ],
+      "recommendation": "Change poisson_blend from 0.7 to 0.5",
+      "timestamp": "2025-12-20T22:49:56.369858"
+    }
+  },
+  "recommended_changes": [
+    {
+      "parameter": "market_blend_weight",
+      "current": 0.18,
+      "recommended": 0.05,
+      "config_path": "config/settings.yaml:constants.market_blend_weight"
+    },
+    {
+      "parameter": "k_factor",
+      "current": 32.0,
+      "recommended": 16.0,
+      "config_path": "app/models/prediction_enhancements.py:ELORatingSystem.k_factor"
+    },
+    {
+      "parameter": "decay_half_life_days",
+      "current": 60.0,
+      "recommended": 30.0,
+      "config_path": "app/models/prediction_enhancements.py:ELORatingSystem.decay_half_life_days"
+    },
+    {
+      "parameter": "h2h_max_weight",
+      "current": 0.35,
+      "recommended": 0.15,
+      "config_path": "enhanced_predictor.py:h2h_weight"
+    },
+    {
+      "parameter": "poisson_blend",
+      "current": 0.7,
+      "recommended": 0.5,
+      "config_path": "enhanced_predictor.py:blend_weight_poisson"
+    }
+  ],
+  "timestamp": "2025-12-20T22:49:56.385112"
+}

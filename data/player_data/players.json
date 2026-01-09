@@ -1,0 +1,18 @@
+{
+  "haaland_001": {
+    "player_id": "haaland_001",
+    "player_name": "Erling Haaland",
+    "team_id": "mci_001",
+    "team_name": "Manchester City",
+    "position": "FWD",
+    "matches_played": 30,
+    "minutes_played": 2500,
+    "goals": 25,
+    "assists": 5,
+    "xg": 22.0,
+    "xa": 0.0,
+    "impact_score": 60.9,
+    "goal_contribution_per_90": 1.08,
+    "status": "unknown"
+  }
+}

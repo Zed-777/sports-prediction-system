@@ -1,0 +1,761 @@
+id,home_team,away_team,date,home_score,away_score,status
+438482,UD Almería,Rayo Vallecano de Madrid,2023-08-11,,,finished
+438479,Sevilla FC,Valencia CF,2023-08-11,,,finished
+438481,Real Sociedad de Fútbol,Girona FC,2023-08-12,,,finished
+438483,UD Las Palmas,RCD Mallorca,2023-08-12,,,finished
+438474,Athletic Club,Real Madrid CF,2023-08-12,,,finished
+438476,RC Celta de Vigo,CA Osasuna,2023-08-13,,,finished
+438480,Villarreal CF,Real Betis Balompié,2023-08-13,,,finished
+438478,Getafe CF,FC Barcelona,2023-08-13,,,finished
+438477,Cádiz CF,Deportivo Alavés,2023-08-14,,,finished
+438475,Club Atlético de Madrid,Granada CF,2023-08-14,,,finished
+438491,RCD Mallorca,Villarreal CF,2023-08-18,,,finished
+438490,Valencia CF,UD Las Palmas,2023-08-18,,,finished
+438492,Real Sociedad de Fútbol,RC Celta de Vigo,2023-08-19,,,finished
+438493,UD Almería,Real Madrid CF,2023-08-19,,,finished
+438485,CA Osasuna,Athletic Club,2023-08-19,,,finished
+438488,Girona FC,Getafe CF,2023-08-20,,,finished
+438487,FC Barcelona,Cádiz CF,2023-08-20,,,finished
+438484,Real Betis Balompié,Club Atlético de Madrid,2023-08-20,,,finished
+438486,Deportivo Alavés,Sevilla FC,2023-08-21,,,finished
+438489,Granada CF,Rayo Vallecano de Madrid,2023-08-21,,,finished
+438503,UD Las Palmas,Real Sociedad de Fútbol,2023-08-25,,,finished
+438495,RC Celta de Vigo,Real Madrid CF,2023-08-25,,,finished
+438496,Cádiz CF,UD Almería,2023-08-26,,,finished
+438498,Granada CF,RCD Mallorca,2023-08-26,,,finished
+438499,Sevilla FC,Girona FC,2023-08-26,,,finished
+438501,Villarreal CF,FC Barcelona,2023-08-27,,,finished
+438500,Valencia CF,CA Osasuna,2023-08-27,,,finished
+438494,Athletic Club,Real Betis Balompié,2023-08-27,,,finished
+438497,Getafe CF,Deportivo Alavés,2023-08-28,,,finished
+438502,Rayo Vallecano de Madrid,Club Atlético de Madrid,2023-08-28,,,finished
+438508,Cádiz CF,Villarreal CF,2023-09-01,,,finished
+438513,UD Almería,RC Celta de Vigo,2023-09-01,,,finished
+438512,Real Sociedad de Fútbol,Granada CF,2023-09-02,,,finished
+438511,Real Madrid CF,Getafe CF,2023-09-02,,,finished
+438507,Deportivo Alavés,Valencia CF,2023-09-02,,,finished
+438505,Real Betis Balompié,Rayo Vallecano de Madrid,2023-09-02,,,finished
+438509,Girona FC,UD Las Palmas,2023-09-03,,,finished
+438510,RCD Mallorca,Athletic Club,2023-09-03,,,finished
+438506,CA Osasuna,FC Barcelona,2023-09-03,,,finished
+438522,Rayo Vallecano de Madrid,Deportivo Alavés,2023-09-15,,,finished
+438514,Athletic Club,Cádiz CF,2023-09-16,,,finished
+438520,Valencia CF,Club Atlético de Madrid,2023-09-16,,,finished
+438515,RC Celta de Vigo,RCD Mallorca,2023-09-16,,,finished
+438516,FC Barcelona,Real Betis Balompié,2023-09-16,,,finished
+438517,Getafe CF,CA Osasuna,2023-09-17,,,finished
+438521,Villarreal CF,UD Almería,2023-09-17,,,finished
+438519,Sevilla FC,UD Las Palmas,2023-09-17,,,finished
+438523,Real Madrid CF,Real Sociedad de Fútbol,2023-09-17,,,finished
+438518,Granada CF,Girona FC,2023-09-18,,,finished
+438527,Deportivo Alavés,Athletic Club,2023-09-22,,,finished
+438529,Girona FC,RCD Mallorca,2023-09-23,,,finished
+438526,CA Osasuna,Sevilla FC,2023-09-23,,,finished
+438528,FC Barcelona,RC Celta de Vigo,2023-09-23,,,finished
+438532,UD Almería,Valencia CF,2023-09-23,,,finished
+438531,Real Sociedad de Fútbol,Getafe CF,2023-09-24,,,finished
+438530,Rayo Vallecano de Madrid,Villarreal CF,2023-09-24,,,finished
+438533,UD Las Palmas,Granada CF,2023-09-24,,,finished
+438525,Real Betis Balompié,Cádiz CF,2023-09-24,,,finished
+438524,Club Atlético de Madrid,Real Madrid CF,2023-09-24,,,finished
+438539,Sevilla FC,UD Almería,2023-09-26,,,finished
+438542,RCD Mallorca,FC Barcelona,2023-09-26,,,finished
+438534,Athletic Club,Getafe CF,2023-09-27,,,finished
+438541,Villarreal CF,Girona FC,2023-09-27,,,finished
+438543,Real Madrid CF,UD Las Palmas,2023-09-27,,,finished
+438537,Cádiz CF,Rayo Vallecano de Madrid,2023-09-27,,,finished
+438540,Valencia CF,Real Sociedad de Fútbol,2023-09-27,,,finished
+438536,RC Celta de Vigo,Deportivo Alavés,2023-09-28,,,finished
+438538,Granada CF,Real Betis Balompié,2023-09-28,,,finished
+438535,CA Osasuna,Club Atlético de Madrid,2023-09-28,,,finished
+438547,FC Barcelona,Sevilla FC,2023-09-29,,,finished
+438548,Getafe CF,Villarreal CF,2023-09-30,,,finished
+438550,Rayo Vallecano de Madrid,RCD Mallorca,2023-09-30,,,finished
+438549,Girona FC,Real Madrid CF,2023-09-30,,,finished
+438551,Real Sociedad de Fútbol,Athletic Club,2023-09-30,,,finished
+438552,UD Almería,Granada CF,2023-10-01,,,finished
+438546,Deportivo Alavés,CA Osasuna,2023-10-01,,,finished
+438544,Club Atlético de Madrid,Cádiz CF,2023-10-01,,,finished
+438545,Real Betis Balompié,Valencia CF,2023-10-01,,,finished
+438553,UD Las Palmas,RC Celta de Vigo,2023-10-02,,,finished
+438554,Athletic Club,UD Almería,2023-10-06,,,finished
+438558,Cádiz CF,Girona FC,2023-10-07,,,finished
+438563,Real Madrid CF,CA Osasuna,2023-10-07,,,finished
+438562,RCD Mallorca,Valencia CF,2023-10-07,,,finished
+438560,Sevilla FC,Rayo Vallecano de Madrid,2023-10-07,,,finished
+438561,Villarreal CF,UD Las Palmas,2023-10-08,,,finished
+438555,Club Atlético de Madrid,Real Sociedad de Fútbol,2023-10-08,,,finished
+438556,RC Celta de Vigo,Getafe CF,2023-10-08,,,finished
+438557,Deportivo Alavés,Real Betis Balompié,2023-10-08,,,finished
+438559,Granada CF,FC Barcelona,2023-10-08,,,finished
+438564,CA Osasuna,Granada CF,2023-10-20,,,finished
+438572,Real Sociedad de Fútbol,RCD Mallorca,2023-10-21,,,finished
+438567,Getafe CF,Real Betis Balompié,2023-10-21,,,finished
+438569,Sevilla FC,Real Madrid CF,2023-10-21,,,finished
+438565,RC Celta de Vigo,Club Atlético de Madrid,2023-10-21,,,finished
+438573,UD Las Palmas,Rayo Vallecano de Madrid,2023-10-22,,,finished
+438568,Girona FC,UD Almería,2023-10-22,,,finished
+438571,Villarreal CF,Deportivo Alavés,2023-10-22,,,finished
+438566,FC Barcelona,Athletic Club,2023-10-22,,,finished
+438570,Valencia CF,Cádiz CF,2023-10-23,,,finished
+438579,Girona FC,RC Celta de Vigo,2023-10-27,,,finished
+438583,UD Almería,UD Las Palmas,2023-10-28,,,finished
+438577,FC Barcelona,Real Madrid CF,2023-10-28,,,finished
+438582,RCD Mallorca,Getafe CF,2023-10-28,,,finished
+438578,Cádiz CF,Sevilla FC,2023-10-28,,,finished
+438576,Real Betis Balompié,CA Osasuna,2023-10-29,,,finished
+438581,Rayo Vallecano de Madrid,Real Sociedad de Fútbol,2023-10-29,,,finished
+438574,Athletic Club,Valencia CF,2023-10-29,,,finished
+438575,Club Atlético de Madrid,Deportivo Alavés,2023-10-29,,,finished
+438580,Granada CF,Villarreal CF,2023-10-30,,,finished
+438593,UD Las Palmas,Club Atlético de Madrid,2023-11-03,,,finished
+438585,CA Osasuna,Girona FC,2023-11-04,,,finished
+438584,Real Betis Balompié,RCD Mallorca,2023-11-04,,,finished
+438586,RC Celta de Vigo,Sevilla FC,2023-11-04,,,finished
+438592,Real Sociedad de Fútbol,FC Barcelona,2023-11-04,,,finished
+438587,Deportivo Alavés,UD Almería,2023-11-05,,,finished
+438589,Valencia CF,Granada CF,2023-11-05,,,finished
+438590,Villarreal CF,Athletic Club,2023-11-05,,,finished
+438591,Real Madrid CF,Rayo Vallecano de Madrid,2023-11-05,,,finished
+438588,Getafe CF,Cádiz CF,2023-11-06,,,finished
+438594,Athletic Club,RC Celta de Vigo,2023-11-10,,,finished
+438600,Rayo Vallecano de Madrid,Girona FC,2023-11-11,,,finished
+438603,UD Almería,Real Sociedad de Fútbol,2023-11-11,,,finished
+438596,CA Osasuna,UD Las Palmas,2023-11-11,,,finished
+438598,Granada CF,Getafe CF,2023-11-11,,,finished
+438602,Real Madrid CF,Valencia CF,2023-11-11,,,finished
+438597,FC Barcelona,Deportivo Alavés,2023-11-12,,,finished
+438599,Sevilla FC,Real Betis Balompié,2023-11-12,,,finished
+438595,Club Atlético de Madrid,Villarreal CF,2023-11-12,,,finished
+438606,Deportivo Alavés,Granada CF,2023-11-24,,,finished
+438612,Rayo Vallecano de Madrid,FC Barcelona,2023-11-25,,,finished
+438610,Valencia CF,RC Celta de Vigo,2023-11-25,,,finished
+438608,Getafe CF,UD Almería,2023-11-25,,,finished
+438604,Club Atlético de Madrid,RCD Mallorca,2023-11-25,,,finished
+438611,Villarreal CF,CA Osasuna,2023-11-26,,,finished
+438613,Real Sociedad de Fútbol,Sevilla FC,2023-11-26,,,finished
+438607,Cádiz CF,Real Madrid CF,2023-11-26,,,finished
+438605,Real Betis Balompié,UD Las Palmas,2023-11-26,,,finished
+438609,Girona FC,Athletic Club,2023-11-27,,,finished
+438601,RCD Mallorca,Cádiz CF,2023-11-29,,,finished
+438623,UD Las Palmas,Getafe CF,2023-12-01,,,finished
+438618,Girona FC,Valencia CF,2023-12-02,,,finished
+438614,Athletic Club,Rayo Vallecano de Madrid,2023-12-02,,,finished
+438621,Real Madrid CF,Granada CF,2023-12-02,,,finished
+438615,CA Osasuna,Real Sociedad de Fútbol,2023-12-02,,,finished
+438620,RCD Mallorca,Deportivo Alavés,2023-12-03,,,finished
+438622,UD Almería,Real Betis Balompié,2023-12-03,,,finished
+438619,Sevilla FC,Villarreal CF,2023-12-03,,,finished
+438617,FC Barcelona,Club Atlético de Madrid,2023-12-03,,,finished
+438616,RC Celta de Vigo,Cádiz CF,2023-12-04,,,finished
+438629,Getafe CF,Valencia CF,2023-12-08,,,finished
+438626,Deportivo Alavés,UD Las Palmas,2023-12-09,,,finished
+438625,Real Betis Balompié,Real Madrid CF,2023-12-09,,,finished
+438631,Villarreal CF,Real Sociedad de Fútbol,2023-12-09,,,finished
+438633,RCD Mallorca,Sevilla FC,2023-12-09,,,finished
+438624,Club Atlético de Madrid,UD Almería,2023-12-10,,,finished
+438628,Cádiz CF,CA Osasuna,2023-12-10,,,finished
+438627,FC Barcelona,Girona FC,2023-12-10,,,finished
+438630,Granada CF,Athletic Club,2023-12-11,,,finished
+438632,Rayo Vallecano de Madrid,RC Celta de Vigo,2023-12-11,,,finished
+438635,CA Osasuna,Rayo Vallecano de Madrid,2023-12-15,,,finished
+438636,RC Celta de Vigo,Granada CF,2023-12-16,,,finished
+438634,Athletic Club,Club Atlético de Madrid,2023-12-16,,,finished
+438638,Sevilla FC,Getafe CF,2023-12-16,,,finished
+438639,Valencia CF,FC Barcelona,2023-12-16,,,finished
+438642,UD Almería,RCD Mallorca,2023-12-17,,,finished
+438641,Real Sociedad de Fútbol,Real Betis Balompié,2023-12-17,,,finished
+438643,UD Las Palmas,Cádiz CF,2023-12-17,,,finished
+438640,Real Madrid CF,Villarreal CF,2023-12-17,,,finished
+438637,Girona FC,Deportivo Alavés,2023-12-18,,,finished
+438652,Rayo Vallecano de Madrid,Valencia CF,2023-12-19,,,finished
+438645,Club Atlético de Madrid,Getafe CF,2023-12-19,,,finished
+438650,Granada CF,Sevilla FC,2023-12-19,,,finished
+438648,FC Barcelona,UD Almería,2023-12-20,,,finished
+438644,Athletic Club,UD Las Palmas,2023-12-20,,,finished
+438651,Villarreal CF,RC Celta de Vigo,2023-12-20,,,finished
+438646,Real Betis Balompié,Girona FC,2023-12-21,,,finished
+438649,Cádiz CF,Real Sociedad de Fútbol,2023-12-21,,,finished
+438647,Deportivo Alavés,Real Madrid CF,2023-12-21,,,finished
+438653,RCD Mallorca,CA Osasuna,2023-12-21,,,finished
+438504,Club Atlético de Madrid,Sevilla FC,2023-12-23,,,finished
+438656,Getafe CF,Rayo Vallecano de Madrid,2024-01-02,,,finished
+438662,Real Sociedad de Fútbol,Deportivo Alavés,2024-01-02,,,finished
+438660,Valencia CF,Villarreal CF,2024-01-02,,,finished
+438658,Granada CF,Cádiz CF,2024-01-03,,,finished
+438655,RC Celta de Vigo,Real Betis Balompié,2024-01-03,,,finished
+438661,Real Madrid CF,RCD Mallorca,2024-01-03,,,finished
+438657,Girona FC,Club Atlético de Madrid,2024-01-03,,,finished
+438654,CA Osasuna,UD Almería,2024-01-04,,,finished
+438659,Sevilla FC,Athletic Club,2024-01-04,,,finished
+438663,UD Las Palmas,FC Barcelona,2024-01-04,,,finished
+438670,Sevilla FC,Deportivo Alavés,2024-01-12,,,finished
+438673,UD Las Palmas,Villarreal CF,2024-01-13,,,finished
+438671,RCD Mallorca,RC Celta de Vigo,2024-01-13,,,finished
+438664,Athletic Club,Real Sociedad de Fútbol,2024-01-13,,,finished
+438666,Real Betis Balompié,Granada CF,2024-01-13,,,finished
+438672,UD Almería,Girona FC,2024-01-14,,,finished
+438668,Cádiz CF,Valencia CF,2024-01-14,,,finished
+438677,Deportivo Alavés,Cádiz CF,2024-01-19,,,finished
+438682,Rayo Vallecano de Madrid,UD Las Palmas,2024-01-20,,,finished
+438681,Villarreal CF,RCD Mallorca,2024-01-20,,,finished
+438680,Valencia CF,Athletic Club,2024-01-20,,,finished
+438676,RC Celta de Vigo,Real Sociedad de Fútbol,2024-01-20,,,finished
+438675,CA Osasuna,Getafe CF,2024-01-21,,,finished
+438683,Real Madrid CF,UD Almería,2024-01-21,,,finished
+438674,Real Betis Balompié,FC Barcelona,2024-01-21,,,finished
+438678,Girona FC,Sevilla FC,2024-01-21,,,finished
+438679,Granada CF,Club Atlético de Madrid,2024-01-22,,,finished
+438692,UD Almería,Deportivo Alavés,2024-01-26,,,finished
+438691,Real Sociedad de Fútbol,Rayo Vallecano de Madrid,2024-01-27,,,finished
+438693,UD Las Palmas,Real Madrid CF,2024-01-27,,,finished
+438686,FC Barcelona,Villarreal CF,2024-01-27,,,finished
+438690,RCD Mallorca,Real Betis Balompié,2024-01-27,,,finished
+438685,RC Celta de Vigo,Girona FC,2024-01-28,,,finished
+438687,Cádiz CF,Athletic Club,2024-01-28,,,finished
+438689,Sevilla FC,CA Osasuna,2024-01-28,,,finished
+438684,Club Atlético de Madrid,Valencia CF,2024-01-28,,,finished
+438688,Getafe CF,Granada CF,2024-01-29,,,finished
+438667,FC Barcelona,CA Osasuna,2024-01-31,,,finished
+438665,Club Atlético de Madrid,Rayo Vallecano de Madrid,2024-01-31,,,finished
+438669,Getafe CF,Real Madrid CF,2024-02-01,,,finished
+438694,Athletic Club,RCD Mallorca,2024-02-02,,,finished
+438700,Valencia CF,UD Almería,2024-02-03,,,finished
+438699,Granada CF,UD Las Palmas,2024-02-03,,,finished
+438697,Deportivo Alavés,FC Barcelona,2024-02-03,,,finished
+438698,Girona FC,Real Sociedad de Fútbol,2024-02-03,,,finished
+438701,Villarreal CF,Cádiz CF,2024-02-04,,,finished
+438696,CA Osasuna,RC Celta de Vigo,2024-02-04,,,finished
+438695,Real Betis Balompié,Getafe CF,2024-02-04,,,finished
+438703,Real Madrid CF,Club Atlético de Madrid,2024-02-04,,,finished
+438702,Rayo Vallecano de Madrid,Sevilla FC,2024-02-05,,,finished
+438706,Cádiz CF,Real Betis Balompié,2024-02-09,,,finished
+438704,Deportivo Alavés,Villarreal CF,2024-02-10,,,finished
+438711,Real Sociedad de Fútbol,CA Osasuna,2024-02-10,,,finished
+438710,Real Madrid CF,Girona FC,2024-02-10,,,finished
+438713,UD Las Palmas,Valencia CF,2024-02-10,,,finished
+438707,Getafe CF,RC Celta de Vigo,2024-02-11,,,finished
+438709,RCD Mallorca,Rayo Vallecano de Madrid,2024-02-11,,,finished
+438708,Sevilla FC,Club Atlético de Madrid,2024-02-11,,,finished
+438705,FC Barcelona,Granada CF,2024-02-11,,,finished
+438712,UD Almería,Athletic Club,2024-02-12,,,finished
+438721,Villarreal CF,Getafe CF,2024-02-16,,,finished
+438715,Club Atlético de Madrid,UD Las Palmas,2024-02-17,,,finished
+438717,CA Osasuna,Cádiz CF,2024-02-17,,,finished
+438718,RC Celta de Vigo,FC Barcelona,2024-02-17,,,finished
+438720,Valencia CF,Sevilla FC,2024-02-17,,,finished
+438722,Rayo Vallecano de Madrid,Real Madrid CF,2024-02-18,,,finished
+438719,Granada CF,UD Almería,2024-02-18,,,finished
+438723,RCD Mallorca,Real Sociedad de Fútbol,2024-02-18,,,finished
+438716,Real Betis Balompié,Deportivo Alavés,2024-02-18,,,finished
+438714,Athletic Club,Girona FC,2024-02-19,,,finished
+438731,Real Sociedad de Fútbol,Villarreal CF,2024-02-23,,,finished
+438726,FC Barcelona,Getafe CF,2024-02-24,,,finished
+438725,Deportivo Alavés,RCD Mallorca,2024-02-24,,,finished
+438732,UD Almería,Club Atlético de Madrid,2024-02-24,,,finished
+438727,Cádiz CF,RC Celta de Vigo,2024-02-25,,,finished
+438724,Real Betis Balompié,Athletic Club,2024-02-25,,,finished
+438733,UD Las Palmas,CA Osasuna,2024-02-25,,,finished
+438730,Real Madrid CF,Sevilla FC,2024-02-25,,,finished
+438728,Girona FC,Rayo Vallecano de Madrid,2024-02-26,,,finished
+438737,RC Celta de Vigo,UD Almería,2024-03-01,,,finished
+438739,Sevilla FC,Real Sociedad de Fútbol,2024-03-02,,,finished
+438742,Rayo Vallecano de Madrid,Cádiz CF,2024-03-02,,,finished
+438738,Getafe CF,UD Las Palmas,2024-03-02,,,finished
+438740,Valencia CF,Real Madrid CF,2024-03-02,,,finished
+438741,Villarreal CF,Granada CF,2024-03-03,,,finished
+438735,Club Atlético de Madrid,Real Betis Balompié,2024-03-03,,,finished
+438743,RCD Mallorca,Girona FC,2024-03-03,,,finished
+438734,Athletic Club,FC Barcelona,2024-03-03,,,finished
+438736,CA Osasuna,Deportivo Alavés,2024-03-04,,,finished
+438746,FC Barcelona,RCD Mallorca,2024-03-08,,,finished
+438750,Valencia CF,Getafe CF,2024-03-09,,,finished
+438747,Cádiz CF,Club Atlético de Madrid,2024-03-09,,,finished
+438749,Granada CF,Real Sociedad de Fútbol,2024-03-09,,,finished
+438748,Girona FC,CA Osasuna,2024-03-09,,,finished
+438745,Deportivo Alavés,Rayo Vallecano de Madrid,2024-03-10,,,finished
+438753,UD Las Palmas,Athletic Club,2024-03-10,,,finished
+438751,Real Madrid CF,RC Celta de Vigo,2024-03-10,,,finished
+438744,Real Betis Balompié,Villarreal CF,2024-03-10,,,finished
+438752,UD Almería,Sevilla FC,2024-03-11,,,finished
+438762,Real Sociedad de Fútbol,Cádiz CF,2024-03-15,,,finished
+438761,RCD Mallorca,Granada CF,2024-03-16,,,finished
+438756,CA Osasuna,Real Madrid CF,2024-03-16,,,finished
+438757,Getafe CF,Girona FC,2024-03-16,,,finished
+438754,Athletic Club,Deportivo Alavés,2024-03-16,,,finished
+438758,Sevilla FC,RC Celta de Vigo,2024-03-17,,,finished
+438759,Villarreal CF,Valencia CF,2024-03-17,,,finished
+438763,UD Las Palmas,UD Almería,2024-03-17,,,finished
+438760,Rayo Vallecano de Madrid,Real Betis Balompié,2024-03-17,,,finished
+438755,Club Atlético de Madrid,FC Barcelona,2024-03-17,,,finished
+438767,Cádiz CF,Granada CF,2024-03-29,,,finished
+438768,Getafe CF,Sevilla FC,2024-03-30,,,finished
+438773,UD Almería,CA Osasuna,2024-03-30,,,finished
+438770,Valencia CF,RCD Mallorca,2024-03-30,,,finished
+438766,FC Barcelona,UD Las Palmas,2024-03-30,,,finished
+438764,RC Celta de Vigo,Rayo Vallecano de Madrid,2024-03-31,,,finished
+438769,Girona FC,Real Betis Balompié,2024-03-31,,,finished
+438765,Deportivo Alavés,Real Sociedad de Fútbol,2024-03-31,,,finished
+438772,Real Madrid CF,Athletic Club,2024-03-31,,,finished
+438771,Villarreal CF,Club Atlético de Madrid,2024-04-01,,,finished
+438729,Granada CF,Valencia CF,2024-04-04,,,finished
+438776,Real Betis Balompié,RC Celta de Vigo,2024-04-12,,,finished
+438775,Club Atlético de Madrid,Girona FC,2024-04-13,,,finished
+438780,Rayo Vallecano de Madrid,Getafe CF,2024-04-13,,,finished
+438781,RCD Mallorca,Real Madrid CF,2024-04-13,,,finished
+438778,Cádiz CF,FC Barcelona,2024-04-13,,,finished
+438783,UD Las Palmas,Sevilla FC,2024-04-14,,,finished
+438779,Granada CF,Deportivo Alavés,2024-04-14,,,finished
+438774,Athletic Club,Villarreal CF,2024-04-14,,,finished
+438782,Real Sociedad de Fútbol,UD Almería,2024-04-14,,,finished
+438777,CA Osasuna,Valencia CF,2024-04-15,,,finished
+438784,Athletic Club,Granada CF,2024-04-19,,,finished
+438785,RC Celta de Vigo,UD Las Palmas,2024-04-20,,,finished
+438791,Rayo Vallecano de Madrid,CA Osasuna,2024-04-20,,,finished
+438790,Valencia CF,Real Betis Balompié,2024-04-20,,,finished
+438788,Girona FC,Cádiz CF,2024-04-20,,,finished
+438787,Getafe CF,Real Sociedad de Fútbol,2024-04-21,,,finished
+438793,UD Almería,Villarreal CF,2024-04-21,,,finished
+438786,Deportivo Alavés,Club Atlético de Madrid,2024-04-21,,,finished
+438792,Real Madrid CF,FC Barcelona,2024-04-21,,,finished
+438789,Sevilla FC,RCD Mallorca,2024-04-22,,,finished
+438801,Real Sociedad de Fútbol,Real Madrid CF,2024-04-26,,,finished
+438803,UD Las Palmas,Girona FC,2024-04-27,,,finished
+438802,UD Almería,Getafe CF,2024-04-27,,,finished
+438796,Deportivo Alavés,RC Celta de Vigo,2024-04-27,,,finished
+438794,Club Atlético de Madrid,Athletic Club,2024-04-27,,,finished
+438798,Cádiz CF,RCD Mallorca,2024-04-28,,,finished
+438799,Granada CF,CA Osasuna,2024-04-28,,,finished
+438800,Villarreal CF,Rayo Vallecano de Madrid,2024-04-28,,,finished
+438795,Real Betis Balompié,Sevilla FC,2024-04-28,,,finished
+438797,FC Barcelona,Valencia CF,2024-04-29,,,finished
+438806,Getafe CF,Athletic Club,2024-05-03,,,finished
+438813,Real Sociedad de Fútbol,UD Las Palmas,2024-05-04,,,finished
+438812,Real Madrid CF,Cádiz CF,2024-05-04,,,finished
+438807,Girona FC,FC Barcelona,2024-05-04,,,finished
+438811,RCD Mallorca,Club Atlético de Madrid,2024-05-04,,,finished
+438804,CA Osasuna,Real Betis Balompié,2024-05-05,,,finished
+438805,RC Celta de Vigo,Villarreal CF,2024-05-05,,,finished
+438809,Valencia CF,Deportivo Alavés,2024-05-05,,,finished
+438808,Sevilla FC,Granada CF,2024-05-05,,,finished
+438810,Rayo Vallecano de Madrid,UD Almería,2024-05-05,,,finished
+438817,Deportivo Alavés,Girona FC,2024-05-10,,,finished
+438823,RCD Mallorca,UD Las Palmas,2024-05-11,,,finished
+438822,Villarreal CF,Sevilla FC,2024-05-11,,,finished
+438820,Granada CF,Real Madrid CF,2024-05-11,,,finished
+438814,Athletic Club,CA Osasuna,2024-05-11,,,finished
+438819,Cádiz CF,Getafe CF,2024-05-12,,,finished
+438815,Club Atlético de Madrid,RC Celta de Vigo,2024-05-12,,,finished
+438821,Valencia CF,Rayo Vallecano de Madrid,2024-05-12,,,finished
+438816,Real Betis Balompié,UD Almería,2024-05-12,,,finished
+438818,FC Barcelona,Real Sociedad de Fútbol,2024-05-13,,,finished
+438824,CA Osasuna,RCD Mallorca,2024-05-14,,,finished
+438830,Real Madrid CF,Deportivo Alavés,2024-05-14,,,finished
+438827,Girona FC,Villarreal CF,2024-05-14,,,finished
+438828,Sevilla FC,Cádiz CF,2024-05-15,,,finished
+438829,Rayo Vallecano de Madrid,Granada CF,2024-05-15,,,finished
+438825,RC Celta de Vigo,Athletic Club,2024-05-15,,,finished
+438826,Getafe CF,Club Atlético de Madrid,2024-05-15,,,finished
+438833,UD Las Palmas,Real Betis Balompié,2024-05-16,,,finished
+438832,UD Almería,FC Barcelona,2024-05-16,,,finished
+438831,Real Sociedad de Fútbol,Valencia CF,2024-05-16,,,finished
+438837,Deportivo Alavés,Getafe CF,2024-05-18,,,finished
+438834,Athletic Club,Sevilla FC,2024-05-19,,,finished
+438835,Club Atlético de Madrid,CA Osasuna,2024-05-19,,,finished
+438836,Real Betis Balompié,Real Sociedad de Fútbol,2024-05-19,,,finished
+438838,FC Barcelona,Rayo Vallecano de Madrid,2024-05-19,,,finished
+438839,Cádiz CF,UD Las Palmas,2024-05-19,,,finished
+438840,Granada CF,RC Celta de Vigo,2024-05-19,,,finished
+438841,Valencia CF,Girona FC,2024-05-19,,,finished
+438842,Villarreal CF,Real Madrid CF,2024-05-19,,,finished
+438843,RCD Mallorca,UD Almería,2024-05-19,,,finished
+438847,Girona FC,Granada CF,2024-05-24,,,finished
+438844,CA Osasuna,Villarreal CF,2024-05-25,,,finished
+438851,Real Sociedad de Fútbol,Club Atlético de Madrid,2024-05-25,,,finished
+438849,Rayo Vallecano de Madrid,Athletic Club,2024-05-25,,,finished
+438852,UD Almería,Cádiz CF,2024-05-25,,,finished
+438850,Real Madrid CF,Real Betis Balompié,2024-05-25,,,finished
+438846,Getafe CF,RCD Mallorca,2024-05-26,,,finished
+438845,RC Celta de Vigo,Valencia CF,2024-05-26,,,finished
+438853,UD Las Palmas,Deportivo Alavés,2024-05-26,,,finished
+438848,Sevilla FC,FC Barcelona,2024-05-26,,,finished
+498613,Athletic Club,Getafe CF,2024-08-15,,,finished
+498614,Real Betis Balompié,Girona FC,2024-08-15,,,finished
+498616,RC Celta de Vigo,Deportivo Alavés,2024-08-16,,,finished
+498621,UD Las Palmas,Sevilla FC,2024-08-16,,,finished
+498615,CA Osasuna,CD Leganés,2024-08-17,,,finished
+498617,Valencia CF,FC Barcelona,2024-08-17,,,finished
+498620,Real Sociedad de Fútbol,Rayo Vallecano de Madrid,2024-08-18,,,finished
+498619,RCD Mallorca,Real Madrid CF,2024-08-18,,,finished
+498622,Real Valladolid CF,RCD Espanyol de Barcelona,2024-08-19,,,finished
+498618,Villarreal CF,Club Atlético de Madrid,2024-08-19,,,finished
+498626,RC Celta de Vigo,Valencia CF,2024-08-23,,,finished
+498630,Sevilla FC,Villarreal CF,2024-08-23,,,finished
+498624,CA Osasuna,RCD Mallorca,2024-08-24,,,finished
+498628,FC Barcelona,Athletic Club,2024-08-24,,,finished
+498629,Getafe CF,Rayo Vallecano de Madrid,2024-08-24,,,finished
+498632,RCD Espanyol de Barcelona,Real Sociedad de Fútbol,2024-08-24,,,finished
+498631,Real Madrid CF,Real Valladolid CF,2024-08-25,,,finished
+498625,CD Leganés,UD Las Palmas,2024-08-25,,,finished
+498627,Deportivo Alavés,Real Betis Balompié,2024-08-25,,,finished
+498623,Club Atlético de Madrid,Girona FC,2024-08-25,,,finished
+498636,Villarreal CF,RC Celta de Vigo,2024-08-26,,,finished
+498638,RCD Mallorca,Sevilla FC,2024-08-27,,,finished
+498637,Rayo Vallecano de Madrid,FC Barcelona,2024-08-27,,,finished
+498633,Athletic Club,Valencia CF,2024-08-28,,,finished
+498640,Real Valladolid CF,CD Leganés,2024-08-28,,,finished
+498639,Real Sociedad de Fútbol,Deportivo Alavés,2024-08-28,,,finished
+498642,Club Atlético de Madrid,RCD Espanyol de Barcelona,2024-08-28,,,finished
+498635,Girona FC,CA Osasuna,2024-08-29,,,finished
+498641,UD Las Palmas,Real Madrid CF,2024-08-29,,,finished
+498647,FC Barcelona,Real Valladolid CF,2024-08-31,,,finished
+498643,Athletic Club,Club Atlético de Madrid,2024-08-31,,,finished
+498652,RCD Espanyol de Barcelona,Rayo Vallecano de Madrid,2024-08-31,,,finished
+498645,CD Leganés,RCD Mallorca,2024-08-31,,,finished
+498650,Valencia CF,Villarreal CF,2024-08-31,,,finished
+498644,CA Osasuna,RC Celta de Vigo,2024-09-01,,,finished
+498646,Deportivo Alavés,UD Las Palmas,2024-09-01,,,finished
+498649,Sevilla FC,Girona FC,2024-09-01,,,finished
+498648,Getafe CF,Real Sociedad de Fútbol,2024-09-01,,,finished
+498651,Real Madrid CF,Real Betis Balompié,2024-09-01,,,finished
+498654,Real Betis Balompié,CD Leganés,2024-09-13,,,finished
+498659,RCD Mallorca,Villarreal CF,2024-09-14,,,finished
+498662,RCD Espanyol de Barcelona,Deportivo Alavés,2024-09-14,,,finished
+498657,Sevilla FC,Getafe CF,2024-09-14,,,finished
+498660,Real Sociedad de Fútbol,Real Madrid CF,2024-09-14,,,finished
+498655,RC Celta de Vigo,Real Valladolid CF,2024-09-15,,,finished
+498656,Girona FC,FC Barcelona,2024-09-15,,,finished
+498661,UD Las Palmas,Athletic Club,2024-09-15,,,finished
+498653,Club Atlético de Madrid,Valencia CF,2024-09-15,,,finished
+498658,Rayo Vallecano de Madrid,CA Osasuna,2024-09-16,,,finished
+498679,RCD Mallorca,Real Sociedad de Fútbol,2024-09-17,,,finished
+498634,Real Betis Balompié,Getafe CF,2024-09-18,,,finished
+498673,CD Leganés,Athletic Club,2024-09-19,,,finished
+498666,Deportivo Alavés,Sevilla FC,2024-09-20,,,finished
+498671,Real Valladolid CF,Real Sociedad de Fútbol,2024-09-21,,,finished
+498665,CA Osasuna,UD Las Palmas,2024-09-21,,,finished
+498668,Valencia CF,Girona FC,2024-09-21,,,finished
+498672,Real Madrid CF,RCD Espanyol de Barcelona,2024-09-21,,,finished
+498667,Getafe CF,CD Leganés,2024-09-22,,,finished
+498663,Athletic Club,RC Celta de Vigo,2024-09-22,,,finished
+498669,Villarreal CF,FC Barcelona,2024-09-22,,,finished
+498670,Rayo Vallecano de Madrid,Club Atlético de Madrid,2024-09-22,,,finished
+498664,Real Betis Balompié,RCD Mallorca,2024-09-23,,,finished
+498677,Sevilla FC,Real Valladolid CF,2024-09-24,,,finished
+498678,Valencia CF,CA Osasuna,2024-09-24,,,finished
+498680,Real Madrid CF,Deportivo Alavés,2024-09-24,,,finished
+498676,Girona FC,Rayo Vallecano de Madrid,2024-09-25,,,finished
+498675,FC Barcelona,Getafe CF,2024-09-25,,,finished
+498681,UD Las Palmas,Real Betis Balompié,2024-09-26,,,finished
+498682,RCD Espanyol de Barcelona,Villarreal CF,2024-09-26,,,finished
+498674,RC Celta de Vigo,Club Atlético de Madrid,2024-09-26,,,finished
+498691,Real Valladolid CF,RCD Mallorca,2024-09-27,,,finished
+498687,Getafe CF,Deportivo Alavés,2024-09-28,,,finished
+498689,Rayo Vallecano de Madrid,CD Leganés,2024-09-28,,,finished
+498690,Real Sociedad de Fútbol,Valencia CF,2024-09-28,,,finished
+498685,CA Osasuna,FC Barcelona,2024-09-28,,,finished
+498686,RC Celta de Vigo,Girona FC,2024-09-29,,,finished
+498683,Athletic Club,Sevilla FC,2024-09-29,,,finished
+498692,Real Betis Balompié,RCD Espanyol de Barcelona,2024-09-29,,,finished
+498684,Club Atlético de Madrid,Real Madrid CF,2024-09-29,,,finished
+498688,Villarreal CF,UD Las Palmas,2024-09-30,,,finished
+498693,CD Leganés,Valencia CF,2024-10-04,,,finished
+498702,RCD Espanyol de Barcelona,RCD Mallorca,2024-10-05,,,finished
+498695,Getafe CF,CA Osasuna,2024-10-05,,,finished
+498700,Real Valladolid CF,Rayo Vallecano de Madrid,2024-10-05,,,finished
+498701,UD Las Palmas,RC Celta de Vigo,2024-10-05,,,finished
+498698,Real Madrid CF,Villarreal CF,2024-10-05,,,finished
+498696,Girona FC,Athletic Club,2024-10-06,,,finished
+498694,Deportivo Alavés,FC Barcelona,2024-10-06,,,finished
+498697,Sevilla FC,Real Betis Balompié,2024-10-06,,,finished
+498699,Real Sociedad de Fútbol,Club Atlético de Madrid,2024-10-06,,,finished
+498706,Deportivo Alavés,Real Valladolid CF,2024-10-18,,,finished
+498712,Athletic Club,RCD Espanyol de Barcelona,2024-10-19,,,finished
+498704,CA Osasuna,Real Betis Balompié,2024-10-19,,,finished
+498708,Girona FC,Real Sociedad de Fútbol,2024-10-19,,,finished
+498705,RC Celta de Vigo,Real Madrid CF,2024-10-19,,,finished
+498711,RCD Mallorca,Rayo Vallecano de Madrid,2024-10-20,,,finished
+498703,Club Atlético de Madrid,CD Leganés,2024-10-20,,,finished
+498710,Villarreal CF,Getafe CF,2024-10-20,,,finished
+498707,FC Barcelona,Sevilla FC,2024-10-20,,,finished
+498709,Valencia CF,UD Las Palmas,2024-10-21,,,finished
+498722,RCD Espanyol de Barcelona,Sevilla FC,2024-10-25,,,finished
+498720,Real Valladolid CF,Villarreal CF,2024-10-26,,,finished
+498716,Rayo Vallecano de Madrid,Deportivo Alavés,2024-10-26,,,finished
+498721,UD Las Palmas,Girona FC,2024-10-26,,,finished
+498718,Real Madrid CF,FC Barcelona,2024-10-26,,,finished
+498714,CD Leganés,RC Celta de Vigo,2024-10-27,,,finished
+498715,Getafe CF,Valencia CF,2024-10-27,,,finished
+498713,Real Betis Balompié,Club Atlético de Madrid,2024-10-27,,,finished
+498719,Real Sociedad de Fútbol,CA Osasuna,2024-10-27,,,finished
+498717,RCD Mallorca,Athletic Club,2024-10-28,,,finished
+498727,Deportivo Alavés,RCD Mallorca,2024-11-01,,,finished
+498725,CA Osasuna,Real Valladolid CF,2024-11-02,,,finished
+498728,Girona FC,CD Leganés,2024-11-02,,,finished
+498724,Club Atlético de Madrid,UD Las Palmas,2024-11-03,,,finished
+498732,FC Barcelona,RCD Espanyol de Barcelona,2024-11-03,,,finished
+498729,Sevilla FC,Real Sociedad de Fútbol,2024-11-03,,,finished
+498723,Athletic Club,Real Betis Balompié,2024-11-03,,,finished
+498726,RC Celta de Vigo,Getafe CF,2024-11-04,,,finished
+498737,Rayo Vallecano de Madrid,UD Las Palmas,2024-11-08,,,finished
+498739,Real Madrid CF,CA Osasuna,2024-11-09,,,finished
+498736,Villarreal CF,Deportivo Alavés,2024-11-09,,,finished
+498734,CD Leganés,Sevilla FC,2024-11-09,,,finished
+498733,Real Betis Balompié,RC Celta de Vigo,2024-11-10,,,finished
+498738,RCD Mallorca,Club Atlético de Madrid,2024-11-10,,,finished
+498735,Getafe CF,Girona FC,2024-11-10,,,finished
+498741,Real Valladolid CF,Athletic Club,2024-11-10,,,finished
+498740,Real Sociedad de Fútbol,FC Barcelona,2024-11-10,,,finished
+498748,Getafe CF,Real Valladolid CF,2024-11-22,,,finished
+498750,Valencia CF,Real Betis Balompié,2024-11-23,,,finished
+498744,Club Atlético de Madrid,Deportivo Alavés,2024-11-23,,,finished
+498751,UD Las Palmas,RCD Mallorca,2024-11-23,,,finished
+498752,Girona FC,RCD Espanyol de Barcelona,2024-11-23,,,finished
+498747,RC Celta de Vigo,FC Barcelona,2024-11-23,,,finished
+498745,CA Osasuna,Villarreal CF,2024-11-24,,,finished
+498749,Sevilla FC,Rayo Vallecano de Madrid,2024-11-24,,,finished
+498746,CD Leganés,Real Madrid CF,2024-11-24,,,finished
+498743,Athletic Club,Real Sociedad de Fútbol,2024-11-24,,,finished
+498758,RCD Mallorca,Valencia CF,2024-11-29,,,finished
+498754,FC Barcelona,UD Las Palmas,2024-11-30,,,finished
+498753,Deportivo Alavés,CD Leganés,2024-11-30,,,finished
+498762,RCD Espanyol de Barcelona,RC Celta de Vigo,2024-11-30,,,finished
+498761,Real Valladolid CF,Club Atlético de Madrid,2024-11-30,,,finished
+498756,Villarreal CF,Girona FC,2024-12-01,,,finished
+498759,Real Madrid CF,Getafe CF,2024-12-01,,,finished
+498757,Rayo Vallecano de Madrid,Athletic Club,2024-12-01,,,finished
+498760,Real Sociedad de Fútbol,Real Betis Balompié,2024-12-01,,,finished
+498755,Sevilla FC,CA Osasuna,2024-12-02,,,finished
+498798,RCD Mallorca,FC Barcelona,2024-12-03,,,finished
+498793,Athletic Club,Real Madrid CF,2024-12-04,,,finished
+498768,RC Celta de Vigo,RCD Mallorca,2024-12-06,,,finished
+498771,UD Las Palmas,Real Valladolid CF,2024-12-07,,,finished
+498765,Real Betis Balompié,FC Barcelona,2024-12-07,,,finished
+498770,Valencia CF,Rayo Vallecano de Madrid,2024-12-07,,,finished
+498769,Girona FC,Real Madrid CF,2024-12-07,,,finished
+498767,CD Leganés,Real Sociedad de Fútbol,2024-12-08,,,finished
+498763,Athletic Club,Villarreal CF,2024-12-08,,,finished
+498766,CA Osasuna,Deportivo Alavés,2024-12-08,,,finished
+498764,Club Atlético de Madrid,Sevilla FC,2024-12-08,,,finished
+498772,Getafe CF,RCD Espanyol de Barcelona,2024-12-09,,,finished
+498781,Real Valladolid CF,Valencia CF,2024-12-13,,,finished
+498782,RCD Espanyol de Barcelona,CA Osasuna,2024-12-14,,,finished
+498779,RCD Mallorca,Girona FC,2024-12-14,,,finished
+498776,Sevilla FC,RC Celta de Vigo,2024-12-14,,,finished
+498778,Rayo Vallecano de Madrid,Real Madrid CF,2024-12-14,,,finished
+498773,Club Atlético de Madrid,Getafe CF,2024-12-15,,,finished
+498774,Deportivo Alavés,Athletic Club,2024-12-15,,,finished
+498777,Villarreal CF,Real Betis Balompié,2024-12-15,,,finished
+498780,Real Sociedad de Fútbol,UD Las Palmas,2024-12-15,,,finished
+498775,FC Barcelona,CD Leganés,2024-12-15,,,finished
+498731,Villarreal CF,Rayo Vallecano de Madrid,2024-12-18,,,finished
+498742,RCD Espanyol de Barcelona,Valencia CF,2024-12-18,,,finished
+498789,Girona FC,Real Valladolid CF,2024-12-20,,,finished
+498788,Getafe CF,RCD Mallorca,2024-12-21,,,finished
+498786,RC Celta de Vigo,Real Sociedad de Fútbol,2024-12-21,,,finished
+498784,CA Osasuna,Athletic Club,2024-12-21,,,finished
+498787,FC Barcelona,Club Atlético de Madrid,2024-12-21,,,finished
+498790,Valencia CF,Deportivo Alavés,2024-12-22,,,finished
+498791,Real Madrid CF,Sevilla FC,2024-12-22,,,finished
+498785,CD Leganés,Villarreal CF,2024-12-22,,,finished
+498792,UD Las Palmas,RCD Espanyol de Barcelona,2024-12-22,,,finished
+498783,Real Betis Balompié,Rayo Vallecano de Madrid,2024-12-22,,,finished
+498730,Valencia CF,Real Madrid CF,2025-01-03,,,finished
+498797,Rayo Vallecano de Madrid,RC Celta de Vigo,2025-01-10,,,finished
+498795,Deportivo Alavés,Girona FC,2025-01-11,,,finished
+498800,Real Valladolid CF,Real Betis Balompié,2025-01-11,,,finished
+498802,RCD Espanyol de Barcelona,CD Leganés,2025-01-11,,,finished
+498796,Sevilla FC,Valencia CF,2025-01-11,,,finished
+498801,UD Las Palmas,Getafe CF,2025-01-12,,,finished
+498794,Club Atlético de Madrid,CA Osasuna,2025-01-12,,,finished
+498799,Real Sociedad de Fútbol,Villarreal CF,2025-01-13,,,finished
+498812,RCD Espanyol de Barcelona,Real Valladolid CF,2025-01-17,,,finished
+498808,Girona FC,Sevilla FC,2025-01-18,,,finished
+498805,CD Leganés,Club Atlético de Madrid,2025-01-18,,,finished
+498803,Real Betis Balompié,Deportivo Alavés,2025-01-18,,,finished
+498807,Getafe CF,FC Barcelona,2025-01-18,,,finished
+498806,RC Celta de Vigo,Athletic Club,2025-01-19,,,finished
+498811,Real Madrid CF,UD Las Palmas,2025-01-19,,,finished
+498804,CA Osasuna,Rayo Vallecano de Madrid,2025-01-19,,,finished
+498809,Valencia CF,Real Sociedad de Fútbol,2025-01-19,,,finished
+498810,Villarreal CF,RCD Mallorca,2025-01-20,,,finished
+498821,UD Las Palmas,CA Osasuna,2025-01-24,,,finished
+498818,RCD Mallorca,Real Betis Balompié,2025-01-25,,,finished
+498814,Club Atlético de Madrid,Villarreal CF,2025-01-25,,,finished
+498822,Sevilla FC,RCD Espanyol de Barcelona,2025-01-25,,,finished
+498820,Real Valladolid CF,Real Madrid CF,2025-01-25,,,finished
+498817,Rayo Vallecano de Madrid,Girona FC,2025-01-26,,,finished
+498819,Real Sociedad de Fútbol,Getafe CF,2025-01-26,,,finished
+498813,Athletic Club,CD Leganés,2025-01-26,,,finished
+498816,FC Barcelona,Valencia CF,2025-01-26,,,finished
+498815,Deportivo Alavés,RC Celta de Vigo,2025-01-27,,,finished
+498826,CD Leganés,Rayo Vallecano de Madrid,2025-01-31,,,finished
+498828,Getafe CF,Sevilla FC,2025-02-01,,,finished
+498831,Villarreal CF,Real Valladolid CF,2025-02-01,,,finished
+498823,Club Atlético de Madrid,RCD Mallorca,2025-02-01,,,finished
+498832,RCD Espanyol de Barcelona,Real Madrid CF,2025-02-01,,,finished
+498827,FC Barcelona,Deportivo Alavés,2025-02-02,,,finished
+498830,Valencia CF,RC Celta de Vigo,2025-02-02,,,finished
+498825,CA Osasuna,Real Sociedad de Fútbol,2025-02-02,,,finished
+498824,Real Betis Balompié,Athletic Club,2025-02-02,,,finished
+498829,Girona FC,UD Las Palmas,2025-02-03,,,finished
+498838,Rayo Vallecano de Madrid,Real Valladolid CF,2025-02-07,,,finished
+498834,RC Celta de Vigo,Real Betis Balompié,2025-02-08,,,finished
+498833,Athletic Club,Girona FC,2025-02-08,,,finished
+498841,UD Las Palmas,Villarreal CF,2025-02-08,,,finished
+498840,Real Madrid CF,Club Atlético de Madrid,2025-02-08,,,finished
+498835,Deportivo Alavés,Getafe CF,2025-02-09,,,finished
+498837,Valencia CF,CD Leganés,2025-02-09,,,finished
+498842,Real Sociedad de Fútbol,RCD Espanyol de Barcelona,2025-02-09,,,finished
+498836,Sevilla FC,FC Barcelona,2025-02-09,,,finished
+498839,RCD Mallorca,CA Osasuna,2025-02-10,,,finished
+498848,Girona FC,Getafe CF,2025-02-14,,,finished
+498846,CD Leganés,Deportivo Alavés,2025-02-15,,,finished
+498845,CA Osasuna,Real Madrid CF,2025-02-15,,,finished
+498843,Club Atlético de Madrid,RC Celta de Vigo,2025-02-15,,,finished
+498849,Villarreal CF,Valencia CF,2025-02-15,,,finished
+498852,RCD Espanyol de Barcelona,Athletic Club,2025-02-16,,,finished
+498851,Real Valladolid CF,Sevilla FC,2025-02-16,,,finished
+498850,RCD Mallorca,UD Las Palmas,2025-02-16,,,finished
+498844,Real Betis Balompié,Real Sociedad de Fútbol,2025-02-16,,,finished
+498847,FC Barcelona,Rayo Vallecano de Madrid,2025-02-17,,,finished
+498854,RC Celta de Vigo,CA Osasuna,2025-02-21,,,finished
+498862,Deportivo Alavés,RCD Espanyol de Barcelona,2025-02-22,,,finished
+498858,Rayo Vallecano de Madrid,Villarreal CF,2025-02-22,,,finished
+498857,Valencia CF,Club Atlético de Madrid,2025-02-22,,,finished
+498861,UD Las Palmas,FC Barcelona,2025-02-22,,,finished
+498853,Athletic Club,Real Valladolid CF,2025-02-23,,,finished
+498859,Real Madrid CF,Girona FC,2025-02-23,,,finished
+498855,Getafe CF,Real Betis Balompié,2025-02-23,,,finished
+498860,Real Sociedad de Fútbol,CD Leganés,2025-02-23,,,finished
+498856,Sevilla FC,RCD Mallorca,2025-02-24,,,finished
+498871,Real Valladolid CF,UD Las Palmas,2025-02-28,,,finished
+498868,Girona FC,RC Celta de Vigo,2025-03-01,,,finished
+498869,Rayo Vallecano de Madrid,Sevilla FC,2025-03-01,,,finished
+498864,Real Betis Balompié,Real Madrid CF,2025-03-01,,,finished
+498863,Club Atlético de Madrid,Athletic Club,2025-03-01,,,finished
+498866,CD Leganés,Getafe CF,2025-03-02,,,finished
+498867,FC Barcelona,Real Sociedad de Fútbol,2025-03-02,,,finished
+498870,RCD Mallorca,Deportivo Alavés,2025-03-02,,,finished
+498865,CA Osasuna,Valencia CF,2025-03-02,,,finished
+498875,RC Celta de Vigo,CD Leganés,2025-03-08,,,finished
+498876,Deportivo Alavés,Villarreal CF,2025-03-08,,,finished
+498879,Valencia CF,Real Valladolid CF,2025-03-08,,,finished
+498878,Getafe CF,Club Atlético de Madrid,2025-03-09,,,finished
+498880,Real Madrid CF,Rayo Vallecano de Madrid,2025-03-09,,,finished
+498873,Athletic Club,RCD Mallorca,2025-03-09,,,finished
+498874,Real Betis Balompié,UD Las Palmas,2025-03-09,,,finished
+498881,Real Sociedad de Fútbol,Sevilla FC,2025-03-09,,,finished
+498882,RCD Espanyol de Barcelona,Girona FC,2025-03-10,,,finished
+498891,UD Las Palmas,Deportivo Alavés,2025-03-14,,,finished
+498890,Real Valladolid CF,RC Celta de Vigo,2025-03-15,,,finished
+498892,RCD Mallorca,RCD Espanyol de Barcelona,2025-03-15,,,finished
+498888,Villarreal CF,Real Madrid CF,2025-03-15,,,finished
+498886,Girona FC,Valencia CF,2025-03-15,,,finished
+498885,CD Leganés,Real Betis Balompié,2025-03-16,,,finished
+498887,Sevilla FC,Athletic Club,2025-03-16,,,finished
+498884,CA Osasuna,Getafe CF,2025-03-16,,,finished
+498889,Rayo Vallecano de Madrid,Real Sociedad de Fútbol,2025-03-16,,,finished
+498883,Club Atlético de Madrid,FC Barcelona,2025-03-16,,,finished
+498877,FC Barcelona,CA Osasuna,2025-03-27,,,finished
+498901,Real Sociedad de Fútbol,Real Valladolid CF,2025-03-29,,,finished
+498902,RCD Espanyol de Barcelona,Club Atlético de Madrid,2025-03-29,,,finished
+498896,Deportivo Alavés,Rayo Vallecano de Madrid,2025-03-29,,,finished
+498900,Real Madrid CF,CD Leganés,2025-03-29,,,finished
+498898,Getafe CF,Villarreal CF,2025-03-30,,,finished
+498897,FC Barcelona,Girona FC,2025-03-30,,,finished
+498893,Athletic Club,CA Osasuna,2025-03-30,,,finished
+498899,Valencia CF,RCD Mallorca,2025-03-30,,,finished
+498894,Real Betis Balompié,Sevilla FC,2025-03-30,,,finished
+498895,RC Celta de Vigo,UD Las Palmas,2025-03-31,,,finished
+498912,Rayo Vallecano de Madrid,RCD Espanyol de Barcelona,2025-04-04,,,finished
+498905,Girona FC,Deportivo Alavés,2025-04-05,,,finished
+498909,Real Madrid CF,Valencia CF,2025-04-05,,,finished
+498908,RCD Mallorca,RC Celta de Vigo,2025-04-05,,,finished
+498904,FC Barcelona,Real Betis Balompié,2025-04-05,,,finished
+498911,UD Las Palmas,Real Sociedad de Fútbol,2025-04-06,,,finished
+498906,Sevilla FC,Club Atlético de Madrid,2025-04-06,,,finished
+498910,Real Valladolid CF,Getafe CF,2025-04-06,,,finished
+498907,Villarreal CF,Athletic Club,2025-04-06,,,finished
+498903,CD Leganés,CA Osasuna,2025-04-07,,,finished
+498920,Valencia CF,Sevilla FC,2025-04-11,,,finished
+498921,Real Sociedad de Fútbol,RCD Mallorca,2025-04-12,,,finished
+498919,Getafe CF,UD Las Palmas,2025-04-12,,,finished
+498922,RC Celta de Vigo,RCD Espanyol de Barcelona,2025-04-12,,,finished
+498917,CD Leganés,FC Barcelona,2025-04-12,,,finished
+498916,CA Osasuna,Girona FC,2025-04-13,,,finished
+498918,Deportivo Alavés,Real Madrid CF,2025-04-13,,,finished
+498915,Real Betis Balompié,Villarreal CF,2025-04-13,,,finished
+498913,Athletic Club,Rayo Vallecano de Madrid,2025-04-13,,,finished
+498914,Club Atlético de Madrid,Real Valladolid CF,2025-04-14,,,finished
+498932,RCD Espanyol de Barcelona,Getafe CF,2025-04-18,,,finished
+498927,Rayo Vallecano de Madrid,Valencia CF,2025-04-19,,,finished
+498923,FC Barcelona,RC Celta de Vigo,2025-04-19,,,finished
+498928,RCD Mallorca,CD Leganés,2025-04-19,,,finished
+498931,UD Las Palmas,Club Atlético de Madrid,2025-04-19,,,finished
+498930,Real Valladolid CF,CA Osasuna,2025-04-20,,,finished
+498926,Villarreal CF,Real Sociedad de Fútbol,2025-04-20,,,finished
+498925,Sevilla FC,Deportivo Alavés,2025-04-20,,,finished
+498929,Real Madrid CF,Athletic Club,2025-04-20,,,finished
+498924,Girona FC,Real Betis Balompié,2025-04-21,,,finished
+498942,Valencia CF,RCD Espanyol de Barcelona,2025-04-22,,,finished
+498940,FC Barcelona,RCD Mallorca,2025-04-22,,,finished
+498933,Athletic Club,UD Las Palmas,2025-04-23,,,finished
+498938,RC Celta de Vigo,Villarreal CF,2025-04-23,,,finished
+498939,Deportivo Alavés,Real Sociedad de Fútbol,2025-04-23,,,finished
+498941,Getafe CF,Real Madrid CF,2025-04-23,,,finished
+498936,CA Osasuna,Sevilla FC,2025-04-24,,,finished
+498937,CD Leganés,Girona FC,2025-04-24,,,finished
+498934,Club Atlético de Madrid,Rayo Vallecano de Madrid,2025-04-24,,,finished
+498935,Real Betis Balompié,Real Valladolid CF,2025-04-24,,,finished
+498872,Villarreal CF,RCD Espanyol de Barcelona,2025-04-27,,,finished
+498947,Rayo Vallecano de Madrid,Getafe CF,2025-05-02,,,finished
+498943,Deportivo Alavés,Club Atlético de Madrid,2025-05-03,,,finished
+498946,Villarreal CF,CA Osasuna,2025-05-03,,,finished
+498951,UD Las Palmas,Valencia CF,2025-05-03,,,finished
+498950,Real Valladolid CF,FC Barcelona,2025-05-03,,,finished
+498948,Real Madrid CF,RC Celta de Vigo,2025-05-04,,,finished
+498945,Sevilla FC,CD Leganés,2025-05-04,,,finished
+498952,RCD Espanyol de Barcelona,Real Betis Balompié,2025-05-04,,,finished
+498949,Real Sociedad de Fútbol,Athletic Club,2025-05-04,,,finished
+498944,Girona FC,RCD Mallorca,2025-05-05,,,finished
+498961,UD Las Palmas,Rayo Vallecano de Madrid,2025-05-09,,,finished
+498959,Valencia CF,Getafe CF,2025-05-10,,,finished
+498956,RC Celta de Vigo,Sevilla FC,2025-05-10,,,finished
+498958,Girona FC,Villarreal CF,2025-05-10,,,finished
+498960,RCD Mallorca,Real Valladolid CF,2025-05-10,,,finished
+498954,Club Atlético de Madrid,Real Sociedad de Fútbol,2025-05-10,,,finished
+498962,CD Leganés,RCD Espanyol de Barcelona,2025-05-11,,,finished
+498957,FC Barcelona,Real Madrid CF,2025-05-11,,,finished
+498953,Athletic Club,Deportivo Alavés,2025-05-11,,,finished
+498955,Real Betis Balompié,CA Osasuna,2025-05-11,,,finished
+498971,Real Valladolid CF,Girona FC,2025-05-13,,,finished
+498970,Real Sociedad de Fútbol,RC Celta de Vigo,2025-05-13,,,finished
+498966,Sevilla FC,UD Las Palmas,2025-05-13,,,finished
+498964,Deportivo Alavés,Valencia CF,2025-05-14,,,finished
+498967,Villarreal CF,CD Leganés,2025-05-14,,,finished
+498969,Real Madrid CF,RCD Mallorca,2025-05-14,,,finished
+498963,CA Osasuna,Club Atlético de Madrid,2025-05-15,,,finished
+498968,Rayo Vallecano de Madrid,Real Betis Balompié,2025-05-15,,,finished
+498965,Getafe CF,Athletic Club,2025-05-15,,,finished
+498972,RCD Espanyol de Barcelona,FC Barcelona,2025-05-15,,,finished
+498973,Club Atlético de Madrid,Real Betis Balompié,2025-05-18,,,finished
+498974,RC Celta de Vigo,Rayo Vallecano de Madrid,2025-05-18,,,finished
+498975,FC Barcelona,Villarreal CF,2025-05-18,,,finished
+498976,Sevilla FC,Real Madrid CF,2025-05-18,,,finished
+498977,Valencia CF,Athletic Club,2025-05-18,,,finished
+498978,RCD Mallorca,Getafe CF,2025-05-18,,,finished
+498979,Real Sociedad de Fútbol,Girona FC,2025-05-18,,,finished
+498980,Real Valladolid CF,Deportivo Alavés,2025-05-18,,,finished
+498981,UD Las Palmas,CD Leganés,2025-05-18,,,finished
+498982,CA Osasuna,RCD Espanyol de Barcelona,2025-05-18,,,finished
+498984,Real Betis Balompié,Valencia CF,2025-05-23,,,finished
+498991,Real Madrid CF,Real Sociedad de Fútbol,2025-05-24,,,finished
+498985,CD Leganés,Real Valladolid CF,2025-05-24,,,finished
+498992,RCD Espanyol de Barcelona,UD Las Palmas,2025-05-24,,,finished
+498986,Deportivo Alavés,CA Osasuna,2025-05-24,,,finished
+498987,Getafe CF,RC Celta de Vigo,2025-05-24,,,finished
+498990,Rayo Vallecano de Madrid,RCD Mallorca,2025-05-24,,,finished
+498988,Girona FC,Club Atlético de Madrid,2025-05-25,,,finished
+498989,Villarreal CF,Sevilla FC,2025-05-25,,,finished
+498983,Athletic Club,FC Barcelona,2025-05-25,,,finished

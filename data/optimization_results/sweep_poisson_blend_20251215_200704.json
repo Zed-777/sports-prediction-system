@@ -1,0 +1,36 @@
+{
+  "parameter": "poisson_blend",
+  "current_value": 0.7,
+  "optimal_value": 0.7,
+  "optimal_accuracy": 0.6436,
+  "improvement": 0.06359999999999999,
+  "all_results": [
+    {
+      "value": 0.5,
+      "accuracy": 0.6292,
+      "brier_score": 0.2242
+    },
+    {
+      "value": 0.6,
+      "accuracy": 0.6394,
+      "brier_score": 0.2221
+    },
+    {
+      "value": 0.7,
+      "accuracy": 0.6436,
+      "brier_score": 0.2213
+    },
+    {
+      "value": 0.8,
+      "accuracy": 0.6418,
+      "brier_score": 0.2216
+    },
+    {
+      "value": 0.9,
+      "accuracy": 0.634,
+      "brier_score": 0.2232
+    }
+  ],
+  "recommendation": "Current value is optimal",
+  "timestamp": "2025-12-15T20:07:04.446333"
+}

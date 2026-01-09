@@ -1,0 +1,154 @@
+{
+  "name": "Accuracy Optimization Workflow",
+  "version": "1.0",
+  "description": "Step-by-step guide to measure and optimize prediction accuracy using historical data",
+  "created": "2025-12-15",
+  "data_locations": {
+    "predictions": "reports/leagues/{league}/matches/",
+    "historical_database": "data/historical/{league}_results.json",
+    "optimization_results": "data/optimization_results/",
+    "note": "historical_database is SAFE from 'prune' command"
+  },
+  "workflow": {
+    "phase1_collect_predictions": {
+      "title": "Collect Predictions Before Matches",
+      "when": "Before match day or daily",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Generate predictions",
+          "command": "python generate_fast_reports.py generate 5 matches for la-liga",
+          "note": "Replace 'la-liga' with any league: premier-league, serie-a, bundesliga, ligue-1"
+        },
+        {
+          "step": 2,
+          "action": "Save predictions to historical database",
+          "command": "python scripts/collect_historical_results.py --league la-liga",
+          "note": "Run this BEFORE matches start to capture your predictions"
+        },
+        {
+          "step": 3,
+          "action": "Or collect all leagues at once",
+          "command": "python scripts/collect_historical_results.py --all-leagues"
+        }
+      ]
+    },
+    "phase2_record_results": {
+      "title": "Record Actual Match Results",
+      "when": "After matches complete",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Update with actual score",
+          "command": "python scripts/collect_historical_results.py --update-result {league} {match_id} {home_score} {away_score}",
+          "example": "python scripts/collect_historical_results.py --update-result la-liga rayo-vallecano-de-madrid_vs_real-betis-balompi_2025-12-15 2 1",
+          "parameters": {
+            "league": "la-liga, premier-league, etc.",
+            "match_id": "Folder name from reports/leagues/{league}/matches/",
+            "home_score": "Actual goals scored by home team",
+            "away_score": "Actual goals scored by away team"
+          }
+        }
+      ]
+    },
+    "phase3_measure_accuracy": {
+      "title": "Check Your Prediction Accuracy",
+      "when": "After recording several results (10+ recommended)",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Calculate accuracy metrics",
+          "command": "python scripts/collect_historical_results.py --accuracy la-liga",
+          "output": {
+            "overall_accuracy": "Percentage of correct predictions",
+            "breakdown": "Accuracy for home wins, draws, away wins separately"
+          }
+        }
+      ]
+    },
+    "phase4_optimize": {
+      "title": "Optimize Prediction Parameters",
+      "when": "After 50+ matches with results recorded",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Run full optimization",
+          "command": "python scripts/optimize_accuracy.py --mode full --league la-liga",
+          "what_it_does": "Tests all parameter combinations to find best accuracy"
+        },
+        {
+          "step": 2,
+          "action": "Or sweep a single parameter",
+          "command": "python scripts/optimize_accuracy.py --mode sweep --param market_blend_weight --league la-liga"
+        },
+        {
+          "step": 3,
+          "action": "Review results",
+          "location": "data/optimization_results/full_optimization_*.json"
+        }
+      ]
+    },
+    "maintenance": {
+      "title": "Safe Cleanup",
+      "steps": [
+        {
+          "action": "Prune old reports (SAFE - keeps historical data)",
+          "command": "python generate_fast_reports.py prune",
+          "warning": "Run collect_historical_results.py FIRST if you have uncollected predictions"
+        }
+      ]
+    }
+  },
+  "tunable_parameters": {
+    "market_blend_weight": {
+      "current": 0.20,
+      "range": "0.05 - 0.35",
+      "location": "config/settings.yaml",
+      "description": "How much market odds influence final prediction (0=ignore, 1=pure market)"
+    },
+    "k_factor": {
+      "current": 32.0,
+      "range": "16.0 - 64.0",
+      "location": "app/models/prediction_enhancements.py",
+      "description": "ELO sensitivity - higher = more reactive to recent results"
+    },
+    "decay_half_life_days": {
+      "current": 60.0,
+      "range": "30.0 - 120.0",
+      "location": "app/models/prediction_enhancements.py",
+      "description": "Days until old matches have 50% weight"
+    },
+    "h2h_max_weight": {
+      "current": 0.30,
+      "range": "0.15 - 0.50",
+      "location": "enhanced_predictor.py",
+      "description": "Maximum influence of head-to-head history"
+    },
+    "poisson_blend": {
+      "current": 0.70,
+      "range": "0.50 - 0.90",
+      "location": "enhanced_predictor.py",
+      "description": "Weight of Poisson model in goal predictions"
+    }
+  },
+  "quick_reference": {
+    "daily_routine": [
+      "1. Generate: python generate_fast_reports.py generate 5 matches for la-liga",
+      "2. Collect: python scripts/collect_historical_results.py --all-leagues"
+    ],
+    "after_matchday": [
+      "1. Update: python scripts/collect_historical_results.py --update-result la-liga {match_id} {home} {away}",
+      "2. Check: python scripts/collect_historical_results.py --accuracy la-liga"
+    ],
+    "weekly_optimization": [
+      "python scripts/optimize_accuracy.py --mode full --league la-liga"
+    ]
+  },
+  "supported_leagues": [
+    "la-liga",
+    "premier-league", 
+    "serie-a",
+    "bundesliga",
+    "ligue-1"
+  ]
+}

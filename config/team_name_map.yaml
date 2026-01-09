@@ -1,0 +1,23 @@
+# Canonical mapping of team name variants to canonical project team names
+# Add entries as needed to improve matching between API providers and internal reports.
+mappings:
+  "Manchester United":
+    - "Man United"
+    - "Man Utd"
+    - "Manchester Utd"
+  "Newcastle United Football Club":
+    - "Newcastle United"
+    - "Newcastle Utd"
+  "SS Lazio":
+    - "Lazio"
+    - "S.S. Lazio"
+  "US Cremonese":
+    - "Cremonese"
+  "Valencia Club de Fútbol":
+    - "Valencia"
+    - "Valencia CF"
+  "Borussia Dortmund":
+    - "Dortmund"
+    - "BVB"
+  "AFC Fiorentina":
+    - "Fiorentina"

@@ -1,0 +1,58 @@
+name: Scheduled Fetch and Train
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # 02:00 UTC daily
+  workflow_dispatch:
+
+jobs:
+  fetch-and-train:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    # Make secrets available to the entire job (set them in the repo under Settings > Secrets).
+    # Note: do not declare secrets in job-level env to avoid workflow validation errors; we export them into the job at runtime.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: |
+          python -m venv .venv
+          . .venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          . .venv/bin/activate
+          pip install -r requirements.txt
+          python -m pytest -q
+
+      # actionlint disable
+      - name: Fetch, Ingest, Train
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          API_FOOTBALL_LEAGUE: '140'
+          API_FOOTBALL_SEASONS: '2019,2020,2021'
+          COLLECT_SEASONS: '2018,2019,2020,2021,2022,2023,2024'
+        run: |
+          echo "Check which secrets are present"
+          if [ -z "${FOOTBALL_DATA_API_KEY}" ]; then
+            echo "FOOTBALL_DATA_API_KEY is not available; skipping football-data fetch"
+          else
+            .venv/bin/python scripts/fetch_historical_api.py --fd --competition PD --seasons 2023
+          fi
+          if [ -z "${API_FOOTBALL_KEY}" ]; then
+            echo "API_FOOTBALL_KEY is not available; skipping API-Football fetch"
+          else
+            .venv/bin/python scripts/fetch_historical_api.py --af --competition 140 --seasons 2023
+          fi
+          .venv/bin/python scripts/collect_historical_data.py
+            .venv/bin/python scripts/train_models.py --force
+          # actionlint enable
