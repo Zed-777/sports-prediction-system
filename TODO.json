@@ -454,12 +454,14 @@
       "id": 46,
       "title": "CI: synthetic detection & Windows runner",
       "description": "Add a CI job to run the synthetic detection test and include a Windows runner to catch encoding/encoding-like issues and ensure the publish gate behaves correctly on Windows.",
-      "status": "in-progress",
+      "status": "completed",
       "category": "ci",
       "impact": "medium",
       "effort": "low",
       "files": [".github/workflows/*"],
-      "started_date": "2026-01-02"
+      "started_date": "2026-01-02",
+      "completed_date": "2026-01-10",
+      "notes": "Windows CI now honors RUN_INTEGRATION_TESTS env var; integration tests skip unless explicitly enabled."
     },
     {
       "id": 47,
@@ -524,7 +526,7 @@
       "started_date": "2026-01-09",
       "pr": "https://github.com/Zed-777/sports-prediction-system/pull/1",
       "notes": "Draft PR created for `feature/injuries-connector` with compliance section added and labels `legal-review` and `data-fetch`."
-    }
+    },
     {
       "id": 53,
       "external_id": "DQ-006",
@@ -537,7 +539,7 @@
       "files": ["app/data/connectors/injuries.py","data/cache","scripts/run_with_secrets.ps1","tests/test_injuries_connector.py","tests/test_injuries_parser.py","tests/test_integration_injuries.py"],
       "completed_date": "2026-01-09",
       "notes": "Implemented connector, parsers, fixtures, and tests; added fallback parsing and 429 handling; PR #1 created."
-    }
+    },
     {
       "id": 54,
       "external_id": "DQ-007",
@@ -592,8 +594,8 @@
       "impact": "high",
       "effort": "medium",
       "files": ["tests/test_injuries_connector.py",".github/workflows/*"],
-      "notes": "Unit and integration tests added; CI conditional gating for integration tests still pending."
-    }
+      "notes": "Unit and integration tests added; integration suite now gates via RUN_INTEGRATION_TESTS env flag (spread to Windows CI)."
+    },
     {
       "id": 59,
       "title": "Prioritize, schedule & assign",
