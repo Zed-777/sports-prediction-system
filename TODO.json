@@ -732,6 +732,16 @@
       "impact": "medium",
       "effort": "medium",
       "notes": "Git push reported large file warnings; recommend `git lfs migrate import` or BFG to rewrite history. Issue created: https://github.com/Zed-777/sports-prediction-system/issues/8"
-    }
-  ]
+    }    {
+      "id": 72,
+      "title": "Auto-merge when legal + integration green",
+      "description": "Add a GitHub Actions workflow to auto-merge PRs when they have `run-integration` and `legal-approved` labels and all checks pass; requires careful label-controlled approvals.",
+      "status": "completed",
+      "category": "ci",
+      "impact": "medium",
+      "effort": "low",
+      "files": [".github/workflows/auto-merge-on-ready.yml"],
+      "completed_date": "2026-01-22",
+      "notes": "Workflow merges PRs when the 'ready-to-merge' label is applied and required labels present with successful checks."
+    },  ]
 }
