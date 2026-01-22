@@ -18,11 +18,16 @@ Files of interest:
 
 PR Checklist:
 
-- [ ] **Run integration tests** in CI (add label `run-integration` to this PR or trigger "Integration tests (on label)" workflow dispatch). Ensure `API_FOOTBALL_KEY` is set in repository secrets.
-- [ ] **Legal signoff**: confirm ToS/robots policy for FlashScore and Transfermarkt per `docs/SCRAPING_COMPLIANCE.md` and `docs/robots_report.md`.
-- [ ] **Assign reviewers** from `legal` and `data-fetch` teams (or use CODEOWNERS).
-- [ ] **Confirm monitoring** for 429 events and cache persistence in `data/cache/` during first 24h runs.
+- [ ] **Run integration tests** in CI: add label `run-integration` to this PR or trigger the workflow manually (`.github/workflows/integration-tests-on-label.yml`). Ensure `API_FOOTBALL_KEY` is set in repository secrets.
+- [ ] **Legal signoff**: legal reviewers add label `legal-approved` after confirming ToS/robots policy for FlashScore and Transfermarkt per `docs/SCRAPING_COMPLIANCE.md` and `docs/robots_report.md`.
+- [ ] **Assign reviewers** from `legal` and `data-fetch` teams (or use CODEOWNERS). After legal signoff and successful integration tests, add label `ready-to-merge` to trigger the auto-merge workflow.
+- [ ] **Confirm monitoring** for 429 events, cache persistence (`data/cache/`), and add alerts if an `injuries_disabled_until.json` file appears repeatedly.
 - [ ] Add release notes entry and merge when all checks pass.
+
+Notes on merge automation:
+
+- The repository includes `.github/workflows/auto-merge-on-ready.yml` which will auto-merge this PR (squash) when the `ready-to-merge` label is added, both `run-integration` and `legal-approved` labels are present, and all required checks are successful.
+- This protects against accidental merges by requiring both legal signoff and successful integration tests.
 
 Files of interest:
 
