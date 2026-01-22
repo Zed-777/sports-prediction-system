@@ -594,7 +594,7 @@
       "impact": "high",
       "effort": "medium",
       "files": ["tests/test_injuries_connector.py",".github/workflows/*"],
-      "notes": "Unit and integration tests added; integration suite now gates via RUN_INTEGRATION_TESTS env flag (spread to Windows CI)."
+      "notes": "Unit and integration tests added; integration suite now gates via RUN_INTEGRATION_TESTS env flag (spread to Windows CI). Added `.github/workflows/integration-tests-on-label.yml` to run integration tests when a PR receives the `run-integration` label or via manual dispatch (requires `API_FOOTBALL_KEY` in repo secrets)."
     },
     {
       "id": 59,
