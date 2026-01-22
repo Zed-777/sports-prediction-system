@@ -240,7 +240,8 @@
       "status": "in-progress",
       "category": "calibration_confidence",
       "impact": "critical",
-      "effort": "medium"
+      "effort": "medium",
+      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/4"
     },
     {
       "id": 26,
@@ -313,7 +314,8 @@
       "status": "in-progress",
       "category": "validation_backtesting",
       "impact": "critical",
-      "effort": "high"
+      "effort": "high",
+      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/5"
     },
     {
       "id": 33,
@@ -448,7 +450,8 @@
       "impact": "high",
       "effort": "medium",
       "files": ["scripts/collect_historical_results.py","scripts/optimize_accuracy.py"],
-      "started_date": "2026-01-02"
+      "started_date": "2026-01-02",
+      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/6"
     },
     {
       "id": 46,
@@ -482,7 +485,8 @@
       "impact": "critical",
       "effort": "medium",
       "files": ["app/models/prediction_tracker.py","enhanced_predictor.py","generate_fast_reports.py"],
-      "started_date": "2026-01-02"
+      "started_date": "2026-01-02",
+      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/7"
     },
     {
       "id": 49,
@@ -723,11 +727,11 @@
       "id": 71,
       "title": "Large file remediation (Git LFS)",
       "description": "Investigate large files flagged during push and create a migration plan to Git LFS or remove history; document steps and create an issue/PR to perform migration.",
-      "status": "not-started",
+      "status": "in-progress",
       "category": "maintenance",
       "impact": "medium",
       "effort": "medium",
-      "notes": "Git push reported large file warnings; recommend `git lfs migrate import` or BFG to rewrite history. I can create the issue with detection commands and migration steps."
+      "notes": "Git push reported large file warnings; recommend `git lfs migrate import` or BFG to rewrite history. Issue created: https://github.com/Zed-777/sports-prediction-system/issues/8"
     }
   ]
 }
