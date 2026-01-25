@@ -41,8 +41,10 @@
       "id": 6,
       "title": "Run full test suite and lint",
       "description": "Execute pytest and linter (ruff/mypy if configured), fix any issues discovered.",
-      "status": "in-progress",
-      "category": "maintenance"
+      "status": "completed",
+      "category": "maintenance",
+      "completed_date": "2026-01-09",
+      "notes": "All tests pass (no failures, 4 expected skips). Ran ruff auto-fix: 149 unused imports removed (F401). Fixed test mocks to use correct import paths after auto-fix."
     },
 
     {
@@ -238,7 +240,8 @@
       "status": "in-progress",
       "category": "calibration_confidence",
       "impact": "critical",
-      "effort": "medium"
+      "effort": "medium",
+      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/4"
     },
     {
       "id": 26,
@@ -311,7 +314,8 @@
       "status": "in-progress",
       "category": "validation_backtesting",
       "impact": "critical",
-      "effort": "high"
+      "effort": "high",
+      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/5"
     },
     {
       "id": 33,
@@ -446,18 +450,21 @@
       "impact": "high",
       "effort": "medium",
       "files": ["scripts/collect_historical_results.py","scripts/optimize_accuracy.py"],
-      "started_date": "2026-01-02"
+      "started_date": "2026-01-02",
+      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/6"
     },
     {
       "id": 46,
       "title": "CI: synthetic detection & Windows runner",
       "description": "Add a CI job to run the synthetic detection test and include a Windows runner to catch encoding/encoding-like issues and ensure the publish gate behaves correctly on Windows.",
-      "status": "in-progress",
+      "status": "completed",
       "category": "ci",
       "impact": "medium",
       "effort": "low",
       "files": [".github/workflows/*"],
-      "started_date": "2026-01-02"
+      "started_date": "2026-01-02",
+      "completed_date": "2026-01-10",
+      "notes": "Windows CI now honors RUN_INTEGRATION_TESTS env var; integration tests skip unless explicitly enabled."
     },
     {
       "id": 47,
@@ -478,7 +485,8 @@
       "impact": "critical",
       "effort": "medium",
       "files": ["app/models/prediction_tracker.py","enhanced_predictor.py","generate_fast_reports.py"],
-      "started_date": "2026-01-02"
+      "started_date": "2026-01-02",
+      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/7"
     },
     {
       "id": 49,
@@ -515,21 +523,26 @@
       "id": 52,
       "title": "Prepare PR & release notes",
       "description": "Push `feature/flashscore-debug`, open a PR with summary, add release notes and CI notes. If origin isn't configured, provide instructions to maintainer. Ensure branch name and commit message are clear.",
-      "status": "not-started",
+      "status": "in-progress",
       "category": "release",
       "impact": "low",
-      "effort": "low"
+      "effort": "low",
+      "started_date": "2026-01-09",
+      "pr": "https://github.com/Zed-777/sports-prediction-system/pull/1",
+      "notes": "Draft PR created for `feature/injuries-connector` with compliance section added and labels `legal-review` and `data-fetch`."
     },
     {
       "id": 53,
       "external_id": "DQ-006",
       "title": "Injury feed connector",
       "description": "Implement `app/data/connectors/injuries.py` to fetch and normalize injury data from API-Football (primary) with fallbacks to official club feeds and scrapers (SofaScore/FlashScore). Include caching, backoff, and normalization for the DataQualityEnhancer.",
-      "status": "not-started",
+      "status": "completed",
       "category": "data_quality",
       "impact": "critical",
       "effort": "medium",
-      "files": ["app/data/connectors/injuries.py","data/cache","scripts/run_with_secrets.ps1"]
+      "files": ["app/data/connectors/injuries.py","data/cache","scripts/run_with_secrets.ps1","tests/test_injuries_connector.py","tests/test_injuries_parser.py","tests/test_integration_injuries.py"],
+      "completed_date": "2026-01-09",
+      "notes": "Implemented connector, parsers, fixtures, and tests; added fallback parsing and 429 handling; PR #1 created."
     },
     {
       "id": 54,
@@ -568,21 +581,24 @@
       "id": 57,
       "title": "Rate-limit, caching & resilience improvements",
       "description": "Add centralized request throttling (respect provider rate-limits), exponential backoff, persistent caching of responses under `data/cache/`, and alerting for repeated 429s. Add tests that simulate 429/500 failures and verify fallbacks.",
-      "status": "not-started",
+      "status": "completed",
       "category": "system_robustness",
       "impact": "high",
       "effort": "medium",
-      "files": ["app/utils/http.py","data/cache","tests/test_rate_limit_handling.py"]
+      "files": ["app/utils/http.py","data/cache","tests/test_rate_limit_handling.py"],
+      "completed_date": "2026-01-09",
+      "notes": "Added persistent disable flag on 429, token bucket throttling, and tests simulating 429s."
     },
     {
       "id": 58,
       "title": "Connector tests & CI integration",
       "description": "Add unit and integration tests for new connectors and update CI to run integration tests conditionally (only when secrets are available). Add canary/monitoring jobs to detect API changes/failures.",
-      "status": "not-started",
+      "status": "in-progress",
       "category": "testing",
       "impact": "high",
       "effort": "medium",
-      "files": ["tests/test_injuries_connector.py",".github/workflows/*"]
+      "files": ["tests/test_injuries_connector.py",".github/workflows/*"],
+      "notes": "Unit and integration tests added; integration suite now gates via RUN_INTEGRATION_TESTS env flag (spread to Windows CI). Added `.github/workflows/integration-tests-on-label.yml` to run integration tests when a PR receives the `run-integration` label or via manual dispatch (requires `API_FOOTBALL_KEY` in repo secrets)."
     },
     {
       "id": 59,
@@ -682,6 +698,50 @@
       "impact": "high",
       "effort": "low",
       "files": ["docs/onboarding.md","docs/ops_runbook.md"]
-    }
-  ]
+    },
+    {
+      "id": 69,
+      "title": "Draft PR: Injuries connector",
+      "description": "Create a draft PR for `feature/injuries-connector`, attach robots report, add compliance notes and reviewer labels.",
+      "status": "completed",
+      "category": "release",
+      "impact": "low",
+      "effort": "low",
+      "pr": "https://github.com/Zed-777/sports-prediction-system/pull/1",
+      "completed_date": "2026-01-09",
+      "notes": "Compliance section appended to PR body; labels `legal-review` and `data-fetch` created and applied; awaiting reviewer assignments."
+    },
+    {
+      "id": 70,
+      "title": "Request reviewers for PR #1",
+      "description": "Request review from legal/compliance and data engineering owners for PR #1. Used CODEOWNERS to route the PR automatically.",
+      "status": "completed",
+      "category": "release",
+      "impact": "low",
+      "effort": "low",
+      "pr": "https://github.com/Zed-777/sports-prediction-system/pull/1",
+      "completed_date": "2026-01-12",
+      "notes": "Created CODEOWNERS with @Zed-777 so PR now receives reviews automatically when needed."
+    },
+    {
+      "id": 71,
+      "title": "Large file remediation (Git LFS)",
+      "description": "Investigate large files flagged during push and create a migration plan to Git LFS or remove history; document steps and create an issue/PR to perform migration.",
+      "status": "in-progress",
+      "category": "maintenance",
+      "impact": "medium",
+      "effort": "medium",
+      "notes": "Git push reported large file warnings; recommend `git lfs migrate import` or BFG to rewrite history. Issue created: https://github.com/Zed-777/sports-prediction-system/issues/8"
+    }    {
+      "id": 72,
+      "title": "Auto-merge when legal + integration green",
+      "description": "Add a GitHub Actions workflow to auto-merge PRs when they have `run-integration` and `legal-approved` labels and all checks pass; requires careful label-controlled approvals.",
+      "status": "completed",
+      "category": "ci",
+      "impact": "medium",
+      "effort": "low",
+      "files": [".github/workflows/auto-merge-on-ready.yml"],
+      "completed_date": "2026-01-22",
+      "notes": "Workflow merges PRs when the 'ready-to-merge' label is applied and required labels present with successful checks."
+    },  ]
 }

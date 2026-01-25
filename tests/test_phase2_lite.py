@@ -1,6 +1,4 @@
-import os
 
-import pytest
 
 
 def test_phase2_lite_smoke(monkeypatch):

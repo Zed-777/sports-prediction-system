@@ -1,6 +1,4 @@
-import os
 from pathlib import Path
-import pytest
 
 
 def test_run_daily_fetch_exists():

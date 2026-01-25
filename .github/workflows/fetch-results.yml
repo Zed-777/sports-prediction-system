@@ -42,7 +42,7 @@ jobs:
 
       - name: Regenerate recent reports (prune + regen)
         run: |
-          python scripts/regenerate_reports.py --all --count 5 --delay 60 --prune-keep 50 --debug || true
+          python scripts/regenerate_reports.py --all --count 5 --delay 60 --prune-keep 0 --debug || true
 
       - name: Commit updated historical files and reports
         run: |

@@ -1,5 +1,3 @@
-import os
-import tempfile
 from flashscore_scraper import FlashScoreScraper
 
 

@@ -238,6 +238,8 @@ def predict(
 @click.option("--formats", default="md,png", help="Report formats (comma-separated)")
 @click.option("--output-dir", default="reports", help="Output directory")
 @click.option("--template", help="Custom report template")
+@click.option("--home-team", help="Home team name to target a specific scheduled match")
+@click.option("--away-team", help="Away team name to target a specific scheduled match")
 @click.pass_context
 def report(
     ctx: click.Context,
@@ -246,6 +248,8 @@ def report(
     formats: str,
     output_dir: str,
     template: str | None,
+    home_team: str | None = None,
+    away_team: str | None = None,
 ) -> None:
     """Generate comprehensive prediction reports.
 
@@ -256,6 +260,21 @@ def report(
     format_list = [f.strip() for f in formats.split(",")]
 
     console.print(f"[blue]📊 Generating reports for {league} on {date}[/blue]")
+
+    # If a specific scheduled match is requested, use the SingleMatchGenerator which
+    # queries the Football-Data scheduled matches endpoint and will try to match teams
+    if home_team and away_team:
+        try:
+            from generate_fast_reports import SingleMatchGenerator
+
+            gen = SingleMatchGenerator()
+            # Look ahead a reasonable number of scheduled matches to find the requested one
+            gen.generate_matches_report(50, league, match_delay=0, home_team=home_team, away_team=away_team)
+            console.print("[green]✅ Single match report generation attempted (see logs for details)[/green]")
+            return
+        except Exception as e:
+            console.print(f"[red]❌ Single match report generation failed: {e}[/red]")
+            sys.exit(1)
 
     generator = ReportGenerator(config)
 
@@ -328,6 +347,49 @@ def validate(
     console.print("[green]✅ Validation completed[/green]")
 
 
+@main.command()
+@click.option("--league", required=True, help="League name")
+@click.option("--model", default="ensemble", help="Model to use for predictions")
+@click.option("--min-matches", default=50, help="Minimum training matches required for backtest")
+@click.pass_context
+def backtest(
+    ctx: click.Context, league: str, model: str, min_matches: int
+) -> None:
+    """Run a historical backtest for a specific league using the optimizer/backtester.
+
+    Example:
+        sports-forecast backtest --league "La Liga" --min-matches 50
+    """
+    console.print(f"[blue]🧪 Running backtest for {league} (min matches: {min_matches})[/blue]")
+
+    try:
+        from scripts.optimize_accuracy import AccuracyOptimizer
+
+        optimizer = AccuracyOptimizer()
+        # Use min_matches as parameter override
+        result = optimizer.run_backtest(
+            league=league, parameter_overrides={"min_train_matches": min_matches}
+        )
+        normalized = optimizer._normalize_backtest_output(result)
+
+        # Print a concise summary
+        if "summary" in normalized:
+            s = normalized["summary"]
+            console.print(
+                f"[green]✅ Backtest complete: {s['total_matches']} matches, accuracy {s['accuracy']:.2%}[/green]"
+            )
+            console.print(f"  Mean Brier: {s['mean_brier_score']:.4f}  Mean log loss: {s['mean_log_loss']:.4f}")
+        else:
+            m = normalized["metrics"]
+            console.print(f"[green]✅ Simulated backtest: accuracy {m['accuracy_pct']}[/green]")
+
+        console.print("[green]Results saved under `reports/backtests/` or `data/optimization_results/`[/green]")
+
+    except Exception as e:
+        console.print(f"[red]❌ Backtesting failed: {e}[/red]")
+        sys.exit(1)
+
+
 if __name__ == "__main__":
     main()
 
@@ -346,7 +408,8 @@ def run_prune(ctx: click.Context) -> None:
         from generate_fast_reports import SingleMatchGenerator
 
         generator = SingleMatchGenerator()
-        generator.clean_old_reports()
+        # Explicitly permit pruning via the CLI command
+        generator.clean_old_reports(allow_prune=True)
 
         # Check for any remaining match subdirectories
         import os

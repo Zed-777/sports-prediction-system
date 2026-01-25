@@ -1,0 +1,48 @@
+name: Auto-merge when ready
+
+on:
+  pull_request_target:
+    types: [labeled]
+
+jobs:
+  auto-merge:
+    if: github.event.label.name == 'ready-to-merge'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+      checks: read
+    steps:
+      - name: Check for required labels
+        id: check_labels
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const labels = pr.labels.map(l => l.name);
+            if (!labels.includes('run-integration')) {
+              core.setFailed('Missing label: run-integration. Add it to trigger integration tests and ensure they pass.');
+            }
+            if (!labels.includes('legal-approved')) {
+              core.setFailed('Missing label: legal-approved. Legal signoff required before merging.');
+            }
+            // Check combined status of required checks
+            const { data: combined } = await github.rest.repos.getCombinedStatusForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: pr.head.sha,
+            });
+            const state = combined.state;
+            if (state !== 'success') {
+              core.setFailed(`Not all checks are successful (state: ${state}).`);
+            }
+            return labels;
+      - name: Merge PR
+        if: ${{ success() }}
+        uses: peter-evans/merge-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          merge-method: squash
+          commit-title: "Merge: ${{ github.event.pull_request.title }}"
+          commit-message: "Auto-merged after legal signoff and successful integration tests."

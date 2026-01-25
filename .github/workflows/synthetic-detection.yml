@@ -39,6 +39,7 @@ jobs:
         uses: actions/github-script@v6
         env:
           SYNTHETIC_ALERT_THRESHOLD: 0
+          SYNTHETIC_ALERT_FRACTION: 0.10
         with:
           script: |
             const fs = require('fs')
@@ -48,15 +49,18 @@ jobs:
               return
             }
             const data = JSON.parse(fs.readFileSync(path, 'utf8'))
-            const threshold = parseInt(process.env.SYNTHETIC_ALERT_THRESHOLD || '0', 10)
-            if (data.total > threshold) {
-              const body = `Automated audit detected **${data.total}** synthetic reports across leagues.\n\n**By league:**\n${Object.entries(data.by_league).map(([l,c])=>`- ${l}: ${c}`).join('\n')}\n\n**Samples:**\n${(data.samples||[]).slice(0,10).join('\n')}`
+            const countThreshold = parseInt(process.env.SYNTHETIC_ALERT_THRESHOLD || '0', 10)
+            const fractionThreshold = parseFloat(process.env.SYNTHETIC_ALERT_FRACTION || '0')
+            const total = data.total || 0
+            const frac = data.synthetic_fraction || 0
+            if (total > countThreshold || frac > fractionThreshold) {
+              const body = `Automated audit detected **${total}** synthetic reports across leagues (fraction ${frac.toFixed(2)}).\n\n**By league:**\n${Object.entries(data.by_league).map(([l,c])=>`- ${l}: ${c}`).join('\n')}\n\n**Samples:**\n${(data.samples||[]).slice(0,10).join('\n')}`
               await github.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `Synthetic reports detected: ${data.total} total`,
+                title: `Synthetic reports detected: ${total} total (fraction ${frac.toFixed(2)})`,
                 body: body,
               })
             } else {
-              core.info(`No synthetic alert: ${data.total} <= ${threshold}`)
+              core.info(`No synthetic alert: ${total} <= ${countThreshold} and fraction ${frac.toFixed(2)} <= ${fractionThreshold}`)
             }

@@ -8,11 +8,8 @@ This is a single, small script to replace the corrupted `fetch_historical_api.py
 from __future__ import annotations
 
 import csv
-import time
 from pathlib import Path
 
-import requests
-from app.utils.http import safe_request_get
 
 ROOT = Path(__file__).parent.parent
 BACKUP_CSV = ROOT / "data" / "backup_csv"

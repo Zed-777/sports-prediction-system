@@ -26,7 +26,7 @@ param(
     [switch]$RegenerateOnly,
     [int]$RegenerateCount = 5,
     [int]$RegenerateDelay = 60,
-    [int]$PruneKeep = 50,
+    [int]$PruneKeep = 0,
     [string]$LogDir = "$PSScriptRoot\..\logs\daily",
     [switch]$RunTests
 )

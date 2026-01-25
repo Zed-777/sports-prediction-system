@@ -1,5 +1,4 @@
 from types import SimpleNamespace
-import builtins
 from app.utils.http import safe_request_get
 from app.utils.throttle import _GLOBAL_THROTTLE_MANAGER
 

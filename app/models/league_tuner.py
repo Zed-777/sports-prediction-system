@@ -9,7 +9,6 @@ import json
 import os
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime
-import numpy as np
 
 from app.models.calibration_manager import CalibrationManager, ModelPerformanceTracker
 

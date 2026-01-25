@@ -16,7 +16,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from app.utils.http import safe_request_get
 import yaml
-from matplotlib.patches import FancyBboxPatch, Rectangle, Wedge
+from matplotlib.patches import FancyBboxPatch, Rectangle
 from typing import Any, Dict, Optional, List, Union, cast
 from app.types import JSONDict
 
@@ -623,7 +623,12 @@ class SingleMatchGenerator:
         return sorted(self._LEAGUE_CANONICAL.keys())
 
     def generate_matches_report(
-        self, num_matches: int, league_name: str, match_delay: int = 0
+        self,
+        num_matches: int,
+        league_name: str,
+        match_delay: int = 0,
+        home_team: str | None = None,
+        away_team: str | None = None,
     ) -> None:
         """Generate Phase 2 Lite enhanced reports for the next set of matches.
 
@@ -631,6 +636,12 @@ class SingleMatchGenerator:
             num_matches: Number of matches to generate
             league_name: League identifier
             match_delay: Delay in seconds between matches (0 = no delay)
+            home_team: Optional exact or partial home team name to generate a specific match report
+            away_team: Optional exact or partial away team name to generate a specific match report
+
+        If both `home_team` and `away_team` are provided, the method will attempt to locate
+        the scheduled match within the next `num_matches` matches and generate a report for
+        that match only. Matching is case-insensitive and allows partial name matches.
         """
 
         start_time = time.time()
@@ -667,6 +678,31 @@ class SingleMatchGenerator:
         if not matches:
             print("❌ No upcoming matches found")
             return
+
+        # If a specific match is requested by home/away team names, attempt to find it
+        if home_team and away_team:
+            def _normalize_for_match(s: str) -> str:
+                return re.sub(r"[^a-z0-9]+", "", s.lower()) if s else ""
+
+            target_home = _normalize_for_match(home_team)
+            target_away = _normalize_for_match(away_team)
+
+            def _match_candidate(m: JSONDict) -> bool:
+                candidate_home = _normalize_for_match(m.get("homeTeam", {}).get("name", ""))
+                candidate_away = _normalize_for_match(m.get("awayTeam", {}).get("name", ""))
+                # Accept either exact normalized equality or substring matches
+                return (
+                    (target_home == candidate_home or target_home in candidate_home)
+                    and (target_away == candidate_away or target_away in candidate_away)
+                )
+
+            found = [m for m in matches if _match_candidate(m)]
+            if not found:
+                print(
+                    f"❌ No scheduled match found matching '{home_team}' vs '{away_team}' in the next {num_matches} scheduled matches"
+                )
+                return
+            matches = [found[0]]  # Only process the first matching scheduled match
 
         safe_print(f"📅 Found {len(matches)} upcoming match(es)")
         safe_print("")
@@ -1961,21 +1997,30 @@ class SingleMatchGenerator:
             home_interval = confidence_intervals.get("home")
             draw_interval = confidence_intervals.get("draw")
             away_interval = confidence_intervals.get("away")
-            home_str = (
-                self._format_interval_segment(home_interval)
-                if isinstance(home_interval, (list, tuple))
-                else "N/A"
-            )
-            draw_str = (
-                self._format_interval_segment(draw_interval)
-                if isinstance(draw_interval, (list, tuple))
-                else "N/A"
-            )
-            away_str = (
-                self._format_interval_segment(away_interval)
-                if isinstance(away_interval, (list, tuple))
-                else "N/A"
-            )
+            def _call_format_interval(interval_val):
+                # Prefer instance method if available, otherwise use module-level helper or fallback
+                if callable(getattr(self, '_format_interval_segment', None)):
+                    try:
+                        return self._format_interval_segment(interval_val)
+                    except Exception:
+                        pass
+                if callable(globals().get('_format_interval_segment')):
+                    try:
+                        return globals()['_format_interval_segment'](interval_val)
+                    except Exception:
+                        pass
+                # Fallback
+                try:
+                    if isinstance(interval_val, (list, tuple)) and len(interval_val) >= 2:
+                        return f"{float(interval_val[0]):.1f}% – {float(interval_val[1]):.1f}%"
+                except Exception:
+                    pass
+                return "N/A"
+
+            home_str = _call_format_interval(home_interval) if isinstance(home_interval, (list, tuple)) else "N/A"
+            draw_str = _call_format_interval(draw_interval) if isinstance(draw_interval, (list, tuple)) else "N/A"
+            away_str = _call_format_interval(away_interval) if isinstance(away_interval, (list, tuple)) else "N/A"
+
             confidence_interval_line = (
                 f"Home {home_str}, Draw {draw_str}, Away {away_str}"
             )
@@ -3625,6 +3670,29 @@ def ensure_prediction_image_exists(full_path: str, match_data: Dict[str, Any], m
             label = "Very Poor"
         return f"{pct:.1f}% ({label})"
 
+    def _format_interval_segment(self, interval: Union[list[float], tuple[float, float]]) -> str:
+        """Instance wrapper to format interval segments.
+
+        This fallback ensures the method is available on the instance even if the
+        static helper is not bound correctly at import time (defensive fix).
+        """
+        # If the static implementation exists on the class, invoke it
+        if hasattr(self.__class__, '_format_interval_segment') and callable(getattr(self.__class__, '_format_interval_segment')):
+            try:
+                # call class-level staticmethod if present
+                return self.__class__._format_interval_segment(interval)
+            except Exception:
+                pass
+        # Fallback formatting logic
+        try:
+            if isinstance(interval, (list, tuple)) and len(interval) >= 2:
+                start = float(interval[0])
+                end = float(interval[1])
+                return f"{start:.1f}% – {end:.1f}%"
+        except Exception:
+            pass
+        return "N/A"
+
     @staticmethod
     def _format_interval_segment(
         interval: Union[list[float], tuple[float, float]],
@@ -3895,13 +3963,28 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
 
         return validated
 
-    def clean_old_reports(self, match_filter: str | None = None) -> None:
+    def clean_old_reports(self, match_filter: str | None = None, allow_prune: bool = False) -> None:
         """Clean reports from leagues while preserving directory structure.
+
+        This operation is potentially destructive and will remove match directories
+        and files under `reports/`. To prevent accidental deletion, this method
+        will refuse to perform any removals unless explicitly permitted by one
+        of the following:
+
+        - The caller passes `allow_prune=True` (intended for the CLI `run-prune` command), OR
+        - The environment variable `PRUNE_ALLOWED` is set to the string `'1'`.
 
         If `match_filter` is provided, only match directories whose name
         contains the filter substring (case-insensitive) will be removed.
         """
         import shutil
+
+        # Enforce prune guard: do not remove reports unless `allow_prune=True` or PRUNE_ALLOWED=1
+        if not allow_prune and os.getenv("PRUNE_ALLOWED") != "1":
+            raise RuntimeError(
+                "Refusing to remove reports: destructive operation requires explicit approval. "
+                "Use the `sports-forecast run-prune` command or set PRUNE_ALLOWED=1 in the environment."
+            )
 
         if match_filter:
             safe_print(f"Cleaning old reports matching '{match_filter}' from all leagues...")
@@ -3999,6 +4082,10 @@ if not hasattr(SingleMatchGenerator, 'clean_old_reports'):
         and clear format directories while preserving `.keep` files and directory structure.
         """
         import shutil, os
+
+        # Enforce prune guard for fallback implementation as well
+        if os.getenv("PRUNE_ALLOWED") != "1":
+            raise RuntimeError("Refusing to remove reports (fallback cleaner): set PRUNE_ALLOWED=1 or use the CLI run-prune command.")
 
         if match_filter:
             safe_print(f"Cleaning old reports matching '{match_filter}' from all leagues...")

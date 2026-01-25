@@ -66,6 +66,14 @@ def main():
                 any_updates += updated
                 if args.debug:
                     logger.info(f"Debug files (if any) will be under reports/debug/flashscore/")
+                    # Run the inspector to summarize debug files
+                    try:
+                        import subprocess
+                        inspector_out = PROJECT_ROOT / 'reports' / 'metrics' / 'flashscore_debug_summary.json'
+                        subprocess.check_call([sys.executable, str(PROJECT_ROOT / 'scripts' / 'debug_flashscore_inspect.py'), '--dir', str(PROJECT_ROOT / 'reports' / 'debug' / 'flashscore'), '--out', str(inspector_out)])
+                        logger.info(f"FlashScore debug summary: {inspector_out}")
+                    except Exception as e:
+                        logger.debug(f"Failed to run debug inspector: {e}")
             else:
                 logger.info(f"Dry-run: would fetch up to {args.days} days for {league} from configured APIs")
         else:

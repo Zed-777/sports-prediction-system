@@ -1,4 +1,3 @@
-import types
 
 from enhanced_predictor import EnhancedPredictor
 

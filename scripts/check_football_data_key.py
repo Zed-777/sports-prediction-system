@@ -11,7 +11,6 @@ Note: This makes a single external request to Football-Data.org.
 import os
 from pathlib import Path
 
-import requests
 from app.utils.http import safe_request_get
 
 ROOT = Path(__file__).parent.parent

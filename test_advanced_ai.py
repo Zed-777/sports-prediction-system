@@ -102,7 +102,6 @@ def test_feature_engineer():
         PolynomialInteractions,
         TimeDecayAggregator,
     )
-    import numpy as np
 
     # Test team embeddings
     embeddings = TeamEmbedding(embedding_dim=16)

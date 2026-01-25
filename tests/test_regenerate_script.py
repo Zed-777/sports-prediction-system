@@ -1,8 +1,5 @@
 import json
-import os
-from pathlib import Path
 
-from generate_fast_reports import SingleMatchGenerator
 
 
 def test_regenerate_script_generates_image_and_summary(monkeypatch, tmp_path):

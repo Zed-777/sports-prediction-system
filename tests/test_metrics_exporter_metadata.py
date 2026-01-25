@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from app.utils.metrics import reset_metrics, increment_metric, get_metrics
+from app.utils.metrics import reset_metrics, increment_metric
 from scripts import export_metrics
 
 

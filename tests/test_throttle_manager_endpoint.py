@@ -1,4 +1,3 @@
-import time
 from app.utils.throttle import ThrottleManager, TokenBucket
 
 

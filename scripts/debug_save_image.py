@@ -1,6 +1,4 @@
-import os
 from pathlib import Path
-import json
 import sys
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent

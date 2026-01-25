@@ -11,8 +11,7 @@ Applies dynamic adjustments based on match context:
 import json
 import os
 from typing import Dict, Optional, Tuple
-from datetime import datetime, date
-import numpy as np
+from datetime import date
 
 
 class ContextExtractor:

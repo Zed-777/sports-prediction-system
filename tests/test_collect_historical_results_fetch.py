@@ -1,7 +1,5 @@
-import os
 import json
 from pathlib import Path
-import tempfile
 from scripts.collect_historical_results import HistoricalResultsCollector
 
 

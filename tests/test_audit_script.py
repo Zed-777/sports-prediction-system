@@ -1,7 +1,4 @@
-import json
 from pathlib import Path
-import tempfile
-import os
 from scripts import audit_synthetic_reports as audit
 
 

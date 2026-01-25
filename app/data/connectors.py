@@ -5,7 +5,7 @@ Data connectors for external APIs
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union, Sequence, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 import aiohttp
 import pandas as pd

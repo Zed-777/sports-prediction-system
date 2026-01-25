@@ -14,7 +14,7 @@ import time
 import zlib
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, cast, Dict, List, Optional, Union
+from typing import Any, cast, Dict, List, Optional
 from app.types import JSONDict, JSONList
 from urllib.parse import urljoin
 
@@ -269,6 +269,33 @@ class FlashScoreScraper:
             # Fallback: search entire HTML
             candidate_texts = [html]
 
+        # Attempt to extract embedded JSON payloads from scripts or inline assignments
+        json_payloads = []
+        for t in candidate_texts:
+            json_payloads.extend(self._extract_json_payloads(t))
+
+        # If we found JSON payloads, try to build matches from them first
+        for payload in json_payloads:
+            try:
+                found = self._find_matches_in_payload(payload, league)
+                for f in found:
+                    matches.append(f)
+            except Exception as e:
+                logger.debug(f"Error extracting matches from JSON payload: {e}")
+
+        # If JSON payloads yielded results, prefer them and return limited set
+        if matches:
+            # Remove duplicates by match_id
+            seen = set()
+            unique = []
+            for m in matches:
+                mid = m.get('match_id')
+                if mid and mid not in seen:
+                    seen.add(mid)
+                    unique.append(m)
+            logger.info(f"Extracted {len(unique)} matches from JSON payloads")
+            return unique[:50]
+
         # Use sliding/window block extractor to be tolerant to format variations
         total_found = 0
 
@@ -463,6 +490,190 @@ class FlashScoreScraper:
     def _build_match_from_fields(
         self, fields: Dict[str, str], league: str
     ) -> Optional[JSONDict]:
+        """Construct a normalized match dict from extracted fields dict."""
+        try:
+            match_id = fields.get("AA") or fields.get("A") or ""
+            home = fields.get("AE", "").strip()
+            away = fields.get("AF", "").strip()
+            ts_raw = fields.get("AD") or fields.get("A0") or fields.get("AT") or ""
+
+            # Try to coerce timestamp
+            timestamp = None
+            if ts_raw:
+                try:
+                    timestamp = int(ts_raw)
+                except Exception:
+                    try:
+                        timestamp = int(float(ts_raw))
+                    except Exception:
+                        timestamp = None
+
+            # If some required pieces are missing, attempt heuristic
+            if not match_id:
+                # synthesize id from teams + timestamp
+                if home and away and ts_raw:
+                    # Avoid embedding backslashes in f-string expressions (can cause SyntaxError on some Python versions)
+                    match_id = "{}_{}_{}".format(
+                        re.sub(r"\W+", "", home), re.sub(r"\W+", "", away), ts_raw
+                    )
+
+            if not (home and away and (timestamp is not None)):
+                # not enough data to form a match record
+                logger.debug(
+                    f"Insufficient fields to build match: AA={match_id}, AE={bool(home)}, AF={bool(away)}, AD={bool(ts_raw)}"
+                )
+                return None
+
+            match_datetime = datetime.fromtimestamp(int(timestamp))
+
+            now = datetime.now()
+            if match_datetime < now:
+                status = "finished"
+            elif (match_datetime - now).total_seconds() < 3600:
+                status = "live"
+            else:
+                status = "scheduled"
+
+            # Parse scores if present
+            home_score = None
+            away_score = None
+            if "S1" in fields and "S2" in fields:
+                s1 = fields.get("S1")
+                s2 = fields.get("S2")
+                try:
+                    home_score = int(s1) if (s1 is not None and s1 != "") else None
+                    away_score = int(s2) if (s2 is not None and s2 != "") else None
+                except (ValueError, TypeError):
+                    home_score = away_score = None
+
+            return {
+                "match_id": str(match_id),
+                "league": league,
+                "home_team": home,
+                "away_team": away,
+                "date": match_datetime.strftime("%Y-%m-%d"),
+                "time": match_datetime.strftime("%H:%M"),
+                "datetime": match_datetime.isoformat(),
+                "status": status,
+                "home_score": home_score,
+                "away_score": away_score,
+                "round": fields.get("ER", ""),
+                "odds": {},
+                "raw_data": fields,
+            }
+
+        except Exception as e:
+            logger.warning(f"Error building match from fields: {e}")
+            return None
+
+    def _extract_json_payloads(self, text: str) -> list:
+        """Return a list of parsed JSON-like objects found inside the provided text.
+
+        This is tolerant: it uses a balanced-brace scanner to locate {...} candidates and
+        attempts json.loads on each candidate. Non-standard JSON (single quotes) is
+        repaired heuristically when possible.
+        """
+        candidates = []
+        results = []
+        # Find all substrings starting from a '{' and balanced to matching '}'
+        stack = 0
+        start = None
+        for i, ch in enumerate(text):
+            if ch == '{':
+                if stack == 0:
+                    start = i
+                stack += 1
+            elif ch == '}':
+                stack -= 1
+                if stack == 0 and start is not None:
+                    cand = text[start : i + 1]
+                    candidates.append(cand)
+                    start = None
+        for cand in candidates:
+            cleaned = cand.strip()
+            # quick reject if length too small
+            if len(cleaned) < 20:
+                continue
+            # Try direct json.loads
+            try:
+                obj = json.loads(cleaned)
+                results.append(obj)
+                continue
+            except Exception:
+                pass
+            # Heuristic: replace single quotes with double quotes (naive)
+            try:
+                repaired = re.sub(r"(?<!\\)'", '"', cleaned)
+                obj = json.loads(repaired)
+                results.append(obj)
+                continue
+            except Exception:
+                pass
+        return results
+
+    def _find_matches_in_payload(self, payload: dict, league: str) -> list:
+        """Walk JSON payload and extract match-like dictionaries.
+
+        Looks for objects containing keys like 'homeTeam'/'awayTeam' or 'home'/'away'.
+        """
+        found = []
+
+        def _is_team_obj(d):
+            if not isinstance(d, dict):
+                return False
+            keys = set(k.lower() for k in d.keys())
+            return 'home' in keys or 'hometeam' in keys or 'away' in keys or 'awayteam' in keys
+
+        def _walk(obj):
+            if isinstance(obj, dict):
+                if _is_team_obj(obj):
+                    # Try to extract team names and scores
+                    try:
+                        if 'homeTeam' in obj and 'awayTeam' in obj and isinstance(obj['homeTeam'], dict):
+                            home = obj['homeTeam'].get('name') or obj['homeTeam'].get('title')
+                            away = obj['awayTeam'].get('name') or obj['awayTeam'].get('title')
+                            # attempt to get date from obj
+                            date = obj.get('utcDate') or obj.get('date') or obj.get('scheduled')
+                            # glean scores
+                            score = obj.get('score') or {}
+                            ft = score.get('fullTime') or {}
+                            hs = ft.get('home')
+                            as_ = ft.get('away')
+                            # Build minimal normalized match dict
+                            mid = obj.get('id') or f"{home}_{away}_{date}"
+                            if home and away and date:
+                                found.append(
+                                    {
+                                        'match_id': str(mid),
+                                        'league': league,
+                                        'home_team': home,
+                                        'away_team': away,
+                                        'date': date[:10] if isinstance(date, str) else str(date),
+                                        'time': date[11:16] if isinstance(date, str) and len(date) > 16 else '',
+                                        'datetime': date if isinstance(date, str) else str(date),
+                                        'status': 'finished' if hs is not None and as_ is not None else 'scheduled',
+                                        'home_score': hs,
+                                        'away_score': as_,
+                                        'raw_data': obj,
+                                    }
+                                )
+                        else:
+                            # generic keys (home/away)
+                            home = obj.get('home') or obj.get('home_name') or obj.get('home_team')
+                            away = obj.get('away') or obj.get('away_name') or obj.get('away_team')
+                            if home and away:
+                                found.append({'match_id': f"{home}_{away}", 'league': league, 'home_team': home, 'away_team': away, 'raw_data': obj})
+                    except Exception:
+                        pass
+                # Recurse
+                for v in obj.values():
+                    _walk(v)
+            elif isinstance(obj, list):
+                for it in obj:
+                    _walk(it)
+
+        _walk(payload)
+        return found
         """Construct a normalized match dict from extracted fields dict."""
         try:
             match_id = fields.get("AA") or fields.get("A") or ""

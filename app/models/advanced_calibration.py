@@ -13,15 +13,12 @@ State-of-the-art calibration techniques for reliable confidence estimation:
 
 import json
 import logging
-import math
-from dataclasses import dataclass, field
-from datetime import datetime
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 import numpy as np
 from scipy import optimize
-from scipy import stats as scipy_stats
 
 
 @dataclass

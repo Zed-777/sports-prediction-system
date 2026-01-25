@@ -1,5 +1,3 @@
-from pathlib import Path
-import tempfile
 from scripts.train_advanced_model import train_baseline
 from app.data.advanced_model_features import build_sample_dataset
 

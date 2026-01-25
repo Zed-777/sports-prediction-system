@@ -9,7 +9,6 @@ from datetime import datetime
 import subprocess
 import uuid
 import os
-from typing import Dict
 
 from app.utils.metrics import get_metrics
 

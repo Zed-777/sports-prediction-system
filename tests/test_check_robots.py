@@ -1,6 +1,4 @@
-import types
 
-import pytest
 
 import scripts.check_robots as cr
 
