@@ -1,0 +1,15 @@
+{
+  "total": 3,
+  "by_league": {
+    "premier-league": 3
+  },
+  "samples": [
+    "reports\\simulated\\premier-league\\matches\\home_vs_away_2025-12-01_synthetic\\prediction.json",
+    "reports\\simulated\\premier-league\\matches\\m_low_conf_synthetic\\prediction.json",
+    "reports\\simulated\\premier-league\\matches\\m_test_synthetic\\prediction.json"
+  ],
+  "older_than_days": 7,
+  "old_count": 0,
+  "old_samples": [],
+  "scanned_at": "2026-01-02T17:38:31.194792Z"
+}

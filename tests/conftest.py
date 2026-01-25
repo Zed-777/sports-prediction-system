@@ -1,17 +1,16 @@
-"""
-Test fixtures and configuration for the Sports Prediction System tests
-"""
+"""Test fixtures and configuration for the Sports Prediction System tests."""
 
-# Use a non-interactive matplotlib backend for tests to avoid GUI/tk issues on CI
+# Use a non-interactive matplotlib backend to avoid GUI/tk issues on CI
 try:
     import matplotlib
 
     matplotlib.use("Agg")
 except Exception:
-    # If matplotlib is not available at config time, tests that need it will import and skip accordingly
+    # Tests that need matplotlib will import it and skip if unavailable.
     pass
 
 import asyncio
+import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -20,6 +19,12 @@ from typing import Any
 import pytest
 
 from app.config import create_default_config
+
+INTEGRATION_TESTS_ENABLED = os.getenv("RUN_INTEGRATION_TESTS", "false").lower() in (
+    "1",
+    "true",
+    "yes",
+)
 
 
 @pytest.fixture(scope="session")
@@ -159,6 +164,15 @@ def pytest_collection_modifyitems(config, items):
         # Add 'integration' marker to tests in tests/integration/
         if "integration" in str(item.fspath):
             item.add_marker(pytest.mark.integration)
+            if not INTEGRATION_TESTS_ENABLED:
+                item.add_marker(
+                    pytest.mark.skip(
+                        reason=(
+                            "Integration tests require RUN_INTEGRATION_TESTS=true "
+                            "(set via env or secrets in CI)"
+                        )
+                    )
+                )
 
         # Add 'slow' marker to tests that might be slow
         if "slow" in item.name.lower() or "integration" in str(item.fspath):

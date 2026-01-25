@@ -1,0 +1,236 @@
+{
+  "match_id": null,
+  "home_team": "Manchester City",
+  "away_team": "Chelsea",
+  "date": "2026-01-10",
+  "time": "16:00",
+  "league": "Premier League",
+  "confidence": 0.695,
+  "report_accuracy_probability": 0.811,
+  "home_win_probability": 45.0,
+  "draw_probability": 27.0,
+  "away_win_probability": 28.0,
+  "expected_home_goals": 1.2,
+  "expected_away_goals": 0.9,
+  "processing_time": 0.0,
+  "recommendation": "Home Win Possible",
+  "confidence_level": "69.5% (Fair)",
+  "expected_final_score": "1-1",
+  "score_probability": 10.0,
+  "score_probability_normalized": 5.0,
+  "top3_combined_probability": 25.0,
+  "top3_probability_normalized": 7.0,
+  "alternative_scores": [],
+  "score_probabilities": [],
+  "score_probabilities_normalized": [],
+  "over_2_5_goals_probability": 35.0,
+  "both_teams_score_probability": 41.5,
+  "head_to_head_analysis": {},
+  "home_performance_analysis": {},
+  "away_performance_analysis": {},
+  "goal_timing_prediction": {},
+  "intelligence_summary": {},
+  "player_availability": {
+    "home_team": {
+      "data_available": false,
+      "team_name": "Manchester City",
+      "key_players_available": null,
+      "key_players_injured": null,
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": null,
+      "injury_concerns": [
+        "Injury data unavailable - requires external injury API"
+      ],
+      "squad_size": null,
+      "recommendation": "Integrate with API-Football (recommended) or Transfermarkt/PhysioRoom",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "data_available": false,
+      "team_name": "Chelsea",
+      "key_players_available": null,
+      "key_players_injured": null,
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": null,
+      "injury_concerns": [
+        "Injury data unavailable - requires external injury API"
+      ],
+      "squad_size": null,
+      "recommendation": "Integrate with API-Football (recommended) or Transfermarkt/PhysioRoom",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": 1.2,
+      "humidity": 86.3,
+      "wind_speed": 3.0,
+      "precipitation": 0.0,
+      "conditions": "cold",
+      "visibility": 18.0,
+      "pressure": 1013,
+      "source": "open-meteo",
+      "match_hour": 16,
+      "location": {
+        "lat": 53.4631,
+        "lon": -2.2913
+      }
+    },
+    "impact_assessment": {
+      "goal_modifier": 0.8355,
+      "playing_style_effect": "defensive",
+      "weather_advantage": "physical_teams",
+      "tactical_adjustments": [
+        "Reduced technical play in cold conditions",
+        "Increased player fatigue expected"
+      ],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MODERATE",
+      "conditions_summary": "Challenging conditions (1.2°C, 0.0mm rain, 3.0 km/h wind) likely to affect match dynamics",
+      "modifier_components": {
+        "temperature": 0.8438,
+        "precipitation": 1.0,
+        "wind": 1.03,
+        "humidity": 0.9613,
+        "interaction": 1.0,
+        "stadium": 1.0,
+        "team_style": 1.0
+      },
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 0.8355,
+    "style_impact": "defensive",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "data_available": false,
+    "name": "Referee TBD",
+    "home_bias_pct": null,
+    "cards_per_game": null,
+    "penalties_per_game": null,
+    "strict_level": "unknown",
+    "experience_level": "unknown",
+    "warning": "Referee data unavailable - appointment not announced"
+  },
+  "team_news": {
+    "home_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Manchester City"
+    },
+    "away_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Chelsea"
+    }
+  },
+  "data_quality_score": 80,
+  "reliability_metrics": {
+    "score": 48.0,
+    "level": "Low",
+    "indicator": "🔴 Low",
+    "recommendation": "Fallback prediction – informational use only.",
+    "confidence_intervals": {},
+    "spread_points": 0.0,
+    "factors": {},
+    "primary_driver": "insufficient_data",
+    "notes": [
+      "Reliability defaults applied due to missing data."
+    ]
+  },
+  "calibration_details": {},
+  "confidence_intervals": {},
+  "data_provenance": {
+    "weather": true,
+    "player_availability": true,
+    "referee": true,
+    "team_news": true,
+    "h2h": false,
+    "odds": false,
+    "flashscore": true,
+    "home_injury_clamped": false,
+    "away_injury_clamped": false,
+    "weather_clamped": false
+  },
+  "phase2_lite_enhanced": false,
+  "prediction_engine": "Enhanced Intelligence v4.1 + Phase 2 Lite",
+  "advanced_predictions": {
+    "btts": {},
+    "over_under": {},
+    "exact_scores": [],
+    "two_stage_score": {}
+  },
+  "shot_quality": {},
+  "defensive_metrics": {},
+  "odds_movement": {},
+  "market_implied": {},
+  "sharp_money_alert": {},
+  "player_impact": {},
+  "phase_enhancements": {
+    "phase1_enhanced": false,
+    "phase2_enhanced": false,
+    "phase3_enhanced": false,
+    "phase4_enhanced": false,
+    "phase5_enhanced": false,
+    "phase6_enhanced": false,
+    "phase7_enhanced": false
+  },
+  "optimization_metadata": {
+    "match_context": "unknown",
+    "model_agreement_factor": 0.5,
+    "optimization_applied": false,
+    "ensemble_weights": {}
+  },
+  "generated_at": "2026-01-09T22:09:45.855969",
+  "provider_ids": {
+    "football_data_id": null,
+    "flashscore_id": null
+  },
+  "data_provenance_details": {
+    "home_injury_clamped": false,
+    "home_injury_clamped_fields": {},
+    "away_injury_clamped": false,
+    "away_injury_clamped_fields": {},
+    "weather_clamped": false,
+    "weather_clamped_fields": {}
+  },
+  "advanced_model": {
+    "mode": "shadow",
+    "model_artifact": "models\\advanced\\rf_baseline_42.joblib",
+    "prediction": {
+      "home_win_prob": 0.12,
+      "draw_prob": 0.07,
+      "away_win_prob": 0.81,
+      "meta": {
+        "model": "models\\advanced\\rf_baseline_42.joblib"
+      }
+    }
+  }
+}

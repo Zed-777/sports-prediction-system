@@ -1,5 +1,3 @@
-import os
-import pytest
 
 
 def test_generator_skip_injuries_flag(monkeypatch):

@@ -80,13 +80,33 @@ def train_baseline(train_path: Path, outdir: Path, seed: int = 42):
             "seed": seed,
         }
 
-        model = lgb.train(
-            params,
-            dtrain,
-            valid_sets=[dval],
-            num_boost_round=100,
-            early_stopping_rounds=10,
-        )
+        try:
+            model = lgb.train(
+                params,
+                dtrain,
+                valid_sets=[dval],
+                num_boost_round=100,
+                early_stopping_rounds=10,
+            )
+        except TypeError:
+            # Older LightGBM versions may not support the keyword argument
+            # Use callbacks-based API where available
+            try:
+                model = lgb.train(
+                    params,
+                    dtrain,
+                    valid_sets=[dval],
+                    num_boost_round=100,
+                    callbacks=[lgb.early_stopping(10)],
+                )
+            except Exception:
+                # Fallback to plain training without early stopping
+                model = lgb.train(
+                    params,
+                    dtrain,
+                    valid_sets=[dval],
+                    num_boost_round=100,
+                )
 
         outdir.mkdir(parents=True, exist_ok=True)
         model_path = outdir / f"lightgbm_baseline_{seed}.txt"

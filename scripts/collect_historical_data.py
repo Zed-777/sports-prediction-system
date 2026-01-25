@@ -373,7 +373,6 @@ def collect_from_api(
     """Collect historical matches from Football-Data.org API for a competition and season
     Requires env var FOOTBALL_DATA_API_KEY or passed api_key
     """
-    import requests
     from app.utils.http import safe_request_get
 
     headers = {"X-Auth-Token": api_key}
@@ -412,7 +411,6 @@ def collect_api_football(
     """Collect historical matches from API-Football for a league and season.
     Requires env var API_FOOTBALL_KEY or passed api_key.
     """
-    import requests
     from app.utils.http import safe_request_get
 
     headers = {

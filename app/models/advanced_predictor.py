@@ -4,7 +4,6 @@ Implements a minimal AIMLPredictor-compatible interface for later integration.
 """
 
 from pathlib import Path
-import json
 
 
 class AdvancedAIMLPredictor:
@@ -80,7 +79,6 @@ class AdvancedAIMLPredictor:
         if self.model is None:
             raise RuntimeError("No model loaded")
 
-        import numpy as np
 
         X = [
             [

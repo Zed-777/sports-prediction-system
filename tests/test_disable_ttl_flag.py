@@ -1,5 +1,3 @@
-import os
-import pytest
 
 
 def test_disable_ttl_override_propagates(monkeypatch):

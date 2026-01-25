@@ -1,5 +1,3 @@
-import json
-import os
 
 from generate_fast_reports import SingleMatchGenerator
 

@@ -1,4 +1,3 @@
-from types import SimpleNamespace
 import enhanced_predictor
 from enhanced_predictor import EnhancedPredictor
 from app.utils import http as http_utils

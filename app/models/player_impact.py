@@ -21,7 +21,6 @@ from enum import Enum
 import json
 import os
 import logging
-import math
 
 logger = logging.getLogger(__name__)
 

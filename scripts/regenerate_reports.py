@@ -23,6 +23,7 @@ from typing import Optional, Union
 def prune_old_reports(
     league: str,
     keep: int = 50,
+    match_filter: Optional[str] = None,
     debug: bool = False,
     base_dir: Optional[Union[str, Path]] = None,
 ) -> int:
@@ -34,6 +35,9 @@ def prune_old_reports(
     items = []
     for d in league_dir.iterdir():
         if not d.is_dir():
+            continue
+        # If a match_filter is provided, skip directories that do not match
+        if match_filter and match_filter.lower() not in d.name.lower():
             continue
         pred = d / "prediction.json"
         if not pred.exists():
@@ -64,6 +68,8 @@ def prune_old_reports(
                 pass
     if debug:
         print(f"Pruned {removed} old reports from {league}")
+        if match_filter:
+            print(f"  (filter applied: '{match_filter}')")
     return removed
 
 
@@ -100,7 +106,9 @@ def main():
     parser.add_argument(
         "--all", action="store_true", help="Regenerate for all detected leagues"
     )
-    parser.add_argument("--prune-keep", type=int, default=50)
+    parser.add_argument("--prune-keep", type=int, default=0, help="Number of most recent matches to keep when pruning (default 0 = remove all match directories)")
+    parser.add_argument("--prune-match", type=str, default=None, help="Only prune matches whose directory name contains this substring")
+    # Note: default behavior is to remove all match directories unless --prune-keep is set to a positive value
     parser.add_argument("--count", type=int, default=5)
     parser.add_argument("--delay", type=int, default=60)
     parser.add_argument("--debug", action="store_true")
@@ -114,7 +122,9 @@ def main():
     for league in leagues:
         if args.debug:
             print(f"Processing league: {league}")
-        prune_old_reports(league, keep=args.prune_keep, debug=args.debug)
+        # If --prune-all is set, treat as keep=0
+        keep_val = 0 if args.prune_all else args.prune_keep
+        prune_old_reports(league, keep=keep_val, match_filter=args.prune_match, debug=args.debug)
         regenerate_for_league(
             league, count=args.count, delay_sec=args.delay, debug=args.debug
         )

@@ -1,7 +1,6 @@
 import pytest
 from generate_fast_reports import SingleMatchGenerator
 
-import os
 
 
 def test_prediction_tracker_attached(monkeypatch):

@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import numpy as np
-import requests
 from app.utils.http import safe_request_get
 
 

@@ -8,7 +8,6 @@ import time
 from dataclasses import dataclass
 from typing import Any, cast
 
-import requests
 from app.utils.http import safe_request_get
 
 

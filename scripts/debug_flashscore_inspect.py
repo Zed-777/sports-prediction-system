@@ -12,7 +12,9 @@ from pathlib import Path
 def inspect_dir(base: Path):
     files = list(base.glob('*.html'))
     summary = {'total_files': len(files), 'samples': [], 'patterns': {}}
-    for f in files[:20]:
+    patterns_count = {}
+    keywords = ['window.__', 'window.__initial', 'application/json', 'fetch(', '.json', 'data-layer', 'xhr', 'api', 'v3.', 'initialState', 'content-security-policy']
+    for f in files[:200]:
         text = ''
         try:
             text = f.read_text(encoding='utf-8', errors='ignore')
@@ -20,9 +22,10 @@ def inspect_dir(base: Path):
             continue
         lower = text.lower()
         sample = {'file': str(f.name), 'length': len(text)}
+        # classify
         if '<html' in lower:
             sample['type'] = 'html'
-        elif 'window.__' in lower or 'window.__initial' in lower:
+        elif 'window.__' in lower or 'window.__initial' in lower or 'initialstate' in lower:
             sample['type'] = 'window_initial_state'
         elif 'application/json' in lower or text.strip().startswith('{'):
             sample['type'] = 'json'
@@ -32,6 +35,13 @@ def inspect_dir(base: Path):
             sample['type'] = 'other'
         summary['samples'].append(sample)
         summary['patterns'][sample['type']] = summary['patterns'].get(sample['type'], 0) + 1
+
+        # keyword scanning
+        for kw in keywords:
+            if kw in lower:
+                patterns_count[kw] = patterns_count.get(kw, 0) + 1
+
+    summary['keyword_hits'] = patterns_count
     return summary
 
 

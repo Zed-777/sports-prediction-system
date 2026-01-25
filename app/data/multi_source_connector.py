@@ -10,7 +10,7 @@ import os
 import time
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Optional, List, Sequence, Union, Mapping
+from typing import Any, Union
 
 import aiohttp
 

@@ -4,7 +4,7 @@ Data validation schemas
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, List
 
 logger = logging.getLogger(__name__)
 

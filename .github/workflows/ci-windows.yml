@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      RUN_INTEGRATION_TESTS: ${{ secrets.RUN_INTEGRATION_TESTS || 'false' }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python

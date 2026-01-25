@@ -1,4 +1,3 @@
-import os
 from scripts import export_metrics
 
 

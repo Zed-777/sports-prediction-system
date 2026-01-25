@@ -4,7 +4,6 @@ Audit synthetic reports under reports/simulated/, produce a JSON summary and opt
 """
 import argparse
 import json
-import os
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -28,6 +27,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--days", type=int, default=7, help="Report how many synthetic reports older than DAYS exist")
     p.add_argument("--fail-if-more-than", type=int, default=None, help="Exit non-zero if total synthetic reports exceed this value")
+    p.add_argument("--fail-if-fraction-more-than", type=float, default=None, help="Exit non-zero if fraction synthetic/total reports exceeds this value (0-1)")
     p.add_argument("--out", type=str, default="reports/metrics/simulated_summary.json", help="Output JSON summary file")
     args = p.parse_args()
 
@@ -58,8 +58,22 @@ def main():
 
     print(json.dumps(summary, indent=2))
 
+    # Check fraction threshold: compute public reports total
+    total_public = 0
+    public_dir = Path('reports') / 'leagues'
+    if public_dir.exists():
+        for pth in public_dir.rglob('prediction.json'):
+            total_public += 1
+
+    summary['public_prediction_count'] = total_public
+    summary['synthetic_fraction'] = (summary['total'] / (total_public + summary['total'])) if (total_public + summary['total']) > 0 else 0.0
+
     if args.fail_if_more_than is not None and summary["total"] > args.fail_if_more_than:
         print(f"Failing due to synthetic report count {summary['total']} > {args.fail_if_more_than}")
+        raise SystemExit(2)
+
+    if args.fail_if_fraction_more_than is not None and summary['synthetic_fraction'] > args.fail_if_fraction_more_than:
+        print(f"Failing due to synthetic fraction {summary['synthetic_fraction']:.2f} > {args.fail_if_fraction_more_than}")
         raise SystemExit(2)
 
     # otherwise exit 0

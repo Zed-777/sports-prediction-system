@@ -1768,7 +1768,6 @@ class EnhancedPredictor:
         - Early goals (1-15 min) are least common as teams settle
         - Teams with higher xG score more consistently throughout the match
         """
-        import math
 
         # League-specific goal timing distributions (based on historical data analysis)
         # Format: {period: base_probability} - probabilities normalized to sum to 1.0
@@ -2049,7 +2048,6 @@ class EnhancedPredictor:
         - Goal frequency coefficient of variation
         - Home vs away performance differential
         """
-        import math
 
         home_data = team_stats.get("home", {})
         away_data = team_stats.get("away", {})
@@ -2425,7 +2423,6 @@ class EnhancedPredictor:
 
         Handles both percentage (0-100) and decimal (0-1) probability formats.
         """
-        import math
 
         try:
             home_xg = float(home_xg) if home_xg is not None else 1.5

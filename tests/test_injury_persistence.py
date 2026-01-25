@@ -3,7 +3,6 @@ import json
 import time
 from types import SimpleNamespace
 
-import pytest
 
 from data_quality_enhancer import DataQualityEnhancer
 

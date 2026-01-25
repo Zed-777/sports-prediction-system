@@ -22,7 +22,6 @@ import sys
 import time
 from pathlib import Path
 
-import requests
 from app.utils.http import safe_request_get
 
 ROOT = Path(__file__).parent.parent

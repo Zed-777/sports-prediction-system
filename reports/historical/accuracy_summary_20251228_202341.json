@@ -1,0 +1,110 @@
+{
+  "bundesliga": {
+    "error": "No completed matches with results"
+  },
+  "la-liga": {
+    "league": "la-liga",
+    "total_matches": 1,
+    "overall_accuracy": 0.0,
+    "overall_accuracy_pct": "0.0%",
+    "exact_score": {
+      "total": 0,
+      "pct": "0.0%"
+    },
+    "top3_score": {
+      "total": 0,
+      "pct": "0.0%"
+    },
+    "breakdown": {
+      "home_wins": {
+        "total": 0,
+        "correct": 0,
+        "accuracy": 0
+      },
+      "draws": {
+        "total": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "away_wins": {
+        "total": 0,
+        "correct": 0,
+        "accuracy": 0
+      }
+    },
+    "calculated_at": "2025-12-28T20:23:41.486673"
+  },
+  "ligue-1": {
+    "error": "No completed matches with results"
+  },
+  "premier-league": {
+    "league": "premier-league",
+    "total_matches": 1,
+    "overall_accuracy": 1.0,
+    "overall_accuracy_pct": "100.0%",
+    "exact_score": {
+      "total": 0,
+      "pct": "0.0%"
+    },
+    "top3_score": {
+      "total": 0,
+      "pct": "0.0%"
+    },
+    "breakdown": {
+      "home_wins": {
+        "total": 0,
+        "correct": 0,
+        "accuracy": 0
+      },
+      "draws": {
+        "total": 0,
+        "correct": 0,
+        "accuracy": 0
+      },
+      "away_wins": {
+        "total": 1,
+        "correct": 1,
+        "accuracy": 1.0
+      }
+    },
+    "calculated_at": "2025-12-28T20:23:41.487252"
+  },
+  "serie-a": {
+    "error": "No completed matches with results"
+  },
+  "test-league": {
+    "error": "No completed matches with results"
+  },
+  "unittest_temp_league": {
+    "league": "unittest_temp_league",
+    "total_matches": 1,
+    "overall_accuracy": 0.0,
+    "overall_accuracy_pct": "0.0%",
+    "exact_score": {
+      "total": 0,
+      "pct": "0.0%"
+    },
+    "top3_score": {
+      "total": 0,
+      "pct": "0.0%"
+    },
+    "breakdown": {
+      "home_wins": {
+        "total": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "draws": {
+        "total": 0,
+        "correct": 0,
+        "accuracy": 0
+      },
+      "away_wins": {
+        "total": 0,
+        "correct": 0,
+        "accuracy": 0
+      }
+    },
+    "calculated_at": "2025-12-28T20:23:41.487802"
+  }
+}

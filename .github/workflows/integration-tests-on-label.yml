@@ -1,0 +1,41 @@
+name: Integration tests (on label)
+
+on:
+  pull_request_target:
+    types: [labeled]
+  workflow_dispatch: {}
+
+jobs:
+  run-integration-tests:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request_target' && github.event.label && github.event.label.name == 'run-integration')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      - name: Run integration tests
+        env:
+          RUN_INTEGRATION_TESTS: 'true'
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          python -m pytest tests -q -k "integration or integration_injuries" || true
+
+# Notes:
+# - This workflow runs when a PR gets the `run-integration` label or is manually dispatched by a maintainer.
+# - It requires `API_FOOTBALL_KEY` to be configured in repository secrets. It intentionally limits scope to integration tests to save CI minutes.

@@ -1,7 +1,6 @@
 import json
 import subprocess
 from pathlib import Path
-from datetime import datetime
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 HIST = PROJECT_ROOT / "data" / "historical"

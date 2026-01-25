@@ -1,4 +1,3 @@
-import os
 from scripts.collect_historical_results import send_notification_email
 
 

@@ -20,7 +20,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Callable, Optional
 import math
 from collections import defaultdict
 
@@ -260,31 +260,58 @@ class BacktestingFramework:
                 or data.get("awayTeam", {}).get("name", ""),
             }
 
-            # Parse date
+            # Parse date (support common formats and ISO strings)
             date_str = data.get("date") or data.get("utcDate") or data.get("match_date")
             if isinstance(date_str, str):
+                parsed = False
                 for fmt in ["%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"]:
                     try:
-                        match["date"] = datetime.strptime(
-                            date_str.split("T")[0], "%Y-%m-%d"
-                        )
+                        match["date"] = datetime.strptime(date_str, fmt)
+                        parsed = True
                         break
                     except ValueError:
                         continue
+                if not parsed:
+                    # Try ISO parsing or date-only fallback
+                    try:
+                        match["date"] = datetime.fromisoformat(date_str)
+                        parsed = True
+                    except Exception:
+                        try:
+                            match["date"] = datetime.strptime(date_str.split("T")[0], "%Y-%m-%d")
+                            parsed = True
+                        except Exception:
+                            return None
             elif isinstance(date_str, datetime):
                 match["date"] = date_str
             else:
                 return None
 
             # Parse score - must have actual results
-            score = data.get("score", {})
-            if isinstance(score, dict):
+            score = data.get("score")
+            if score and isinstance(score, dict):
                 full_time = score.get("fullTime", {})
-                match["home_goals"] = full_time.get("home") or full_time.get("homeTeam")
-                match["away_goals"] = full_time.get("away") or full_time.get("awayTeam")
+                match["home_goals"] = (
+                    full_time.get("home")
+                    if full_time.get("home") is not None
+                    else full_time.get("homeTeam")
+                )
+                match["away_goals"] = (
+                    full_time.get("away")
+                    if full_time.get("away") is not None
+                    else full_time.get("awayTeam")
+                )
             else:
-                match["home_goals"] = data.get("home_goals") or data.get("home_score")
-                match["away_goals"] = data.get("away_goals") or data.get("away_score")
+                match["home_goals"] = (
+                    data.get("home_goals")
+                    if data.get("home_goals") is not None
+                    else data.get("home_score")
+                )
+                match["away_goals"] = (
+                    data.get("away_goals")
+                    if data.get("away_goals") is not None
+                    else data.get("away_score")
+                )
 
             # Validate we have goals
             if match["home_goals"] is None or match["away_goals"] is None:
