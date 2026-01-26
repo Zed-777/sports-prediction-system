@@ -70,9 +70,9 @@
   },
   "weather_conditions": {
     "conditions": {
-      "temperature": 1.2,
-      "humidity": 86.3,
-      "wind_speed": 3.0,
+      "temperature": 1.5,
+      "humidity": 85.0,
+      "wind_speed": 3.9,
       "precipitation": 0.0,
       "conditions": "cold",
       "visibility": 18.0,
@@ -85,22 +85,21 @@
       }
     },
     "impact_assessment": {
-      "goal_modifier": 0.8355,
+      "goal_modifier": 0.8489,
       "playing_style_effect": "defensive",
       "weather_advantage": "physical_teams",
       "tactical_adjustments": [
-        "Reduced technical play in cold conditions",
-        "Increased player fatigue expected"
+        "Reduced technical play in cold conditions"
       ],
       "stadium_effects": [],
       "adaptability_notes": [],
       "weather_severity": "MODERATE",
-      "conditions_summary": "Challenging conditions (1.2°C, 0.0mm rain, 3.0 km/h wind) likely to affect match dynamics",
+      "conditions_summary": "Challenging conditions (1.5°C, 0.0mm rain, 3.9 km/h wind) likely to affect match dynamics",
       "modifier_components": {
-        "temperature": 0.8438,
+        "temperature": 0.8471,
         "precipitation": 1.0,
-        "wind": 1.03,
-        "humidity": 0.9613,
+        "wind": 1.039,
+        "humidity": 0.9644,
         "interaction": 1.0,
         "stadium": 1.0,
         "team_style": 1.0
@@ -108,7 +107,7 @@
       "weather_clamped": false,
       "clamped_fields": {}
     },
-    "goal_adjustment": 0.8355,
+    "goal_adjustment": 0.8489,
     "style_impact": "defensive",
     "provenance": {
       "weather_clamped": false,
@@ -208,7 +207,7 @@
     "optimization_applied": false,
     "ensemble_weights": {}
   },
-  "generated_at": "2026-01-09T22:09:45.855969",
+  "generated_at": "2026-01-22T19:35:48.054317",
   "provider_ids": {
     "football_data_id": null,
     "flashscore_id": null
