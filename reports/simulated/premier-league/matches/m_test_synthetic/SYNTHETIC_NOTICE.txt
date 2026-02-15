@@ -1,1 +1,0 @@
-This report is synthetic/fallback and is NOT driven by live or sufficient historical data. It has been written to the simulated reports directory to avoid accidental publication.
