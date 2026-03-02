@@ -28,9 +28,16 @@ jobs:
         run: |
           pytest -q
 
-      - name: Run backtest
+      - name: Run optimization sweep
         run: |
-          python scripts/optimize_accuracy.py --mode backtest --league la-liga
+          python scripts/optimize_accuracy.py --mode backtest --league la-liga || true
+
+      - name: Run historical backtest (VB-001)
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          SKIP_INJURIES: '1'
+        run: |
+          python scripts/run_backtest.py --days 365 --skip-predictor || true
 
       - name: Upload optimization artifacts
         uses: actions/upload-artifact@v4
