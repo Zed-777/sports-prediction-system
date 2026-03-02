@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-01T00:00:00Z",
+  "generated_at": "2026-03-02T00:00:00Z",
   "source": "merged_ideas_v1",
   "todos": [
     {
@@ -321,7 +321,7 @@
       "effort": "high",
       "issue": "https://github.com/Zed-777/sports-prediction-system/issues/5",
       "completed_date": "2026-03-02",
-      "files": ["app/models/backtesting.py","scripts/run_backtest.py",".github/workflows/auto-optimize.yml","tests/test_backtesting.py"],
+      "files": ["app/models/backtesting.py","scripts/run_backtest.py",".github/workflows/auto-optimize.yml","tests/test_backtesting.py","tests/test_run_backtest_script.py"],
       "notes": "BacktestingFramework implemented with rolling-window cross-validation. CLI runner scripts/run_backtest.py added. Wired into auto-optimize.yml workflow."
     },
     {
@@ -492,7 +492,7 @@
       "category": "calibration_confidence",
       "impact": "critical",
       "effort": "medium",
-      "files": ["app/models/prediction_tracker.py","enhanced_predictor.py","generate_fast_reports.py","scripts/update_prediction_results.py",".github/workflows/fetch-results.yml"],
+      "files": ["app/models/prediction_tracker.py","enhanced_predictor.py","generate_fast_reports.py","scripts/update_prediction_results.py",".github/workflows/fetch-results.yml","tests/test_update_prediction_results.py"],
       "started_date": "2026-01-02",
       "completed_date": "2026-03-02",
       "issue": "https://github.com/Zed-777/sports-prediction-system/issues/7",
@@ -767,7 +767,7 @@
       "effort": "low",
       "files": ["data_quality_enhancer.py"],
       "completed_date": "2026-03-02",
-      "notes": "Test suite now runs clean: 148 passed, 11 skipped, 0 failures. Use SKIP_INJURIES=1 env var for CI and local test runs."
+      "notes": "Test suite now runs clean: 152 passed, 11 skipped, 0 failures (4 new tests added for update_prediction_results and run_backtest scripts). Use SKIP_INJURIES=1 env var for CI and local test runs."
     }
   ]
 }
