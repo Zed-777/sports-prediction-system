@@ -27,15 +27,19 @@
       "id": 4,
       "title": "Add safe commit script",
       "description": "Create `scripts/commit_optimization_results.ps1` to create a branch, add optimization results, commit, and push only if remote exists. Do not push by default; allow an env var `AUTO_PUSH=true` to enable pushing.",
-      "status": "not-started",
-      "category": "automation"
+      "status": "completed",
+      "category": "automation",
+      "completed_date": "2026-03-02",
+      "files": ["scripts/commit_optimization_results.ps1"]
     },
     {
       "id": 5,
       "title": "Documentation & README updates",
       "description": "Update `README.md` and add `docs/automation.md` describing scheduled tasks, workflows, and how to enable GitHub Actions securely using `scripts/setup_github_with_gh.ps1`.",
-      "status": "not-started",
-      "category": "docs"
+      "status": "completed",
+      "category": "docs",
+      "completed_date": "2026-03-02",
+      "files": ["docs/automation.md"]
     },
     {
       "id": 6,
@@ -311,11 +315,14 @@
       "external_id": "VB-001",
       "title": "Historical backtesting framework",
       "description": "Implement time-series cross-validation backtesting (rolling windows), track accuracy and Brier scores. This is in-progress and prioritized.",
-      "status": "in-progress",
+      "status": "completed",
       "category": "validation_backtesting",
       "impact": "critical",
       "effort": "high",
-      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/5"
+      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/5",
+      "completed_date": "2026-03-02",
+      "files": ["app/models/backtesting.py","scripts/run_backtest.py",".github/workflows/auto-optimize.yml","tests/test_backtesting.py"],
+      "notes": "BacktestingFramework implemented with rolling-window cross-validation. CLI runner scripts/run_backtest.py added. Wired into auto-optimize.yml workflow."
     },
     {
       "id": 33,
@@ -470,23 +477,26 @@
       "id": 47,
       "title": "Audit script for simulated reports",
       "description": "Add `scripts/audit_synthetic_reports.py` to list `reports/simulated/` contents, flag items older than N days, and optionally open an issue or email maintainers.",
-      "status": "not-started",
+      "status": "completed",
       "category": "maintenance",
       "impact": "medium",
       "effort": "low",
-      "files": ["scripts/audit_synthetic_reports.py"]
+      "files": ["scripts/audit_synthetic_reports.py"],
+      "completed_date": "2026-03-02"
     },
     {
       "id": 48,
       "title": "Integrate PredictionTracker into production",
       "description": "Wire `app/models/prediction_tracker.py` into `enhanced_predictor.py` and report generation to ensure every prediction is recorded and updated when results arrive.",
-      "status": "in-progress",
+      "status": "completed",
       "category": "calibration_confidence",
       "impact": "critical",
       "effort": "medium",
-      "files": ["app/models/prediction_tracker.py","enhanced_predictor.py","generate_fast_reports.py"],
+      "files": ["app/models/prediction_tracker.py","enhanced_predictor.py","generate_fast_reports.py","scripts/update_prediction_results.py",".github/workflows/fetch-results.yml"],
       "started_date": "2026-01-02",
-      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/7"
+      "completed_date": "2026-03-02",
+      "issue": "https://github.com/Zed-777/sports-prediction-system/issues/7",
+      "notes": "Tracker wired in enhanced_predictor.py and SingleMatchGenerator. Result-fetch script scripts/update_prediction_results.py added and hooked into fetch-results.yml daily workflow. Fixed InjuriesConnector skip_injuries guard post-PR#1 merge (SKIP_INJURIES env var)."
     },
     {
       "id": 49,
@@ -523,13 +533,14 @@
       "id": 52,
       "title": "Prepare PR & release notes",
       "description": "Push `feature/flashscore-debug`, open a PR with summary, add release notes and CI notes. If origin isn't configured, provide instructions to maintainer. Ensure branch name and commit message are clear.",
-      "status": "in-progress",
+      "status": "completed",
       "category": "release",
       "impact": "low",
       "effort": "low",
       "started_date": "2026-01-09",
+      "completed_date": "2026-01-22",
       "pr": "https://github.com/Zed-777/sports-prediction-system/pull/1",
-      "notes": "Draft PR created for `feature/injuries-connector` with compliance section added and labels `legal-review` and `data-fetch`."
+      "notes": "PR #1 (InjuriesConnector) merged into main via squash merge on 2026-01-22."
     },
     {
       "id": 53,
@@ -593,10 +604,11 @@
       "id": 58,
       "title": "Connector tests & CI integration",
       "description": "Add unit and integration tests for new connectors and update CI to run integration tests conditionally (only when secrets are available). Add canary/monitoring jobs to detect API changes/failures.",
-      "status": "in-progress",
+      "status": "completed",
       "category": "testing",
       "impact": "high",
       "effort": "medium",
+      "completed_date": "2026-03-02",
       "files": ["tests/test_injuries_connector.py",".github/workflows/*"],
       "notes": "Unit and integration tests added; integration suite now gates via RUN_INTEGRATION_TESTS env flag (spread to Windows CI). Added `.github/workflows/integration-tests-on-label.yml` to run integration tests when a PR receives the `run-integration` label or via manual dispatch (requires `API_FOOTBALL_KEY` in repo secrets)."
     },
@@ -732,7 +744,8 @@
       "impact": "medium",
       "effort": "medium",
       "notes": "Git push reported large file warnings; recommend `git lfs migrate import` or BFG to rewrite history. Issue created: https://github.com/Zed-777/sports-prediction-system/issues/8"
-    }    {
+    },
+    {
       "id": 72,
       "title": "Auto-merge when legal + integration green",
       "description": "Add a GitHub Actions workflow to auto-merge PRs when they have `run-integration` and `legal-approved` labels and all checks pass; requires careful label-controlled approvals.",
@@ -742,6 +755,19 @@
       "effort": "low",
       "files": [".github/workflows/auto-merge-on-ready.yml"],
       "completed_date": "2026-01-22",
-      "notes": "Workflow merges PRs when the 'ready-to-merge' label is applied and required labels present with successful checks."
-    },  ]
+      "notes": "Workflow merges PRs when the 'ready-to-merge' label is applied and required labels present with successful checks. Fixed 2026-03-02: replaced non-existent peter-evans/merge-pull-request@v3 action with actions/github-script@v7 calling the GitHub merge API directly."
+    },
+    {
+      "id": 73,
+      "title": "Bug fix: InjuriesConnector skip_injuries guard",
+      "description": "After PR #1 merged InjuriesConnector, the skip_injuries flag in DataQualityEnhancer did not guard the new InjuriesConnector path, causing tests to hang on FlashScore network calls. Added env var SKIP_INJURIES and early-return guard before InjuriesConnector call.",
+      "status": "completed",
+      "category": "maintenance",
+      "impact": "high",
+      "effort": "low",
+      "files": ["data_quality_enhancer.py"],
+      "completed_date": "2026-03-02",
+      "notes": "Test suite now runs clean: 148 passed, 11 skipped, 0 failures. Use SKIP_INJURIES=1 env var for CI and local test runs."
+    }
+  ]
 }

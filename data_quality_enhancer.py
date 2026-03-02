@@ -136,6 +136,9 @@ class DataQualityEnhancer:
             # Best effort - don't let cache errors stop fetching
             pass
         # Prefer using the InjuriesConnector (it handles API primary + fallbacks and caching)
+        # Skip network calls if skip_injuries is set (e.g. in tests or CI without credentials)
+        if getattr(self, "skip_injuries", False) or os.getenv("SKIP_INJURIES", "").lower() in ("1", "true", "yes"):
+            return self._get_empty_injury_data(team_name)
         try:
             if self.injuries_connector is not None:
                 injury_data = self.injuries_connector.fetch_injuries(team_id, team_name)

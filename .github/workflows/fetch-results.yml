@@ -36,6 +36,13 @@ jobs:
         run: |
           python scripts/collect_historical_results.py --fetch-all --auto-optimize 50 --notify || true
 
+      - name: Update prediction results (PredictionTracker CC-002)
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          SKIP_INJURIES: '1'
+        run: |
+          python scripts/update_prediction_results.py --days-back 14 --verbose || true
+
       - name: Backfill provider IDs
         run: |
           python scripts/collect_historical_results.py --backfill-provider-ids --debug || true

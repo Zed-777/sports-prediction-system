@@ -40,9 +40,16 @@ jobs:
             return labels;
       - name: Merge PR
         if: ${{ success() }}
-        uses: peter-evans/merge-pull-request@v3
+        uses: actions/github-script@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          merge-method: squash
-          commit-title: "Merge: ${{ github.event.pull_request.title }}"
-          commit-message: "Auto-merged after legal signoff and successful integration tests."
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              merge_method: 'squash',
+              commit_title: `Merge: ${pr.title}`,
+              commit_message: 'Auto-merged after legal signoff and successful integration tests.',
+            });
