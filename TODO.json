@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-04T00:00:00Z",
+  "generated_at": "2026-03-04T17:00:00Z",
   "source": "merged_ideas_v1",
   "todos": [
     {
@@ -937,6 +937,53 @@
         "tests/test_profitability.py"
       ],
       "notes": "44 unit tests covering all 4 profitability modules. CLI runner with --profile/--bookmaker/--n-synthetic/--model-acc args. Exit 0=LIVE-READY, 1=not ready, 2=error. Validation result: 100/100 score LIVE-READY at 60% accuracy (sharp bookmaker): ROI=+29.5%, hit_rate=59.7%, MaxDD=22.6%, RoR=0.00%, walk-forward positive in 100% of folds.",
+      "completed_date": "2026-03-04"
+    },
+    {
+      "id": 79,
+      "title": "HIST-001: Bulk historical data seeder",
+      "status": "completed",
+      "priority": "high",
+      "tags": [
+        "data",
+        "pipeline",
+        "profitability"
+      ],
+      "files": [
+        "scripts/fetch_historical_bulk.py"
+      ],
+      "notes": "Fetches 2 seasons x 5 leagues (~2000 matches) from football-data.org. Calls EnhancedPredictor for each match. Resumable. Needs FOOTBALL_DATA_API_KEY (free).",
+      "completed_date": "2026-03-04"
+    },
+    {
+      "id": 80,
+      "title": "HIST-002: API key setup helper",
+      "status": "completed",
+      "priority": "medium",
+      "tags": [
+        "setup",
+        "docs"
+      ],
+      "files": [
+        "scripts/setup_api_key.ps1",
+        ".env.example"
+      ],
+      "notes": "Interactive PS1 script: walks through football-data.org free key, API-Football optional key, GitHub secrets, and triggers bulk historical fetch.",
+      "completed_date": "2026-03-04"
+    },
+    {
+      "id": 81,
+      "title": "HIST-003: Fix docs/automation.md lint errors",
+      "status": "completed",
+      "priority": "low",
+      "tags": [
+        "docs",
+        "lint"
+      ],
+      "files": [
+        "docs/automation.md"
+      ],
+      "notes": "Fixed MD031 (blank lines around fences), MD032 (blank lines around lists), MD060 (table pipe spacing). All Problems tab errors cleared.",
       "completed_date": "2026-03-04"
     }
   ]
