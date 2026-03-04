@@ -10,7 +10,7 @@ Sports Prediction System running on a scheduled basis.
 The system uses three layers of automation:
 
 | Layer | Tool | Trigger |
-|-------|------|---------|
+| ------- | ------ | --------- |
 | Daily data collection & result fetching | GitHub Actions | `0 3 * * *` (UTC) |
 | Weekly accuracy optimization | GitHub Actions | `0 2 * * 1` (UTC) |
 | Windows scheduled task (local / server) | PowerShell + Task Scheduler | Daily / weekly |
@@ -27,6 +27,7 @@ in `docs/SECRET_GUIDE.md`.
 Runs at **03:00 UTC daily**.
 
 Steps:
+
 1. Collect new match results via `scripts/collect_historical_results.py`
 2. **Update PredictionTracker** — `scripts/update_prediction_results.py`:
    queries the SQLite database (`data/predictions.db`) for pending predictions,
@@ -37,6 +38,7 @@ Steps:
 5. Commits updated `data/historical/*.json` to `main`
 
 To trigger manually:
+
 ```bash
 gh workflow run fetch-results.yml
 ```
@@ -64,6 +66,7 @@ failed the publication gate — see `config/settings.yaml`
 ### `auto-merge-on-ready.yml` — Gated auto-merge
 
 Merges PRs when:
+
 - Label `ready-to-merge` is applied
 - Labels `run-integration` **and** `legal-approved` are present
 - All status checks are green
@@ -171,12 +174,13 @@ See `docs/SECRET_GUIDE.md` for the full key list. Minimum required for
 automated workflows:
 
 | Secret | Used by |
-|--------|---------|
+| -------- | --------- |
 | `FOOTBALL_DATA_API_KEY` | Result fetching, data collection |
 | `API_FOOTBALL_KEY` | Injury data (optional) |
 | `GITHUB_TOKEN` | Auto-merge, CI (auto-provided) |
 
 To add secrets:
+
 ```bash
 gh secret set FOOTBALL_DATA_API_KEY --body "your_key_here"
 gh secret set API_FOOTBALL_KEY --body "your_key_here"
@@ -187,6 +191,7 @@ gh secret set API_FOOTBALL_KEY --body "your_key_here"
 ## Enabling GitHub Actions
 
 If Actions are disabled on the repo:
+
 ```bash
 gh api repos/Zed-777/sports-prediction-system --method PATCH \
   --field has_projects=true
