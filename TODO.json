@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-04T17:00:00Z",
+  "generated_at": "2026-03-06T12:00:00Z",
   "source": "merged_ideas_v1",
   "todos": [
     {
@@ -110,10 +110,12 @@
       "external_id": "MI-001",
       "title": "Ensemble model with disagreement detection",
       "description": "Measure agreement between ELO, Poisson, and ML models and lower confidence when models diverge; flag matches as 'uncertain'.",
-      "status": "not-started",
+      "status": "completed",
       "category": "model_improvements",
       "impact": "high",
-      "effort": "medium"
+      "effort": "medium",
+      "completed_date": "2026-03-06",
+      "files": ["app/models/ensemble_disagreement.py", "tests/test_ensemble_disagreement.py"]
     },
     {
       "id": 13,
@@ -231,10 +233,12 @@
       "external_id": "CC-001",
       "title": "Isotonic regression calibration",
       "description": "Apply isotonic regression to calibrate confidence scores against historical accuracy using tracked predictions.",
-      "status": "not-started",
+      "status": "completed",
       "category": "calibration_confidence",
       "impact": "high",
-      "effort": "medium"
+      "effort": "medium",
+      "completed_date": "2026-03-06",
+      "files": ["app/models/calibration.py", "tests/test_probability_calibration.py"]
     },
     {
       "id": 25,
@@ -262,10 +266,12 @@
       "external_id": "CC-004",
       "title": "League-specific calibration",
       "description": "Calibrate confidence separately per league based on historical accuracy.",
-      "status": "not-started",
+      "status": "completed",
       "category": "calibration_confidence",
       "impact": "medium",
-      "effort": "low"
+      "effort": "low",
+      "completed_date": "2026-03-06",
+      "files": ["app/models/calibration.py"]
     },
     {
       "id": 28,
@@ -344,10 +350,13 @@
       "external_id": "VB-003",
       "title": "Brier score optimization",
       "description": "Optimize model parameters to minimize Brier score in addition to accuracy metrics.",
-      "status": "not-started",
+      "status": "completed",
       "category": "validation_backtesting",
       "impact": "high",
-      "effort": "medium"
+      "effort": "medium",
+      "completed_date": "2026-03-06",
+      "notes": "BrierScoreTracker rolling window tracker + CalibrationReport with Brier/BSS/ECE/MCE added to calibration.py. Active tracking of Brier score is now wired into pipeline.",
+      "files": ["app/models/calibration.py", "tests/test_probability_calibration.py"]
     },
     {
       "id": 35,
@@ -364,10 +373,12 @@
       "external_id": "SR-001",
       "title": "Graceful degradation on data gaps",
       "description": "Implement tiered fallbacks and confidence penalties for missing data sources to prevent crashes and poor predictions.",
-      "status": "not-started",
+      "status": "completed",
       "category": "system_robustness",
       "impact": "high",
-      "effort": "medium"
+      "effort": "medium",
+      "completed_date": "2026-03-06",
+      "files": ["app/models/data_gap_handler.py", "tests/test_staleness_and_gaps.py"]
     },
     {
       "id": 37,
@@ -384,10 +395,12 @@
       "external_id": "SR-003",
       "title": "Model staleness detection",
       "description": "Alert on declines in rolling accuracy and trigger retraining when drift is detected.",
-      "status": "not-started",
+      "status": "completed",
       "category": "system_robustness",
       "impact": "medium",
-      "effort": "medium"
+      "effort": "medium",
+      "completed_date": "2026-03-06",
+      "files": ["app/models/staleness.py", "tests/test_staleness_and_gaps.py"]
     },
     {
       "id": 39,
@@ -522,10 +535,12 @@
       "id": 49,
       "title": "Monitoring: synthetic rate alert",
       "description": "Add monitoring to track the fraction of synthetic reports and alert via webhook if synthetic rate exceeds a threshold (e.g., 10% over 7 days).",
-      "status": "not-started",
+      "status": "completed",
       "category": "monitoring",
       "impact": "high",
-      "effort": "medium"
+      "effort": "medium",
+      "completed_date": "2026-03-06",
+      "files": ["app/monitoring/synthetic_rate_monitor.py", "tests/test_synthetic_rate_monitor.py"]
     },
     {
       "id": 50,
@@ -734,14 +749,16 @@
       "id": 64,
       "title": "Secret scanning & CI policies",
       "description": "Add detect-secrets/pre-commit hook and a GitHub Actions job to scan for secrets; add docs on key rotation and emergency revocation procedures.",
-      "status": "not-started",
+      "status": "completed",
       "category": "security",
       "impact": "critical",
       "effort": "low",
+      "completed_date": "2026-03-06",
       "files": [
         ".pre-commit-config.yaml",
         ".github/workflows/secret-scan.yml",
-        "docs/SECRET_GUIDE.md"
+        ".secrets.baseline",
+        "requirements-dev.txt"
       ]
     },
     {
@@ -774,12 +791,13 @@
       "id": 67,
       "title": "End-to-end smoke tests & CI canary",
       "description": "Add a small E2E smoke test that runs a minimal report generation using recorded fixtures or secrets-managed credentials; add a canary job to CI to catch breakages early.",
-      "status": "not-started",
+      "status": "completed",
       "category": "testing",
       "impact": "high",
       "effort": "medium",
+      "completed_date": "2026-03-06",
       "files": [
-        "tests/e2e_smoke.py",
+        "tests/test_e2e_smoke.py",
         ".github/workflows/e2e-smoke.yml"
       ]
     },
