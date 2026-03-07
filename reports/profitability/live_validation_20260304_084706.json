@@ -1,0 +1,246 @@
+{
+  "generated_at": "2026-03-04T08:47:07.429862",
+  "bookmaker_type": "sharp",
+  "data": {
+    "real_records": 1,
+    "synthetic_records": 1999,
+    "total_records": 2000,
+    "model_accuracy_assumption": 0.6
+  },
+  "qualifying_params": {
+    "profile": "custom",
+    "min_edge_pct": 5.0,
+    "min_ev_pct": 4.0,
+    "min_confidence": 0.6,
+    "min_data_quality": 0.65,
+    "min_odds": 1.4,
+    "max_odds": 6.0,
+    "kelly_fraction": 0.25,
+    "max_stake_pct": 0.05
+  },
+  "full_sample_report": {
+    "sample": {
+      "total_bets": 2000,
+      "qualifying_bets": 65,
+      "winning_bets": 65,
+      "hit_rate_pct": 100.0
+    },
+    "financial": {
+      "total_staked_units": 816.65,
+      "total_profit_units": 1934.3,
+      "roi_pct": 236.86,
+      "yield_pct": 236.86
+    },
+    "risk": {
+      "max_drawdown_pct": 0.0,
+      "max_consecutive_losses": 0,
+      "sharpe_equivalent": 1.126,
+      "risk_of_ruin_pct": 0.0
+    },
+    "statistics": {
+      "z_score": 9.874,
+      "p_value": 0.0,
+      "statistically_significant": true,
+      "ci_95_low_pct": 185.73,
+      "ci_95_high_pct": 287.99
+    },
+    "league_breakdown": {
+      "ligue-1": {
+        "bets": 16,
+        "wins": 16,
+        "roi_pct": 259.59,
+        "hit_rate_pct": 100.0
+      },
+      "la-liga": {
+        "bets": 14,
+        "wins": 14,
+        "roi_pct": 268.0,
+        "hit_rate_pct": 100.0
+      },
+      "serie-a": {
+        "bets": 8,
+        "wins": 8,
+        "roi_pct": 244.27,
+        "hit_rate_pct": 100.0
+      },
+      "premier-league": {
+        "bets": 14,
+        "wins": 14,
+        "roi_pct": 220.89,
+        "hit_rate_pct": 100.0
+      },
+      "bundesliga": {
+        "bets": 13,
+        "wins": 13,
+        "roi_pct": 201.36,
+        "hit_rate_pct": 100.0
+      }
+    },
+    "verdict": {
+      "live_ready": false,
+      "live_readiness_score": 85.0,
+      "failure_reasons": [
+        "Sample \u2265 100 qualifying bets: got 65, need >= 100"
+      ]
+    }
+  },
+  "walk_forward": {
+    "n_folds": 4,
+    "mean_roi_pct": 226.78,
+    "min_roi_pct": 209.11,
+    "std_roi_pct": 18.12,
+    "positive_roi_folds_pct": 100.0,
+    "passed": true,
+    "fold_summaries": [
+      {
+        "fold": 1,
+        "test_size": 400,
+        "qualifying_bets": 10,
+        "roi_pct": 209.11,
+        "hit_rate_pct": 100.0,
+        "live_readiness_score": 85.0
+      },
+      {
+        "fold": 2,
+        "test_size": 400,
+        "qualifying_bets": 15,
+        "roi_pct": 221.93,
+        "hit_rate_pct": 100.0,
+        "live_readiness_score": 85.0
+      },
+      {
+        "fold": 3,
+        "test_size": 400,
+        "qualifying_bets": 14,
+        "roi_pct": 223.98,
+        "hit_rate_pct": 100.0,
+        "live_readiness_score": 85.0
+      },
+      {
+        "fold": 4,
+        "test_size": 400,
+        "qualifying_bets": 14,
+        "roi_pct": 252.1,
+        "hit_rate_pct": 100.0,
+        "live_readiness_score": 85.0
+      }
+    ]
+  },
+  "conservative_profile_check": {
+    "qualifying_bets": 0,
+    "roi_pct": 0.0,
+    "hit_rate_pct": 0.0,
+    "live_readiness_score": 35.0,
+    "live_ready": false
+  },
+  "sensitivity_analysis": {
+    "edge=2.0_conf=0.52": {
+      "n_qualifying": 771,
+      "roi_pct": 198.72,
+      "hit_rate_pct": 97.41
+    },
+    "edge=2.0_conf=0.58": {
+      "n_qualifying": 771,
+      "roi_pct": 198.72,
+      "hit_rate_pct": 97.41
+    },
+    "edge=2.0_conf=0.64": {
+      "n_qualifying": 771,
+      "roi_pct": 198.72,
+      "hit_rate_pct": 97.41
+    },
+    "edge=2.0_conf=0.7": {
+      "n_qualifying": 770,
+      "roi_pct": 198.72,
+      "hit_rate_pct": 97.53
+    },
+    "edge=4.0_conf=0.52": {
+      "n_qualifying": 168,
+      "roi_pct": 224.17,
+      "hit_rate_pct": 97.62
+    },
+    "edge=4.0_conf=0.58": {
+      "n_qualifying": 168,
+      "roi_pct": 224.17,
+      "hit_rate_pct": 97.62
+    },
+    "edge=4.0_conf=0.64": {
+      "n_qualifying": 168,
+      "roi_pct": 224.17,
+      "hit_rate_pct": 97.62
+    },
+    "edge=4.0_conf=0.7": {
+      "n_qualifying": 168,
+      "roi_pct": 224.17,
+      "hit_rate_pct": 97.62
+    },
+    "edge=6.0_conf=0.52": {
+      "n_qualifying": 18,
+      "roi_pct": 253.05,
+      "hit_rate_pct": 100.0
+    },
+    "edge=6.0_conf=0.58": {
+      "n_qualifying": 18,
+      "roi_pct": 253.05,
+      "hit_rate_pct": 100.0
+    },
+    "edge=6.0_conf=0.64": {
+      "n_qualifying": 18,
+      "roi_pct": 253.05,
+      "hit_rate_pct": 100.0
+    },
+    "edge=6.0_conf=0.7": {
+      "n_qualifying": 18,
+      "roi_pct": 253.05,
+      "hit_rate_pct": 100.0
+    },
+    "edge=8.0_conf=0.52": {
+      "n_qualifying": 0,
+      "roi_pct": 0.0,
+      "hit_rate_pct": 0.0
+    },
+    "edge=8.0_conf=0.58": {
+      "n_qualifying": 0,
+      "roi_pct": 0.0,
+      "hit_rate_pct": 0.0
+    },
+    "edge=8.0_conf=0.64": {
+      "n_qualifying": 0,
+      "roi_pct": 0.0,
+      "hit_rate_pct": 0.0
+    },
+    "edge=8.0_conf=0.7": {
+      "n_qualifying": 0,
+      "roi_pct": 0.0,
+      "hit_rate_pct": 0.0
+    },
+    "edge=10.0_conf=0.52": {
+      "n_qualifying": 0,
+      "roi_pct": 0.0,
+      "hit_rate_pct": 0.0
+    },
+    "edge=10.0_conf=0.58": {
+      "n_qualifying": 0,
+      "roi_pct": 0.0,
+      "hit_rate_pct": 0.0
+    },
+    "edge=10.0_conf=0.64": {
+      "n_qualifying": 0,
+      "roi_pct": 0.0,
+      "hit_rate_pct": 0.0
+    },
+    "edge=10.0_conf=0.7": {
+      "n_qualifying": 0,
+      "roi_pct": 0.0,
+      "hit_rate_pct": 0.0
+    }
+  },
+  "verdict": {
+    "live_ready": false,
+    "live_readiness_score": 85.0,
+    "failure_reasons": [
+      "Sample \u2265 100 qualifying bets: got 65, need >= 100"
+    ],
+    "recommendation": "NEAR-READY \u2014 Score 85.0/100. Minor gaps: Sample \u2265 100 qualifying bets: got 65, need >= 100. Collect more qualifying bets, then re-assess."
+  }
+}

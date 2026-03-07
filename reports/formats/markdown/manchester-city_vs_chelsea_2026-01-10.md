@@ -26,7 +26,7 @@
 ### 🌤️ Weather Intelligence System
 
 - **Conditions Severity:** MODERATE
-- **Goal Impact Modifier:** 0.84x
+- **Goal Impact Modifier:** 0.85x
 - **Playing Style Effect:** defensive
 
 ### 💾 Smart Cache System
@@ -132,32 +132,32 @@ No recent match data available
 - **Squad Status:** Live injury tracking active
 - **Expected Lineup Strength:** ⚠️ Data unavailable
 - **Data Source:** Live injury database
-- **Injury Impact:** Injury data unavailable - requires external injury API
+- **Injury Impact:** Squad data unavailable
 
 #### Chelsea Players
 
 - **Squad Status:** Live injury tracking active
 - **Expected Lineup Strength:** ⚠️ Data unavailable
 - **Data Source:** Live injury database
-- **Injury Impact:** Injury data unavailable - requires external injury API
+- **Injury Impact:** Squad data unavailable
 
 ### 🌤️ Enhanced Weather Intelligence System
 
 **Current Conditions:**
 
-- **Temperature:** 1.2°C
+- **Temperature:** 1.5°C
 - **Precipitation:** 0.0mm
-- **Wind Speed:** 3.0 km/h
-- **Humidity:** 86.3%
+- **Wind Speed:** 3.9 km/h
+- **Humidity:** 85.0%
 
 **Enhanced Intelligence Analysis:**
 
 - **Weather Severity:** MODERATE 🌡️
-- **Goal Impact Modifier:** 0.84x (affects expected scoring)
+- **Goal Impact Modifier:** 0.85x (affects expected scoring)
 - **Playing Style Effect:** Defensive
-- **Tactical Adjustments:** Reduced technical play in cold conditions, Increased player fatigue expected
+- **Tactical Adjustments:** Reduced technical play in cold conditions
 - **Stadium Effects:** Standard outdoor conditions
-- **Conditions Summary:** Challenging conditions (1.2°C, 0.0mm rain, 3.0 km/h wind) likely to affect match dynamics
+- **Conditions Summary:** Challenging conditions (1.5°C, 0.0mm rain, 3.9 km/h wind) likely to affect match dynamics
 
 ### Referee Analysis
 
@@ -222,7 +222,7 @@ No recent match data available
 - **Prediction Algorithm:** Enhanced Intelligence with 7 Analysis Layers
 - **Data Sources:** Football-Data.org API + Weather API + Referee Database + News Analysis
 - **Analysis Layers:** H2H History, Home/Away Performance, Goal Timing, Player Injuries, Weather, Referee, Team News
-- **Generated:** 2026-01-09T22:09:45.855969
+- **Generated:** 2026-03-07T19:19:15.158441
 
 ---
 

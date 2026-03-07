@@ -1,0 +1,65 @@
+====================================================================
+  LIVE TRADING VALIDATION REPORT
+  Generated: 2026-03-04T08:47:07.429862
+====================================================================
+
+  Bookmaker type   : sharp
+  Data             : 1 real + 1999 synthetic = 2000 matches
+  Model accuracy   : 60%
+
+  QUALIFYING PARAMETERS
+    Min edge       : 5.0pp
+    Min confidence : 0.6
+    Min odds       : 1.4
+    Max odds       : 6.0
+    Kelly fraction : 0.25 (quarter-Kelly)
+
+  FULL-SAMPLE RESULTS
+    Qualifying bets : 65 / 2000
+    Hit rate        : 100.0%
+    ROI             : 236.86%
+    95% CI          : [185.73%, 287.99%]
+    Max drawdown    : 0.0%
+    Max consec loss : 0
+    Sharpe equiv    : 1.126
+    Risk of ruin    : 0.0%
+    p-value         : 0.0 (significant ✓)
+
+  WALK-FORWARD VALIDATION
+    Folds           : 4
+    Mean ROI        : 226.78%
+    Min ROI         : 209.11%
+    Positive folds  : 100.0%
+    Passed          : YES ✓
+      Fold 1: n= 10  ROI=+209.11%  hit=100.0%
+      Fold 2: n= 15  ROI=+221.93%  hit=100.0%
+      Fold 3: n= 14  ROI=+223.98%  hit=100.0%
+      Fold 4: n= 14  ROI=+252.10%  hit=100.0%
+
+  CONSERVATIVE PROFILE CHECK
+    Qualifying bets : 0
+    ROI             : 0.0%
+    Live-ready      : NO ✗
+
+  LEAGUE BREAKDOWN
+    ligue-1             :  16 bets  ROI=+259.59%  hit=100.0%
+    la-liga             :  14 bets  ROI=+268.00%  hit=100.0%
+    serie-a             :   8 bets  ROI=+244.27%  hit=100.0%
+    premier-league      :  14 bets  ROI=+220.89%  hit=100.0%
+    bundesliga          :  13 bets  ROI=+201.36%  hit=100.0%
+
+  ================================================================
+  VERDICT: NOT READY ✗
+  Live-readiness score: 85.0/100
+  ================================================================
+
+  Recommendation:
+    NEAR-READY — Score 85.
+    0/100.
+    Minor gaps: Sample ≥ 100 qualifying bets: got 65, need >= 100.
+    Collect more qualifying bets, then re-assess.
+
+  Failure reasons:
+    ✗ Sample ≥ 100 qualifying bets: got 65, need >= 100
+
+====================================================================
