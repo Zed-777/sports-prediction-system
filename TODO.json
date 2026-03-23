@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-06T12:00:00Z",
+  "generated_at": "2026-03-23T00:00:00Z",
   "source": "merged_ideas_v1",
   "todos": [
     {
@@ -115,7 +115,10 @@
       "impact": "high",
       "effort": "medium",
       "completed_date": "2026-03-06",
-      "files": ["app/models/ensemble_disagreement.py", "tests/test_ensemble_disagreement.py"]
+      "files": [
+        "app/models/ensemble_disagreement.py",
+        "tests/test_ensemble_disagreement.py"
+      ]
     },
     {
       "id": 13,
@@ -238,7 +241,10 @@
       "impact": "high",
       "effort": "medium",
       "completed_date": "2026-03-06",
-      "files": ["app/models/calibration.py", "tests/test_probability_calibration.py"]
+      "files": [
+        "app/models/calibration.py",
+        "tests/test_probability_calibration.py"
+      ]
     },
     {
       "id": 25,
@@ -271,7 +277,9 @@
       "impact": "medium",
       "effort": "low",
       "completed_date": "2026-03-06",
-      "files": ["app/models/calibration.py"]
+      "files": [
+        "app/models/calibration.py"
+      ]
     },
     {
       "id": 28,
@@ -356,7 +364,10 @@
       "effort": "medium",
       "completed_date": "2026-03-06",
       "notes": "BrierScoreTracker rolling window tracker + CalibrationReport with Brier/BSS/ECE/MCE added to calibration.py. Active tracking of Brier score is now wired into pipeline.",
-      "files": ["app/models/calibration.py", "tests/test_probability_calibration.py"]
+      "files": [
+        "app/models/calibration.py",
+        "tests/test_probability_calibration.py"
+      ]
     },
     {
       "id": 35,
@@ -378,7 +389,10 @@
       "impact": "high",
       "effort": "medium",
       "completed_date": "2026-03-06",
-      "files": ["app/models/data_gap_handler.py", "tests/test_staleness_and_gaps.py"]
+      "files": [
+        "app/models/data_gap_handler.py",
+        "tests/test_staleness_and_gaps.py"
+      ]
     },
     {
       "id": 37,
@@ -400,7 +414,10 @@
       "impact": "medium",
       "effort": "medium",
       "completed_date": "2026-03-06",
-      "files": ["app/models/staleness.py", "tests/test_staleness_and_gaps.py"]
+      "files": [
+        "app/models/staleness.py",
+        "tests/test_staleness_and_gaps.py"
+      ]
     },
     {
       "id": 39,
@@ -540,7 +557,10 @@
       "impact": "high",
       "effort": "medium",
       "completed_date": "2026-03-06",
-      "files": ["app/monitoring/synthetic_rate_monitor.py", "tests/test_synthetic_rate_monitor.py"]
+      "files": [
+        "app/monitoring/synthetic_rate_monitor.py",
+        "tests/test_synthetic_rate_monitor.py"
+      ]
     },
     {
       "id": 50,
@@ -842,11 +862,12 @@
       "id": 71,
       "title": "Large file remediation (Git LFS)",
       "description": "Investigate large files flagged during push and create a migration plan to Git LFS or remove history; document steps and create an issue/PR to perform migration.",
-      "status": "in-progress",
+      "status": "completed",
       "category": "maintenance",
       "impact": "medium",
       "effort": "medium",
-      "notes": "Git push reported large file warnings; recommend `git lfs migrate import` or BFG to rewrite history. Issue created: https://github.com/Zed-777/sports-prediction-system/issues/8"
+      "notes": "Git push reported large file warnings; recommend `git lfs migrate import` or BFG to rewrite history. Issue created: https://github.com/Zed-777/sports-prediction-system/issues/8 Sprint S3 push clean (68KB, no LFS warnings). No large files present.",
+      "completed_date": "2026-03-23"
     },
     {
       "id": 72,
