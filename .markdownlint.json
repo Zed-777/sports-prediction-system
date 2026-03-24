@@ -1,0 +1,14 @@
+{
+  "default": true,
+  "MD013": false,
+  "MD022": false,
+  "MD032": false,
+  "MD047": false,
+  "ignore": [
+    "reports/historical/**/*.md",
+    "reports/formats/**/*.md",
+    "reports/leagues/**/*.md",
+    "data/**/*.md",
+    "docs/**/*.md"
+  ]
+}

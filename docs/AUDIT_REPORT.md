@@ -24,6 +24,30 @@ A repo-wide audit focusing on the report generation pipeline, image rendering re
 - Add test fixtures to simulate finished matches for the optimizer to validate on CI.
 - Add a scheduled job to fetch finished match results daily (requires API keys) and a protected branch policy to ensure audits pass before merges.
 
+## Updates (2026-03-23)
+
+- Completed Sprint S3 hardening cycle: calibration, staleness detection, data-gap degradation, ensemble disagreement, synthetic-data rate monitor, secret scanning, and E2E smoke test pipeline.
+- Added publish-ready security controls:
+  - `detect-secrets` pre-commit hook + `.secrets.baseline`
+  - GitHub workflow `.github/workflows/secret-scan.yml` for PR and push checks
+  - CI key usage via GitHub secrets (`FOOTBALL_DATA_API_KEY`, `API_FOOTBALL_KEY`, `SMTP_*` in `fetch-results.yml`)
+- Added data integrity controls:
+  - `SyntheticRateMonitor` verifies synthetic/real ratio with real-min threshold before live signals
+  - `ModelStalenessDetector` checks model age, accuracy, and drift
+  - `DataGapHandler` downgrades confidence when data fields are missing
+- Added artifact sanitation:
+  - `data/optimization_results/` and `reports/historical/*.json`/`*.md` now gitignored to avoid large commit pollution
+- Recorded final MVP test metrics: 366 passed, 13 skipped, 0 failures.
+
 ## Next Steps
 
-- Open a PR with these changes, merge after review, and monitor the first nightly run of the new audit workflow.
+- Enforce real data ingestion by setting `FOOTBALL_DATA_API_KEY` and running `scripts/fetch_historical_bulk.py`, then re-run audit validations from this report.
+- Add unit test coverage for `collect_historical_results.py` API-driven ingest and reconciliation logic.
+- Schedule post-deploy drift cancellation report to confirm daily model calibration with new real results.
+
+## Current Status
+
+- MVP functional, with robust test coverage and formal security checks enabled.
+- Remaining risk: synthetic-data mode still required to be updated with minimum 150+ live historical matches before “live betting” grade can be claimed. 
+- Issue tracker entries: #25 (PredictionTracker feedback), #45 (Historical backfill), #71 (Large file remediation) are addressed in state and/or completion.
+
