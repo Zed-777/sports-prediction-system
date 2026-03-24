@@ -5,6 +5,8 @@
     "**/.venv/**",
     "**/.venv-Z1.1/**",
     "**/miniforge3/**",
-    "**/envs/**"
+    "**/envs/**",
+    "scripts/backup/**",
+    "reports/historical/**"
   ]
 }

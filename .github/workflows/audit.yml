@@ -39,38 +39,38 @@ jobs:
       - name: Build small sample features (smoke)
         run: |
           python - <<'PY'
-from app.data.advanced_model_features import build_sample_dataset
-from pathlib import Path
-Path('data/processed/advanced_model').mkdir(parents=True, exist_ok=True)
-build_sample_dataset(Path('data/processed/advanced_model/smoke_train.csv'), augment_per_match=1, seed=42)
-print('Built smoke_train.csv')
-PY
+          from app.data.advanced_model_features import build_sample_dataset
+          from pathlib import Path
+          Path('data/processed/advanced_model').mkdir(parents=True, exist_ok=True)
+          build_sample_dataset(Path('data/processed/advanced_model/smoke_train.csv'), augment_per_match=1, seed=42)
+          print('Built smoke_train.csv')
+          PY
       - name: Train smoke model
         run: |
           python scripts/train_advanced_model.py --input data/processed/advanced_model/smoke_train.csv --outdir models/advanced_smoke --seed 42
       - name: Validate smoke artifact
         run: |
           python - <<'PY'
-import joblib, json, glob, os
-import numpy as np
-files = glob.glob('models/advanced_smoke/*')
-assert files, 'No model files found in models/advanced_smoke'
-# prefer rf joblib otherwise pick first
-model_file = None
-for f in files:
-    if f.endswith('.joblib') or f.endswith('.pkl'):
-        model_file = f
-        break
-if model_file is None:
-    model_file = files[0]
-print('Validating', model_file)
-if model_file.endswith('.joblib') or model_file.endswith('.pkl'):
-    m = joblib.load(model_file)
-    p = m.predict_proba([[1.0,1.0,0.5,0.3,0.2,0.7]])
-    s = float(np.sum(p[0]))
-    assert abs(s - 1.0) < 1e-6, f'Probabilities do not sum to 1: {s}'
-else:
-    # if it's a lightgbm model file, we skip runtime validation
-    print('LightGBM model file detected, skip runtime validation')
-print('Smoke artifact validation passed')
-PY
+          import joblib, json, glob, os
+          import numpy as np
+          files = glob.glob('models/advanced_smoke/*')
+          assert files, 'No model files found in models/advanced_smoke'
+          # prefer rf joblib otherwise pick first
+          model_file = None
+          for f in files:
+              if f.endswith('.joblib') or f.endswith('.pkl'):
+                  model_file = f
+                  break
+          if model_file is None:
+              model_file = files[0]
+          print('Validating', model_file)
+          if model_file.endswith('.joblib') or model_file.endswith('.pkl'):
+              m = joblib.load(model_file)
+              p = m.predict_proba([[1.0,1.0,0.5,0.3,0.2,0.7]])
+              s = float(np.sum(p[0]))
+              assert abs(s - 1.0) < 1e-6, f'Probabilities do not sum to 1: {s}'
+          else:
+              # if it's a lightgbm model file, we skip runtime validation
+              print('LightGBM model file detected, skip runtime validation')
+          print('Smoke artifact validation passed')
+          PY

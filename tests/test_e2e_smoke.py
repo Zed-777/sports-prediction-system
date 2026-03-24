@@ -50,7 +50,7 @@ from app.models.qualifying_gate import QualifyingGate, QualifyingParams
 # ---------------------------------------------------------------------------
 
 @pytest.fixture(scope="module")
-def calibration_registry():
+def calibration_registry() -> LeagueCalibrationRegistry:
     """Fit a league registry on synthetic data."""
     rng = np.random.default_rng(42)
     reg = LeagueCalibrationRegistry()
@@ -62,7 +62,7 @@ def calibration_registry():
 
 
 @pytest.fixture(scope="module")
-def synthetic_matches():
+def synthetic_matches() -> list[dict]:
     """Generate 100 synthetic match records (seed fixed for reproducibility)."""
     gen = SyntheticMatchGenerator(model_accuracy=0.62, seed=7)
     return gen.generate(n_matches=100, leagues=["premier-league"])
@@ -73,22 +73,22 @@ def synthetic_matches():
 # ---------------------------------------------------------------------------
 
 class TestCalibrationSmoke:
-    def test_registry_fits_three_leagues(self, calibration_registry):
+    def test_registry_fits_three_leagues(self, calibration_registry) -> None:
         for league in ["premier-league", "la-liga", "bundesliga"]:
             assert calibration_registry.has_calibrator(league)
 
-    def test_calibrate_single_value(self, calibration_registry):
+    def test_calibrate_single_value(self, calibration_registry) -> None:
         val = calibration_registry.calibrate("premier-league", 0.65)
         assert 0.0 < val < 1.0
 
-    def test_calibrate_prediction_dict(self, calibration_registry):
+    def test_calibrate_prediction_dict(self, calibration_registry) -> None:
         pred = {"home_win_prob": 0.55, "draw_prob": 0.25, "away_win_prob": 0.20}
         out  = calibrate_prediction(pred, calibration_registry, league="premier-league")
         total = out["home_win_prob"] + out["draw_prob"] + out["away_win_prob"]
         assert abs(total - 1.0) < 1e-9
         assert out.get("calibration_applied") is True
 
-    def test_calibration_persist_and_reload(self, calibration_registry, tmp_path):
+    def test_calibration_persist_and_reload(self, calibration_registry, tmp_path) -> None:
         import copy
         reg_copy = copy.deepcopy(calibration_registry)
         reg_copy.registry_dir = str(tmp_path)
@@ -103,17 +103,17 @@ class TestCalibrationSmoke:
 # ---------------------------------------------------------------------------
 
 class TestDataGapSmoke:
-    def _base_pred(self):
+    def _base_pred(self) -> dict:
         return {"home_win_prob": 0.55, "draw_prob": 0.25,
                 "away_win_prob": 0.20, "confidence": 0.72}
 
-    def test_lineup_penalty_applied(self):
+    def test_lineup_penalty_applied(self) -> None:
         handler = DataGapHandler()
         result  = handler.handle_missing_lineup(self._base_pred())
         assert result.gap_report.total_penalty == pytest.approx(0.07)
         assert result.prediction["confidence"] == pytest.approx(0.72 - 0.07, abs=1e-6)
 
-    def test_multiple_gaps_capped(self):
+    def test_multiple_gaps_capped(self) -> None:
         handler = DataGapHandler(max_penalty=0.20)
         result  = handler.handle(
             self._base_pred(),
@@ -134,7 +134,7 @@ class TestDataGapSmoke:
 # ---------------------------------------------------------------------------
 
 class TestStalenessSmoke:
-    def test_fresh_model_ok(self, tmp_path):
+    def test_fresh_model_ok(self, tmp_path) -> None:
         f = tmp_path / "model.pkl"
         f.write_bytes(b"x")
         det = ModelStalenessDetector()
@@ -142,18 +142,18 @@ class TestStalenessSmoke:
         assert rpt.overall_severity == Severity.OK
         assert not rpt.blocking
 
-    def test_no_file_no_error(self):
+    def test_no_file_no_error(self) -> None:
         det = ModelStalenessDetector()
         rpt = det.check_model(model_name="nofile")
         assert not rpt.blocking
 
-    def test_good_accuracy_ok(self):
+    def test_good_accuracy_ok(self) -> None:
         det = ModelStalenessDetector()
         recent = [1] * 65 + [0] * 35   # 65% accuracy
         chk = det.check_accuracy(recent, baseline=0.60)
         assert chk.severity == Severity.OK
 
-    def test_bad_accuracy_warn(self):
+    def test_bad_accuracy_warn(self) -> None:
         det = ModelStalenessDetector(accuracy_floor_warn=0.55, accuracy_floor_hard=0.40)
         recent = [1] * 48 + [0] * 52   # 48%
         chk = det.check_accuracy(recent)
@@ -165,14 +165,14 @@ class TestStalenessSmoke:
 # ---------------------------------------------------------------------------
 
 class TestEnsembleDisagreementSmoke:
-    def test_unanimous_models_low_penalty(self):
+    def test_unanimous_models_low_penalty(self) -> None:
         det = EnsembleDisagreementDetector()
         preds = [{"home_win_prob": 0.55, "draw_prob": 0.25, "away_win_prob": 0.20}] * 4
         rpt = det.analyse(preds)
         assert rpt.confidence_penalty < 0.05
         assert rpt.level in (DisagreementLevel.UNANIMOUS, DisagreementLevel.LOW)
 
-    def test_split_winner_higher_penalty(self):
+    def test_split_winner_higher_penalty(self) -> None:
         det = EnsembleDisagreementDetector()
         preds = [
             {"home_win_prob": 0.65, "draw_prob": 0.20, "away_win_prob": 0.15},
@@ -182,7 +182,7 @@ class TestEnsembleDisagreementSmoke:
         assert rpt.confidence_penalty > 0.0
         assert not rpt.winner_agreement
 
-    def test_apply_reduces_confidence(self):
+    def test_apply_reduces_confidence(self) -> None:
         det  = EnsembleDisagreementDetector()
         base = {"confidence": 0.72}
         preds = [
@@ -198,14 +198,14 @@ class TestEnsembleDisagreementSmoke:
 # ---------------------------------------------------------------------------
 
 class TestSyntheticRateSmoke:
-    def test_all_real_safe(self):
+    def test_all_real_safe(self) -> None:
         mon = SyntheticRateMonitor(min_real_for_live=10)
         for _ in range(50):
             mon.record(is_synthetic=False, league="premier-league")
         alert = mon.current_alert()
         assert alert.is_safe_for_live()
 
-    def test_high_synthetic_critical(self):
+    def test_high_synthetic_critical(self) -> None:
         mon = SyntheticRateMonitor(
             warn_threshold=0.50, critical_threshold=0.80, min_real_for_live=5
         )
@@ -216,7 +216,7 @@ class TestSyntheticRateSmoke:
         alert = mon.current_alert()
         assert alert.level in (AlertLevel.WARNING, AlertLevel.CRITICAL)
 
-    def test_persist_and_reload(self, tmp_path):
+    def test_persist_and_reload(self, tmp_path) -> None:
         path = str(tmp_path / "monitor_state.json")
         mon = SyntheticRateMonitor(persist_path=path)
         for _ in range(30):
@@ -239,7 +239,7 @@ class TestFullPipelineSmoke:
       → qualifying gate → synthetic rate monitor
     """
 
-    def test_full_pipeline_no_errors(self, synthetic_matches, calibration_registry):
+    def test_full_pipeline_no_errors(self, synthetic_matches, calibration_registry) -> None:
         """
         Run the entire new-module stack on 100 synthetic matches.
         Asserts no exceptions and that the output is structurally valid.
@@ -309,7 +309,7 @@ class TestFullPipelineSmoke:
         # All bets were synthetic → monitor should NOT be safe for live
         assert not alert.is_safe_for_live()
 
-    def test_new_modules_importable(self):
+    def test_new_modules_importable(self) -> None:
         """All new sprint modules must be importable without errors."""
         import app.models.calibration               # noqa: F401
         import app.models.data_gap_handler          # noqa: F401
@@ -317,7 +317,7 @@ class TestFullPipelineSmoke:
         import app.models.ensemble_disagreement     # noqa: F401
         import app.monitoring.synthetic_rate_monitor  # noqa: F401
 
-    def test_brier_score_tracker_in_pipeline(self, synthetic_matches):
+    def test_brier_score_tracker_in_pipeline(self, synthetic_matches) -> None:
         """BrierScoreTracker should accumulate from a stream of predictions."""
         from app.models.calibration import BrierScoreTracker
         tracker = BrierScoreTracker(window=50)
@@ -330,7 +330,7 @@ class TestFullPipelineSmoke:
         bs = tracker.current_brier()
         assert bs is not None and 0.0 <= bs <= 0.5
 
-    def test_calibration_report_after_batch(self, synthetic_matches):
+    def test_calibration_report_after_batch(self, synthetic_matches) -> None:
         """CalibrationReport should be generated from a batch of predictions."""
         cal    = ProbabilityCalibrator()
         probs  = [m["model_home_prob"] for m in synthetic_matches[:80]]
