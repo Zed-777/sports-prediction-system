@@ -1,5 +1,4 @@
-"""
-Caching utilities
+"""Caching utilities
 """
 
 import hashlib
@@ -37,7 +36,7 @@ class CacheManager:
 
             # Check if cache is expired
             file_age = datetime.now() - datetime.fromtimestamp(
-                cache_file.stat().st_mtime
+                cache_file.stat().st_mtime,
             )
             if file_age.total_seconds() > self.ttl_seconds:
                 cache_file.unlink()  # Remove expired cache

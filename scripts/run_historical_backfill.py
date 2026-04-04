@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
-"""
-Run historical backfill across leagues using `scripts/collect_historical_results.py`.
+"""Run historical backfill across leagues using `scripts/collect_historical_results.py`.
 Usage:
   python scripts/run_historical_backfill.py --leagues premier-league --days 365 --execute
 
 By default it runs in dry-run mode which only reports what would be fetched.
 """
 import argparse
+import logging
 import os
 import sys
-import logging
 from pathlib import Path
 
 # Ensure project root on path when executed from scripts/
@@ -34,7 +33,7 @@ def main():
     collector = HistoricalResultsCollector()
     collector.ensure_historical_files()
 
-    target_leagues = args.leagues if args.leagues else collector.detect_report_leagues()
+    target_leagues = args.leagues or collector.detect_report_leagues()
     if not target_leagues:
         logger.error("No target leagues detected. Nothing to do.")
         return 1
@@ -65,12 +64,12 @@ def main():
                 logger.info(f"Updated {updated} records for {league} from APIs")
                 any_updates += updated
                 if args.debug:
-                    logger.info(f"Debug files (if any) will be under reports/debug/flashscore/")
+                    logger.info("Debug files (if any) will be under reports/debug/flashscore/")
                     # Run the inspector to summarize debug files
                     try:
                         import subprocess
-                        inspector_out = PROJECT_ROOT / 'reports' / 'metrics' / 'flashscore_debug_summary.json'
-                        subprocess.check_call([sys.executable, str(PROJECT_ROOT / 'scripts' / 'debug_flashscore_inspect.py'), '--dir', str(PROJECT_ROOT / 'reports' / 'debug' / 'flashscore'), '--out', str(inspector_out)])
+                        inspector_out = PROJECT_ROOT / "reports" / "metrics" / "flashscore_debug_summary.json"
+                        subprocess.check_call([sys.executable, str(PROJECT_ROOT / "scripts" / "debug_flashscore_inspect.py"), "--dir", str(PROJECT_ROOT / "reports" / "debug" / "flashscore"), "--out", str(inspector_out)])
                         logger.info(f"FlashScore debug summary: {inspector_out}")
                     except Exception as e:
                         logger.debug(f"Failed to run debug inspector: {e}")

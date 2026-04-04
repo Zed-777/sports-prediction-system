@@ -1,5 +1,4 @@
-"""
-Expected Goals (xG) Integration (FE-001)
+"""Expected Goals (xG) Integration (FE-001)
 ======================================
 
 xG is the gold standard for measuring true team quality.
@@ -17,10 +16,9 @@ Impact estimate: +5-7% accuracy improvement
 import json
 import logging
 import re
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
-from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 
@@ -86,8 +84,7 @@ class MatchXGData:
 
 
 class XGDataProvider:
-    """
-    Provider for expected goals (xG) data.
+    """Provider for expected goals (xG) data.
 
     Fetches and caches xG data from multiple sources:
     - Primary: FBref (free, comprehensive)
@@ -108,11 +105,11 @@ class XGDataProvider:
     }
 
     def __init__(self, cache_dir: str = "data/cache/xg"):
-        """
-        Initialize xG data provider.
+        """Initialize xG data provider.
 
         Args:
             cache_dir: Directory to cache xG data
+
         """
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -129,7 +126,7 @@ class XGDataProvider:
         cache_file = self.cache_dir / "xg_cache.json"
         if cache_file.exists():
             try:
-                with open(cache_file, "r", encoding="utf-8") as f:
+                with open(cache_file, encoding="utf-8") as f:
                     data = json.load(f)
 
                 # Load team stats
@@ -192,10 +189,9 @@ class XGDataProvider:
             json.dump(data, f, indent=2)
 
     def get_team_xg_stats(
-        self, team_name: str, league: str = None, refresh: bool = False
-    ) -> Optional[TeamXGStats]:
-        """
-        Get xG statistics for a team.
+        self, team_name: str, league: str = None, refresh: bool = False,
+    ) -> TeamXGStats | None:
+        """Get xG statistics for a team.
 
         Args:
             team_name: Team name
@@ -204,6 +200,7 @@ class XGDataProvider:
 
         Returns:
             TeamXGStats or None if not available
+
         """
         # Normalize team name for lookup
         team_key = self._normalize_team_name(team_name)
@@ -237,10 +234,9 @@ class XGDataProvider:
         return name
 
     def _fetch_team_xg(
-        self, team_name: str, league: str = None
-    ) -> Optional[TeamXGStats]:
-        """
-        Fetch xG data from sources.
+        self, team_name: str, league: str = None,
+    ) -> TeamXGStats | None:
+        """Fetch xG data from sources.
 
         Note: In a production system, this would make actual API calls.
         For now, we use estimated xG based on available match data.
@@ -252,7 +248,7 @@ class XGDataProvider:
         xg_data_file = self.cache_dir.parent / "expanded_cache" / f"{team_key}_xg.json"
         if xg_data_file.exists():
             try:
-                with open(xg_data_file, "r", encoding="utf-8") as f:
+                with open(xg_data_file, encoding="utf-8") as f:
                     data = json.load(f)
                 return self._parse_xg_data(data, team_name)
             except Exception as e:
@@ -261,7 +257,7 @@ class XGDataProvider:
         # Return estimated xG based on league averages if no specific data
         return self._estimate_xg_from_goals(team_name, league)
 
-    def _parse_xg_data(self, data: dict, team_name: str) -> Optional[TeamXGStats]:
+    def _parse_xg_data(self, data: dict, team_name: str) -> TeamXGStats | None:
         """Parse xG data from JSON structure."""
         try:
             matches = data.get("matches", [])
@@ -316,10 +312,9 @@ class XGDataProvider:
             return None
 
     def _estimate_xg_from_goals(
-        self, team_name: str, league: str = None
-    ) -> Optional[TeamXGStats]:
-        """
-        Estimate xG when no direct xG data is available.
+        self, team_name: str, league: str = None,
+    ) -> TeamXGStats | None:
+        """Estimate xG when no direct xG data is available.
 
         Uses the fact that xG correlates highly with actual goals
         but with regression to the mean for outliers.
@@ -335,7 +330,7 @@ class XGDataProvider:
         if processed_dir.exists():
             for json_file in processed_dir.glob("**/*.json"):
                 try:
-                    with open(json_file, "r", encoding="utf-8") as f:
+                    with open(json_file, encoding="utf-8") as f:
                         data = json.load(f)
 
                     matches = (
@@ -431,8 +426,7 @@ class XGDataProvider:
 
 
 class XGPredictionAdjuster:
-    """
-    Adjusts predictions based on xG data.
+    """Adjusts predictions based on xG data.
 
     Uses xG to:
     1. Identify over/underperforming teams (luck adjustment)
@@ -440,12 +434,12 @@ class XGPredictionAdjuster:
     3. Adjust probabilities based on xG differential
     """
 
-    def __init__(self, xg_provider: Optional[XGDataProvider] = None):
-        """
-        Initialize xG prediction adjuster.
+    def __init__(self, xg_provider: XGDataProvider | None = None):
+        """Initialize xG prediction adjuster.
 
         Args:
             xg_provider: XG data provider (creates default if None)
+
         """
         self.xg_provider = xg_provider or XGDataProvider()
 
@@ -466,8 +460,7 @@ class XGPredictionAdjuster:
         confidence: float,
         league: str = None,
     ) -> dict:
-        """
-        Adjust prediction using xG data.
+        """Adjust prediction using xG data.
 
         Args:
             home_team: Home team name
@@ -482,6 +475,7 @@ class XGPredictionAdjuster:
 
         Returns:
             Dictionary with adjusted values and xG insights
+
         """
         result = {
             "home_expected_goals": home_expected_goals,
@@ -504,10 +498,10 @@ class XGPredictionAdjuster:
 
         # Calculate xG-adjusted expected goals
         xg_home_goals = self._calculate_xg_expected_goals(
-            home_xg, home_expected_goals, is_home=True
+            home_xg, home_expected_goals, is_home=True,
         )
         xg_away_goals = self._calculate_xg_expected_goals(
-            away_xg, away_expected_goals, is_home=False
+            away_xg, away_expected_goals, is_home=False,
         )
 
         # Blend with original expected goals
@@ -560,7 +554,7 @@ class XGPredictionAdjuster:
             result["draw_prob"] = round(max(new_draw, 10), 1)
             result["away_prob"] = round(new_away, 1)
             result["xg_adjustments"].append(
-                f"xG diff adjustment: {xg_diff - original_diff:+.2f} goals"
+                f"xG diff adjustment: {xg_diff - original_diff:+.2f} goals",
             )
 
         # Apply luck regression for overperforming teams
@@ -569,7 +563,7 @@ class XGPredictionAdjuster:
 
             if home_overperformance > 2:
                 luck_warning.append(
-                    f"{home_team} overperforming xG by {home_overperformance:.1f}"
+                    f"{home_team} overperforming xG by {home_overperformance:.1f}",
                 )
                 # Reduce home win probability slightly
                 result["home_prob"] = max(result["home_prob"] - 2, 20)
@@ -577,21 +571,21 @@ class XGPredictionAdjuster:
 
             if home_overperformance < -2:
                 luck_warning.append(
-                    f"{home_team} underperforming xG by {-home_overperformance:.1f}"
+                    f"{home_team} underperforming xG by {-home_overperformance:.1f}",
                 )
                 # They might be due for positive regression
                 result["home_prob"] = min(result["home_prob"] + 2, 80)
 
             if away_overperformance > 2:
                 luck_warning.append(
-                    f"{away_team} overperforming xG by {away_overperformance:.1f}"
+                    f"{away_team} overperforming xG by {away_overperformance:.1f}",
                 )
                 result["away_prob"] = max(result["away_prob"] - 2, 10)
                 result["confidence"] = min(result["confidence"] - 3, 80)
 
             if away_overperformance < -2:
                 luck_warning.append(
-                    f"{away_team} underperforming xG by {-away_overperformance:.1f}"
+                    f"{away_team} underperforming xG by {-away_overperformance:.1f}",
                 )
                 result["away_prob"] = min(result["away_prob"] + 2, 70)
 
@@ -608,10 +602,9 @@ class XGPredictionAdjuster:
         return result
 
     def _calculate_xg_expected_goals(
-        self, team_stats: TeamXGStats, base_expected_goals: float, is_home: bool
+        self, team_stats: TeamXGStats, base_expected_goals: float, is_home: bool,
     ) -> float:
-        """
-        Calculate xG-adjusted expected goals for a team.
+        """Calculate xG-adjusted expected goals for a team.
 
         Uses team's xG data with regression to mean for overperformance.
         """
@@ -644,10 +637,9 @@ class XGPredictionAdjuster:
 
 
 def integrate_xg_into_prediction(
-    prediction: dict, home_team: str, away_team: str, league: str = None
+    prediction: dict, home_team: str, away_team: str, league: str = None,
 ) -> dict:
-    """
-    Convenience function to integrate xG adjustments into a prediction.
+    """Convenience function to integrate xG adjustments into a prediction.
 
     Args:
         prediction: Original prediction dictionary
@@ -657,6 +649,7 @@ def integrate_xg_into_prediction(
 
     Returns:
         Updated prediction with xG adjustments
+
     """
     adjuster = XGPredictionAdjuster()
 
@@ -719,7 +712,7 @@ if __name__ == "__main__":
     print(f"  Adjusted home goals: {result['home_expected_goals']}")
     print(f"  Adjusted away goals: {result['away_expected_goals']}")
     print(
-        f"  Adjusted probs: {result['home_prob']}/{result['draw_prob']}/{result['away_prob']}"
+        f"  Adjusted probs: {result['home_prob']}/{result['draw_prob']}/{result['away_prob']}",
     )
     print(f"  Insights: {result['xg_insights']}")
     print(f"  Adjustments: {result['xg_adjustments']}")

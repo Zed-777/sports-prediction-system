@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+
 from app.utils.http import safe_request_get
 from app.utils.throttle import _GLOBAL_THROTTLE_MANAGER
 
@@ -22,7 +23,7 @@ class FakeSession:
         self.called = True
         # Return something that has status_code and json() method
         return SimpleNamespace(
-            status_code=200, text="{}", json=lambda: {}, raise_for_status=lambda: None
+            status_code=200, text="{}", json=dict, raise_for_status=lambda: None,
         )
 
 

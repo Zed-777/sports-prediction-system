@@ -1,6 +1,7 @@
-from scripts.collect_historical_results import HistoricalResultsCollector
-from pathlib import Path
 import json
+from pathlib import Path
+
+from scripts.collect_historical_results import HistoricalResultsCollector
 
 
 def test_canonical_mapping(tmp_path, monkeypatch):
@@ -48,8 +49,8 @@ def test_canonical_mapping(tmp_path, monkeypatch):
                             "homeTeam": {"name": "Valencia"},
                             "awayTeam": {"name": "RCD Mallorca"},
                             "score": {"fullTime": {"homeTeam": 1, "awayTeam": 1}},
-                        }
-                    ]
+                        },
+                    ],
                 }
 
         return FakeResp()
@@ -60,7 +61,7 @@ def test_canonical_mapping(tmp_path, monkeypatch):
     updated = collector.fetch_and_update_from_api(league, days_lookback=30)
     assert updated == 1
 
-    with open(out_file, "r", encoding="utf-8") as f:
+    with open(out_file, encoding="utf-8") as f:
         data = json.load(f)
     assert data[0]["actual_result"]["home_score"] == 1
     assert data[0]["actual_result"]["away_score"] == 1

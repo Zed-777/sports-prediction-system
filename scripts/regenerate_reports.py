@@ -6,26 +6,25 @@ or: python scripts/regenerate_reports.py --all
 """
 
 import argparse
-import subprocess
-import time
-from pathlib import Path
 import json
 import os
+import subprocess
 import sys
+import time
+from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent
 REPORTS_DIR = PROJECT_ROOT / "reports" / "leagues"
 
 
-from typing import Optional, Union
 
 
 def prune_old_reports(
     league: str,
     keep: int = 50,
-    match_filter: Optional[str] = None,
+    match_filter: str | None = None,
     debug: bool = False,
-    base_dir: Optional[Union[str, Path]] = None,
+    base_dir: str | Path | None = None,
 ) -> int:
     base = Path(base_dir) if base_dir else REPORTS_DIR
     league_dir = base / league / "matches"
@@ -74,7 +73,7 @@ def prune_old_reports(
 
 
 def regenerate_for_league(
-    league: str, count: int = 5, delay_sec: int = 60, debug: bool = False
+    league: str, count: int = 5, delay_sec: int = 60, debug: bool = False,
 ):
     # Run generates and wait between runs
     for i in range(count):
@@ -104,7 +103,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--leagues", nargs="*", help="List of leagues to regenerate")
     parser.add_argument(
-        "--all", action="store_true", help="Regenerate for all detected leagues"
+        "--all", action="store_true", help="Regenerate for all detected leagues",
     )
     parser.add_argument("--prune-keep", type=int, default=0, help="Number of most recent matches to keep when pruning (default 0 = remove all match directories)")
     parser.add_argument("--prune-match", type=str, default=None, help="Only prune matches whose directory name contains this substring")
@@ -126,7 +125,7 @@ def main():
         keep_val = 0 if args.prune_all else args.prune_keep
         prune_old_reports(league, keep=keep_val, match_filter=args.prune_match, debug=args.debug)
         regenerate_for_league(
-            league, count=args.count, delay_sec=args.delay, debug=args.debug
+            league, count=args.count, delay_sec=args.delay, debug=args.debug,
         )
 
 

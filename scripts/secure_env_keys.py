@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Utility to secure environment keys in this repo:
+"""Utility to secure environment keys in this repo:
 - Back up the existing `.env` to `.env.backup` (non-committed)
 - Replace `.env` content with placeholders from `.env.example` if present
 - Add `.env` to `.gitignore` if it isn't already
@@ -61,7 +60,7 @@ def main():
         print("No .env file detected; nothing to back up.")
     ensure_gitignore_has_env()
     print(
-        "Done. Please review .env.backup for your original keys and delete or store it securely."
+        "Done. Please review .env.backup for your original keys and delete or store it securely.",
     )
 
 

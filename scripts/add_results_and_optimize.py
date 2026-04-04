@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Add manual result for Tottenham match, collect reports into historical file, then run full optimizer."""
 
+import subprocess
+import sys
+
 from scripts.collect_historical_results import HistoricalResultsCollector
-import subprocess, sys
 
 collector = HistoricalResultsCollector()
 # Ensure historical files exist
@@ -15,7 +17,7 @@ print(f"Saved {count} prediction records to historical file")
 # Update the Tottenham result (home=Tottenham 1, away=Liverpool 2)
 match_id = "tottenham-hotspur-football-club_vs_liverpool-football-club_2025-12-20"
 updated = collector.update_actual_results(
-    "premier-league", match_id, 1, 2, provider_name="manual"
+    "premier-league", match_id, 1, 2, provider_name="manual",
 )
 print(f"Updated actual result for {match_id}: {updated}")
 

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Historical Results Collector
+"""Historical Results Collector
 =============================
 
 Collects completed match results to build a historical dataset
@@ -14,20 +13,20 @@ Usage:
     python scripts/collect_historical_results.py --all-leagues
 """
 
-import sys
+import argparse
 import json
 import logging
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
-import argparse
 import os
+import sys
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any
 
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
@@ -49,7 +48,7 @@ class HistoricalResultsCollector:
         self.historical_dir.mkdir(parents=True, exist_ok=True)
         self.reports_dir = PROJECT_ROOT / "reports" / "leagues"
 
-    def detect_report_leagues(self) -> List[str]:
+    def detect_report_leagues(self) -> list[str]:
         """Detect league directories under reports/leagues and return their names"""
         if not self.reports_dir.exists():
             return []
@@ -57,15 +56,15 @@ class HistoricalResultsCollector:
         return leagues
 
     def ensure_historical_files(
-        self, leagues: Optional[List[str]] = None, use_detected: bool = True
-    ) -> List[str]:
+        self, leagues: list[str] | None = None, use_detected: bool = True,
+    ) -> list[str]:
         """Create empty historical JSON files for the supplied leagues (or detected/supported leagues).
 
         Returns a list of created file paths (strings).
         """
         if leagues is None:
             detected = self.detect_report_leagues() if use_detected else []
-            leagues = detected if detected else self.SUPPORTED_LEAGUES
+            leagues = detected or self.SUPPORTED_LEAGUES
 
         created = []
         for league in leagues:
@@ -78,13 +77,12 @@ class HistoricalResultsCollector:
                 except Exception as e:
                     logger.warning(f"Could not create {out}: {e}")
         logger.info(
-            f"Initialized historical files for leagues: {', '.join(leagues)} (created {len(created)} files)"
+            f"Initialized historical files for leagues: {', '.join(leagues)} (created {len(created)} files)",
         )
         return created
 
-    def collect_from_reports(self, league: str) -> List[Dict[str, Any]]:
-        """
-        Collect predictions from generated reports and match them with results
+    def collect_from_reports(self, league: str) -> list[dict[str, Any]]:
+        """Collect predictions from generated reports and match them with results
 
         This creates training data by pairing our predictions with actual outcomes.
         """
@@ -104,7 +102,7 @@ class HistoricalResultsCollector:
                 continue
 
             try:
-                with open(prediction_file, "r", encoding="utf-8") as f:
+                with open(prediction_file, encoding="utf-8") as f:
                     prediction = json.load(f)
 
                 # Check if match has completed (we need actual results)
@@ -121,7 +119,7 @@ class HistoricalResultsCollector:
                 if match_date_str:
                     try:
                         match_date = datetime.fromisoformat(
-                            match_date_str.replace("Z", "+00:00")
+                            match_date_str.replace("Z", "+00:00"),
                         )
                         if match_date > datetime.now(match_date.tzinfo):
                             # Match hasn't happened yet
@@ -177,7 +175,7 @@ class HistoricalResultsCollector:
                     "actual_result": None,  # To be filled when result is known
                     "parameters_used": {
                         "market_blend_weight": prediction.get(
-                            "phase_enhancements", {}
+                            "phase_enhancements", {},
                         ).get("market_blend_weight", 0.18),
                     },
                     "collected_at": datetime.now().isoformat(),
@@ -191,7 +189,7 @@ class HistoricalResultsCollector:
 
         return results
 
-    def save_historical_data(self, league: str, results: List[Dict[str, Any]]):
+    def save_historical_data(self, league: str, results: list[dict[str, Any]]):
         """Save or update historical results file"""
         output_file = self.historical_dir / f"{league}_results.json"
 
@@ -199,7 +197,7 @@ class HistoricalResultsCollector:
         existing = []
         if output_file.exists():
             try:
-                with open(output_file, "r", encoding="utf-8") as f:
+                with open(output_file, encoding="utf-8") as f:
                     existing = json.load(f)
             except:
                 existing = []
@@ -244,15 +242,14 @@ class HistoricalResultsCollector:
 
     def update_actual_results(
         self,
-        league: Optional[str],
+        league: str | None,
         match_id: str,
         home_score: int,
         away_score: int,
-        provider_id: Optional[Any] = None,
-        provider_name: Optional[str] = None,
+        provider_id: Any | None = None,
+        provider_name: str | None = None,
     ) -> bool:
-        """
-        Update a historical record with actual match result. If league is None or the
+        """Update a historical record with actual match result. If league is None or the
         historical file is missing, search across all available historical files.
 
         Args:
@@ -263,6 +260,7 @@ class HistoricalResultsCollector:
 
         Returns:
             True if updated successfully
+
         """
         candidates = []
         if league:
@@ -275,7 +273,7 @@ class HistoricalResultsCollector:
             if not output_file.exists():
                 continue
             try:
-                with open(output_file, "r", encoding="utf-8") as f:
+                with open(output_file, encoding="utf-8") as f:
                     data = json.load(f)
             except Exception:
                 continue
@@ -325,11 +323,11 @@ class HistoricalResultsCollector:
                         return 0.0
 
                 ph = norm(
-                    pred.get("home_win_prob", pred.get("home_win_probability", 0))
+                    pred.get("home_win_prob", pred.get("home_win_probability", 0)),
                 )
                 pd = norm(pred.get("draw_prob", pred.get("draw_probability", 0)))
                 pa = norm(
-                    pred.get("away_win_prob", pred.get("away_win_probability", 0))
+                    pred.get("away_win_prob", pred.get("away_win_probability", 0)),
                 )
 
                 predicted = (
@@ -385,7 +383,7 @@ class HistoricalResultsCollector:
                 with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(data, f, indent=2)
                 logger.info(
-                    f"Updated {match_id} in {output_file.name}: {home_score}-{away_score} ({outcome}), prediction {'correct' if record['prediction_correct'] else 'incorrect'}"
+                    f"Updated {match_id} in {output_file.name}: {home_score}-{away_score} ({outcome}), prediction {'correct' if record['prediction_correct'] else 'incorrect'}",
                 )
                 return True
 
@@ -393,10 +391,9 @@ class HistoricalResultsCollector:
         return False
 
     def backfill_provider_ids(
-        self, league: Optional[str] = None, debug: bool = False
+        self, league: str | None = None, debug: bool = False,
     ) -> int:
-        """
-        Backfill provider IDs for historical records from matching report files (if available).
+        """Backfill provider IDs for historical records from matching report files (if available).
         Returns number of records updated.
         """
         updated_count = 0
@@ -410,7 +407,7 @@ class HistoricalResultsCollector:
             if not output_file.exists():
                 continue
             try:
-                with open(output_file, "r", encoding="utf-8") as f:
+                with open(output_file, encoding="utf-8") as f:
                     data = json.load(f)
             except Exception:
                 continue
@@ -421,7 +418,7 @@ class HistoricalResultsCollector:
                     continue
                 match_id = record.get("match_id")
                 rec_league = record.get("league") or output_file.stem.replace(
-                    "_results", ""
+                    "_results", "",
                 )
                 report_pred = (
                     self.reports_dir
@@ -432,7 +429,7 @@ class HistoricalResultsCollector:
                 )
                 if report_pred.exists():
                     try:
-                        with open(report_pred, "r", encoding="utf-8") as f:
+                        with open(report_pred, encoding="utf-8") as f:
                             pred = json.load(f)
                         provs = pred.get("provider_ids") or {}
                         if provs:
@@ -441,7 +438,7 @@ class HistoricalResultsCollector:
                             updated_count += 1
                             if debug:
                                 logger.info(
-                                    f"Backfilled provider_ids for {match_id} from {report_pred}"
+                                    f"Backfilled provider_ids for {match_id} from {report_pred}",
                                 )
                     except Exception:
                         if debug:
@@ -453,9 +450,8 @@ class HistoricalResultsCollector:
                     json.dump(data, f, indent=2, ensure_ascii=False)
         return updated_count
 
-    def calculate_accuracy(self, league: str) -> Dict[str, Any]:
-        """
-        Calculate prediction accuracy from historical data
+    def calculate_accuracy(self, league: str) -> dict[str, Any]:
+        """Calculate prediction accuracy from historical data
 
         Returns accuracy metrics for backtesting validation
         """
@@ -464,7 +460,7 @@ class HistoricalResultsCollector:
         if not output_file.exists():
             return {"error": "No historical data"}
 
-        with open(output_file, "r", encoding="utf-8") as f:
+        with open(output_file, encoding="utf-8") as f:
             data = json.load(f)
 
         # Filter to records with actual results
@@ -550,7 +546,7 @@ class HistoricalResultsCollector:
         if not output_file.exists():
             raise FileNotFoundError(output_file)
 
-        with open(output_file, "r", encoding="utf-8") as f:
+        with open(output_file, encoding="utf-8") as f:
             data = json.load(f)
 
         total = len(data)
@@ -584,7 +580,7 @@ class HistoricalResultsCollector:
             outcome = ar.get("outcome") if ar else "N/A"
             correct = "✅" if r.get("prediction_correct") else "❌"
             report_lines.append(
-                f"- {mdate}: **{home}** vs **{away}** → {ar.get('home_score', '?')}-{ar.get('away_score', '?')} ({outcome}) {correct}"
+                f"- {mdate}: **{home}** vs **{away}** → {ar.get('home_score', '?')}-{ar.get('away_score', '?')} ({outcome}) {correct}",
             )
 
         reports_dir = PROJECT_ROOT / "reports" / "historical"
@@ -600,7 +596,7 @@ class HistoricalResultsCollector:
         return str(report_path)
 
     def fetch_and_update_from_api(
-        self, league: str, days_lookback: int = 7, debug: bool = False
+        self, league: str, days_lookback: int = 7, debug: bool = False,
     ) -> int:
         """Fetch finished matches from configured APIs and update historical records.
 
@@ -644,7 +640,8 @@ class HistoricalResultsCollector:
             return None
 
         # Name normalization and helper fallback functions must be defined before they are used below
-        import unicodedata, re
+        import re
+        import unicodedata
 
         # canonical_map is built later from team_name_map.yaml; initialize now so helpers can reference safely
         canonical_map = {}
@@ -690,7 +687,7 @@ class HistoricalResultsCollector:
         ):
             """Query API-Football fixtures to find matching finished fixture and return (home_score, away_score, fixture_id)"""
             key = os.environ.get("API_FOOTBALL_KEY") or read_env_file_for_key(
-                "API_FOOTBALL_KEY"
+                "API_FOOTBALL_KEY",
             )
             if not key:
                 return None
@@ -711,7 +708,7 @@ class HistoricalResultsCollector:
                     fh = teams.get("home", {}).get("name")
                     fa = teams.get("away", {}).get("name")
                     if canonicalize(fh) == canonicalize(home_name) and canonicalize(
-                        fa
+                        fa,
                     ) == canonicalize(away_name):
                         score = item.get("score", {}).get("fulltime", {})
                         hs = score.get("home")
@@ -741,14 +738,14 @@ class HistoricalResultsCollector:
                     debug_dir = str(PROJECT_ROOT / "reports" / "debug" / "flashscore")
                 fs = FlashScoreScraper(debug_dir=debug_dir)
                 html = fs.get_page(
-                    fs.BASE_URL + fs.LEAGUE_URLS.get(league_slug, ""), use_cache=True
+                    fs.BASE_URL + fs.LEAGUE_URLS.get(league_slug, ""), use_cache=True,
                 )
                 if not html:
                     return None
                 matches = fs.parse_match_list(html, league_slug)
                 for m in matches:
                     if canonicalize(m.get("home_team")) == canonicalize(
-                        home_name
+                        home_name,
                     ) and canonicalize(m.get("away_team")) == canonicalize(away_name):
                         if m.get("status") == "finished" and (
                             m.get("home_score") is not None
@@ -766,7 +763,7 @@ class HistoricalResultsCollector:
                 return None
 
         fd_key = os.environ.get("FOOTBALL_DATA_API_KEY") or read_env_file_for_key(
-            "FOOTBALL_DATA_API_KEY"
+            "FOOTBALL_DATA_API_KEY",
         )
         # Build request
         if fd_key:
@@ -778,13 +775,13 @@ class HistoricalResultsCollector:
                     data = resp.json()
                     matches = data.get("matches", [])
                     logger.info(
-                        f"Football-Data: fetched {len(matches)} finished matches for {league} (date range {date_from}→{date_to})"
+                        f"Football-Data: fetched {len(matches)} finished matches for {league} (date range {date_from}→{date_to})",
                     )
                     if debug:
                         # print sample entries for debugging
                         for m in matches[:5]:
                             logger.info(
-                                f"  sample: {m.get('homeTeam', {}).get('name')} vs {m.get('awayTeam', {}).get('name')} @ {m.get('utcDate')} -> {m.get('score', {}).get('fullTime', {})}"
+                                f"  sample: {m.get('homeTeam', {}).get('name')} vs {m.get('awayTeam', {}).get('name')} @ {m.get('utcDate')} -> {m.get('score', {}).get('fullTime', {})}",
                             )
                     for m in matches:
                         home = m.get("homeTeam", {}).get("name")
@@ -798,7 +795,7 @@ class HistoricalResultsCollector:
                         )
                         if debug:
                             logger.info(
-                                f"Attempting API match: {home} vs {away} on {date} -> {home_score}-{away_score}"
+                                f"Attempting API match: {home} vs {away} on {date} -> {home_score}-{away_score}",
                             )
                         # Football-Data.org match id
                         fd_id = m.get("id")
@@ -810,13 +807,13 @@ class HistoricalResultsCollector:
                             # Try API-Football lookup (local wrapper)
                             try:
                                 af_score = _fetch_score_from_api_football_local(
-                                    home, away, date, comp, debug_local=debug
+                                    home, away, date, comp, debug_local=debug,
                                 )
                                 if af_score:
                                     home_score, away_score, fixture_id = af_score
                                     if debug:
                                         logger.info(
-                                            f"Fallback: API-Football provided score {home_score}-{away_score} (fixture_id={fixture_id}) for {home} vs {away} on {date}"
+                                            f"Fallback: API-Football provided score {home_score}-{away_score} (fixture_id={fixture_id}) for {home} vs {away} on {date}",
                                         )
                                     matched = self._match_and_update(
                                         league,
@@ -839,13 +836,13 @@ class HistoricalResultsCollector:
                             # Try FlashScore as last-resort (local wrapper)
                             try:
                                 fs_score = _fetch_score_from_flashscore_local(
-                                    home, away, date, league, debug_local=debug
+                                    home, away, date, league, debug_local=debug,
                                 )
                                 if fs_score:
                                     home_score, away_score, fs_mid = fs_score
                                     if debug:
                                         logger.info(
-                                            f"Fallback: FlashScore provided score {home_score}-{away_score} (match_id={fs_mid}) for {home} vs {away} on {date}"
+                                            f"Fallback: FlashScore provided score {home_score}-{away_score} (match_id={fs_mid}) for {home} vs {away} on {date}",
                                         )
                                     matched = self._match_and_update(
                                         league,
@@ -878,7 +875,7 @@ class HistoricalResultsCollector:
                         )
                         if matched == 0 and debug and not attempted_fallback:
                             logger.info(
-                                f"No unmatched historical record found for API match: {home} vs {away} on {date} (fd_id={fd_id})"
+                                f"No unmatched historical record found for API match: {home} vs {away} on {date} (fd_id={fd_id})",
                             )
                         updated += matched
                 else:
@@ -887,12 +884,12 @@ class HistoricalResultsCollector:
                 logger.error(f"Football-Data fetch error: {e}")
         else:
             logger.info(
-                "FOOTBALL_DATA_API_KEY not found; skipping Football-Data.org fetch"
+                "FOOTBALL_DATA_API_KEY not found; skipping Football-Data.org fetch",
             )
 
         # Try API-Football (RapidAPI) as fallback
         api_football_key = os.environ.get("API_FOOTBALL_KEY") or read_env_file_for_key(
-            "API_FOOTBALL_KEY"
+            "API_FOOTBALL_KEY",
         )
         if api_football_key:
             # We try using competitions -> fixtures with date range
@@ -933,7 +930,7 @@ class HistoricalResultsCollector:
                         )
                         if matched == 0 and debug:
                             logger.info(
-                                f"No unmatched historical record found for API-Football match: {home} vs {away} on {date} (fixture_id={fixture_id})"
+                                f"No unmatched historical record found for API-Football match: {home} vs {away} on {date} (fixture_id={fixture_id})",
                             )
                         updated += matched
                 else:
@@ -952,11 +949,11 @@ class HistoricalResultsCollector:
         date: str,
         home: str,
         away: str,
-        home_score: Optional[int],
-        away_score: Optional[int],
+        home_score: int | None,
+        away_score: int | None,
         debug: bool = False,
-        provider_id: Optional[Any] = None,
-        provider_name: Optional[str] = None,
+        provider_id: Any | None = None,
+        provider_name: str | None = None,
     ) -> int:
         """Helper: find a record matching home/away/date and update it with scores."""
         if home_score is None or away_score is None:
@@ -965,7 +962,7 @@ class HistoricalResultsCollector:
         if not output_file.exists():
             return 0
         try:
-            with open(output_file, "r", encoding="utf-8") as f:
+            with open(output_file, encoding="utf-8") as f:
                 data = json.load(f)
         except Exception:
             return 0
@@ -982,7 +979,8 @@ class HistoricalResultsCollector:
 
                 cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
                 # Helper to normalize map keys the same way we normalize names
-                import unicodedata, re
+                import re
+                import unicodedata
 
                 def _normalize_key(s: str) -> str:
                     if not s:
@@ -1004,7 +1002,8 @@ class HistoricalResultsCollector:
             pass
 
         # Normalize names by removing diacritics, punctuation and collapsing whitespace
-        import unicodedata, re
+        import re
+        import unicodedata
 
         def canonicalize(name: str) -> str:
             if not name:
@@ -1052,14 +1051,14 @@ class HistoricalResultsCollector:
             rec_date = (rec_raw)[:10]
             if debug:
                 logger.info(
-                    f"Checking record {record.get('match_id')}: rec_date={rec_date} api_date={date}"
+                    f"Checking record {record.get('match_id')}: rec_date={rec_date} api_date={date}",
                 )
 
             # Skip records without a parsable date
             if not rec_date:
                 if debug:
                     logger.info(
-                        f"Skipping {record.get('match_id')} because no match_date present"
+                        f"Skipping {record.get('match_id')} because no match_date present",
                     )
                 continue
 
@@ -1071,19 +1070,18 @@ class HistoricalResultsCollector:
                     if delta_days > 1:
                         if debug:
                             logger.info(
-                                f"Skipping {record.get('match_id')} due to date delta {delta_days} days"
+                                f"Skipping {record.get('match_id')} due to date delta {delta_days} days",
                             )
                         continue
                 except Exception:
                     # If record date is unparsable, skip
                     if debug:
                         logger.info(
-                            f"Skipping {record.get('match_id')} because record date unparsable: {rec_date}"
+                            f"Skipping {record.get('match_id')} because record date unparsable: {rec_date}",
                         )
                     continue
-            else:
-                if rec_date != date:
-                    continue
+            elif rec_date != date:
+                continue
 
             rec_home = canonicalize(record.get("home_team", ""))
             rec_away = canonicalize(record.get("away_team", ""))
@@ -1093,7 +1091,7 @@ class HistoricalResultsCollector:
             # Debug info for this candidate
             if debug:
                 logger.info(
-                    f"Candidate record {record.get('match_id')}: rec_home='{rec_home}' rec_away='{rec_away}' api_home='{api_home}' api_away='{api_away}' date={rec_date}"
+                    f"Candidate record {record.get('match_id')}: rec_home='{rec_home}' rec_away='{rec_away}' api_home='{api_home}' api_away='{api_away}' date={rec_date}",
                 )
 
             # Provider ID match (preferred when available)
@@ -1111,12 +1109,12 @@ class HistoricalResultsCollector:
                         if record.get("actual_result") is not None:
                             if debug:
                                 logger.info(
-                                    f"Skipping {record.get('match_id')} because it already has actual_result"
+                                    f"Skipping {record.get('match_id')} because it already has actual_result",
                                 )
                             return 0
                         if debug:
                             logger.info(
-                                f"Provider ID match found for {record.get('match_id')} via {provider_name} id={pid}"
+                                f"Provider ID match found for {record.get('match_id')} via {provider_name} id={pid}",
                             )
                         return (
                             1
@@ -1138,7 +1136,7 @@ class HistoricalResultsCollector:
                 if record.get("actual_result") is not None:
                     if debug:
                         logger.info(
-                            f"Skipping {record.get('match_id')} because it already has actual_result"
+                            f"Skipping {record.get('match_id')} because it already has actual_result",
                         )
                     return 0
                 if debug:
@@ -1166,19 +1164,19 @@ class HistoricalResultsCollector:
                 na = dist_away / len_away
                 if debug:
                     logger.info(
-                        f"Fuzzy distances: home={dist_home}/{len_home} ({nh:.2f}), away={dist_away}/{len_away} ({na:.2f})"
+                        f"Fuzzy distances: home={dist_home}/{len_home} ({nh:.2f}), away={dist_away}/{len_away} ({na:.2f})",
                     )
                 # Slightly relaxed fuzzy threshold to account for different naming conventions across providers
                 if (nh) <= 0.30 and (na) <= 0.30:
                     if record.get("actual_result") is not None:
                         if debug:
                             logger.info(
-                                f"Skipping {record.get('match_id')} because it already has actual_result"
+                                f"Skipping {record.get('match_id')} because it already has actual_result",
                             )
                         return 0
                     if debug:
                         logger.info(
-                            f"Fuzzy match accepted for {record.get('match_id')} (home_dist={nh:.2f}, away_dist={na:.2f})"
+                            f"Fuzzy match accepted for {record.get('match_id')} (home_dist={nh:.2f}, away_dist={na:.2f})",
                         )
                     return (
                         1
@@ -1195,7 +1193,6 @@ class HistoricalResultsCollector:
             except Exception as e:
                 if debug:
                     logger.error(f"Fuzzy matching error: {e}")
-                pass
 
         return 0
 
@@ -1246,7 +1243,7 @@ def main():
     parser = argparse.ArgumentParser(description="Collect historical match results")
     parser.add_argument("--league", type=str, help="League to collect")
     parser.add_argument(
-        "--all-leagues", action="store_true", help="Collect all leagues"
+        "--all-leagues", action="store_true", help="Collect all leagues",
     )
     parser.add_argument(
         "--init-historical",
@@ -1275,7 +1272,7 @@ def main():
         help="Backfill provider ids from reports into historical records",
     )
     parser.add_argument(
-        "--debug", action="store_true", help="Enable debug output during fetch/matching"
+        "--debug", action="store_true", help="Enable debug output during fetch/matching",
     )
     parser.add_argument(
         "--auto-optimize",
@@ -1336,7 +1333,6 @@ def main():
                 # Count completed matches
                 with open(
                     collector.historical_dir / f"{league}_results.json",
-                    "r",
                     encoding="utf-8",
                 ) as f:
                     data = json.load(f)
@@ -1347,7 +1343,7 @@ def main():
 
                         opt = AccuracyOptimizer()
                         logger.info(
-                            f"Auto-optimization trigger: running full optimization for {league}"
+                            f"Auto-optimization trigger: running full optimization for {league}",
                         )
                         opt.full_optimization(league=league)
                     except Exception as e:
@@ -1383,7 +1379,6 @@ def main():
         if args.auto_optimize and args.auto_optimize > 0:
             with open(
                 collector.historical_dir / f"{league}_results.json",
-                "r",
                 encoding="utf-8",
             ) as f:
                 data = json.load(f)
@@ -1394,7 +1389,7 @@ def main():
 
                     opt = AccuracyOptimizer()
                     logger.info(
-                        f"Auto-optimization trigger: running full optimization for {league}"
+                        f"Auto-optimization trigger: running full optimization for {league}",
                     )
                     opt.full_optimization(league=league)
                 except Exception as e:
@@ -1413,7 +1408,7 @@ def main():
         for l in leagues:
             total_backfilled += collector.backfill_provider_ids(l, debug=args.debug)
         logger.info(
-            f"Backfilled {total_backfilled} provider ids for leagues: {', '.join(leagues)}"
+            f"Backfilled {total_backfilled} provider ids for leagues: {', '.join(leagues)}",
         )
 
     elif args.accuracy_all:
@@ -1441,7 +1436,7 @@ def main():
         detected = collector.detect_report_leagues()
         if not detected:
             logger.info(
-                "No league folders detected under reports/leagues; falling back to SUPPORTED_LEAGUES"
+                "No league folders detected under reports/leagues; falling back to SUPPORTED_LEAGUES",
             )
             detected = collector.SUPPORTED_LEAGUES
         for league in detected:

@@ -1,5 +1,4 @@
-"""
-Model trainer for the Sports Prediction System
+"""Model trainer for the Sports Prediction System
 """
 
 import json
@@ -34,8 +33,7 @@ class ModelTrainer:
         tune_hyperparameters: bool = False,
         cross_validate: bool = False,
     ) -> dict[str, Any]:
-        """
-        Train a prediction model
+        """Train a prediction model
 
         Args:
             league: League name
@@ -46,6 +44,7 @@ class ModelTrainer:
 
         Returns:
             Training results dictionary
+
         """
         logger.info(f"Training {model_type} model for {league}")
 
@@ -68,7 +67,7 @@ class ModelTrainer:
                 data_dir = Path("data/processed")
                 if data_dir.exists():
                     for file_path in data_dir.glob(
-                        f"*{league.replace(' ', '_').lower()}*.json"
+                        f"*{league.replace(' ', '_').lower()}*.json",
                     ):
                         try:
                             with open(file_path) as f:
@@ -86,7 +85,7 @@ class ModelTrainer:
 
             if not historical_data or not historical_data.get("matches"):
                 logger.error(
-                    f"No historical data available for training {league} model"
+                    f"No historical data available for training {league} model",
                 )
                 return {
                     "model_type": model_type,
@@ -100,7 +99,7 @@ class ModelTrainer:
             # Train actual model with real data
             training_data = self._prepare_training_data(historical_data, features)
             model, metrics = self._train_model(
-                model_type, training_data, tune_hyperparameters, cross_validate
+                model_type, training_data, tune_hyperparameters, cross_validate,
             )
 
             results: dict[str, Any] = {
@@ -122,7 +121,7 @@ class ModelTrainer:
             self._save_model(model, results["model_path"])
 
             logger.info(
-                f"Model training completed for {league} with {len(training_data)} samples"
+                f"Model training completed for {league} with {len(training_data)} samples",
             )
             return results
 
@@ -139,7 +138,7 @@ class ModelTrainer:
             }
 
     def _prepare_training_data(
-        self, historical_data: dict[str, Any], features: list[str] | None
+        self, historical_data: dict[str, Any], features: list[str] | None,
     ) -> pd.DataFrame:
         """Prepare training data from historical match data"""
         try:
@@ -188,7 +187,7 @@ class ModelTrainer:
             training_data = training_data.dropna()
 
             logger.info(
-                f"Prepared {len(training_data)} training samples with features: {feature_cols}"
+                f"Prepared {len(training_data)} training samples with features: {feature_cols}",
             )
             return training_data
 
@@ -216,7 +215,7 @@ class ModelTrainer:
 
             # Split data
             X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=0.2, random_state=42, stratify=y
+                X, y, test_size=0.2, random_state=42, stratify=y,
             )
 
             # Choose model based on type
@@ -271,4 +270,4 @@ class ModelTrainer:
             logger.info(f"Model saved to {model_path}")
 
         except Exception as e:
-            logger.error(f"Error saving model: {e}")
+            logger.exception("Error saving model: %s", e)

@@ -1,6 +1,7 @@
 import time
-from app.utils.throttle import ThrottleManager
+
 from app.utils.state_sync import set_disabled_flag
+from app.utils.throttle import ThrottleManager
 
 
 def test_throttle_manager_is_endpoint_disabled():

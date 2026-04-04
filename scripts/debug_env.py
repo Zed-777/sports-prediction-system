@@ -11,7 +11,7 @@ from pathlib import Path
 
 env_file = Path(".env")
 if env_file.exists():
-    print(f".env exists, contents (first 10 lines):")
+    print(".env exists, contents (first 10 lines):")
     with open(env_file) as f:
         for i, line in enumerate(f):
             if i >= 10:

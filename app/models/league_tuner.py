@@ -1,5 +1,4 @@
-"""
-League-Specific Tuning Module for Phase 3
+"""League-Specific Tuning Module for Phase 3
 
 Manages per-league calibration and model weighting to capture league-specific
 prediction patterns and characteristics.
@@ -7,15 +6,13 @@ prediction patterns and characteristics.
 
 import json
 import os
-from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 
 from app.models.calibration_manager import CalibrationManager, ModelPerformanceTracker
 
 
 class LeagueTuner:
-    """
-    Manages league-specific model tuning and calibration.
+    """Manages league-specific model tuning and calibration.
 
     Each league gets its own:
     - Calibration manager (per-league isotonic regression)
@@ -68,63 +65,62 @@ class LeagueTuner:
     }
 
     def __init__(
-        self, leagues: Optional[List[str]] = None, cache_dir: Optional[str] = None
+        self, leagues: list[str] | None = None, cache_dir: str | None = None,
     ):
-        """
-        Initialize LeagueTuner with per-league managers.
+        """Initialize LeagueTuner with per-league managers.
 
         Args:
             leagues: List of league keys to track. Defaults to all known leagues.
             cache_dir: Directory for persistence. Defaults to data/cache/
+
         """
         self.leagues = leagues or list(self.LEAGUE_CHARACTERISTICS.keys())
         self.cache_dir = cache_dir or "data/cache"
 
         # Per-league calibration managers
-        self.league_calibrators: Dict[str, CalibrationManager] = {
+        self.league_calibrators: dict[str, CalibrationManager] = {
             league: CalibrationManager(model_name=f"ensemble_{league}")
             for league in self.leagues
         }
 
         # Per-league performance trackers
-        self.league_trackers: Dict[str, ModelPerformanceTracker] = {
+        self.league_trackers: dict[str, ModelPerformanceTracker] = {
             league: ModelPerformanceTracker(
                 model_names=[
                     f"xg_model_{league}",
                     f"poisson_model_{league}",
                     f"elo_model_{league}",
                     f"neural_model_{league}",
-                ]
+                ],
             )
             for league in self.leagues
         }
 
         # Per-league adjustment history
-        self.adjustment_history: Dict[str, List[Dict]] = {
+        self.adjustment_history: dict[str, list[dict]] = {
             league: [] for league in self.leagues
         }
 
         # Load persisted data
         self._load_league_data()
 
-    def get_league_calibrator(self, league: str) -> Optional[CalibrationManager]:
+    def get_league_calibrator(self, league: str) -> CalibrationManager | None:
         """Get calibration manager for specific league."""
         return self.league_calibrators.get(league)
 
-    def get_league_tracker(self, league: str) -> Optional[ModelPerformanceTracker]:
+    def get_league_tracker(self, league: str) -> ModelPerformanceTracker | None:
         """Get performance tracker for specific league."""
         return self.league_trackers.get(league)
 
-    def get_league_characteristics(self, league: str) -> Dict:
+    def get_league_characteristics(self, league: str) -> dict:
         """Get characteristic adjustments for league."""
         return self.LEAGUE_CHARACTERISTICS.get(
             league,
             self.LEAGUE_CHARACTERISTICS["premier-league"],  # Default to Premier League
         )
 
-    def get_league_weights(self, league: str) -> Dict[str, float]:
-        """
-        Get dynamic model weights for specific league.
+    def get_league_weights(self, league: str) -> dict[str, float]:
+        """Get dynamic model weights for specific league.
 
         Returns weights based on per-league performance tracking.
         """
@@ -138,16 +134,16 @@ class LeagueTuner:
         league: str,
         prediction: float,
         outcome: float,
-        model_predictions: Optional[Dict[str, float]] = None,
+        model_predictions: dict[str, float] | None = None,
     ) -> None:
-        """
-        Record match prediction and outcome for league learning.
+        """Record match prediction and outcome for league learning.
 
         Args:
             league: League identifier
             prediction: Predicted probability (0.0-1.0)
             outcome: Actual outcome (0.0 or 1.0)
             model_predictions: Dict of individual model predictions for tracking
+
         """
         # Record in calibration manager
         cal = self.get_league_calibrator(league)
@@ -170,14 +166,13 @@ class LeagueTuner:
                 "calibrator_size": (
                     len(cal.calibration_data.get("predictions", [])) if cal else 0
                 ),
-            }
+            },
         )
 
     def apply_league_adjustment(
-        self, league: str, confidence: float
-    ) -> Tuple[float, Dict]:
-        """
-        Apply league-specific confidence adjustment.
+        self, league: str, confidence: float,
+    ) -> tuple[float, dict]:
+        """Apply league-specific confidence adjustment.
 
         Adjusts confidence based on:
         - Goal variance (high variance leagues get lower confidence)
@@ -190,6 +185,7 @@ class LeagueTuner:
 
         Returns:
             Tuple of (adjusted_confidence, adjustment_metadata)
+
         """
         char = self.get_league_characteristics(league)
         metadata = {"league": league, "characteristics": char, "adjustments": {}}
@@ -257,12 +253,12 @@ class LeagueTuner:
 
         return adjusted, metadata
 
-    def get_league_statistics(self, league: str) -> Dict:
-        """
-        Get statistics for a specific league.
+    def get_league_statistics(self, league: str) -> dict:
+        """Get statistics for a specific league.
 
         Returns:
             Dict containing calibration samples, model performance, adjustment history
+
         """
         cal = self.get_league_calibrator(league)
         tracker = self.get_league_tracker(league)
@@ -294,7 +290,7 @@ class LeagueTuner:
 
         return stats
 
-    def get_all_league_statistics(self) -> Dict[str, Dict]:
+    def get_all_league_statistics(self) -> dict[str, dict]:
         """Get statistics for all leagues."""
         return {league: self.get_league_statistics(league) for league in self.leagues}
 
@@ -316,16 +312,16 @@ class LeagueTuner:
 
             # Load performance data
             perf_file = os.path.join(
-                self.cache_dir, f"league_performance_{league}.json"
+                self.cache_dir, f"league_performance_{league}.json",
             )
             if os.path.exists(perf_file):
                 try:
-                    with open(perf_file, "r") as f:
+                    with open(perf_file) as f:
                         data = json.load(f)
                         tracker = self.get_league_tracker(league)
                         if tracker and "performance_history" in data:
                             tracker.performance_history = data.get(
-                                "performance_history", {}
+                                "performance_history", {},
                             )
                 except Exception:
                     pass  # Silently fail if load is corrupted
@@ -343,7 +339,7 @@ class LeagueTuner:
             if cal:
                 try:
                     cal_path = os.path.join(
-                        self.cache_dir, f"league_calibration_{league}.json"
+                        self.cache_dir, f"league_calibration_{league}.json",
                     )
                     cal.save_calibration(cal_path)
                 except Exception:
@@ -361,7 +357,7 @@ class LeagueTuner:
                 try:
                     with open(
                         os.path.join(
-                            self.cache_dir, f"league_performance_{league}.json"
+                            self.cache_dir, f"league_performance_{league}.json",
                         ),
                         "w",
                     ) as f:

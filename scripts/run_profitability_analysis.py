@@ -1,5 +1,4 @@
-"""
-Profitability Analysis CLI (PROF-005)
+"""Profitability Analysis CLI (PROF-005)
 ======================================
 Runs the full live-trading validation pipeline and prints a comprehensive
 performance report.
@@ -28,7 +27,6 @@ Exit codes
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import sys
 from pathlib import Path
@@ -49,7 +47,7 @@ def _setup_logging(verbose: bool) -> logging.Logger:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Run profitability analysis and live-trading validation"
+        description="Run profitability analysis and live-trading validation",
     )
     parser.add_argument(
         "--profile",
@@ -96,8 +94,8 @@ def main() -> None:
     logger = _setup_logging(args.verbose)
 
     try:
-        from app.models.qualifying_gate import QualifyingParams
         from app.models.live_trading_validator import LiveTradingValidator
+        from app.models.qualifying_gate import QualifyingParams
 
         # Select qualifying profile
         if args.profile == "conservative":

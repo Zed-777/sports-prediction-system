@@ -3,7 +3,7 @@ import pytest
 from enhanced_predictor import EnhancedPredictor
 
 
-@pytest.fixture()
+@pytest.fixture
 def predictor(monkeypatch):
     instance = EnhancedPredictor("demo")
     # Prevent actual odds fetching during tests

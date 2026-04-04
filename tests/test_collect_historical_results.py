@@ -1,4 +1,5 @@
 import json
+
 from scripts.collect_historical_results import HistoricalResultsCollector
 
 
@@ -8,7 +9,7 @@ def write_json(path, data):
 
 
 def read_json(path):
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -27,7 +28,7 @@ def test_provider_id_match_and_persistence(tmp_path):
             "match_date": "2025-12-15T20:00",
             "prediction": {},
             "actual_result": None,
-        }
+        },
     ]
     write_json(out_file, rec)
 
@@ -70,13 +71,13 @@ def test_normalization_and_fuzzy_matching(tmp_path):
             "match_date": "2025-12-14T20:00",
             "prediction": {},
             "actual_result": None,
-        }
+        },
     ]
     write_json(out_file, rec)
 
     # API returns slightly different name spellings (no diacritics, CF vs Club)
     matched = collector._match_and_update(
-        league, "2025-12-14", "Deportivo Alaves", "Real Madrid CF", 0, 3, debug=True
+        league, "2025-12-14", "Deportivo Alaves", "Real Madrid CF", 0, 3, debug=True,
     )
     assert matched == 1
 
@@ -102,7 +103,7 @@ def test_backfill_provider_ids_from_reports(tmp_path):
             "match_date": "2025-12-20T18:00",
             "prediction": {},
             "actual_result": None,
-        }
+        },
     ]
     write_json(out_file, rec)
 
@@ -147,7 +148,7 @@ def test_save_historical_preserves_actual_result(tmp_path):
                 "outcome": "home_win",
                 "updated_at": "2025-12-17T00:00:00",
             },
-        }
+        },
     ]
     write_json(out_file, rec)
 

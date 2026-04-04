@@ -1,5 +1,4 @@
-"""
-Tests for app/models/ensemble_disagreement.py (TODO #12)
+"""Tests for app/models/ensemble_disagreement.py (TODO #12)
 """
 
 from __future__ import annotations
@@ -17,7 +16,6 @@ from app.models.ensemble_disagreement import (
     _js_divergence,
     disagreement_from_named,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -229,7 +227,7 @@ class TestApplyToPrediction:
 
     def test_confidence_not_negative(self):
         det = EnsembleDisagreementDetector(
-            custom_penalties={DisagreementLevel.SEVERE: 0.99}
+            custom_penalties={DisagreementLevel.SEVERE: 0.99},
         )
         base = {"confidence": 0.20}
         result = det.apply_to_prediction(base, _total_disagreement())

@@ -1,0 +1,829 @@
+{
+  "match_id": 538099,
+  "home_team": "Burnley FC",
+  "away_team": "Brighton & Hove Albion FC",
+  "date": "2026-04-11",
+  "time": "14:00",
+  "league": "Premier League",
+  "confidence": 0.95,
+  "report_accuracy_probability": 0.717,
+  "home_win_probability": 50.47,
+  "draw_probability": 25.46,
+  "away_win_probability": 24.07,
+  "expected_home_goals": 1.5,
+  "expected_away_goals": 0.6,
+  "processing_time": 3.117,
+  "recommendation": "Home Win Likely",
+  "confidence_level": "95.0% (Excellent)",
+  "expected_final_score": "1-0",
+  "score_probability": 15.5,
+  "score_probability_normalized": 8.0,
+  "top3_combined_probability": 39.3,
+  "top3_probability_normalized": 10.0,
+  "alternative_scores": [
+    "2-0",
+    "1-1",
+    "0-0"
+  ],
+  "score_probabilities": [
+    [
+      "1-0",
+      15.503430350541686
+    ],
+    [
+      "2-0",
+      12.271934086850655
+    ],
+    [
+      "1-1",
+      11.478501317227979
+    ],
+    [
+      "0-0",
+      9.792928764653256
+    ],
+    [
+      "2-1",
+      9.085951198918272
+    ]
+  ],
+  "score_probabilities_normalized": [
+    [
+      "1-0",
+      8.0
+    ],
+    [
+      "2-0",
+      7.0
+    ],
+    [
+      "1-1",
+      7.0
+    ],
+    [
+      "0-0",
+      6.0
+    ],
+    [
+      "2-1",
+      6.0
+    ]
+  ],
+  "over_2_5_goals_probability": 41.0,
+  "both_teams_score_probability": 41.6,
+  "head_to_head_analysis": {
+    "total_meetings": 1,
+    "wins_when_home": 0,
+    "wins_when_away": 0,
+    "draws": 0,
+    "matches_as_home": 0,
+    "matches_as_away": 1,
+    "avg_goals_for_when_home": 0.0,
+    "avg_goals_against_when_home": 0.0,
+    "avg_goals_for_when_away": 0.0,
+    "avg_goals_against_when_away": 2.0,
+    "recent_form": [
+      "L"
+    ],
+    "home_advantage_vs_opponent": 0.0,
+    "away_record_vs_opponent": 0.0,
+    "momentum_score": -1.0,
+    "momentum_trend": "Stable",
+    "recent_dominance": 0.0,
+    "h2h_quality": "LOW",
+    "venue_performance": {},
+    "weighted_win_rate": 0.0,
+    "data_sources": [
+      "Domestic PL"
+    ],
+    "total_sources": 1
+  },
+  "home_performance_analysis": {
+    "home": {
+      "matches": 7,
+      "win_rate": 0.0,
+      "draw_rate": 57.14285714285714,
+      "loss_rate": 42.857142857142854,
+      "avg_goals_for": 1.1428571428571428,
+      "avg_goals_against": 1.8571428571428572,
+      "goal_difference": -0.7142857142857143,
+      "weighted_form_score": 11.6,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 0.5,
+      "form_pressure": "Extreme",
+      "current_streak": "1 game draw",
+      "recent_5_performance": 11.1,
+      "form_quality": "Severe Crisis",
+      "consistency_score": 85.9,
+      "confidence_interval": {
+        "lower": 3.0,
+        "upper": 20.3
+      },
+      "regression_expected": true,
+      "scoring_form": 1.0,
+      "defensive_form": 2.0,
+      "sample_size": 3,
+      "recent_matches": [
+        {
+          "result": "D",
+          "goals_for": 0,
+          "goals_against": 0,
+          "date": "2026-03-14T15:00:00Z",
+          "opponent": "AFC Bournemouth"
+        },
+        {
+          "result": "L",
+          "goals_for": 3,
+          "goals_against": 4,
+          "date": "2026-02-28T15:00:00Z",
+          "opponent": "Brentford FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2026-02-07T15:00:00Z",
+          "opponent": "West Ham United FC"
+        }
+      ]
+    },
+    "away": {
+      "matches": 8,
+      "win_rate": 12.5,
+      "draw_rate": 37.5,
+      "loss_rate": 50.0,
+      "avg_goals_for": 0.875,
+      "avg_goals_against": 1.875,
+      "goal_difference": -1.0,
+      "weighted_form_score": 17.4,
+      "momentum_direction": "Falling",
+      "momentum_slope": -0.3,
+      "form_pressure": "Extreme",
+      "current_streak": "3 games without a win",
+      "recent_5_performance": 26.7,
+      "form_quality": "Severe Crisis",
+      "consistency_score": 65.0,
+      "confidence_interval": {
+        "lower": 10.7,
+        "upper": 24.1
+      },
+      "regression_expected": true,
+      "scoring_form": 1.0,
+      "defensive_form": 2.2,
+      "sample_size": 5,
+      "recent_matches": [
+        {
+          "result": "L",
+          "goals_for": 1,
+          "goals_against": 3,
+          "date": "2026-03-21T15:00:00Z",
+          "opponent": "Fulham FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 2,
+          "date": "2026-03-03T19:30:00Z",
+          "opponent": "Everton FC"
+        },
+        {
+          "result": "D",
+          "goals_for": 1,
+          "goals_against": 1,
+          "date": "2026-02-21T15:00:00Z",
+          "opponent": "Chelsea FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 3,
+          "goals_against": 2,
+          "date": "2026-02-11T19:40:00Z",
+          "opponent": "Crystal Palace FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 3,
+          "date": "2026-02-02T20:00:00Z",
+          "opponent": "Sunderland AFC"
+        }
+      ]
+    },
+    "home_advantage": -12.5,
+    "scoring_difference": 0.2678571428571428
+  },
+  "away_performance_analysis": {
+    "home": {
+      "matches": 8,
+      "win_rate": 37.5,
+      "draw_rate": 37.5,
+      "loss_rate": 25.0,
+      "avg_goals_for": 1.0,
+      "avg_goals_against": 0.75,
+      "goal_difference": 0.25,
+      "weighted_form_score": 44.7,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 0.4,
+      "form_pressure": "Medium",
+      "current_streak": "2 game winning streak",
+      "recent_5_performance": 46.7,
+      "form_quality": "Improving",
+      "consistency_score": 59.3,
+      "confidence_interval": {
+        "lower": 38.0,
+        "upper": 51.4
+      },
+      "regression_expected": false,
+      "scoring_form": 1.0,
+      "defensive_form": 1.0,
+      "sample_size": 5,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2026-03-21T12:45:00Z",
+          "opponent": "Liverpool FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2026-03-04T19:30:00Z",
+          "opponent": "Arsenal FC"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 1,
+          "date": "2026-03-01T14:00:00Z",
+          "opponent": "Nottingham Forest FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2026-02-08T14:00:00Z",
+          "opponent": "Crystal Palace FC"
+        },
+        {
+          "result": "D",
+          "goals_for": 1,
+          "goals_against": 1,
+          "date": "2026-01-31T15:00:00Z",
+          "opponent": "Everton FC"
+        }
+      ]
+    },
+    "away": {
+      "matches": 7,
+      "win_rate": 28.57142857142857,
+      "draw_rate": 28.57142857142857,
+      "loss_rate": 42.857142857142854,
+      "avg_goals_for": 1.1428571428571428,
+      "avg_goals_against": 1.1428571428571428,
+      "goal_difference": 0.0,
+      "weighted_form_score": 62.1,
+      "momentum_direction": "Rising Strongly",
+      "momentum_slope": 1.5,
+      "form_pressure": "Medium",
+      "current_streak": "2 game winning streak",
+      "recent_5_performance": 66.7,
+      "form_quality": "Good",
+      "consistency_score": 57.6,
+      "confidence_interval": {
+        "lower": 53.5,
+        "upper": 70.8
+      },
+      "regression_expected": false,
+      "scoring_form": 1.0,
+      "defensive_form": 0.33,
+      "sample_size": 3,
+      "recent_matches": [
+        {
+          "result": "W",
+          "goals_for": 1,
+          "goals_against": 0,
+          "date": "2026-03-14T15:00:00Z",
+          "opponent": "Sunderland AFC"
+        },
+        {
+          "result": "W",
+          "goals_for": 2,
+          "goals_against": 0,
+          "date": "2026-02-21T15:00:00Z",
+          "opponent": "Brentford FC"
+        },
+        {
+          "result": "L",
+          "goals_for": 0,
+          "goals_against": 1,
+          "date": "2026-02-11T19:30:00Z",
+          "opponent": "Aston Villa FC"
+        }
+      ]
+    },
+    "home_advantage": 8.92857142857143,
+    "scoring_difference": -0.1428571428571428
+  },
+  "goal_timing_prediction": {
+    "first_half_goal_probability": 46.0,
+    "second_half_goal_probability": 54.0,
+    "late_goal_likelihood": 17.2,
+    "early_goal_likelihood": 11.7,
+    "home_attack_style": "defensive",
+    "away_attack_style": "possession-heavy",
+    "period_probabilities": {
+      "0-15": 12.8,
+      "16-30": 16.4,
+      "31-45": 16.9,
+      "46-60": 15.5,
+      "61-75": 19.6,
+      "76-90": 18.8
+    },
+    "expected_goals_by_period": {
+      "0-15": 0.29,
+      "16-30": 0.37,
+      "31-45": 0.39,
+      "46-60": 0.35,
+      "61-75": 0.45,
+      "76-90": 0.43
+    },
+    "most_likely_goal_period": "61-75",
+    "scoring_tempo": "medium"
+  },
+  "intelligence_summary": {
+    "h2h_meetings": 1,
+    "home_advantage_pct": -12.5,
+    "recent_h2h_form": "L",
+    "key_factors": [
+      "Poor home form (0% win rate)"
+    ]
+  },
+  "player_availability": {
+    "home_team": {
+      "data_available": true,
+      "team_name": "Burnley FC",
+      "squad_size": 36,
+      "positions": {
+        "goalkeepers": 3,
+        "defenders": 14,
+        "midfielders": 10,
+        "attackers": 9
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 36 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    },
+    "away_team": {
+      "data_available": true,
+      "team_name": "Brighton & Hove Albion FC",
+      "squad_size": 31,
+      "positions": {
+        "goalkeepers": 4,
+        "defenders": 12,
+        "midfielders": 7,
+        "attackers": 8
+      },
+      "squad_insights": [
+        "Full squad available in Football-Data.org"
+      ],
+      "key_players_available": "All 31 registered players (no injury data)",
+      "key_players_injured": "Unknown - no injury API configured",
+      "strength_reduction_pct": 0.0,
+      "injury_areas": [],
+      "expected_lineup_strength": 100.0,
+      "injury_concerns": [
+        "Full squad available in Football-Data.org"
+      ],
+      "data_source": "Football-Data.org squad list (no injury status)",
+      "recommendation": "Add injury tracking API for availability data",
+      "provenance": {
+        "injury_clamped": false,
+        "clamped_fields": {}
+      }
+    }
+  },
+  "weather_conditions": {
+    "conditions": {
+      "temperature": 6.8,
+      "humidity": 68.3,
+      "wind_speed": 24.7,
+      "precipitation": 0.0,
+      "conditions": "windy",
+      "visibility": 18.0,
+      "pressure": 1013,
+      "source": "open-meteo",
+      "match_hour": 14,
+      "location": {
+        "lat": 53.8,
+        "lon": -2.23333
+      }
+    },
+    "impact_assessment": {
+      "goal_modifier": 0.8213,
+      "playing_style_effect": "defensive",
+      "weather_advantage": "physical_teams",
+      "tactical_adjustments": [
+        "Crosses and corners affected by wind"
+      ],
+      "stadium_effects": [],
+      "adaptability_notes": [],
+      "weather_severity": "MODERATE",
+      "conditions_summary": "Challenging conditions (6.8°C, 0.0mm rain, 24.7 km/h wind) likely to affect match dynamics",
+      "modifier_components": {
+        "temperature": 0.9117,
+        "precipitation": 1.0,
+        "wind": 0.9072,
+        "humidity": 0.993,
+        "interaction": 1.0,
+        "stadium": 1.0,
+        "team_style": 1.0
+      },
+      "weather_clamped": false,
+      "clamped_fields": {}
+    },
+    "goal_adjustment": 0.8213,
+    "style_impact": "defensive",
+    "provenance": {
+      "weather_clamped": false,
+      "clamped_fields": {}
+    }
+  },
+  "referee_analysis": {
+    "data_available": false,
+    "name": "Referee TBD",
+    "home_bias_pct": null,
+    "cards_per_game": null,
+    "penalties_per_game": null,
+    "strict_level": "unknown",
+    "experience_level": "unknown",
+    "warning": "Referee data unavailable - appointment not announced"
+  },
+  "team_news": {
+    "home_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Burnley FC"
+    },
+    "away_team": {
+      "data_available": false,
+      "formation_expected": "TBD",
+      "key_changes": [
+        "Team news unavailable"
+      ],
+      "tactical_approach": "unknown",
+      "lineup_strength": null,
+      "news_sentiment": "unknown",
+      "warning": "Team news requires press conference/lineup API integration",
+      "team_name": "Brighton & Hove Albion FC"
+    }
+  },
+  "data_quality_score": 54.0,
+  "reliability_metrics": {
+    "score": 70.8,
+    "level": "Moderate",
+    "indicator": "🟡 Moderate",
+    "recommendation": "Balanced reliability – treat as guidance with monitoring.",
+    "confidence_intervals": {
+      "home": [
+        48.2,
+        55.2
+      ],
+      "draw": [
+        21.4,
+        28.4
+      ],
+      "away": [
+        19.9,
+        26.9
+      ],
+      "margin_percent": 3.5
+    },
+    "spread_points": 28.3,
+    "factors": {
+      "model_confidence": 92.0,
+      "data_quality": 54.0,
+      "probability_clarity": 100.0,
+      "h2h_depth": 0.0,
+      "data_freshness": 55.0
+    },
+    "primary_driver": "probability_clarity",
+    "notes": [
+      "Head-to-head sample is limited – emphasis on recent form.",
+      "Data quality below optimal threshold; confidence capped."
+    ]
+  },
+  "calibration_details": {
+    "applied": true,
+    "shrink_factor": 0.066,
+    "probabilities": {
+      "home_win_prob": 50.47,
+      "draw_prob": 25.46,
+      "away_win_prob": 24.07
+    },
+    "original_probabilities": {
+      "home_win_prob": 51.68,
+      "draw_prob": 24.91,
+      "away_win_prob": 23.42
+    },
+    "pre_calibration_probabilities": {
+      "home_win_prob": 0.5168,
+      "draw_prob": 0.2491,
+      "away_win_prob": 0.2342
+    },
+    "neutral_anchor": 33.3,
+    "notes": [
+      "Applied 6.6% shrink toward neutral due to reliability score 70.8."
+    ],
+    "accuracy_adjustment": {
+      "original_probability": 0.42,
+      "calibrated_probability": 0.535
+    }
+  },
+  "confidence_intervals": {
+    "home": [
+      48.2,
+      55.2
+    ],
+    "draw": [
+      21.4,
+      28.4
+    ],
+    "away": [
+      19.9,
+      26.9
+    ],
+    "margin_percent": 3.5
+  },
+  "data_provenance": {
+    "weather": true,
+    "player_availability": true,
+    "referee": true,
+    "team_news": true,
+    "h2h": true,
+    "odds": false,
+    "flashscore": true,
+    "home_injury_clamped": false,
+    "away_injury_clamped": false,
+    "weather_clamped": false
+  },
+  "phase2_lite_enhanced": true,
+  "prediction_engine": "Enhanced Intelligence v4.2 + Market Intelligence v1.0",
+  "advanced_predictions": {
+    "btts": {
+      "btts_yes_probability": 51.0,
+      "btts_no_probability": 49.0,
+      "prediction": "Yes",
+      "confidence": 69.5,
+      "method_breakdown": {
+        "poisson": 42.6,
+        "historical": 60.0,
+        "league_base": 52.0
+      },
+      "factors": {
+        "home_scoring_chance": 80.0,
+        "away_scoring_chance": 53.2
+      }
+    },
+    "over_under": {
+      "expected_total_goals": 2.37,
+      "lines": {
+        "0.5": {
+          "over_probability": 90.7,
+          "under_probability": 9.3,
+          "prediction": "Over",
+          "fair_over_odds": 1.1,
+          "fair_under_odds": 10.7
+        },
+        "1.5": {
+          "over_probability": 68.5,
+          "under_probability": 31.5,
+          "prediction": "Over",
+          "fair_over_odds": 1.46,
+          "fair_under_odds": 3.17
+        },
+        "2.5": {
+          "over_probability": 42.2,
+          "under_probability": 57.8,
+          "prediction": "Under",
+          "fair_over_odds": 2.37,
+          "fair_under_odds": 1.73
+        },
+        "3.5": {
+          "over_probability": 21.5,
+          "under_probability": 78.5,
+          "prediction": "Under",
+          "fair_over_odds": 4.65,
+          "fair_under_odds": 1.27
+        },
+        "4.5": {
+          "over_probability": 9.2,
+          "under_probability": 90.8,
+          "prediction": "Under",
+          "fair_over_odds": 10.85,
+          "fair_under_odds": 1.1
+        },
+        "5.5": {
+          "over_probability": 3.4,
+          "under_probability": 96.6,
+          "prediction": "Under",
+          "fair_over_odds": 29.5,
+          "fair_under_odds": 1.04
+        }
+      },
+      "recommended_line": "2.5",
+      "main_prediction": "Under"
+    },
+    "exact_scores": [
+      {
+        "score": "1-0",
+        "probability": 15.1
+      },
+      {
+        "score": "2-0",
+        "probability": 12.1
+      },
+      {
+        "score": "1-1",
+        "probability": 11.4
+      },
+      {
+        "score": "0-0",
+        "probability": 9.3
+      },
+      {
+        "score": "2-1",
+        "probability": 9.2
+      },
+      {
+        "score": "0-1",
+        "probability": 7.1
+      },
+      {
+        "score": "3-0",
+        "probability": 6.5
+      },
+      {
+        "score": "3-1",
+        "probability": 4.9
+      },
+      {
+        "score": "1-2",
+        "probability": 4.3
+      },
+      {
+        "score": "2-2",
+        "probability": 3.5
+      }
+    ],
+    "two_stage_score": {
+      "expected_home": 1.61,
+      "expected_away": 0.76,
+      "most_likely": "0-1",
+      "probability": 35.9,
+      "alternatives": [
+        "1-2 (23.7%)",
+        "0-2 (17.6%)",
+        "1-3 (8.0%)"
+      ]
+    }
+  },
+  "shot_quality": {
+    "home": {
+      "team_name": "Burnley FC",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.12100000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    },
+    "away": {
+      "team_name": "Brighton & Hove Albion FC",
+      "shots_per_game": 0.0,
+      "shots_on_target_per_game": 0.0,
+      "big_chances_per_game": 0.0,
+      "big_chances_missed_per_game": 0.0,
+      "shot_conversion_rate": 0.0,
+      "shot_accuracy": 0.0,
+      "xg_per_shot": 0.12100000000000001,
+      "is_overperforming": false,
+      "is_underperforming": false,
+      "performance_deviation": 0.0,
+      "data_quality": "partial",
+      "matches_analyzed": 15
+    }
+  },
+  "defensive_metrics": {},
+  "odds_movement": {
+    "match_id": "Burnley FC_Brighton & Hove Albion FC_2026-04-11",
+    "home_team": "Burnley FC",
+    "away_team": "Brighton & Hove Albion FC",
+    "opening_odds": {
+      "timestamp": "2026-04-03T20:19:42.060504",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "current_odds": {
+      "timestamp": "2026-04-03T20:19:42.060504",
+      "home_odds": 2.5,
+      "draw_odds": 3.3,
+      "away_odds": 2.8,
+      "source": "api"
+    },
+    "home_movement": "stable",
+    "away_movement": "stable",
+    "home_movement_pct": 0.0,
+    "away_movement_pct": 0.0,
+    "movement_strength": "minimal",
+    "sharp_money_detected": false,
+    "sharp_money_side": null,
+    "sharp_confidence": 0.0,
+    "market_favorite": "home",
+    "implied_home_prob": 0.3772968558595345,
+    "implied_draw_prob": 0.2858309514087382,
+    "implied_away_prob": 0.3368721927317272
+  },
+  "market_implied": {
+    "home": 0.3772968558595345,
+    "draw": 0.2858309514087382,
+    "away": 0.3368721927317272
+  },
+  "sharp_money_alert": {},
+  "player_impact": {},
+  "phase_enhancements": {
+    "phase1_enhanced": true,
+    "phase2_enhanced": false,
+    "phase3_enhanced": false,
+    "phase4_enhanced": true,
+    "phase5_enhanced": true,
+    "phase6_enhanced": true,
+    "phase7_enhanced": false
+  },
+  "optimization_metadata": {
+    "match_context": "unknown",
+    "model_agreement_factor": 0.2608739415443073,
+    "optimization_applied": true,
+    "ensemble_weights": {
+      "legacy": 0.22499999999999998,
+      "ml": 0.27499999999999997,
+      "neural": 0.27499999999999997,
+      "monte_carlo": 0.22499999999999998
+    }
+  },
+  "generated_at": "2026-04-03T20:22:24.806141",
+  "provider_ids": {
+    "football_data_id": 538099,
+    "flashscore_id": null
+  },
+  "data_provenance_details": {
+    "home_injury_clamped": false,
+    "home_injury_clamped_fields": {},
+    "away_injury_clamped": false,
+    "away_injury_clamped_fields": {},
+    "weather_clamped": false,
+    "weather_clamped_fields": {}
+  },
+  "advanced_model": {
+    "mode": "shadow",
+    "model_artifact": "models\\advanced\\rf_baseline_42.joblib",
+    "prediction": {
+      "home_win_prob": 0.12,
+      "draw_prob": 0.08,
+      "away_win_prob": 0.8,
+      "meta": {
+        "model": "models\\advanced\\rf_baseline_42.joblib"
+      }
+    }
+  }
+}

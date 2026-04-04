@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""
-Machine Learning Enhancement System
+"""Machine Learning Enhancement System
 Phase 2: Historical accuracy tracking, ensemble weighting, Bayesian updates, and neural networks
 """
 
 import json
 import warnings
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import joblib
 import numpy as np
@@ -16,19 +17,17 @@ from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, log_loss
 from sklearn.preprocessing import StandardScaler
-from typing import Dict, Any, Optional, Callable, Tuple
+
 from app.types import JSONDict, JSONList
 
-dataset_to_arrays: Optional[
-    Callable[[list[dict[str, Any]]], Tuple[np.ndarray, list[int]]]
-]
-load_processed_dataset: Optional[
-    Callable[[str], tuple[list[dict[str, Any]], list[int]]]
-]
+dataset_to_arrays: Callable[[list[dict[str, Any]]], tuple[np.ndarray, list[int]]] | None
+load_processed_dataset: Callable[[str], tuple[list[dict[str, Any]], list[int]]] | None
 
 try:
     from app.data.historical_loader import (
         dataset_to_arrays as _dataset_to_arrays,
+    )
+    from app.data.historical_loader import (
         load_processed_dataset as _load_processed_dataset,
     )
 
@@ -104,7 +103,7 @@ class MachineLearningEnhancer:
 
         if elo_file.exists():
             try:
-                with open(elo_file, "r") as f:
+                with open(elo_file) as f:
                     self.elo_ratings = json.load(f)
                 return
             except Exception:
@@ -442,10 +441,9 @@ class MachineLearningEnhancer:
         return self.elo_ratings[team_name]
 
     def calculate_expected_score(
-        self, home_elo: float, away_elo: float, include_home_advantage: bool = True
+        self, home_elo: float, away_elo: float, include_home_advantage: bool = True,
     ) -> tuple:
-        """
-        Calculate expected score using ELO formula.
+        """Calculate expected score using ELO formula.
         Returns (home_expected, away_expected) where values sum to 1.0
         """
         if include_home_advantage:
@@ -458,10 +456,9 @@ class MachineLearningEnhancer:
         return home_expected, away_expected
 
     def update_elo_after_match(
-        self, home_team: str, away_team: str, home_goals: int, away_goals: int
+        self, home_team: str, away_team: str, home_goals: int, away_goals: int,
     ) -> dict:
-        """
-        Update ELO ratings after a match result.
+        """Update ELO ratings after a match result.
         Uses separate attack/defense ELO for more nuanced ratings.
         """
         home_rating = self.get_team_elo(home_team)
@@ -481,7 +478,7 @@ class MachineLearningEnhancer:
 
         # Calculate expected scores
         home_exp, away_exp = self.calculate_expected_score(
-            home_rating["elo"], away_rating["elo"]
+            home_rating["elo"], away_rating["elo"],
         )
 
         # Determine actual scores (1 = win, 0.5 = draw, 0 = loss)
@@ -526,7 +523,7 @@ class MachineLearningEnhancer:
         self.elo_ratings[home_team]["defense_elo"] += home_defense_change
         self.elo_ratings[home_team]["matches"] += 1
         self.elo_ratings[home_team]["last_updated"] = datetime.now().strftime(
-            "%Y-%m-%d"
+            "%Y-%m-%d",
         )
 
         self.elo_ratings[away_team]["elo"] += away_elo_change
@@ -534,7 +531,7 @@ class MachineLearningEnhancer:
         self.elo_ratings[away_team]["defense_elo"] += away_defense_change
         self.elo_ratings[away_team]["matches"] += 1
         self.elo_ratings[away_team]["last_updated"] = datetime.now().strftime(
-            "%Y-%m-%d"
+            "%Y-%m-%d",
         )
 
         # Refresh bayesian_ratings for compatibility
@@ -553,15 +550,14 @@ class MachineLearningEnhancer:
         }
 
     def predict_match_elo(self, home_team: str, away_team: str) -> dict:
-        """
-        Predict match outcome using ELO ratings.
+        """Predict match outcome using ELO ratings.
         Returns probabilities for home win, draw, away win.
         """
         home_rating = self.get_team_elo(home_team)
         away_rating = self.get_team_elo(away_team)
 
         home_exp, away_exp = self.calculate_expected_score(
-            home_rating["elo"], away_rating["elo"]
+            home_rating["elo"], away_rating["elo"],
         )
 
         # Convert expected scores to win/draw/loss probabilities
@@ -586,19 +582,18 @@ class MachineLearningEnhancer:
             "away_elo": round(away_rating["elo"], 0),
             "elo_difference": round(elo_diff, 0),
             "confidence": min(
-                0.95, (home_rating["matches"] + away_rating["matches"]) / 200
+                0.95, (home_rating["matches"] + away_rating["matches"]) / 200,
             ),
         }
 
-    def _initialize_models(self) -> Dict[str, Any]:
+    def _initialize_models(self) -> dict[str, Any]:
         """Initialize the ensemble of ML models"""
-
         models = {
             "gradient_boosting": GradientBoostingClassifier(
-                n_estimators=100, max_depth=6, learning_rate=0.1, random_state=42
+                n_estimators=100, max_depth=6, learning_rate=0.1, random_state=42,
             ),
             "random_forest": RandomForestClassifier(
-                n_estimators=100, max_depth=8, random_state=42
+                n_estimators=100, max_depth=8, random_state=42,
             ),
             "logistic_regression": LogisticRegression(max_iter=1000, random_state=42),
         }
@@ -613,15 +608,14 @@ class MachineLearningEnhancer:
         realtime_data: JSONDict,
     ) -> np.ndarray:
         """Generate comprehensive feature vector for ML models"""
-
         features = []
 
         # ELO-based team strength features
         home_ratings = self.bayesian_ratings.get(
-            home_team, {"attack": 0.5, "defense": 0.5}
+            home_team, {"attack": 0.5, "defense": 0.5},
         )
         away_ratings = self.bayesian_ratings.get(
-            away_team, {"attack": 0.5, "defense": 0.5}
+            away_team, {"attack": 0.5, "defense": 0.5},
         )
 
         features.extend(
@@ -634,7 +628,7 @@ class MachineLearningEnhancer:
                 - away_ratings["defense"],  # Attack vs Defense matchup
                 away_ratings["attack"]
                 - home_ratings["defense"],  # Attack vs Defense matchup
-            ]
+            ],
         )
 
         # Form features
@@ -653,7 +647,7 @@ class MachineLearningEnhancer:
                     away_form.get("goals_per_game", 1.0),
                     home_form.get("xg_performance", 1.0),
                     away_form.get("xg_performance", 1.0),
-                ]
+                ],
             )
 
             # Player availability
@@ -662,7 +656,7 @@ class MachineLearningEnhancer:
                 [
                     availability.get("home_availability_multiplier", 1.0),
                     availability.get("away_availability_multiplier", 1.0),
-                ]
+                ],
             )
 
             # Weather impact
@@ -671,18 +665,18 @@ class MachineLearningEnhancer:
                 [
                     weather.get("temperature", 18.0) / 40.0,  # Normalize
                     weather.get("playing_impact", 0.0),
-                ]
+                ],
             )
 
             # Referee bias
             referee = enhancements.get("referee_profile", {})
             features.extend(
-                [referee.get("home_bias", 0.0), referee.get("strictness", 0.5)]
+                [referee.get("home_bias", 0.0), referee.get("strictness", 0.5)],
             )
         else:
             # Fallback features
             features.extend(
-                [0.5, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 18.0 / 40.0, 0.0, 0.0, 0.5]
+                [0.5, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 18.0 / 40.0, 0.0, 0.0, 0.5],
             )
 
         # Historical head-to-head (simulated)
@@ -697,7 +691,7 @@ class MachineLearningEnhancer:
             [
                 np.sin(2 * np.pi * current_month / 12),  # Seasonal sine
                 np.cos(2 * np.pi * current_month / 12),  # Seasonal cosine
-            ]
+            ],
         )
 
         # Match importance (simulated based on league position)
@@ -706,9 +700,8 @@ class MachineLearningEnhancer:
 
         return np.array(features).reshape(1, -1)
 
-    def train_ensemble_models(self, training_data: JSONList) -> Dict[str, float]:
+    def train_ensemble_models(self, training_data: JSONList) -> dict[str, float]:
         """Train all ensemble models on historical data"""
-
         print("🤖 Training ML ensemble models...")
 
         if len(training_data) < 50:
@@ -730,7 +723,7 @@ class MachineLearningEnhancer:
 
             # Convert result to class (0: away win, 1: draw, 2: home win)
             result = match.get(
-                "result", np.random.choice([0, 1, 2], p=[0.3, 0.25, 0.45])
+                "result", np.random.choice([0, 1, 2], p=[0.3, 0.25, 0.45]),
             )
             y_train_list.append(int(result))
 
@@ -741,7 +734,7 @@ class MachineLearningEnhancer:
         X_train_scaled = self.scaler.fit_transform(X_train)
 
         # Train each model and evaluate
-        model_scores: Dict[str, float] = {}
+        model_scores: dict[str, float] = {}
 
         for name, model in self.ensemble_models.items():
             print(f"  Training {name}...")
@@ -784,7 +777,7 @@ class MachineLearningEnhancer:
         return model_scores
 
     def train_from_processed_dataset(
-        self, filename: str = "historical_dataset.json"
+        self, filename: str = "historical_dataset.json",
     ) -> dict[str, float]:
         """Train ensemble models from processed dataset generated by scripts/collect_historical_data.py"""
         print("Loading processed dataset for training...")
@@ -827,7 +820,6 @@ class MachineLearningEnhancer:
 
     def _calculate_model_weight(self, accuracy: float, log_loss: float) -> float:
         """Calculate ensemble weight based on model performance"""
-
         # Weight based on accuracy (0.6 weight) and inverse log-loss (0.4 weight)
         accuracy_weight = accuracy * 0.6
         logloss_weight = (1.0 / (1.0 + log_loss)) * 0.4
@@ -839,19 +831,18 @@ class MachineLearningEnhancer:
         self,
         home_team: str,
         away_team: str,
-        match_data: Dict[str, Any],
-        realtime_data: Dict[str, Any],
-    ) -> Dict[str, Any]:
+        match_data: dict[str, Any],
+        realtime_data: dict[str, Any],
+    ) -> dict[str, Any]:
         """Make predictions using weighted ensemble"""
-
         # Generate features
         features = self.generate_features(
-            home_team, away_team, match_data, realtime_data
+            home_team, away_team, match_data, realtime_data,
         )
         features_scaled = self.scaler.transform(features)
 
         # Get predictions from each model
-        ensemble_predictions: Dict[str, Dict[str, Any]] = {}
+        ensemble_predictions: dict[str, dict[str, Any]] = {}
         weighted_probabilities = np.zeros(3)  # [away_win, draw, home_win]
         total_weight = 0.0
 
@@ -864,7 +855,7 @@ class MachineLearningEnhancer:
                 weight = self.model_performances.get(
                     name,
                     ModelPerformance(
-                        name, 0.5, 1.0, 0, datetime.now().isoformat(), 0.5
+                        name, 0.5, 1.0, 0, datetime.now().isoformat(), 0.5,
                     ),
                 ).weight
 
@@ -906,10 +897,9 @@ class MachineLearningEnhancer:
         }
 
     def _calculate_model_agreement(
-        self, predictions: Dict[str, Dict[str, Any]]
+        self, predictions: dict[str, dict[str, Any]],
     ) -> float:
         """Calculate how much the models agree with each other"""
-
         if len(predictions) < 2:
             return 0.5
 
@@ -930,10 +920,9 @@ class MachineLearningEnhancer:
         return float(agreement)
 
     def update_bayesian_ratings(
-        self, match_result: dict[str, Any]
+        self, match_result: dict[str, Any],
     ) -> list[BayesianUpdate]:
         """Update team ratings using Bayesian inference"""
-
         home_team = match_result["home_team"]
         away_team = match_result["away_team"]
         home_score = match_result["home_score"]
@@ -943,28 +932,27 @@ class MachineLearningEnhancer:
 
         # Update home team
         home_update = self._bayesian_team_update(
-            home_team, home_score, away_score, is_home=True
+            home_team, home_score, away_score, is_home=True,
         )
         updates.append(home_update)
 
         # Update away team
         away_update = self._bayesian_team_update(
-            away_team, away_score, home_score, is_home=False
+            away_team, away_score, home_score, is_home=False,
         )
         updates.append(away_update)
 
         print(
             f"🔄 Bayesian updates: {home_team} ({home_update.old_rating:.3f}→{home_update.new_rating:.3f}), "
-            f"{away_team} ({away_update.old_rating:.3f}→{away_update.new_rating:.3f})"
+            f"{away_team} ({away_update.old_rating:.3f}→{away_update.new_rating:.3f})",
         )
 
         return updates
 
     def _bayesian_team_update(
-        self, team_name: str, goals_for: int, goals_against: int, is_home: bool
+        self, team_name: str, goals_for: int, goals_against: int, is_home: bool,
     ) -> BayesianUpdate:
         """Perform Bayesian update for a single team"""
-
         if team_name not in self.bayesian_ratings:
             # Initialize new team
             self.bayesian_ratings[team_name] = {
@@ -1028,10 +1016,9 @@ class MachineLearningEnhancer:
         )
 
     def _generate_simulated_training_data(
-        self, num_matches: int
+        self, num_matches: int,
     ) -> list[dict[str, Any]]:
         """Generate simulated training data for model training"""
-
         teams = list(self.bayesian_ratings.keys())
         training_data = []
 
@@ -1071,10 +1058,10 @@ class MachineLearningEnhancer:
                             "away_availability_multiplier": np.random.uniform(0.8, 1.0),
                         },
                         "weather_conditions": {
-                            "playing_impact": np.random.uniform(0.0, 0.2)
+                            "playing_impact": np.random.uniform(0.0, 0.2),
                         },
                         "referee_profile": {"home_bias": np.random.uniform(-0.1, 0.1)},
-                    }
+                    },
                 },
             }
 
@@ -1145,11 +1132,11 @@ def main() -> None:
             },
             "weather_conditions": {"temperature": 22.0, "playing_impact": 0.0},
             "referee_profile": {"home_bias": 0.02, "strictness": 0.75},
-        }
+        },
     }
 
     prediction = enhancer.predict_with_ensemble(
-        "FC Barcelona", "Girona FC", sample_match, sample_realtime
+        "FC Barcelona", "Girona FC", sample_match, sample_realtime,
     )
 
     print("\n🎯 ML Ensemble Prediction:")

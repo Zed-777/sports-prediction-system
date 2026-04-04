@@ -37,8 +37,7 @@ def event_loop():
 
 @pytest.fixture
 def test_config() -> dict[str, Any]:
-    """
-    Provide a test configuration dictionary.
+    """Provide a test configuration dictionary.
     """
     config = create_default_config()
     config.update(
@@ -50,15 +49,14 @@ def test_config() -> dict[str, Any]:
                 "caching": {"enabled": False},
                 "retry_policy": {"max_attempts": 2},
             },
-        }
+        },
     )
     return config
 
 
 @pytest.fixture
 def temp_data_dir():
-    """
-    Create a temporary directory for test data.
+    """Create a temporary directory for test data.
     """
     temp_dir = tempfile.mkdtemp(prefix="sports_prediction_test_")
     temp_path = Path(temp_dir)
@@ -76,8 +74,7 @@ def temp_data_dir():
 
 @pytest.fixture
 def sample_match_data():
-    """
-    Provide sample match data for testing.
+    """Provide sample match data for testing.
     """
     return [
         {
@@ -103,8 +100,7 @@ def sample_match_data():
 
 @pytest.fixture
 def sample_team_data():
-    """
-    Provide sample team data for testing.
+    """Provide sample team data for testing.
     """
     return [
         {
@@ -126,8 +122,7 @@ def sample_team_data():
 
 @pytest.fixture
 def sample_predictions():
-    """
-    Provide sample prediction data for testing.
+    """Provide sample prediction data for testing.
     """
     return [
         {
@@ -142,19 +137,17 @@ def sample_predictions():
             "expected_away_score": 1.2,
             "model_version": "1.0.0",
             "prediction_date": "2025-10-19",
-        }
+        },
     ]
 
 
 @pytest.mark.asyncio
 async def pytest_configure(config):
     """Configure pytest for async tests."""
-    pass
 
 
 def pytest_collection_modifyitems(config, items):
-    """
-    Add markers to tests based on their location and name.
+    """Add markers to tests based on their location and name.
     """
     for item in items:
         # Add 'unit' marker to tests in tests/unit/
@@ -170,8 +163,8 @@ def pytest_collection_modifyitems(config, items):
                         reason=(
                             "Integration tests require RUN_INTEGRATION_TESTS=true "
                             "(set via env or secrets in CI)"
-                        )
-                    )
+                        ),
+                    ),
                 )
 
         # Add 'slow' marker to tests that might be slow

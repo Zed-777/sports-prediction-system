@@ -1,3 +1,5 @@
+# Pull Request
+
 ## Summary of changes
 
 - Add `InjuriesConnector` with API-Football primary and FlashScore/Transfermarkt fallbacks

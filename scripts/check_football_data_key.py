@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Check Football-Data.org API key validity using the key found in environment or .env fallback.
+"""Check Football-Data.org API key validity using the key found in environment or .env fallback.
 
 This script will read the key from the environment `FOOTBALL_DATA_API_KEY`, or from `.env` file
 if present in the workspace. It will then call a safe test endpoint and print results.
@@ -30,7 +29,7 @@ def read_env_file_for_key(key_name: str):
 
 def main():
     key = os.getenv("FOOTBALL_DATA_API_KEY") or read_env_file_for_key(
-        "FOOTBALL_DATA_API_KEY"
+        "FOOTBALL_DATA_API_KEY",
     )
     if not key:
         print("No Football-Data.org API key found in environment or .env file.")

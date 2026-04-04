@@ -1,5 +1,4 @@
-"""
-Advanced Prediction Models
+"""Advanced Prediction Models
 =========================
 
 Implements remaining high-value prediction improvements:
@@ -13,7 +12,6 @@ These are dedicated models for specific betting markets.
 import logging
 import math
 from dataclasses import dataclass
-from typing import Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -40,14 +38,13 @@ class ScorePrediction:
 
     expected_home_goals: float
     expected_away_goals: float
-    most_likely_score: Tuple[int, int]
+    most_likely_score: tuple[int, int]
     score_probability: float
-    alternative_scores: list[Tuple[Tuple[int, int], float]]
+    alternative_scores: list[tuple[tuple[int, int], float]]
 
 
 class TwoStagePredictionModel:
-    """
-    Two-stage prediction model separating outcome and score prediction.
+    """Two-stage prediction model separating outcome and score prediction.
 
     Predicting "home win" is easier than predicting "2-1".
     This model:
@@ -100,8 +97,7 @@ class TwoStagePredictionModel:
         home_advantage: float = 0.15,
         league_draw_tendency: float = 0.26,
     ) -> OutcomePrediction:
-        """
-        Stage 1: Predict match outcome.
+        """Stage 1: Predict match outcome.
 
         Args:
             home_strength: Home team strength (0-1)
@@ -111,6 +107,7 @@ class TwoStagePredictionModel:
 
         Returns:
             OutcomePrediction with probabilities
+
         """
         # Adjust strengths for home advantage
         adj_home = home_strength * (1 + home_advantage)
@@ -160,8 +157,7 @@ class TwoStagePredictionModel:
         expected_home_goals: float = 1.5,
         expected_away_goals: float = 1.2,
     ) -> ScorePrediction:
-        """
-        Stage 2: Predict score given the predicted outcome.
+        """Stage 2: Predict score given the predicted outcome.
 
         Args:
             outcome: Stage 1 outcome prediction
@@ -170,6 +166,7 @@ class TwoStagePredictionModel:
 
         Returns:
             ScorePrediction with most likely scores
+
         """
         predicted = outcome.predicted_outcome
 
@@ -200,7 +197,7 @@ class TwoStagePredictionModel:
 
         # Sort by probability
         sorted_scores = sorted(
-            weighted_scores.items(), key=lambda x: x[1], reverse=True
+            weighted_scores.items(), key=lambda x: x[1], reverse=True,
         )
 
         most_likely = sorted_scores[0]
@@ -230,8 +227,7 @@ class TwoStagePredictionModel:
         expected_away_goals: float,
         **kwargs,
     ) -> dict:
-        """
-        Complete two-stage prediction.
+        """Complete two-stage prediction.
 
         Returns combined outcome and score prediction.
         """
@@ -265,8 +261,7 @@ class TwoStagePredictionModel:
 
 
 class BTTSPredictor:
-    """
-    Dedicated Both Teams To Score (BTTS) predictor.
+    """Dedicated Both Teams To Score (BTTS) predictor.
 
     BTTS is a popular betting market. While it can be inferred
     from expected goals, a dedicated model is more accurate.
@@ -298,7 +293,6 @@ class BTTSPredictor:
 
     def __init__(self):
         """Initialize BTTS predictor."""
-        pass
 
     def predict_btts(
         self,
@@ -310,8 +304,7 @@ class BTTSPredictor:
         away_failed_to_score_rate: float = 0.25,
         league: str = "premier-league",
     ) -> dict:
-        """
-        Predict probability of both teams scoring.
+        """Predict probability of both teams scoring.
 
         Args:
             expected_home_goals: Expected home goals
@@ -324,6 +317,7 @@ class BTTSPredictor:
 
         Returns:
             Dictionary with BTTS probabilities
+
         """
         # Method 1: Poisson-based
         # P(home scores) = 1 - P(home = 0) = 1 - e^(-lambda_home)
@@ -382,8 +376,7 @@ class BTTSPredictor:
 
 
 class OverUnderPredictor:
-    """
-    Over/Under goals predictor for multiple lines.
+    """Over/Under goals predictor for multiple lines.
 
     Uses Poisson distribution to calculate exact probabilities
     for O/U 0.5, 1.5, 2.5, 3.5, 4.5 goals.
@@ -393,13 +386,11 @@ class OverUnderPredictor:
 
     def __init__(self):
         """Initialize O/U predictor."""
-        pass
 
     def predict_over_under(
-        self, expected_home_goals: float, expected_away_goals: float, league: str = None
+        self, expected_home_goals: float, expected_away_goals: float, league: str = None,
     ) -> dict:
-        """
-        Predict over/under probabilities for multiple lines.
+        """Predict over/under probabilities for multiple lines.
 
         Args:
             expected_home_goals: Expected home goals (lambda for Poisson)
@@ -408,6 +399,7 @@ class OverUnderPredictor:
 
         Returns:
             Dictionary with O/U probabilities for each line
+
         """
         total_expected = expected_home_goals + expected_away_goals
 
@@ -437,8 +429,7 @@ class OverUnderPredictor:
         return results
 
     def _calculate_over_probability(self, expected_total: float, line: float) -> float:
-        """
-        Calculate P(total goals > line) using Poisson.
+        """Calculate P(total goals > line) using Poisson.
 
         For half-goal lines (0.5, 1.5, etc.), this is equivalent to
         P(total goals >= ceiling(line)).
@@ -479,8 +470,7 @@ class OverUnderPredictor:
 
 
 class ExactScoreCalculator:
-    """
-    Calculate probabilities for exact scores using Poisson distribution.
+    """Calculate probabilities for exact scores using Poisson distribution.
 
     Provides:
     - Most likely scores
@@ -492,13 +482,11 @@ class ExactScoreCalculator:
 
     def __init__(self):
         """Initialize calculator."""
-        pass
 
     def calculate_score_matrix(
-        self, expected_home_goals: float, expected_away_goals: float
+        self, expected_home_goals: float, expected_away_goals: float,
     ) -> dict:
-        """
-        Generate full score probability matrix.
+        """Generate full score probability matrix.
 
         Returns probabilities for all scorelines from 0-0 to MAX_GOALS-MAX_GOALS.
         """
@@ -508,7 +496,7 @@ class ExactScoreCalculator:
         for home in range(self.MAX_GOALS + 1):
             for away in range(self.MAX_GOALS + 1):
                 prob = self._poisson_prob(
-                    home, expected_home_goals
+                    home, expected_home_goals,
                 ) * self._poisson_prob(away, expected_away_goals)
                 matrix[f"{home}-{away}"] = round(prob * 100, 2)
                 probabilities.append(((home, away), prob))
@@ -543,8 +531,7 @@ class ExactScoreCalculator:
 
 
 class AdvancedPredictionSuite:
-    """
-    Unified interface for all advanced prediction models.
+    """Unified interface for all advanced prediction models.
 
     Combines:
     - Two-stage prediction
@@ -572,11 +559,11 @@ class AdvancedPredictionSuite:
         home_failed_to_score_rate: float = 0.20,
         away_failed_to_score_rate: float = 0.25,
     ) -> dict:
-        """
-        Generate comprehensive prediction with all advanced models.
+        """Generate comprehensive prediction with all advanced models.
 
         Returns:
             Dictionary with all prediction types
+
         """
         # Two-stage prediction
         two_stage_result = self.two_stage.full_prediction(
@@ -638,28 +625,28 @@ if __name__ == "__main__":
     print()
     print("Outcome Prediction:")
     print(
-        f"  {result['outcome']['home_prob']}% / {result['outcome']['draw_prob']}% / {result['outcome']['away_prob']}%"
+        f"  {result['outcome']['home_prob']}% / {result['outcome']['draw_prob']}% / {result['outcome']['away_prob']}%",
     )
     print(
-        f"  Predicted: {result['outcome']['predicted']} ({result['outcome']['confidence']}% confidence)"
+        f"  Predicted: {result['outcome']['predicted']} ({result['outcome']['confidence']}% confidence)",
     )
     print()
     print("Score Prediction:")
     print(
-        f"  Most likely: {result['predicted_score']['most_likely']} ({result['predicted_score']['probability']}%)"
+        f"  Most likely: {result['predicted_score']['most_likely']} ({result['predicted_score']['probability']}%)",
     )
     print(f"  Alternatives: {result['predicted_score']['alternatives']}")
     print()
     print("BTTS Prediction:")
     print(
-        f"  Yes: {result['btts']['btts_yes_probability']}% / No: {result['btts']['btts_no_probability']}%"
+        f"  Yes: {result['btts']['btts_yes_probability']}% / No: {result['btts']['btts_no_probability']}%",
     )
     print(f"  Prediction: {result['btts']['prediction']}")
     print()
     print("Over/Under 2.5:")
     ou_25 = result["over_under"]["lines"]["2.5"]
     print(
-        f"  Over: {ou_25['over_probability']}% / Under: {ou_25['under_probability']}%"
+        f"  Over: {ou_25['over_probability']}% / Under: {ou_25['under_probability']}%",
     )
     print(f"  Prediction: {ou_25['prediction']}")
     print()

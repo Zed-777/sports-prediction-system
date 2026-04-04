@@ -1,7 +1,6 @@
 import json
 
 
-
 def test_regenerate_script_generates_image_and_summary(monkeypatch, tmp_path):
     monkeypatch.setenv("FOOTBALL_DATA_API_KEY", "test_key")
 

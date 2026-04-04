@@ -1,5 +1,4 @@
-"""
-Test package for the Sports Prediction System
+"""Test package for the Sports Prediction System
 """
 
 import os

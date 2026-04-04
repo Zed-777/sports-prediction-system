@@ -1,18 +1,14 @@
 [
   {
-    "match_id": "val1",
-    "match_date": "2025-12-19T00:00:00+00:00",
-    "home_team": "Valencia Club de F\u00fatbol",
-    "away_team": "RCD Mallorca",
+    "match_id": "m1",
+    "match_date": "2025-01-01",
+    "home_team": "A",
+    "away_team": "B",
     "prediction": {},
     "actual_result": {
       "home_score": 1,
-      "away_score": 1,
-      "outcome": "draw",
-      "updated_at": "2026-03-23T22:45:15.181031"
+      "away_score": 0
     },
-    "prediction_correct": false,
-    "exact_score_correct": false,
-    "score_in_top3": false
+    "prediction_correct": true
   }
 ]

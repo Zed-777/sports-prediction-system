@@ -1,10 +1,8 @@
-"""
-Unit tests for the profitability analysis modules
+"""Unit tests for the profitability analysis modules
 (PROF-001 through PROF-005)
 """
 from __future__ import annotations
 
-import math
 import sys
 from pathlib import Path
 
@@ -20,19 +18,16 @@ if _ROOT not in sys.path:
 
 from app.models.profitability import (
     BetResult,
-    ProfitabilityReport,
-    calculate_ev,
-    calculate_edge,
-    kelly_fraction,
-    quarter_kelly,
-    compute_drawdown,
-    max_consecutive_losses,
-    sharpe_equivalent,
     binomial_significance_test,
-    roi_confidence_interval,
-    estimate_risk_of_ruin,
     build_profitability_report,
-    score_live_readiness,
+    calculate_edge,
+    calculate_ev,
+    compute_drawdown,
+    estimate_risk_of_ruin,
+    kelly_fraction,
+    max_consecutive_losses,
+    quarter_kelly,
+    sharpe_equivalent,
 )
 
 
@@ -211,7 +206,11 @@ class TestBuildProfitabilityReport:
 # app/models/market_simulator.py
 # ============================================================
 
-from app.models.market_simulator import MarketSimulator, SyntheticMatchGenerator, SimulatedOdds
+from app.models.market_simulator import (
+    MarketSimulator,
+    SimulatedOdds,
+    SyntheticMatchGenerator,
+)
 
 
 class TestMarketSimulator:
@@ -277,7 +276,6 @@ class TestSyntheticMatchGenerator:
             assert isinstance(r["market_odds"], SimulatedOdds)
 
     def test_higher_accuracy_better_brier(self):
-        from app.models.profitability import calculate_ev
         gen_high = SyntheticMatchGenerator(model_accuracy=0.70, seed=1)
         gen_low = SyntheticMatchGenerator(model_accuracy=0.45, seed=1)
         high_rec = gen_high.generate(500)
@@ -415,8 +413,8 @@ class TestQualifyingGate:
 class TestEndToEndProfitability:
     def test_positive_roi_with_calibrated_model(self):
         """End-to-end: a well-calibrated 60% model should yield positive ROI."""
-        from app.models.market_simulator import SyntheticMatchGenerator
         from app.models.live_trading_validator import simulate_bets
+        from app.models.market_simulator import SyntheticMatchGenerator
 
         gen = SyntheticMatchGenerator(model_accuracy=0.62, bookmaker_type="sharp", seed=777)
         records = gen.generate(1000)

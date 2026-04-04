@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Force-remove match directories under reports/leagues/*/matches.
+"""Force-remove match directories under reports/leagues/*/matches.
 
 This script is conservative:
 - It only removes directories directly under reports/leagues/*/matches
@@ -15,11 +14,11 @@ Usage:
 Be careful: this permanently deletes match directories and their files.
 """
 
-from pathlib import Path
-import shutil
-import os
-import stat
 import argparse
+import os
+import shutil
+import stat
+from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
 REPORTS = ROOT / "reports" / "leagues"
@@ -103,5 +102,5 @@ def main():
         print("All match directories removed successfully.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

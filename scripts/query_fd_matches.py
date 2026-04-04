@@ -1,4 +1,6 @@
-import os, requests
+import os
+
+import requests
 
 key = os.getenv("FOOTBALL_DATA_API_KEY")
 headers = {"X-Auth-Token": key}

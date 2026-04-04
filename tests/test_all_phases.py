@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""
-Integration test for all 7 enhancement phases.
+"""Integration test for all 7 enhancement phases.
 Tests the complete prediction pipeline with sample match data.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -101,9 +101,10 @@ class TestModuleImports:
 
     def test_prediction_tracker_import(self):
         """Test prediction_tracker module imports."""
-        from app.models.prediction_tracker import PredictionTracker
-        import tempfile
         import os
+        import tempfile
+
+        from app.models.prediction_tracker import PredictionTracker
 
         # Use a temp file for SQLite
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -189,7 +190,7 @@ class TestEnhancementFeatures:
         predictor = BTTSPredictor()
 
         result = predictor.predict_btts(
-            expected_home_goals=1.8, expected_away_goals=1.2
+            expected_home_goals=1.8, expected_away_goals=1.2,
         )
         # Check for actual key names in result
         assert "btts_yes_probability" in result or "btts_yes" in result
@@ -202,7 +203,7 @@ class TestEnhancementFeatures:
         predictor = OverUnderPredictor()
 
         result = predictor.predict_over_under(
-            expected_home_goals=1.5, expected_away_goals=1.0
+            expected_home_goals=1.5, expected_away_goals=1.0,
         )
         # Check result has data
         assert result is not None

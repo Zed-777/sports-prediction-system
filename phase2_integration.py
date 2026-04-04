@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Phase 2 Integration Blueprint
+"""Phase 2 Integration Blueprint
 High-Confidence Intelligence System Integration Plan
 """
 
@@ -18,8 +17,7 @@ from app.models.confidence_optimizer import ConfidenceOptimizer
 
 
 class HighConfidencePredictor:
-    """
-    Phase 2: High-Confidence Prediction System
+    """Phase 2: High-Confidence Prediction System
 
     Integrates all Phase 2 components for 80%+ confidence predictions:
     - Multi-source data fusion
@@ -34,7 +32,7 @@ class HighConfidencePredictor:
         # Initialize Phase 2 components
         self.multi_source = MultiSourceConnector()
         self.ai_engine = AdvancedAIEngine(
-            api_key="dummy_key"
+            api_key="dummy_key",
         )  # Fixed: Added required api_key parameter
         self.validator = SmartDataValidator()
         self.optimizer = ConfidenceOptimizer()
@@ -43,10 +41,9 @@ class HighConfidencePredictor:
         self.performance_metrics = {}
 
     async def high_confidence_prediction(
-        self, match_data: dict[str, Any]
+        self, match_data: dict[str, Any],
     ) -> dict[str, Any]:
-        """
-        Generate high-confidence prediction using Phase 2 system
+        """Generate high-confidence prediction using Phase 2 system
 
         Process:
         1. Multi-source data collection
@@ -55,7 +52,6 @@ class HighConfidencePredictor:
         4. Confidence optimization and calibration
         5. Final recommendation generation
         """
-
         prediction_start = time.time()
 
         try:
@@ -74,12 +70,12 @@ class HighConfidencePredictor:
             # Step 4: Confidence optimization
             self.logger.info("Phase 2: Optimizing confidence...")
             confidence_metrics = self._optimize_confidence(
-                ai_prediction, enhanced_data, validation_result
+                ai_prediction, enhanced_data, validation_result,
             )
 
             # Step 5: Final integration
             final_prediction = self._integrate_final_prediction(
-                ai_prediction, confidence_metrics, validation_result, enhanced_data
+                ai_prediction, confidence_metrics, validation_result, enhanced_data,
             )
 
             # Performance tracking
@@ -95,10 +91,9 @@ class HighConfidencePredictor:
             return self._fallback_prediction(match_data)
 
     async def _collect_enhanced_data(
-        self, match_data: dict[str, Any]
+        self, match_data: dict[str, Any],
     ) -> dict[str, Any]:
         """Collect data from multiple sources"""
-
         # Extract team information
         home_team_id = match_data.get("home_team_id", "")
         away_team_id = match_data.get("away_team_id", "")
@@ -109,12 +104,12 @@ class HighConfidencePredictor:
 
         if home_team_id:
             tasks.append(
-                self.multi_source.enhanced_team_analysis(home_team_id, competition)
+                self.multi_source.enhanced_team_analysis(home_team_id, competition),
             )
 
         if away_team_id:
             tasks.append(
-                self.multi_source.enhanced_team_analysis(away_team_id, competition)
+                self.multi_source.enhanced_team_analysis(away_team_id, competition),
             )
 
         # Execute data collection
@@ -125,7 +120,7 @@ class HighConfidencePredictor:
             enhanced_data = match_data.copy()
             enhanced_data["multi_source_data"] = results
             enhanced_data["data_sources_used"] = len(
-                [r for r in results if not isinstance(r, Exception)]
+                [r for r in results if not isinstance(r, Exception)],
             )
 
             return enhanced_data
@@ -136,15 +131,14 @@ class HighConfidencePredictor:
 
     def _validate_data_quality(self, enhanced_data: dict[str, Any]) -> Any:
         """Validate data quality and calculate impact on confidence"""
-
         try:
             data_sources = enhanced_data.get("multi_source_data", [])
             validation_result = self.validator.comprehensive_validation(
-                enhanced_data, data_sources
+                enhanced_data, data_sources,
             )
 
             self.logger.info(
-                f"Data quality score: {validation_result.quality_score:.1f}/100"
+                f"Data quality score: {validation_result.quality_score:.1f}/100",
             )
 
             return validation_result
@@ -155,22 +149,21 @@ class HighConfidencePredictor:
 
     def _generate_ai_prediction(self, enhanced_data: dict[str, Any]) -> dict[str, Any]:
         """Generate prediction using advanced AI ensemble"""
-
         try:
             # Check if AI models are available
             if not self.ai_engine.is_available():
                 self.logger.warning(
-                    "AI models not available - using enhanced heuristics"
+                    "AI models not available - using enhanced heuristics",
                 )
                 return self._enhanced_heuristic_prediction(enhanced_data)
 
             # Generate AI prediction
             ai_prediction = self.ai_engine.enhanced_prediction(
-                enhanced_data, enhanced_data.get("league_code", "DEFAULT")
+                enhanced_data, enhanced_data.get("league_code", "DEFAULT"),
             )
 
             self.logger.info(
-                f"AI ensemble used {len(self.ai_engine.available_models)} models"
+                f"AI ensemble used {len(self.ai_engine.available_models)} models",
             )
 
             return ai_prediction
@@ -186,16 +179,15 @@ class HighConfidencePredictor:
         validation_result: Any,
     ) -> Any:
         """Optimize confidence using advanced calibration"""
-
         try:
             base_confidence = ai_prediction.get("confidence", 0.6)
 
             confidence_metrics = self.optimizer.optimize_confidence(
-                base_confidence, enhanced_data, ai_prediction, validation_result
+                base_confidence, enhanced_data, ai_prediction, validation_result,
             )
 
             self.logger.info(
-                f"Confidence optimized: {base_confidence:.1%} → {confidence_metrics.final_confidence:.1%}"
+                f"Confidence optimized: {base_confidence:.1%} → {confidence_metrics.final_confidence:.1%}",
             )
 
             return confidence_metrics
@@ -212,7 +204,6 @@ class HighConfidencePredictor:
         enhanced_data: dict[str, Any],
     ) -> dict[str, Any]:
         """Integrate all components into final high-confidence prediction"""
-
         # Base prediction from AI
         final_prediction = ai_prediction.copy()
 
@@ -232,7 +223,7 @@ class HighConfidencePredictor:
 
             # Confidence recommendation
             recommendations = self.optimizer.get_confidence_recommendation(
-                confidence_metrics
+                confidence_metrics,
             )
             final_prediction["confidence_recommendation"] = recommendations
 
@@ -241,13 +232,13 @@ class HighConfidencePredictor:
             final_prediction["data_quality_score"] = validation_result.quality_score
             final_prediction["data_validation_issues"] = len(validation_result.issues)
             final_prediction["data_validation_warnings"] = len(
-                validation_result.warnings
+                validation_result.warnings,
             )
             final_prediction["enhancement_suggestions"] = validation_result.enhancements
 
         # Multi-source data info
         final_prediction["data_sources_used"] = enhanced_data.get(
-            "data_sources_used", 1
+            "data_sources_used", 1,
         )
 
         # Phase 2 indicators
@@ -260,10 +251,9 @@ class HighConfidencePredictor:
         return final_prediction
 
     def _enhanced_heuristic_prediction(
-        self, enhanced_data: dict[str, Any]
+        self, enhanced_data: dict[str, Any],
     ) -> dict[str, Any]:
         """Enhanced heuristic prediction when AI models not available"""
-
         # This would implement improved heuristics using multi-source data
         # For now, return basic structure
         return {
@@ -277,7 +267,6 @@ class HighConfidencePredictor:
 
     def _fallback_prediction(self, match_data: dict[str, Any]) -> dict[str, Any]:
         """Fallback when Phase 2 system fails - uses league-based baselines"""
-
         # Get league-specific baseline probabilities (data-driven, not hardcoded)
         league_code = match_data.get("competition_code", "PD")
         league_baselines = {
@@ -308,8 +297,7 @@ class HighConfidencePredictor:
 
 
 class Phase2IntegrationManager:
-    """
-    Manager for Phase 2 system integration and deployment
+    """Manager for Phase 2 system integration and deployment
     """
 
     def __init__(self):
@@ -318,7 +306,6 @@ class Phase2IntegrationManager:
 
     def initialize_phase2_system(self) -> bool:
         """Initialize Phase 2 high-confidence system"""
-
         try:
             self.logger.info("Initializing Phase 2 High-Confidence System...")
 
@@ -339,7 +326,6 @@ class Phase2IntegrationManager:
 
     def _check_phase2_dependencies(self) -> bool:
         """Check if Phase 2 dependencies are available"""
-
         required_modules = ["aiohttp", "sklearn", "xgboost", "tensorflow"]  # Optional
 
         missing_modules = []
@@ -360,7 +346,6 @@ class Phase2IntegrationManager:
 
     async def test_phase2_system(self) -> dict[str, Any]:
         """Test Phase 2 system with sample data"""
-
         if not self.predictor:
             return {"error": "Phase 2 system not initialized"}
 
@@ -393,7 +378,6 @@ class Phase2IntegrationManager:
 # Usage Example
 async def demo_phase2_system():
     """Demonstrate Phase 2 high-confidence system"""
-
     manager = Phase2IntegrationManager()
 
     # Initialize system

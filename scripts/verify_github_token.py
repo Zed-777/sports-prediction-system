@@ -48,13 +48,13 @@ def main():
     t = get_token()
     if not t:
         print(
-            "GITHUB_TOKEN not found in environment or .env. Use scripts/setup_github_pat.ps1 to save one."
+            "GITHUB_TOKEN not found in environment or .env. Use scripts/setup_github_pat.ps1 to save one.",
         )
         sys.exit(2)
     try:
         info = verify_token(t)
         print(
-            f"Token valid. Authenticated as: {info.get('login')} (id={info.get('id')})"
+            f"Token valid. Authenticated as: {info.get('login')} (id={info.get('id')})",
         )
         return 0
     except Exception as e:

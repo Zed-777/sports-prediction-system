@@ -1,5 +1,4 @@
-"""
-Shot Quality and Defensive Metrics Module (FE-002, FE-003)
+"""Shot Quality and Defensive Metrics Module (FE-002, FE-003)
 ==========================================================
 
 Implements advanced statistical features for prediction improvement:
@@ -9,12 +8,12 @@ Implements advanced statistical features for prediction improvement:
 Expected accuracy boost: +3-7% combined
 """
 
-from dataclasses import dataclass
-from typing import Dict, Any, Tuple
-from datetime import datetime
 import json
-import os
 import logging
+import os
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +36,7 @@ class ShotQualityStats:
     data_quality: str = "estimated"  # 'real', 'partial', 'estimated'
     matches_analyzed: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "team_name": self.team_name,
             "shots_per_game": self.shots_per_game,
@@ -77,7 +76,7 @@ class DefensiveStats:
     data_quality: str = "estimated"
     matches_analyzed: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "team_name": self.team_name,
             "clean_sheet_rate": self.clean_sheet_rate,
@@ -100,8 +99,7 @@ class DefensiveStats:
 
 
 class ShotQualityAnalyzer:
-    """
-    Analyzes shot quality metrics for prediction improvement.
+    """Analyzes shot quality metrics for prediction improvement.
 
     FE-002: Shot Quality Metrics
     - Shots on target, big chances created, big chances missed
@@ -121,14 +119,14 @@ class ShotQualityAnalyzer:
     def __init__(self, cache_dir: str = "data/cache"):
         self.cache_dir = cache_dir
         self.cache_file = os.path.join(cache_dir, "shot_quality_cache.json")
-        self._cache: Dict[str, Dict] = {}
+        self._cache: dict[str, dict] = {}
         self._load_cache()
 
     def _load_cache(self):
         """Load cached shot quality data."""
         try:
             if os.path.exists(self.cache_file):
-                with open(self.cache_file, "r") as f:
+                with open(self.cache_file) as f:
                     self._cache = json.load(f)
         except Exception as e:
             logger.debug(f"Cache load failed: {e}")
@@ -144,10 +142,9 @@ class ShotQualityAnalyzer:
             logger.debug(f"Cache save failed: {e}")
 
     def analyze_team(
-        self, team_name: str, team_stats: Dict[str, Any], league: str = "default"
+        self, team_name: str, team_stats: dict[str, Any], league: str = "default",
     ) -> ShotQualityStats:
-        """
-        Analyze team's shot quality and identify performance trends.
+        """Analyze team's shot quality and identify performance trends.
 
         Args:
             team_name: Team name
@@ -156,6 +153,7 @@ class ShotQualityAnalyzer:
 
         Returns:
             ShotQualityStats dataclass with shot quality analysis
+
         """
         # Get league averages
         avgs = self.LEAGUE_AVERAGES.get(league, self.LEAGUE_AVERAGES["default"])
@@ -183,7 +181,7 @@ class ShotQualityAnalyzer:
 
         # Try to extract shot stats if available
         goals_scored = home_stats.get("goals_scored", 0) + away_stats.get(
-            "goals_scored", 0
+            "goals_scored", 0,
         )
         goals_per_game = goals_scored / max(total_matches, 1)
 
@@ -245,9 +243,8 @@ class ShotQualityAnalyzer:
         expected_goals: float,
         shot_quality: ShotQualityStats,
         league: str = "default",
-    ) -> Tuple[float, str]:
-        """
-        Adjust expected goals based on shot quality trends.
+    ) -> tuple[float, str]:
+        """Adjust expected goals based on shot quality trends.
 
         Args:
             expected_goals: Base expected goals prediction
@@ -256,6 +253,7 @@ class ShotQualityAnalyzer:
 
         Returns:
             Tuple of (adjusted_goals, explanation)
+
         """
         avgs = self.LEAGUE_AVERAGES.get(league, self.LEAGUE_AVERAGES["default"])
         adjustment = 0.0
@@ -299,8 +297,7 @@ class ShotQualityAnalyzer:
 
 
 class DefensiveSolidityAnalyzer:
-    """
-    Analyzes defensive solidity for goals against prediction.
+    """Analyzes defensive solidity for goals against prediction.
 
     FE-003: Defensive Solidity Metrics
     - Clean sheets, blocks, interceptions, tackles
@@ -325,14 +322,14 @@ class DefensiveSolidityAnalyzer:
     def __init__(self, cache_dir: str = "data/cache"):
         self.cache_dir = cache_dir
         self.cache_file = os.path.join(cache_dir, "defensive_stats_cache.json")
-        self._cache: Dict[str, Dict] = {}
+        self._cache: dict[str, dict] = {}
         self._load_cache()
 
     def _load_cache(self):
         """Load cached defensive data."""
         try:
             if os.path.exists(self.cache_file):
-                with open(self.cache_file, "r") as f:
+                with open(self.cache_file) as f:
                     self._cache = json.load(f)
         except Exception as e:
             logger.debug(f"Cache load failed: {e}")
@@ -348,10 +345,9 @@ class DefensiveSolidityAnalyzer:
             logger.debug(f"Cache save failed: {e}")
 
     def analyze_team(
-        self, team_name: str, team_stats: Dict[str, Any], league: str = "default"
+        self, team_name: str, team_stats: dict[str, Any], league: str = "default",
     ) -> DefensiveStats:
-        """
-        Analyze team's defensive solidity.
+        """Analyze team's defensive solidity.
 
         Args:
             team_name: Team name
@@ -360,6 +356,7 @@ class DefensiveSolidityAnalyzer:
 
         Returns:
             DefensiveStats dataclass with defensive analysis
+
         """
         avgs = self.LEAGUE_AVERAGES.get(league, self.LEAGUE_AVERAGES["default"])
 
@@ -384,13 +381,13 @@ class DefensiveSolidityAnalyzer:
 
         # Calculate from available stats
         goals_conceded = home_stats.get("goals_against", 0) + away_stats.get(
-            "goals_against", 0
+            "goals_against", 0,
         )
         conceded_pg = goals_conceded / max(total_matches, 1)
 
         # Clean sheet rate
         clean_sheets = home_stats.get("clean_sheets", 0) + away_stats.get(
-            "clean_sheets", 0
+            "clean_sheets", 0,
         )
         clean_sheet_rate = clean_sheets / max(total_matches, 1)
 
@@ -461,9 +458,8 @@ class DefensiveSolidityAnalyzer:
         expected_goals_against: float,
         defensive_stats: DefensiveStats,
         league: str = "default",
-    ) -> Tuple[float, str]:
-        """
-        Adjust expected goals against based on defensive metrics.
+    ) -> tuple[float, str]:
+        """Adjust expected goals against based on defensive metrics.
 
         Args:
             expected_goals_against: Base expected goals against
@@ -472,6 +468,7 @@ class DefensiveSolidityAnalyzer:
 
         Returns:
             Tuple of (adjusted_goals, explanation)
+
         """
         avgs = self.LEAGUE_AVERAGES.get(league, self.LEAGUE_AVERAGES["default"])
         adjustment = 0.0
@@ -510,8 +507,7 @@ class DefensiveSolidityAnalyzer:
 
 
 class AdvancedStatsAnalyzer:
-    """
-    Unified interface for shot quality and defensive metrics.
+    """Unified interface for shot quality and defensive metrics.
 
     Combines FE-002 and FE-003 for comprehensive team analysis.
     """
@@ -525,14 +521,13 @@ class AdvancedStatsAnalyzer:
         self,
         home_team: str,
         away_team: str,
-        home_stats: Dict[str, Any],
-        away_stats: Dict[str, Any],
+        home_stats: dict[str, Any],
+        away_stats: dict[str, Any],
         expected_home_goals: float,
         expected_away_goals: float,
         league: str = "default",
-    ) -> Dict[str, Any]:
-        """
-        Perform comprehensive shot quality and defensive analysis.
+    ) -> dict[str, Any]:
+        """Perform comprehensive shot quality and defensive analysis.
 
         Returns:
             Dictionary with:
@@ -543,6 +538,7 @@ class AdvancedStatsAnalyzer:
             - adjusted_home_goals: float
             - adjusted_away_goals: float
             - adjustments_applied: List of explanations
+
         """
         adjustments = []
 
@@ -556,10 +552,10 @@ class AdvancedStatsAnalyzer:
 
         # Adjust home goals (home attack vs away defense)
         home_attack_adj, attack_reason = self.shot_analyzer.adjust_goal_expectations(
-            expected_home_goals, home_shots, league
+            expected_home_goals, home_shots, league,
         )
         away_def_adj, def_reason = self.defense_analyzer.adjust_goals_against(
-            expected_home_goals, away_defense, league
+            expected_home_goals, away_defense, league,
         )
 
         # Average the adjustments
@@ -572,10 +568,10 @@ class AdvancedStatsAnalyzer:
 
         # Adjust away goals (away attack vs home defense)
         away_attack_adj, attack_reason2 = self.shot_analyzer.adjust_goal_expectations(
-            expected_away_goals, away_shots, league
+            expected_away_goals, away_shots, league,
         )
         home_def_adj, def_reason2 = self.defense_analyzer.adjust_goals_against(
-            expected_away_goals, home_defense, league
+            expected_away_goals, home_defense, league,
         )
 
         adj_away_goals = (away_attack_adj + home_def_adj) / 2
@@ -651,7 +647,7 @@ if __name__ == "__main__":
     print(f"  Shots/game: {sq['shots_per_game']:.1f}")
     print(f"  Conversion: {sq['shot_conversion_rate']:.1%}")
     print(
-        f"  Performance: {'OVER' if sq['is_overperforming'] else 'UNDER' if sq['is_underperforming'] else 'NORMAL'}"
+        f"  Performance: {'OVER' if sq['is_overperforming'] else 'UNDER' if sq['is_underperforming'] else 'NORMAL'}",
     )
 
     print("\nAway Defensive Stats:")
@@ -660,12 +656,12 @@ if __name__ == "__main__":
     print(f"  Clean sheet rate: {ds['clean_sheet_rate']:.1%}")
     print(f"  Defensive rating: {ds['defensive_rating']:.1f}/100")
 
-    print(f"\nGoal Adjustments:")
+    print("\nGoal Adjustments:")
     print(
-        f"  Home: {2.0:.2f} → {result['adjusted_home_goals']:.2f} ({result['home_goals_change']:+.2f})"
+        f"  Home: {2.0:.2f} → {result['adjusted_home_goals']:.2f} ({result['home_goals_change']:+.2f})",
     )
     print(
-        f"  Away: {1.0:.2f} → {result['adjusted_away_goals']:.2f} ({result['away_goals_change']:+.2f})"
+        f"  Away: {1.0:.2f} → {result['adjusted_away_goals']:.2f} ({result['away_goals_change']:+.2f})",
     )
 
     print(f"\nAdjustments Applied: {len(result['adjustments_applied'])}")

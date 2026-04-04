@@ -5,11 +5,11 @@ This module provides deterministic transforms to build a training dataset from
 stable encoding for categorical columns so CI can run smoke training reliably.
 """
 
-from pathlib import Path
+import csv
 import json
 import random
-import csv
-from typing import List, Dict, Any, Tuple
+from pathlib import Path
+from typing import Any
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 HIST_DIR = BASE_DIR / "data" / "historical"
@@ -35,7 +35,7 @@ OUT_COLUMNS = [
 ]
 
 
-def _safe_get_prediction(entry: Dict[str, Any]) -> Dict[str, float]:
+def _safe_get_prediction(entry: dict[str, Any]) -> dict[str, float]:
     pred = entry.get("prediction") or {}
     # support different naming variants
     hp = (
@@ -69,7 +69,7 @@ def _safe_get_prediction(entry: Dict[str, Any]) -> Dict[str, float]:
         pred.get("confidence")
         or pred.get("report_accuracy_probability")
         or pred.get("data_quality_score")
-        or 0.0
+        or 0.0,
     )
     # normalize confidence if in 0..100
     if conf > 1.1:
@@ -81,15 +81,15 @@ def _safe_get_prediction(entry: Dict[str, Any]) -> Dict[str, float]:
         "away_win_prob": probs[2],
         "confidence": conf,
         "expected_home_goals": float(
-            pred.get("expected_home_goals") or pred.get("expected_home") or 0.0
+            pred.get("expected_home_goals") or pred.get("expected_home") or 0.0,
         ),
         "expected_away_goals": float(
-            pred.get("expected_away_goals") or pred.get("expected_away") or 0.0
+            pred.get("expected_away_goals") or pred.get("expected_away") or 0.0,
         ),
     }
 
 
-def _extract_target(entry: Dict[str, Any]) -> int:
+def _extract_target(entry: dict[str, Any]) -> int:
     ar = entry.get("actual_result") or {}
     outcome = ar.get("outcome")
     if not outcome:
@@ -113,13 +113,13 @@ def _extract_target(entry: Dict[str, Any]) -> int:
     return -1
 
 
-def _stable_league_index(all_leagues: List[str]) -> Dict[str, int]:
+def _stable_league_index(all_leagues: list[str]) -> dict[str, int]:
     """Return a deterministic mapping from league name to integer index."""
     uniques = sorted(set(all_leagues))
     return {name: idx for idx, name in enumerate(uniques)}
 
 
-def _engineer_features(pred: Dict[str, float]) -> Dict[str, float]:
+def _engineer_features(pred: dict[str, float]) -> dict[str, float]:
     """Create simple deterministic engineered numeric features."""
     goal_diff = pred["expected_home_goals"] - pred["expected_away_goals"]
     total = pred["expected_home_goals"] + pred["expected_away_goals"]
@@ -135,7 +135,7 @@ def _engineer_features(pred: Dict[str, float]) -> Dict[str, float]:
                 pred["draw_prob"],
                 pred["away_win_prob"],
             ][i],
-        )
+        ),
     )
     return {
         "goal_diff": round(goal_diff, 3),
@@ -146,7 +146,7 @@ def _engineer_features(pred: Dict[str, float]) -> Dict[str, float]:
 
 
 def build_sample_dataset(
-    output_csv: Path, augment_per_match: int = 20, seed: int = None
+    output_csv: Path, augment_per_match: int = 20, seed: int = None,
 ) -> None:
     """Build a small sample CSV with features and target.
 
@@ -161,10 +161,10 @@ def build_sample_dataset(
 
     output_csv.parent.mkdir(parents=True, exist_ok=True)
 
-    rows: List[Dict[str, Any]] = []
+    rows: list[dict[str, Any]] = []
     files = list(HIST_DIR.glob("*_results.json"))
-    all_leagues: List[str] = []
-    payloads: List[Tuple[Dict[str, Any], Dict[str, float], int]] = []
+    all_leagues: list[str] = []
+    payloads: list[tuple[dict[str, Any], dict[str, float], int]] = []
 
     for f in files:
         try:
@@ -208,7 +208,7 @@ def build_sample_dataset(
                     "home_win_prob": hp,
                     "draw_prob": dp,
                     "away_win_prob": ap,
-                }
+                },
             )
 
             rows.append(
@@ -228,7 +228,7 @@ def build_sample_dataset(
                     "favored": int(engineered["favored"]),
                     "confidence": round(conf, 4),
                     "target": int(t),
-                }
+                },
             )
 
     # If no files or too few rows, synthesize small dataset to allow training to run
@@ -248,7 +248,7 @@ def build_sample_dataset(
                     "home_win_prob": hp,
                     "draw_prob": dp,
                     "away_win_prob": ap,
-                }
+                },
             )
             rows.append(
                 {
@@ -267,7 +267,7 @@ def build_sample_dataset(
                     "favored": int(eng["favored"]),
                     "confidence": round(random.uniform(0.4, 0.95), 4),
                     "target": random.choice([0, 1, 2]),
-                }
+                },
             )
 
     # Write CSV
@@ -289,5 +289,5 @@ if __name__ == "__main__":
     p.add_argument("--seed", type=int, default=None)
     args = p.parse_args()
     build_sample_dataset(
-        Path(args.out), augment_per_match=int(args.augment), seed=args.seed
+        Path(args.out), augment_per_match=int(args.augment), seed=args.seed,
     )

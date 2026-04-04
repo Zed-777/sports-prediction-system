@@ -1,10 +1,12 @@
 import os
+
 import pytest
+
 from generate_fast_reports import SingleMatchGenerator
 
 
 @pytest.mark.skipif(
-    os.getenv("RUN_NETWORK_TESTS") != "1", reason="Network tests disabled"
+    os.getenv("RUN_NETWORK_TESTS") != "1", reason="Network tests disabled",
 )
 def test_generate_single_premier_league_report():
     """Integration smoke test for generating a single premier league report."""

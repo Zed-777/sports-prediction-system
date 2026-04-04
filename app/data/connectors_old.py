@@ -1,11 +1,10 @@
-"""
-Data connectors for external APIs
+"""Data connectors for external APIs
 """
 
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Union
+from typing import Any
 
 import aiohttp
 
@@ -24,7 +23,7 @@ class BaseDataConnector(ABC):
         return self
 
     async def __aexit__(
-        self, exc_type: type | None, exc_val: BaseException | None, exc_tb: Any | None
+        self, exc_type: type | None, exc_val: BaseException | None, exc_tb: Any | None,
     ) -> None:
         if self.session:
             await self.session.close()
@@ -83,7 +82,7 @@ class FootballDataConnector(BaseDataConnector):
         """Fetch from Football-Data.org API"""
         try:
             logger.info(
-                f"Fetching {data_type} data for {league} from Football-Data.org API"
+                f"Fetching {data_type} data for {league} from Football-Data.org API",
             )
 
             # Get API key from environment
@@ -139,14 +138,13 @@ class FootballDataConnector(BaseDataConnector):
                                     "status": match["status"].lower(),
                                     "matchday": match.get("matchday"),
                                     "season": match.get("season", {}).get("id"),
-                                }
+                                },
                             )
                         return matches
-                    else:
-                        logger.error(
-                            f"API request failed with status {response.status}"
-                        )
-                        return None
+                    logger.error(
+                        f"API request failed with status {response.status}",
+                    )
+                    return None
 
             elif data_type == "teams":
                 # Get teams in competition
@@ -166,14 +164,13 @@ class FootballDataConnector(BaseDataConnector):
                                     "tla": team.get("tla"),  # Three letter abbreviation
                                     "founded": team.get("founded"),
                                     "venue": team.get("venue"),
-                                }
+                                },
                             )
                         return teams
-                    else:
-                        logger.error(
-                            f"API request failed with status {response.status}"
-                        )
-                        return None
+                    logger.error(
+                        f"API request failed with status {response.status}",
+                    )
+                    return None
 
             elif data_type == "standings":
                 # Get league table/standings
@@ -200,14 +197,13 @@ class FootballDataConnector(BaseDataConnector):
                                             "goal_difference": team["goalDifference"],
                                             "points": team["points"],
                                             "form": team.get("form"),
-                                        }
+                                        },
                                     )
                         return standings
-                    else:
-                        logger.error(
-                            f"API request failed with status {response.status}"
-                        )
-                        return None
+                    logger.error(
+                        f"API request failed with status {response.status}",
+                    )
+                    return None
 
             return []
 
@@ -262,7 +258,7 @@ class FootballDataConnector(BaseDataConnector):
             if data_type == "matches":
                 # Get fixtures
                 url = f"{base_url}/fixtures"
-                params_matches: dict[str, Union[str, int]] = {
+                params_matches: dict[str, str | int] = {
                     "league": league_id,
                     "season": current_season,
                 }
@@ -274,7 +270,7 @@ class FootballDataConnector(BaseDataConnector):
 
                 session = await self._ensure_session()
                 async with session.get(
-                    url, headers=headers, params=params_matches
+                    url, headers=headers, params=params_matches,
                 ) as response:
                     if response.status == 200:
                         data = await response.json()
@@ -293,26 +289,25 @@ class FootballDataConnector(BaseDataConnector):
                                     ].lower(),
                                     "venue": fixture["fixture"]["venue"]["name"],
                                     "referee": fixture["fixture"]["referee"],
-                                }
+                                },
                             )
                         return matches
-                    else:
-                        logger.error(
-                            f"API-Football request failed with status {response.status}"
-                        )
-                        return None
+                    logger.error(
+                        f"API-Football request failed with status {response.status}",
+                    )
+                    return None
 
             elif data_type == "teams":
                 # Get teams in league
                 url = f"{base_url}/teams"
-                params_teams: dict[str, Union[str, int]] = {
+                params_teams: dict[str, str | int] = {
                     "league": league_id,
                     "season": current_season,
                 }
                 params_teams = {k: str(v) for k, v in params_teams.items()}
                 session = await self._ensure_session()
                 async with session.get(
-                    url, headers=headers, params=params_teams
+                    url, headers=headers, params=params_teams,
                 ) as response:
                     if response.status == 200:
                         data = await response.json()
@@ -327,26 +322,25 @@ class FootballDataConnector(BaseDataConnector):
                                     "founded": team.get("founded"),
                                     "country": team.get("country"),
                                     "logo": team.get("logo"),
-                                }
+                                },
                             )
                         return teams
-                    else:
-                        logger.error(
-                            f"API-Football request failed with status {response.status}"
-                        )
-                        return None
+                    logger.error(
+                        f"API-Football request failed with status {response.status}",
+                    )
+                    return None
 
             elif data_type == "standings":
                 # Get league standings
                 url = f"{base_url}/standings"
-                params_standings: dict[str, Union[str, int]] = {
+                params_standings: dict[str, str | int] = {
                     "league": league_id,
                     "season": current_season,
                 }
                 params_standings = {k: str(v) for k, v in params_standings.items()}
                 session = await self._ensure_session()
                 async with session.get(
-                    url, headers=headers, params=params_standings
+                    url, headers=headers, params=params_standings,
                 ) as response:
                     if response.status == 200:
                         data = await response.json()
@@ -369,14 +363,13 @@ class FootballDataConnector(BaseDataConnector):
                                         "goal_difference": standing["goalsDiff"],
                                         "points": standing["points"],
                                         "form": standing.get("form"),
-                                    }
+                                    },
                                 )
                         return standings
-                    else:
-                        logger.error(
-                            f"API-Football request failed with status {response.status}"
-                        )
-                        return None
+                    logger.error(
+                        f"API-Football request failed with status {response.status}",
+                    )
+                    return None
 
             return []
 
@@ -396,7 +389,7 @@ class FootballDataConnector(BaseDataConnector):
         logger.info(f"Fetching {data_type} data for {league} from CSV backup")
         # Return mock data as CSV fallback would work
         return await self.fetch_from_primary_api(
-            league, data_type, season, start_date, end_date
+            league, data_type, season, start_date, end_date,
         )
 
 
@@ -424,9 +417,9 @@ class BasketballDataConnector(BaseDataConnector):
                     "home_score": None,
                     "away_score": None,
                     "status": "scheduled",
-                }
+                },
             ]
-        elif data_type == "teams":
+        if data_type == "teams":
             return [
                 {"id": 1, "name": "Lakers", "league": league},
                 {"id": 2, "name": "Warriors", "league": league},
@@ -444,7 +437,7 @@ class BasketballDataConnector(BaseDataConnector):
     ) -> list[dict[str, Any]] | None:
         """Fetch from SportsData.io"""
         return await self.fetch_from_primary_api(
-            league, data_type, season, start_date, end_date
+            league, data_type, season, start_date, end_date,
         )
 
     async def fetch_from_backup_csv(
@@ -457,5 +450,5 @@ class BasketballDataConnector(BaseDataConnector):
     ) -> list[dict[str, Any]] | None:
         """Fetch from CSV backup"""
         return await self.fetch_from_primary_api(
-            league, data_type, season, start_date, end_date
+            league, data_type, season, start_date, end_date,
         )

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-List required API keys, whether they are present, and validate accessibility for supported providers.
+"""List required API keys, whether they are present, and validate accessibility for supported providers.
 
 This script:
 - Reads environment variables and `.env.backup` if present to detect keys
@@ -53,7 +52,7 @@ def test_football_data_key(key: str):
     url = "https://api.football-data.org/v4/competitions/PD"
     try:
         r = safe_request_get(
-            url, headers={"X-Auth-Token": key}, timeout=15, logger=None
+            url, headers={"X-Auth-Token": key}, timeout=15, logger=None,
         )
         if r.status_code == 200:
             return True, "200 OK"
@@ -117,20 +116,20 @@ def main():
             validated = "OK" if ok else "FAILED"
             notes = msg
         report.append(
-            {"key": k, "status": status, "validated": validated, "notes": notes}
+            {"key": k, "status": status, "validated": validated, "notes": notes},
         )
 
     # print report
     print("\n=== API Keys Status Report ===\n")
     for r in report:
         print(
-            f"{r['key']}: {r['status']} (validated: {r['validated']}) {(' - ' + r['notes']) if r['notes'] else ''}"
+            f"{r['key']}: {r['status']} (validated: {r['validated']}) {(' - ' + r['notes']) if r['notes'] else ''}",
         )
     print(
-        '\nNote: Any key listed as "present" might still be restricted by subscription level (HTTP 403).'
+        '\nNote: Any key listed as "present" might still be restricted by subscription level (HTTP 403).',
     )
     print(
-        'Keys marked as "placeholder" are placeholders and not real keys. Keys marked as "missing" are not set.'
+        'Keys marked as "placeholder" are placeholders and not real keys. Keys marked as "missing" are not set.',
     )
 
 

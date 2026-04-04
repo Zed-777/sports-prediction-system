@@ -17,4 +17,4 @@ def archived_generator_stub(*args: Any, **kwargs: Any) -> None:
     This intentionally does nothing. Use the main `app.reports.generator`
     module for real report generation.
     """
-    return None
+    return

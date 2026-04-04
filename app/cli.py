@@ -1,5 +1,4 @@
-"""
-CLI entry point module
+"""CLI entry point module
 """
 
 from app.run import main

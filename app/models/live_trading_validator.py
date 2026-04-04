@@ -1,5 +1,4 @@
-"""
-Live Trading Validator (PROF-004)
+"""Live Trading Validator (PROF-004)
 ===================================
 End-to-end validation pipeline that determines whether the prediction
 strategy is ready for live sports-betting deployment.
@@ -30,23 +29,16 @@ from __future__ import annotations
 
 import json
 import logging
-import math
-import os
 import statistics
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
+from app.models.market_simulator import MarketSimulator, SyntheticMatchGenerator
 from app.models.profitability import (
     BetResult,
     ProfitabilityReport,
     build_profitability_report,
-    calculate_ev,
-    calculate_edge,
-    quarter_kelly,
-    LIVE_CRITERIA,
 )
-from app.models.market_simulator import MarketSimulator, SyntheticMatchGenerator
 from app.models.qualifying_gate import QualifyingGate, QualifyingParams
 
 logger = logging.getLogger(__name__)
@@ -61,8 +53,7 @@ def walk_forward_split(
     records: list[dict],
     n_splits: int = 5,
 ) -> list[tuple[list[dict], list[dict]]]:
-    """
-    Split records into (train, test) folds for walk-forward validation.
+    """Split records into (train, test) folds for walk-forward validation.
 
     Records are assumed to be chronologically ordered (or at least randomly
     partitioned if no date is available).  Walk-forward ensures test periods
@@ -95,8 +86,7 @@ def simulate_bets(
     gate: QualifyingGate,
     bankroll: float = 100.0,
 ) -> list[BetResult]:
-    """
-    Run each record through the qualifying gate and simulate the bet outcome.
+    """Run each record through the qualifying gate and simulate the bet outcome.
 
     Parameters
     ----------
@@ -107,6 +97,7 @@ def simulate_bets(
     Returns
     -------
     list of BetResult (including disqualified bets with qualified=False)
+
     """
     results = []
     current_bankroll = bankroll
@@ -195,8 +186,7 @@ def sensitivity_analysis(
     edge_values: list[float] = (2.0, 4.0, 6.0, 8.0, 10.0),
     confidence_values: list[float] = (0.52, 0.58, 0.64, 0.70),
 ) -> dict:
-    """
-    Test how ROI and qualifying rate change across different gate thresholds.
+    """Test how ROI and qualifying rate change across different gate thresholds.
 
     Returns a dict keyed by (edge_pct, confidence) with ROI and n_bets.
     """
@@ -221,7 +211,7 @@ def sensitivity_analysis(
                 "n_qualifying": len(qual),
                 "roi_pct": round(roi, 2),
                 "hit_rate_pct": round(
-                    sum(1 for b in qual if b.won) / max(len(qual), 1) * 100, 2
+                    sum(1 for b in qual if b.won) / max(len(qual), 1) * 100, 2,
                 ),
             }
     return results
@@ -233,8 +223,7 @@ def sensitivity_analysis(
 
 
 class LiveTradingValidator:
-    """
-    Orchestrates the full live-readiness validation pipeline.
+    """Orchestrates the full live-readiness validation pipeline.
 
     Usage
     -----
@@ -260,8 +249,7 @@ class LiveTradingValidator:
     # ------------------------------------------------------------------
 
     def load_real_data(self) -> list[dict]:
-        """
-        Load real historical match records and attach simulated market odds.
+        """Load real historical match records and attach simulated market odds.
 
         Handles both the sparse real data (1-2 records per league) and any
         richer backtest files.  Attaches market odds via simulation so the
@@ -285,7 +273,7 @@ class LiveTradingValidator:
         logger.info(f"Loaded {len(records)} real historical records")
         return records
 
-    def _convert_historical_record(self, item: dict) -> Optional[dict]:
+    def _convert_historical_record(self, item: dict) -> dict | None:
         """Convert a stored historical prediction record to the internal format."""
         try:
             pred = item.get("prediction", {})
@@ -345,7 +333,7 @@ class LiveTradingValidator:
 
     def run(
         self,
-        params: Optional[QualifyingParams] = None,
+        params: QualifyingParams | None = None,
         n_synthetic: int = 2000,
         model_accuracy: float = 0.60,
         n_walk_forward_splits: int = 5,
@@ -353,8 +341,7 @@ class LiveTradingValidator:
         save_results: bool = True,
         verbose: bool = True,
     ) -> dict:
-        """
-        Run the full validation pipeline.
+        """Run the full validation pipeline.
 
         Parameters
         ----------
@@ -369,6 +356,7 @@ class LiveTradingValidator:
         Returns
         -------
         Full verdict dict with live_readiness_score, live_ready, reports.
+
         """
         if params is None:
             params = QualifyingParams.standard()
@@ -391,7 +379,7 @@ class LiveTradingValidator:
         if verbose:
             logger.info(
                 f"Data: {len(real_records)} real + {len(synthetic_records)} synthetic "
-                f"= {len(all_records)} total matches"
+                f"= {len(all_records)} total matches",
             )
 
         # ---- 2. Full-sample backtest ----
@@ -451,7 +439,7 @@ class LiveTradingValidator:
             final_score = min(final_score, 49.0)
             full_report.failure_reasons.append(
                 f"Walk-forward validation failed: positive ROI in only "
-                f"{wf_positive_roi_rate*100:.0f}% of folds (need ≥ 60%)"
+                f"{wf_positive_roi_rate*100:.0f}% of folds (need ≥ 60%)",
             )
 
         # ---- 8. Parameter summary ----
@@ -536,24 +524,23 @@ class LiveTradingValidator:
                 f"Expected yield: ~{report.roi_pct:.1f}% per unit staked. "
                 f"Use quarter-Kelly staking and monitor ROI weekly."
             )
-        elif score >= 70:
+        if score >= 70:
             return (
                 f"NEAR-READY — Score {score:.1f}/100. "
                 f"Minor gaps: {'; '.join(report.failure_reasons[:2])}. "
                 f"Collect more qualifying bets, then re-assess."
             )
-        elif score >= 50:
+        if score >= 50:
             return (
                 f"NOT YET READY — Score {score:.1f}/100. "
                 f"Key failures: {'; '.join(report.failure_reasons[:3])}. "
                 f"Tighten qualifying params or improve model accuracy."
             )
-        else:
-            return (
-                f"NOT READY — Score {score:.1f}/100. "
-                f"Strategy does not demonstrate consistent positive EV. "
-                f"Review model calibration and re-run after collecting real data."
-            )
+        return (
+            f"NOT READY — Score {score:.1f}/100. "
+            f"Strategy does not demonstrate consistent positive EV. "
+            f"Review model calibration and re-run after collecting real data."
+        )
 
     @staticmethod
     def _log_report_summary(report: ProfitabilityReport, label: str):
@@ -632,7 +619,7 @@ class LiveTradingValidator:
         for fold in wf.get("fold_summaries", []):
             lines.append(
                 f"      Fold {fold['fold']}: n={fold['qualifying_bets']:3d}  "
-                f"ROI={fold['roi_pct']:+.2f}%  hit={fold['hit_rate_pct']:.1f}%"
+                f"ROI={fold['roi_pct']:+.2f}%  hit={fold['hit_rate_pct']:.1f}%",
             )
 
         lines += [
@@ -653,7 +640,7 @@ class LiveTradingValidator:
         for lg, lb in fs.get("league_breakdown", {}).items():
             lines.append(
                 f"    {lg:20s}: {lb['bets']:3d} bets  "
-                f"ROI={lb['roi_pct']:+.2f}%  hit={lb['hit_rate_pct']:.1f}%"
+                f"ROI={lb['roi_pct']:+.2f}%  hit={lb['hit_rate_pct']:.1f}%",
             )
 
         v = verdict["verdict"]

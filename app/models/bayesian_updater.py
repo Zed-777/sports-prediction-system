@@ -1,5 +1,4 @@
-"""
-Bayesian Update System Module for Phase 3
+"""Bayesian Update System Module for Phase 3
 
 Maintains Bayesian posterior distributions for confidence prediction,
 enabling continuous learning from match outcomes.
@@ -7,15 +6,14 @@ enabling continuous learning from match outcomes.
 
 import json
 import os
-from typing import Dict, List, Optional, Tuple
 from datetime import datetime
+
 import numpy as np
 from scipy import stats as scipy_stats
 
 
 class BayesianUpdater:
-    """
-    Maintains Bayesian posterior for confidence prediction accuracy.
+    """Maintains Bayesian posterior for confidence prediction accuracy.
 
     Uses Beta-Binomial conjugate model:
     - Prior: Beta(alpha, beta) - initial belief about prediction quality
@@ -31,16 +29,16 @@ class BayesianUpdater:
         prior_alpha: float = 2.0,
         prior_beta: float = 2.0,
         learning_rate: float = 0.8,
-        cache_dir: Optional[str] = None,
+        cache_dir: str | None = None,
     ):
-        """
-        Initialize Bayesian updater with prior parameters.
+        """Initialize Bayesian updater with prior parameters.
 
         Args:
             prior_alpha: Prior alpha parameter (shapes confidence belief)
             prior_beta: Prior beta parameter (shapes confidence belief)
             learning_rate: How aggressively to shift toward posterior (0-1)
             cache_dir: Directory for persistence
+
         """
         # Prior parameters (Beta distribution)
         self.prior_alpha = prior_alpha
@@ -55,7 +53,7 @@ class BayesianUpdater:
         self.min_samples_for_adjustment = 10
 
         # Match history for tracking
-        self.match_history: List[Dict] = []
+        self.match_history: list[dict] = []
         self.successful_predictions = 0
         self.total_predictions = 0
 
@@ -69,11 +67,10 @@ class BayesianUpdater:
         self,
         confidence: float,
         home_won: bool,
-        match_id: Optional[str] = None,
-        additional_data: Optional[Dict] = None,
-    ) -> Dict:
-        """
-        Update posterior with match outcome.
+        match_id: str | None = None,
+        additional_data: dict | None = None,
+    ) -> dict:
+        """Update posterior with match outcome.
 
         Records whether the prediction (based on confidence) was correct
         and updates the posterior distribution accordingly.
@@ -86,6 +83,7 @@ class BayesianUpdater:
 
         Returns:
             Update metadata including new posterior mean and confidence adjustment
+
         """
         # Determine if prediction was correct
         # Confidence > 0.5 = predict home win, otherwise predict away
@@ -128,24 +126,24 @@ class BayesianUpdater:
         return record
 
     def get_posterior_mean(self) -> float:
-        """
-        Get current posterior mean (expected prediction accuracy).
+        """Get current posterior mean (expected prediction accuracy).
 
         Returns:
             Mean of Beta distribution: alpha / (alpha + beta)
+
         """
         total = self.posterior_alpha + self.posterior_beta
         return self.posterior_alpha / total if total > 0 else 0.5
 
     def get_posterior_std(self) -> float:
-        """
-        Get posterior standard deviation (uncertainty).
+        """Get posterior standard deviation (uncertainty).
 
         Lower std = more confident in posterior estimate.
         Higher std = more uncertain.
 
         Returns:
             Standard deviation of Beta distribution
+
         """
         alpha = self.posterior_alpha
         beta = self.posterior_beta
@@ -158,16 +156,16 @@ class BayesianUpdater:
         return np.sqrt(variance)
 
     def get_posterior_credible_interval(
-        self, credibility: float = 0.95
-    ) -> Tuple[float, float]:
-        """
-        Get credible interval for posterior accuracy.
+        self, credibility: float = 0.95,
+    ) -> tuple[float, float]:
+        """Get credible interval for posterior accuracy.
 
         Args:
             credibility: Confidence level (default 95%)
 
         Returns:
             Tuple of (lower_bound, upper_bound)
+
         """
         alpha = self.posterior_alpha
         beta = self.posterior_beta
@@ -178,9 +176,8 @@ class BayesianUpdater:
 
         return (lower, upper)
 
-    def adjust_confidence(self, raw_confidence: float) -> Tuple[float, Dict]:
-        """
-        Adjust confidence toward posterior mean using learning rate.
+    def adjust_confidence(self, raw_confidence: float) -> tuple[float, dict]:
+        """Adjust confidence toward posterior mean using learning rate.
 
         If system has learned it's overconfident, shift confidence closer to 0.5.
         If system has learned it's underconfident, shift closer to extremes.
@@ -190,6 +187,7 @@ class BayesianUpdater:
 
         Returns:
             Tuple of (adjusted_confidence, adjustment_metadata)
+
         """
         if self.total_predictions < self.min_samples_for_adjustment:
             # Not enough data for adjustment
@@ -239,12 +237,12 @@ class BayesianUpdater:
         adjusted, _ = self.adjust_confidence(confidence)
         return adjusted
 
-    def get_bayesian_statistics(self) -> Dict:
-        """
-        Get comprehensive Bayesian statistics.
+    def get_bayesian_statistics(self) -> dict:
+        """Get comprehensive Bayesian statistics.
 
         Returns:
             Dict with posterior, accuracy, history summary
+
         """
         credible_lower, credible_upper = self.get_posterior_credible_interval(0.95)
 
@@ -278,11 +276,11 @@ class BayesianUpdater:
         }
 
     def reset_posterior(self, keep_history: bool = True) -> None:
-        """
-        Reset posterior to prior (for new league, new season, etc).
+        """Reset posterior to prior (for new league, new season, etc).
 
         Args:
             keep_history: If True, keep match history; if False, clear it
+
         """
         self.posterior_alpha = self.prior_alpha
         self.posterior_beta = self.prior_beta
@@ -300,7 +298,7 @@ class BayesianUpdater:
         state_file = os.path.join(self.cache_dir, "bayesian_updater_state.json")
         if os.path.exists(state_file):
             try:
-                with open(state_file, "r") as f:
+                with open(state_file) as f:
                     data = json.load(f)
                     self.posterior_alpha = data.get("posterior_alpha", self.prior_alpha)
                     self.posterior_beta = data.get("posterior_beta", self.prior_beta)
@@ -331,7 +329,7 @@ class BayesianUpdater:
 
         try:
             with open(
-                os.path.join(self.cache_dir, "bayesian_updater_state.json"), "w"
+                os.path.join(self.cache_dir, "bayesian_updater_state.json"), "w",
             ) as f:
                 json.dump(state_data, f, indent=2)
         except Exception:

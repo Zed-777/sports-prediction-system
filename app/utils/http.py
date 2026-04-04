@@ -1,27 +1,28 @@
 from __future__ import annotations
 
 import time
-from app.utils.throttle import wait_for_host, TokenBucket, _GLOBAL_THROTTLE_MANAGER
-from typing import Any, Dict, Optional
+from pathlib import Path
+from typing import Any
 from urllib.parse import urlparse
 
 import requests
-from pathlib import Path
 import yaml
-from app.utils.metrics import increment_metric
+
 from app.utils import state_sync
+from app.utils.metrics import increment_metric
+from app.utils.throttle import _GLOBAL_THROTTLE_MANAGER, TokenBucket, wait_for_host
 
 
 def safe_request_get(
     url: str,
-    headers: Optional[Dict[str, str]] = None,
-    params: Optional[Dict[str, Any]] = None,
+    headers: dict[str, str] | None = None,
+    params: dict[str, Any] | None = None,
     timeout: int = 15,
     retries: int = 3,
     backoff: float = 0.5,
-    min_interval: Optional[float] = None,
-    session: Optional[requests.Session] = None,
-    logger: Optional[Any] = None,
+    min_interval: float | None = None,
+    session: requests.Session | None = None,
+    logger: Any | None = None,
 ) -> requests.Response:
     """Perform a GET request with retries, exponential backoff and Retry-After handling.
 
@@ -29,17 +30,17 @@ def safe_request_get(
     """
     sess = session or requests
     # Host for metrics and throttle decisions
-    host = url.split("//")[-1].split("/")[0].lower()
+    host = url.rsplit("//", maxsplit=1)[-1].split("/", maxsplit=1)[0].lower()
     host = host.split(":")[0]
     # If endpoint is disabled via state_sync (direct path) or throttle manager, avoid external calls
     try:
         if state_sync.get_disabled_flag(
-            urlparse(url).path
+            urlparse(url).path,
         ) or _GLOBAL_THROTTLE_MANAGER.is_endpoint_disabled(url):
             from types import SimpleNamespace
 
             return SimpleNamespace(
-                status_code=429, headers={}, text="disabled", json=lambda: {}
+                status_code=429, headers={}, text="disabled", json=dict,
             )
     except Exception:
         pass
@@ -58,20 +59,20 @@ def safe_request_get(
                 with cfg_path.open(encoding="utf-8") as f:
                     cfg = yaml.safe_load(f) or {}
                 throttle_bucket_cfg = (cfg.get("data_sources") or {}).get(
-                    "throttle_bucket_by_host", {}
+                    "throttle_bucket_by_host", {},
                 )
                 for host, b in (throttle_bucket_cfg or {}).items():
                     try:
                         _GLOBAL_THROTTLE_MANAGER.set_bucket(
                             host,
                             TokenBucket(
-                                capacity=b.get("capacity", 10), rate=b.get("rate", 1.0)
+                                capacity=b.get("capacity", 10), rate=b.get("rate", 1.0),
                             ),
                         )
                     except Exception:
                         pass
                 throttle_bucket_endpoint_cfg = (cfg.get("data_sources") or {}).get(
-                    "throttle_bucket_by_endpoint", {}
+                    "throttle_bucket_by_endpoint", {},
                 )
                 for host, endpoints in (throttle_bucket_endpoint_cfg or {}).items():
                     for path_prefix, b in endpoints.items():
@@ -87,13 +88,13 @@ def safe_request_get(
                         except Exception:
                             pass
                 throttle_endpoint_cfg = (cfg.get("data_sources") or {}).get(
-                    "throttle_by_endpoint", {}
+                    "throttle_by_endpoint", {},
                 )
                 for host, endpoints in (throttle_endpoint_cfg or {}).items():
                     for path_prefix, mi in endpoints.items():
                         try:
                             _GLOBAL_THROTTLE_MANAGER.set_endpoint_min_interval(
-                                host, path_prefix, float(mi)
+                                host, path_prefix, float(mi),
                             )
                         except Exception:
                             pass
@@ -109,16 +110,16 @@ def safe_request_get(
                 with cfg_path.open(encoding="utf-8") as f:
                     cfg = yaml.safe_load(f) or {}
                 throttle_cfg = (cfg.get("data_sources") or {}).get(
-                    "throttle_by_host", {}
+                    "throttle_by_host", {},
                 )
-                host = url.split("//")[-1].split("/")[0].lower()
+                host = url.rsplit("//", maxsplit=1)[-1].split("/", maxsplit=1)[0].lower()
                 # strip port if present
                 host = host.split(":")[0]
                 min_interval = float(throttle_cfg.get(host, 0.5))
                 # if endpoint override exists, prefer that
                 try:
                     endpoint_min = _GLOBAL_THROTTLE_MANAGER.get_min_interval(
-                        url, default=min_interval
+                        url, default=min_interval,
                     )
                     if endpoint_min:
                         min_interval = float(endpoint_min)
@@ -126,7 +127,7 @@ def safe_request_get(
                     pass
             if logger:
                 logger.debug(
-                    f"[HTTP] Using min_interval={min_interval}s for host={host}"
+                    f"[HTTP] Using min_interval={min_interval}s for host={host}",
                 )
             else:
                 min_interval = 0.5
@@ -173,7 +174,7 @@ def safe_request_get(
                     wait = backoff * (2 ** (attempt - 1))
                     if logger:
                         logger.warning(
-                            f"[HTTP] Rate limited (429) for {url}, attempt #{attempt}, sleeping {wait}s"
+                            f"[HTTP] Rate limited (429) for {url}, attempt #{attempt}, sleeping {wait}s",
                         )
                     # metrics: increment host-level 429
                     try:
@@ -199,11 +200,11 @@ def safe_request_get(
             # If HTTP 5xx, apply backoff
             if logger:
                 logger.warning(
-                    f"[HTTP] HTTP error while fetching {url}. Attempt #{attempt}/{retries}. Retrying..."
+                    f"[HTTP] HTTP error while fetching {url}. Attempt #{attempt}/{retries}. Retrying...",
                 )
             # metrics: increment host-level http_error count
             try:
-                host_key = url.split("//")[-1].split("/")[0].split(":")[0]
+                host_key = url.rsplit("//", maxsplit=1)[-1].split("/", maxsplit=1)[0].split(":", maxsplit=1)[0]
                 increment_metric(host_key, "http_error")
             except Exception:
                 pass
@@ -215,10 +216,10 @@ def safe_request_get(
                 raise
             if logger:
                 logger.warning(
-                    f"[HTTP] Network error for {url}: {exc}. Attempt #{attempt}/{retries}. Retrying..."
+                    f"[HTTP] Network error for {url}: {exc}. Attempt #{attempt}/{retries}. Retrying...",
                 )
             try:
-                host_key = url.split("//")[-1].split("/")[0].split(":")[0]
+                host_key = url.rsplit("//", maxsplit=1)[-1].split("/", maxsplit=1)[0].split(":", maxsplit=1)[0]
                 increment_metric(host_key, "network_error")
             except Exception:
                 pass
@@ -234,7 +235,7 @@ def get_min_interval_for_host(url: str) -> float:
             with cfg_path.open(encoding="utf-8") as f:
                 cfg = yaml.safe_load(f) or {}
             throttle_cfg = (cfg.get("data_sources") or {}).get("throttle_by_host", {})
-            host = url.split("//")[-1].split("/")[0].lower()
+            host = url.rsplit("//", maxsplit=1)[-1].split("/", maxsplit=1)[0].lower()
             host = host.split(":")[0]
             return float(throttle_cfg.get(host, 0.5))
     except Exception:

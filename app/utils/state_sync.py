@@ -10,29 +10,27 @@ from __future__ import annotations
 import json
 import os
 import time
-from typing import Optional
+from pathlib import Path
 
-_DISABLED_JSON_FILE = "data/cache/disabled_flags.json"
+_DISABLED_JSON_FILE = Path("data/cache/disabled_flags.json")
 
 _REDIS_CLIENT = None
 _USE_REDIS = False
 
 
-def _init_redis() -> None:
-    global _REDIS_CLIENT, _USE_REDIS
+def _init_redis() -> tuple[object | None, bool]:
     try:
         import redis as _redis
 
         redis_url = os.getenv("REDIS_URL")
         if redis_url:
-            _REDIS_CLIENT = _redis.from_url(redis_url)
-            _USE_REDIS = True
+            return _redis.from_url(redis_url), True
     except Exception:
-        _REDIS_CLIENT = None
-        _USE_REDIS = False
+        pass
+    return None, False
 
 
-_init_redis()
+_REDIS_CLIENT, _USE_REDIS = _init_redis()
 
 
 def set_disabled_flag(
@@ -84,10 +82,10 @@ def set_disabled_flag(
             pass
     # Fallback to file-based storage (structured nested format)
     try:
-        os.makedirs(os.path.dirname(_DISABLED_JSON_FILE), exist_ok=True)
+        _DISABLED_JSON_FILE.parent.mkdir(parents=True, exist_ok=True)
         state = {}
-        if os.path.exists(_DISABLED_JSON_FILE):
-            with open(_DISABLED_JSON_FILE, "r", encoding="utf-8") as f:
+        if _DISABLED_JSON_FILE.exists():
+            with _DISABLED_JSON_FILE.open("r", encoding="utf-8") as f:
                 try:
                     state = json.load(f) or {}
                 except Exception:
@@ -99,14 +97,14 @@ def set_disabled_flag(
             "set_by": set_by,
         }
         state[host] = host_map
-        with open(_DISABLED_JSON_FILE, "w", encoding="utf-8") as f:
+        with _DISABLED_JSON_FILE.open("w", encoding="utf-8") as f:
             json.dump(state, f, indent=2)
     except Exception:
         # Best effort: ignore errors
         return
 
 
-def get_disabled_flag(host_or_path: str, path: str | None = None) -> Optional[float]:
+def get_disabled_flag(host_or_path: str, path: str | None = None) -> float | None:
     """Return the disabled_until epoch seconds for a given host & path or a legacy path-only lookup.
 
     Usage:
@@ -136,7 +134,7 @@ def get_disabled_flag(host_or_path: str, path: str | None = None) -> Optional[fl
     # Fallback to file-based storage
     try:
         if os.path.exists(_DISABLED_JSON_FILE):
-            with open(_DISABLED_JSON_FILE, "r", encoding="utf-8") as f:
+            with open(_DISABLED_JSON_FILE, encoding="utf-8") as f:
                 try:
                     state = json.load(f) or {}
                     host_map = state.get(host, {}) or {}
@@ -186,7 +184,7 @@ def clear_disabled_flag(host_or_path: str, path: str | None = None) -> None:
     # File fallback
     try:
         if os.path.exists(_DISABLED_JSON_FILE):
-            with open(_DISABLED_JSON_FILE, "r", encoding="utf-8") as f:
+            with open(_DISABLED_JSON_FILE, encoding="utf-8") as f:
                 try:
                     state = json.load(f) or {}
                 except Exception:
@@ -235,7 +233,7 @@ def list_disabled_flags() -> dict:
     # File fallback
     try:
         if os.path.exists(_DISABLED_JSON_FILE):
-            with open(_DISABLED_JSON_FILE, "r", encoding="utf-8") as f:
+            with open(_DISABLED_JSON_FILE, encoding="utf-8") as f:
                 try:
                     state = json.load(f) or {}
                 except Exception:

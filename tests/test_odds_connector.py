@@ -49,14 +49,14 @@ def test_get_match_odds_parses_market(monkeypatch):
                                 {"name": "Draw", "price": 3.6},
                                 {"name": "Team B", "price": 4.2},
                             ],
-                        }
+                        },
                     ],
-                }
+                },
             ],
-        }
+        },
     ]
 
-    def fake_get(url, *args, **kwargs):  # noqa: D401 - simple stub
+    def fake_get(url, *args, **kwargs):
         return _FakeResponse(sample_payload)
 
     monkeypatch.setenv("ODDS_API_KEY", "test-key")
@@ -89,7 +89,7 @@ def test_get_match_odds_parses_market(monkeypatch):
 
     monkeypatch.setattr("app.utils.http.requests.get", counting_get)
     cached = connector.get_match_odds(
-        "premier-league", "Team A", "Team B", "2025-11-03"
+        "premier-league", "Team A", "Team B", "2025-11-03",
     )
 
     assert cached is odds  # cached object reused

@@ -1,3 +1,2 @@
-"""
-Models package for the Sports Prediction System
+"""Models package for the Sports Prediction System
 """

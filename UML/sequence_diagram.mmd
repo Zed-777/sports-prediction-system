@@ -1,0 +1,96 @@
+sequenceDiagram
+    participant App as Phase 2 Lite
+    participant APIs as External APIs
+    participant Cache as Cache Layer
+    participant Features as Feature Eng.
+    participant Models as ML Models
+    participant Report as Report Gen.
+    participant Output as data/processed/
+
+    Note over App: STARTUP: Load config, init cache, load ELO ratings
+    App->>Cache: Load ELO ratings
+    Cache-->>App: Historical ELO state
+
+    Note over App: FETCH: Get latest matches
+    App->>APIs: GET next matches + team stats
+    APIs-->>App: JSON response (match data)
+    App->>Cache: Check if fresh (TTL=24h)
+    alt Cache HIT
+        Cache-->>App: Return cached data
+    else Cache MISS
+        App->>APIs: Fetch updated team stats
+        APIs-->>App: Updated stats
+        App->>Cache: Store with TTL
+    end
+
+    Note over App: VALIDATE: Check data quality (Pydantic + rules)
+    App->>App: Validate required fields
+    App->>App: Check for outliers (Z-score)
+    App->>App: Cross-validate across 2+ sources
+    alt Validation PASS
+        Note over App: Continue to feature engineering
+    else Validation FAIL
+        App->>Output: Log error, skip match
+        App-->>Report: Return default (low confidence)
+    end
+
+    Note over App: FEATURES: Build ML feature vector
+    App->>Features: Load historical team data (3+ years)
+    Features->>Features: Calculate ELO ratings with recency decay
+    Features->>Features: Calculate form metrics (5/10-match avg)
+    Features->>Features: Load player impact scores
+    Features->>Features: Classify match context (derby, title race)
+    Features->>Features: Add weather & fixture context
+    Features-->>App: Feature vector (n=60 features)
+
+    Note over App: PREDICT: Run 3 ensemble models
+    par Model Execution
+        App->>Models: ELO Model
+        Models->>Models: P(Home), P(Away) based on ELO deltas
+        Models-->>App: ELO predictions
+    and Model Execution
+        App->>Models: Poisson Model
+        Models->>Models: P(Home), P(Away) from goal distribution
+        Models-->>App: Poisson predictions
+    and Model Execution
+        App->>Models: LightGBM Model
+        Models->>Models: P(Home), P(Away) from feature importance
+        Models-->>App: LightGBM predictions
+    end
+
+    Note over App: ENSEMBLE: Aggregate & Calibrate (6 layers)
+    App->>Models: Weighted average of 3 models
+    Models->>Models: Layer 1: Input validation check
+    Models->>Models: Layer 2: Baseline accuracy check
+    Models->>Models: Layer 3: Feature completeness check
+    Models->>Models: Layer 4: Model disagreement penalty
+    Models->>Models: Layer 5: Market odds alignment check
+    Models->>Models: Layer 6: Bayesian uncertainty quantification
+    Models-->>App: Final confidence (30-95%)
+
+    Note over App: REPORT: Generate output formats
+    App->>Report: Create JSON report
+    Report->>Report: Include predictions, confidence, breakdown
+    Report-->>App: JSON payload
+    
+    App->>Report: Create Markdown report
+    Report->>Report: Include tables, commentary, explainability
+    Report-->>App: Markdown string
+    
+    App->>Report: Create PNG visualizations
+    Report->>Report: Confidence bars, model agreement chart
+    Report-->>App: PNG image
+
+    Note over App: STORE: Archive results
+    App->>Output: Write JSON to reports/
+    App->>Output: Write Markdown to reports/
+    App->>Output: Write PNG to reports/
+    App->>Output: Log prediction metrics (for backtesting)
+
+    Note over App: SUCCESS: Return to user
+    App-->>App: Print summary to console
+    App-->>App: Log to data/logs/daily/
+
+    Note over App: (Optional) FEEDBACK: Accuracy tracking
+    App->>Output: Store prediction in data/processed/
+    Note over Output: Later: Compare vs actual result<br/>for backtest accuracy metrics

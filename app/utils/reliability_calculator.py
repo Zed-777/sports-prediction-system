@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+DATA_QUALITY_THRESHOLD = 70
+
 
 def _clamp(value: float, lower: float, upper: float) -> float:
     """Clamp *value* to the inclusive range [lower, upper]."""
@@ -32,17 +34,16 @@ class ReliabilityCalculator:
     ]
 
     def calculate(
-        self, prediction: dict[str, Any], enhanced_data: dict[str, Any]
+        self, prediction: dict[str, Any], enhanced_data: dict[str, Any],
     ) -> dict[str, Any]:
         """Return reliability metrics by blending confidence, data quality, and coverage."""
-
         confidence = float(prediction.get("confidence", 0.6))
         data_quality = float(enhanced_data.get("data_quality_score", 70.0)) / 100.0
         probabilities = self._extract_probabilities(prediction)
         clarity_component = self._calculate_probability_clarity(probabilities)
         h2h_component = self._calculate_h2h_component(prediction)
         freshness_component = self._calculate_freshness_component(
-            enhanced_data, prediction
+            enhanced_data, prediction,
         )
 
         score = (
@@ -67,11 +68,11 @@ class ReliabilityCalculator:
         notes: list[str] = []
         if clarity_component < 0.35:
             notes.append(
-                "Probability distribution fairly flat; monitor for volatility."
+                "Probability distribution fairly flat; monitor for volatility.",
             )
         if h2h_component < 0.25:
             notes.append("Head-to-head sample is limited – emphasis on recent form.")
-        if factors["data_quality"] < 70:
+        if factors["data_quality"] < DATA_QUALITY_THRESHOLD:
             notes.append("Data quality below optimal threshold; confidence capped.")
 
         return {
@@ -92,7 +93,6 @@ class ReliabilityCalculator:
         reliability_metrics: dict[str, Any],
     ) -> dict[str, Any]:
         """Blend probabilities toward neutral anchor when reliability is limited."""
-
         probabilities = self._extract_probabilities(prediction)
         if not probabilities:
             return {
@@ -112,7 +112,7 @@ class ReliabilityCalculator:
         if shrink_factor > 0.0:
             for prob in probabilities:
                 calibrated.append(
-                    (1.0 - shrink_factor) * prob + shrink_factor * neutral_anchor
+                    (1.0 - shrink_factor) * prob + shrink_factor * neutral_anchor,
                 )
         else:
             calibrated = probabilities[:]
@@ -130,7 +130,7 @@ class ReliabilityCalculator:
         notes: list[str] = []
         if shrink_factor > 0.0:
             notes.append(
-                f"Applied {shrink_factor * 100.0:.1f}% shrink toward neutral due to reliability score {reliability_score:.1f}."
+                f"Applied {shrink_factor * 100.0:.1f}% shrink toward neutral due to reliability score {reliability_score:.1f}.",
             )
 
         return {
@@ -157,7 +157,6 @@ class ReliabilityCalculator:
 
     def fallback_metrics(self) -> dict[str, Any]:
         """Return conservative metrics for fallback scenarios."""
-
         return {
             "score": 48.0,
             "level": "Low",
@@ -173,7 +172,6 @@ class ReliabilityCalculator:
     @staticmethod
     def _extract_probabilities(prediction: dict[str, Any]) -> list[float]:
         """Return probabilities as unit fractions (0-1)."""
-
         keys = [
             ("home_win_prob", "home_win_probability"),
             ("draw_prob", "draw_probability"),
@@ -212,10 +210,10 @@ class ReliabilityCalculator:
 
     @staticmethod
     def _calculate_freshness_component(
-        enhanced_data: dict[str, Any], prediction: dict[str, Any]
+        enhanced_data: dict[str, Any], prediction: dict[str, Any],
     ) -> float:
         processing_time = enhanced_data.get("processing_time") or prediction.get(
-            "processing_time"
+            "processing_time",
         )
         if processing_time is None:
             return 0.7
@@ -237,11 +235,13 @@ class ReliabilityCalculator:
                 return level, description, emoji
         return "Low", self._LEVELS[-1][2], self._LEVELS[-1][3]
 
+    _NUM_OUTCOMES = 3
+
     @staticmethod
     def _build_confidence_intervals(
-        probabilities: list[float], score: float
+        probabilities: list[float], score: float,
     ) -> dict[str, tuple[float, float] | float]:
-        if len(probabilities) != 3:
+        if len(probabilities) != ReliabilityCalculator._NUM_OUTCOMES:
             return {}
         margin = _clamp((100.0 - score) / 100.0 * 0.12, 0.025, 0.14)
         labels = ["home", "draw", "away"]

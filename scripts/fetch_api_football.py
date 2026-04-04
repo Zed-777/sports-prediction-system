@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Fetch historical match data from API-Football (RapidAPI v3) for given league ids and seasons.
+"""Fetch historical match data from API-Football (RapidAPI v3) for given league ids and seasons.
 
 Writes CSVs to `data/backup_csv/` with columns that match existing backup CSVs so the collector can ingest them.
 
@@ -55,7 +54,7 @@ def fetch_fixtures_for_league(api_key: str, league_id: int, season: int) -> list
                 "away_team": teams.get("away", {}).get("name"),
                 "home_score": score.get("fulltime", {}).get("home"),
                 "away_score": score.get("fulltime", {}).get("away"),
-            }
+            },
         )
     return fixtures
 
@@ -80,7 +79,7 @@ def write_csv(rows: list[dict], out_path: Path):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--leagues", required=True, help="Comma-separated league ids (e.g., 140)"
+        "--leagues", required=True, help="Comma-separated league ids (e.g., 140)",
     )
     parser.add_argument(
         "--seasons",
@@ -88,7 +87,7 @@ def parse_args():
         help="Comma-separated seasons (years) e.g. 2019,2020",
     )
     parser.add_argument(
-        "--outfile", help="Optional combined CSV path to write all matches into"
+        "--outfile", help="Optional combined CSV path to write all matches into",
     )
     return parser.parse_args()
 
@@ -109,11 +108,11 @@ def main():
     args = parse_args()
     # Try environment first; fallback to reading .env for convenience
     api_key = os.environ.get("API_FOOTBALL_KEY") or read_env_file_for_key(
-        "API_FOOTBALL_KEY"
+        "API_FOOTBALL_KEY",
     )
     if not api_key:
         print(
-            "No API_FOOTBALL_KEY found in environment or .env. Set it and re-run to fetch data."
+            "No API_FOOTBALL_KEY found in environment or .env. Set it and re-run to fetch data.",
         )
         sys.exit(0)
 
@@ -128,7 +127,7 @@ def main():
     for league in leagues:
         for season in seasons:
             print(
-                f"Fetching API-Football fixtures: league {league}, season {season}..."
+                f"Fetching API-Football fixtures: league {league}, season {season}...",
             )
             try:
                 rows = fetch_fixtures_for_league(api_key, int(league), int(season))
@@ -142,7 +141,7 @@ def main():
                 time.sleep(1)
             except Exception as e:
                 print(
-                    f"  -> failed to fetch fixtures for league {league} season {season}: {e}"
+                    f"  -> failed to fetch fixtures for league {league} season {season}: {e}",
                 )
 
     if args.outfile:

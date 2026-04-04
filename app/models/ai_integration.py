@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Advanced AI Integration System v1.0
+"""Advanced AI Integration System v1.0
 Unified integration of all advanced AI/ML components for state-of-the-art predictions.
 
 Integrates:
@@ -12,21 +11,22 @@ Integrates:
 """
 
 import logging
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
-# Import advanced components
-from app.models.neural_predictor import AdvancedNeuralPredictor, PredictionResult
-from app.models.feature_engineer import AdvancedFeatureEngineer, FeatureSet
 from app.models.advanced_calibration import (
     AdvancedCalibrationManager,
     CalibrationResult,
 )
+from app.models.feature_engineer import AdvancedFeatureEngineer, FeatureSet
 from app.models.ml_enhancer import MachineLearningEnhancer
+
+# Import advanced components
+from app.models.neural_predictor import AdvancedNeuralPredictor, PredictionResult
 
 
 @dataclass
@@ -45,7 +45,7 @@ class AdvancedPrediction:
     # Confidence and uncertainty
     confidence: float
     uncertainty: float
-    prediction_interval: Tuple[float, float]
+    prediction_interval: tuple[float, float]
 
     # Calibration
     calibrated: bool
@@ -54,15 +54,15 @@ class AdvancedPrediction:
 
     # Ensemble information
     model_agreement: float
-    models_used: List[str]
-    individual_predictions: Dict[str, Dict[str, float]]
+    models_used: list[str]
+    individual_predictions: dict[str, dict[str, float]]
 
     # Feature insights
-    top_features: Dict[str, float]
+    top_features: dict[str, float]
     feature_count: int
 
     # Conformal prediction
-    prediction_set: List[int]
+    prediction_set: list[int]
     coverage_guarantee: float
 
     # Metadata
@@ -70,7 +70,7 @@ class AdvancedPrediction:
     processing_ms: float
     ai_version: str = "2.0"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization"""
         return asdict(self)
 
@@ -84,17 +84,15 @@ class AdvancedPrediction:
         """Get human-readable confidence level"""
         if self.confidence >= 0.80:
             return "Very High"
-        elif self.confidence >= 0.65:
+        if self.confidence >= 0.65:
             return "High"
-        elif self.confidence >= 0.55:
+        if self.confidence >= 0.55:
             return "Moderate"
-        else:
-            return "Low"
+        return "Low"
 
 
 class AdvancedAIIntegration:
-    """
-    Master integration class for all advanced AI components.
+    """Master integration class for all advanced AI components.
     Provides a unified interface for state-of-the-art predictions.
     """
 
@@ -118,20 +116,20 @@ class AdvancedAIIntegration:
 
         self.logger.info("✓ All AI components initialized")
         self.logger.info(
-            f"  - Neural Predictor: Multi-head Attention + Bi-LSTM + MC Dropout"
+            "  - Neural Predictor: Multi-head Attention + Bi-LSTM + MC Dropout",
         )
         self.logger.info(
-            f"  - Feature Engineer: Embeddings + Fourier + Momentum + Interactions"
+            "  - Feature Engineer: Embeddings + Fourier + Momentum + Interactions",
         )
-        self.logger.info(f"  - Calibration: Platt + Temperature + Beta + Conformal")
-        self.logger.info(f"  - Ensemble: ELO + ML Models + Neural")
+        self.logger.info("  - Calibration: Platt + Temperature + Beta + Conformal")
+        self.logger.info("  - Ensemble: ELO + ML Models + Neural")
         self.logger.info("=" * 60)
 
     def _init_components(self):
         """Initialize all AI components"""
         try:
             self.neural_predictor = AdvancedNeuralPredictor(
-                str(self.models_dir / "neural")
+                str(self.models_dir / "neural"),
             )
         except Exception as e:
             self.logger.warning(f"Neural predictor init failed: {e}")
@@ -139,7 +137,7 @@ class AdvancedAIIntegration:
 
         try:
             self.feature_engineer = AdvancedFeatureEngineer(
-                str(self.models_dir / "features")
+                str(self.models_dir / "features"),
             )
         except Exception as e:
             self.logger.warning(f"Feature engineer init failed: {e}")
@@ -147,7 +145,7 @@ class AdvancedAIIntegration:
 
         try:
             self.calibration_manager = AdvancedCalibrationManager(
-                str(self.models_dir / "calibration")
+                str(self.models_dir / "calibration"),
             )
         except Exception as e:
             self.logger.warning(f"Calibration manager init failed: {e}")
@@ -160,10 +158,9 @@ class AdvancedAIIntegration:
             self.ml_enhancer = None
 
     def predict(
-        self, match_data: Dict[str, Any], match_datetime: Optional[datetime] = None
+        self, match_data: dict[str, Any], match_datetime: datetime | None = None,
     ) -> AdvancedPrediction:
-        """
-        Generate advanced prediction using all AI components.
+        """Generate advanced prediction using all AI components.
 
         Args:
             match_data: Complete match data dictionary
@@ -171,6 +168,7 @@ class AdvancedAIIntegration:
 
         Returns:
             AdvancedPrediction with full prediction details
+
         """
         import time
 
@@ -183,11 +181,11 @@ class AdvancedAIIntegration:
         away_team = match_data.get("away_team", "Unknown")
 
         self.logger.info(
-            f"🎯 Generating advanced prediction: {home_team} vs {away_team}"
+            f"🎯 Generating advanced prediction: {home_team} vs {away_team}",
         )
 
         # Store individual model predictions
-        individual_predictions: Dict[str, Dict[str, float]] = {}
+        individual_predictions: dict[str, dict[str, float]] = {}
         models_used = []
 
         # 1. Feature Engineering
@@ -224,7 +222,7 @@ class AdvancedAIIntegration:
 
         # 7. Calculate expected goals
         expected_goals = self._calculate_expected_goals(
-            calibration_result.calibrated_probs, match_data
+            calibration_result.calibrated_probs, match_data,
         )
 
         # 8. Get feature importance
@@ -245,7 +243,7 @@ class AdvancedAIIntegration:
             confidence=calibration_result.confidence,
             uncertainty=calibration_result.uncertainty,
             prediction_interval=self._get_prediction_interval(
-                neural_result, calibration_result
+                neural_result, calibration_result,
             ),
             calibrated=calibration_result.calibration_method != "none",
             calibration_method=calibration_result.calibration_method,
@@ -264,14 +262,14 @@ class AdvancedAIIntegration:
 
         self.logger.info(
             f"  ✓ Prediction complete: {prediction.get_predicted_outcome()} "
-            f"({prediction.confidence:.1%} confidence)"
+            f"({prediction.confidence:.1%} confidence)",
         )
 
         return prediction
 
     def _engineer_features(
-        self, match_data: Dict[str, Any], match_datetime: datetime
-    ) -> Optional[FeatureSet]:
+        self, match_data: dict[str, Any], match_datetime: datetime,
+    ) -> FeatureSet | None:
         """Extract advanced features"""
         if self.feature_engineer is None:
             return None
@@ -283,8 +281,8 @@ class AdvancedAIIntegration:
             return None
 
     def _get_neural_prediction(
-        self, match_data: Dict[str, Any]
-    ) -> Optional[PredictionResult]:
+        self, match_data: dict[str, Any],
+    ) -> PredictionResult | None:
         """Get neural network prediction"""
         if self.neural_predictor is None:
             return None
@@ -296,8 +294,8 @@ class AdvancedAIIntegration:
             return None
 
     def _get_elo_prediction(
-        self, home_team: str, away_team: str
-    ) -> Optional[Dict[str, float]]:
+        self, home_team: str, away_team: str,
+    ) -> dict[str, float] | None:
         """Get ELO-based prediction"""
         if self.ml_enhancer is None:
             return None
@@ -315,8 +313,8 @@ class AdvancedAIIntegration:
             return None
 
     def _get_ml_prediction(
-        self, match_data: Dict[str, Any]
-    ) -> Optional[Dict[str, float]]:
+        self, match_data: dict[str, Any],
+    ) -> dict[str, float] | None:
         """Get ML ensemble prediction"""
         if self.ml_enhancer is None:
             return None
@@ -326,7 +324,7 @@ class AdvancedAIIntegration:
             away_team = match_data.get("away_team", "Unknown")
 
             result = self.ml_enhancer.predict_with_ensemble(
-                home_team, away_team, match_data, match_data
+                home_team, away_team, match_data, match_data,
             )
 
             probs = result.get("ensemble_probabilities", {})
@@ -341,7 +339,7 @@ class AdvancedAIIntegration:
             return None
 
     def _combine_predictions(
-        self, predictions: Dict[str, Dict[str, float]], match_data: Dict[str, Any]
+        self, predictions: dict[str, dict[str, float]], match_data: dict[str, Any],
     ) -> np.ndarray:
         """Combine individual predictions with dynamic weighting"""
         if not predictions:
@@ -356,13 +354,13 @@ class AdvancedAIIntegration:
         }
 
         # Adjust weights based on data availability
-        available_weight = sum(weights[m] for m in predictions.keys())
+        available_weight = sum(weights[m] for m in predictions)
         if available_weight == 0:
             available_weight = 1.0
 
         # Normalize weights
         normalized_weights = {
-            m: weights.get(m, 0.25) / available_weight for m in predictions.keys()
+            m: weights.get(m, 0.25) / available_weight for m in predictions
         }
 
         # Combine predictions
@@ -388,7 +386,7 @@ class AdvancedAIIntegration:
         return combined
 
     def _calibrate_prediction(
-        self, probs: np.ndarray, match_data: Dict[str, Any]
+        self, probs: np.ndarray, match_data: dict[str, Any],
     ) -> CalibrationResult:
         """Apply calibration to predictions"""
         if self.calibration_manager is None:
@@ -412,7 +410,7 @@ class AdvancedAIIntegration:
                 context = "high_confidence"
 
             return self.calibration_manager.calibrate(
-                probs, method="ensemble", context=context
+                probs, method="ensemble", context=context,
             )
         except Exception as e:
             self.logger.warning(f"Calibration failed: {e}")
@@ -427,8 +425,8 @@ class AdvancedAIIntegration:
             )
 
     def _calculate_expected_goals(
-        self, probs: np.ndarray, match_data: Dict[str, Any]
-    ) -> Tuple[float, float]:
+        self, probs: np.ndarray, match_data: dict[str, Any],
+    ) -> tuple[float, float]:
         """Calculate expected goals from probabilities and context"""
         # Base expected goals from match data if available
         base_home_xg = match_data.get("home_xg", 1.35)
@@ -452,10 +450,10 @@ class AdvancedAIIntegration:
 
     def _get_top_features(
         self,
-        feature_set: Optional[FeatureSet],
-        neural_result: Optional[PredictionResult],
+        feature_set: FeatureSet | None,
+        neural_result: PredictionResult | None,
         n: int = 5,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Get top N most important features"""
         if neural_result and neural_result.feature_importance:
             # Use neural attention weights
@@ -476,7 +474,7 @@ class AdvancedAIIntegration:
         }
 
     def _calculate_model_agreement(
-        self, predictions: Dict[str, Dict[str, float]]
+        self, predictions: dict[str, dict[str, float]],
     ) -> float:
         """Calculate how much the models agree"""
         if len(predictions) < 2:
@@ -499,9 +497,9 @@ class AdvancedAIIntegration:
 
     def _get_prediction_interval(
         self,
-        neural_result: Optional[PredictionResult],
+        neural_result: PredictionResult | None,
         calibration_result: CalibrationResult,
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Get prediction interval from neural and calibration results"""
         if neural_result:
             return neural_result.prediction_interval
@@ -512,33 +510,33 @@ class AdvancedAIIntegration:
         return (max(0.0, conf - unc), min(1.0, conf + unc))
 
     def update_from_result(
-        self, match_data: Dict[str, Any], home_goals: int, away_goals: int
+        self, match_data: dict[str, Any], home_goals: int, away_goals: int,
     ):
-        """
-        Update models with match result for continuous learning.
+        """Update models with match result for continuous learning.
 
         Args:
             match_data: Original match data
             home_goals: Actual home team goals
             away_goals: Actual away team goals
+
         """
         home_team = match_data.get("home_team", "Unknown")
         away_team = match_data.get("away_team", "Unknown")
 
         self.logger.info(
-            f"📊 Updating models with result: {home_team} {home_goals}-{away_goals} {away_team}"
+            f"📊 Updating models with result: {home_team} {home_goals}-{away_goals} {away_team}",
         )
 
         # Update feature engineer (embeddings)
         if self.feature_engineer:
             self.feature_engineer.update_from_result(
-                home_team, away_team, home_goals, away_goals
+                home_team, away_team, home_goals, away_goals,
             )
 
         # Update ELO ratings
         if self.ml_enhancer:
             self.ml_enhancer.update_elo_after_match(
-                home_team, away_team, home_goals, away_goals
+                home_team, away_team, home_goals, away_goals,
             )
 
         # Update calibration with outcome
@@ -553,11 +551,10 @@ class AdvancedAIIntegration:
 
             # Add to calibration data (would need last prediction stored)
             # This is a simplified version
-            pass
 
         self.logger.info("  ✓ Models updated with match result")
 
-    def get_system_status(self) -> Dict[str, Any]:
+    def get_system_status(self) -> dict[str, Any]:
         """Get status of all AI components"""
         return {
             "version": self.VERSION,
@@ -665,29 +662,29 @@ if __name__ == "__main__":
     print("=" * 60)
     print(f"\n🎯 {prediction.get_predicted_outcome()}")
     print(
-        f"   Confidence Level: {prediction.get_confidence_level()} ({prediction.confidence:.1%})"
+        f"   Confidence Level: {prediction.get_confidence_level()} ({prediction.confidence:.1%})",
     )
-    print(f"\n📊 Probabilities:")
+    print("\n📊 Probabilities:")
     print(f"   Home Win:  {prediction.home_win_prob:.1%}")
     print(f"   Draw:      {prediction.draw_prob:.1%}")
     print(f"   Away Win:  {prediction.away_win_prob:.1%}")
-    print(f"\n⚽ Expected Goals:")
+    print("\n⚽ Expected Goals:")
     print(f"   Home: {prediction.expected_home_goals}")
     print(f"   Away: {prediction.expected_away_goals}")
-    print(f"\n📈 Uncertainty & Reliability:")
+    print("\n📈 Uncertainty & Reliability:")
     print(f"   Uncertainty: {prediction.uncertainty:.4f}")
     print(
-        f"   Prediction Interval: [{prediction.prediction_interval[0]:.1%}, {prediction.prediction_interval[1]:.1%}]"
+        f"   Prediction Interval: [{prediction.prediction_interval[0]:.1%}, {prediction.prediction_interval[1]:.1%}]",
     )
     print(f"   Model Agreement: {prediction.model_agreement:.1%}")
     print(f"   Reliability Score: {prediction.reliability_score:.4f}")
-    print(f"\n🔧 Technical Details:")
+    print("\n🔧 Technical Details:")
     print(f"   Models Used: {', '.join(prediction.models_used)}")
     print(f"   Calibration: {prediction.calibration_method}")
     print(f"   Features: {prediction.feature_count}")
     print(f"   Processing: {prediction.processing_ms:.1f}ms")
     print(f"   AI Version: {prediction.ai_version}")
-    print(f"\n📋 Top Features:")
+    print("\n📋 Top Features:")
     for name, importance in prediction.top_features.items():
         print(f"   - {name}: {importance:.4f}")
     print("\n" + "=" * 60)

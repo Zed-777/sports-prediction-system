@@ -1,6 +1,6 @@
-## Copilot instructions for SportsPredictionSystem (Phase2 Lite)
+# Copilot Instructions for SportsPredictionSystem (Phase 2 Lite)
 
-This file is a compact reference for AI coding agents working in this repo. Keep edits small, add focused tests, and prefer importing functions from `app/` modules instead of running scripts in tests.
+Compact reference for AI coding agents working in this repo. Keep edits small, add focused tests, and prefer importing functions from `app/` modules instead of running scripts in tests.
 
 Core entrypoints (quick checks)
 - `python phase2_lite.py` — Phase 2 Lite harness (smoke)
@@ -30,7 +30,7 @@ Project conventions (concrete, actionable)
 Testing & CI notes
 - Run tests locally: `python -m pytest -q` — prefer small fixtures to keep CI fast.
 - Smoke checks after edits: `python phase2_lite.py` and `python generate_fast_reports.py generate 1 matches for la-liga`.
-- When adding CI: include a Windows runner for platform-specific checks and a synthetic-detection job (see `TODO.json`).
+- When adding CI: include a Windows runner for platform-specific checks and a synthetic-detection job (details in MPDP.md backlog).
 
 If you want this expanded (onboarding checklist, GitHub Actions snippets, sample fixtures), say which area to expand and I will iterate.
 

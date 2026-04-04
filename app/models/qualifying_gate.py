@@ -1,5 +1,4 @@
-"""
-Qualifying Gate (PROF-003)
+"""Qualifying Gate (PROF-003)
 ===========================
 Defines and enforces the strict set of conditions that a prediction must
 meet before it is considered eligible for live-trading staking.
@@ -42,8 +41,9 @@ All thresholds are configurable to support different risk profiles.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import override
 
+from app.models.profitability import calculate_edge, calculate_ev, quarter_kelly
 
 # ---------------------------------------------------------------------------
 # Default qualifying parameters
@@ -52,8 +52,7 @@ from typing import Optional
 
 @dataclass
 class QualifyingParams:
-    """
-    All tunable thresholds that govern which bets qualify for live trading.
+    """All tunable thresholds that govern which bets qualify for live trading.
 
     Three pre-built profiles are available:
         QualifyingParams.conservative()  – tight gate, fewest but safest bets
@@ -95,7 +94,7 @@ class QualifyingParams:
     max_daily_exposure_pct: float = 0.20   # max 20% bankroll at risk per day
 
     @classmethod
-    def conservative(cls) -> "QualifyingParams":
+    def conservative(cls) -> QualifyingParams:
         """Very tight gate for risk-averse live trading."""
         return cls(
             min_edge_pct=8.0,
@@ -109,12 +108,12 @@ class QualifyingParams:
         )
 
     @classmethod
-    def standard(cls) -> "QualifyingParams":
+    def standard(cls) -> QualifyingParams:
         """Balanced default for production use."""
         return cls()          # uses __init__ defaults
 
     @classmethod
-    def aggressive(cls) -> "QualifyingParams":
+    def aggressive(cls) -> QualifyingParams:
         """Lower filter — more bets, higher variance."""
         return cls(
             min_edge_pct=3.0,
@@ -153,19 +152,18 @@ class GateDecision:
     """Result of passing a prediction through the qualifying gate."""
 
     qualified: bool
-    outcome_to_bet: Optional[str]         # 'home' | 'draw' | 'away'
-    decimal_odds: Optional[float]
-    model_prob: Optional[float]
-    market_prob: Optional[float]
-    edge_pct: Optional[float]
-    ev_pct: Optional[float]
+    outcome_to_bet: str | None         # 'home' | 'draw' | 'away'
+    decimal_odds: float | None
+    model_prob: float | None
+    market_prob: float | None
+    edge_pct: float | None
+    ev_pct: float | None
     kelly_stake_pct: float
     rejection_reasons: list[str]          # empty if qualified
 
 
 class QualifyingGate:
-    """
-    Evaluates a prediction against configurable qualifying parameters.
+    """Evaluates a prediction against configurable qualifying parameters.
 
     Usage
     -----
@@ -181,7 +179,7 @@ class QualifyingGate:
             place_bet(decision.outcome_to_bet, decision.kelly_stake_pct)
     """
 
-    def __init__(self, params: Optional[QualifyingParams] = None):
+    def __init__(self, params: QualifyingParams | None = None):
         self.params = params or QualifyingParams.standard()
 
     def evaluate(
@@ -196,8 +194,7 @@ class QualifyingGate:
         confidence: float,          # 0-1
         data_quality: float,        # 0-1
     ) -> GateDecision:
-        """
-        Decide whether to bet on any of the three outcomes and, if so, which.
+        """Decide whether to bet on any of the three outcomes and, if so, which.
 
         The gate evaluates all three outcomes and returns a decision for the
         single best qualifying opportunity (highest EV that meets all thresholds).
@@ -218,7 +215,7 @@ class QualifyingGate:
             ("away", a, market_odds_away),
         ]
 
-        best_decision: Optional[GateDecision] = None
+        best_decision: GateDecision | None = None
         best_ev = -999.0
 
         for outcome, model_p, odds in candidates:
@@ -235,27 +232,31 @@ class QualifyingGate:
             # Check confidence
             if confidence < self.params.min_confidence:
                 rejection_reasons.append(
-                    f"{REJECT_CONFIDENCE}: {confidence:.3f} < {self.params.min_confidence}"
+                    f"{REJECT_CONFIDENCE}: {confidence:.3f} < {self.params.min_confidence}",
                 )
 
             # Check data quality
             if data_quality < self.params.min_data_quality:
                 rejection_reasons.append(
-                    f"{REJECT_DATA_QUALITY}: {data_quality:.3f} < {self.params.min_data_quality}"
+                    f"{REJECT_DATA_QUALITY}: {data_quality:.3f} < {self.params.min_data_quality}",
                 )
 
             # Odds bounds
             if odds < self.params.min_odds:
                 rejection_reasons.append(
-                    f"{REJECT_ODDS_TOO_LOW}: {odds} < {self.params.min_odds}"
+                    f"{REJECT_ODDS_TOO_LOW}: {odds} < {self.params.min_odds}",
                 )
             if odds > self.params.max_odds:
                 rejection_reasons.append(
-                    f"{REJECT_ODDS_TOO_HIGH}: {odds} > {self.params.max_odds}"
+                    f"{REJECT_ODDS_TOO_HIGH}: {odds} > {self.params.max_odds}",
                 )
 
             # EV
-            from app.models.profitability import calculate_ev, calculate_edge, quarter_kelly
+            from app.models.profitability import (
+                calculate_edge,
+                calculate_ev,
+                quarter_kelly,
+            )
             ev = calculate_ev(model_p, odds)
             edge = calculate_edge(model_p, odds)
             edge_pct = edge * 100.0
@@ -265,17 +266,24 @@ class QualifyingGate:
                 rejection_reasons.append(f"{REJECT_NEGATIVE_EV}: EV={ev_pct:.2f}%")
             elif ev_pct < self.params.min_ev_pct:
                 rejection_reasons.append(
-                    f"{REJECT_EV}: EV={ev_pct:.2f}% < {self.params.min_ev_pct}%"
+                    f"{REJECT_EV}: EV={ev_pct:.2f}% < {self.params.min_ev_pct}%",
                 )
 
             if edge_pct < self.params.min_edge_pct:
                 rejection_reasons.append(
-                    f"{REJECT_EDGE}: edge={edge_pct:.2f}pp < {self.params.min_edge_pct}pp"
+                    "{}: edge={:.2f}pp < {:.2f}pp".format(
+                        REJECT_EDGE, edge_pct, self.params.min_edge_pct
+                    )
                 )
 
             # Kelly stake
-            kelly_full_pct = max(0.0, quarter_kelly(model_p, odds) / self.params.kelly_fraction
-                                  * self.params.kelly_fraction * 100.0)
+            kelly_full_pct = max(
+                0.0,
+                quarter_kelly(model_p, odds)
+                / self.params.kelly_fraction
+                * self.params.kelly_fraction
+                * 100.0,
+            )
             kelly_pct = min(kelly_full_pct, self.params.max_stake_pct * 100.0)
 
             qualified = len(rejection_reasons) == 0
@@ -319,11 +327,17 @@ class QualifyingGate:
             rejection_reasons=all_reasons,
         )
 
+    @override
     def _collect_all_reasons(
-        self, league, outcome, model_p, odds, confidence, data_quality
+        self,
+        league: str,
+        outcome: str,
+        model_p: float,
+        odds: dict[str, float],
+        confidence: float,
+        data_quality: float,
     ) -> list[str]:
         """Collect all rejection reasons for the given (best) candidate."""
-        from app.models.profitability import calculate_ev, calculate_edge
         reasons = []
         if league not in self.params.allowed_leagues:
             reasons.append(f"{REJECT_LEAGUE}: {league}")

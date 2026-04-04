@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Smart Data Validation & Quality Scoring v2.0
+"""Smart Data Validation & Quality Scoring v2.0
 Intelligent validation system for maximum data reliability and confidence
 """
 
@@ -9,7 +8,7 @@ import statistics
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, List
+from typing import Any
 
 
 @dataclass
@@ -38,8 +37,7 @@ class DataQualityMetrics:
 
 
 class SmartDataValidator:
-    """
-    Intelligent data validation system for sports prediction
+    """Intelligent data validation system for sports prediction
 
     Validation Layers:
     1. Schema Validation - Data structure and types
@@ -123,15 +121,13 @@ class SmartDataValidator:
         match_data: dict[str, Any],
         data_sources: list[dict[str, Any]] | None = None,
     ) -> ValidationResult:
-        """
-        Perform comprehensive data validation across all layers
+        """Perform comprehensive data validation across all layers
 
         Returns validation result with quality score and confidence impact
         """
-
-        issues: List[str] = []
-        warnings: List[str] = []
-        enhancements: List[str] = []
+        issues: list[str] = []
+        warnings: list[str] = []
+        enhancements: list[str] = []
 
         # Layer 1: Schema Validation
         schema_score = self._validate_schema(match_data, issues, warnings)
@@ -141,7 +137,7 @@ class SmartDataValidator:
 
         # Layer 3: Cross-Source Validation (if multiple sources available)
         cross_source_score = self._validate_cross_source(
-            match_data, data_sources, issues, warnings
+            match_data, data_sources, issues, warnings,
         )
 
         # Layer 4: Statistical Validation
@@ -180,7 +176,7 @@ class SmartDataValidator:
 
         # Calculate confidence impact
         confidence_impact = self._calculate_confidence_impact(
-            quality_metrics, issues, warnings
+            quality_metrics, issues, warnings,
         )
 
         # Generate enhancement suggestions
@@ -206,7 +202,7 @@ class SmartDataValidator:
         )
 
     def _validate_schema(
-        self, match_data: dict[str, Any], issues: list[str], warnings: list[str]
+        self, match_data: dict[str, Any], issues: list[str], warnings: list[str],
     ) -> float:
         """Validate data schema and structure"""
         score = 100.0
@@ -218,7 +214,7 @@ class SmartDataValidator:
         ]
         if missing_fields:
             issues.append(
-                f"CRITICAL: Missing required fields: {', '.join(missing_fields)}"
+                f"CRITICAL: Missing required fields: {', '.join(missing_fields)}",
             )
             score -= 30.0
 
@@ -244,7 +240,7 @@ class SmartDataValidator:
         return max(score, 0.0)
 
     def _validate_business_logic(
-        self, match_data: dict[str, Any], issues: list[str], warnings: list[str]
+        self, match_data: dict[str, Any], issues: list[str], warnings: list[str],
     ) -> float:
         """Validate against sports-specific business rules"""
         score = 100.0
@@ -277,7 +273,7 @@ class SmartDataValidator:
         total_prob = home_prob + draw_prob + away_prob
         if abs(total_prob - 100.0) > 5.0:  # Allow 5% tolerance
             issues.append(
-                f"Win probabilities don't sum to 100% (sum: {total_prob:.1f}%)"
+                f"Win probabilities don't sum to 100% (sum: {total_prob:.1f}%)",
             )
             score -= 15.0
         elif abs(total_prob - 100.0) > 1.0:
@@ -297,7 +293,7 @@ class SmartDataValidator:
             avg_goals = stats.get("avg_goals_for", 0)
             if avg_goals < 0 or avg_goals > 5:
                 warnings.append(
-                    f"{team_name} average goals ({avg_goals}) seems unusual"
+                    f"{team_name} average goals ({avg_goals}) seems unusual",
                 )
                 score -= 3.0
 
@@ -311,7 +307,6 @@ class SmartDataValidator:
         warnings: list[str],
     ) -> float:
         """Validate consistency across multiple data sources"""
-
         if not data_sources or len(data_sources) < 2:
             return 80.0  # Default score when cross-validation not possible
 
@@ -333,7 +328,7 @@ class SmartDataValidator:
 
             if cv > 0.3:  # High disagreement
                 warnings.append(
-                    f"High disagreement between sources for {metric} (CV: {cv:.2f})"
+                    f"High disagreement between sources for {metric} (CV: {cv:.2f})",
                 )
                 score -= 10.0
             elif cv > 0.15:  # Moderate disagreement
@@ -343,7 +338,7 @@ class SmartDataValidator:
         return max(score, 0.0)
 
     def _validate_statistical(
-        self, match_data: dict[str, Any], issues: list[str], warnings: list[str]
+        self, match_data: dict[str, Any], issues: list[str], warnings: list[str],
     ) -> float:
         """Validate using statistical analysis and outlier detection"""
         score = 100.0
@@ -367,7 +362,7 @@ class SmartDataValidator:
 
         if home_z > 3.0:  # Very unusual
             warnings.append(
-                f"Home goals expectation is statistical outlier (z={home_z:.1f})"
+                f"Home goals expectation is statistical outlier (z={home_z:.1f})",
             )
             score -= 10.0
         elif home_z > 2.0:
@@ -376,7 +371,7 @@ class SmartDataValidator:
 
         if away_z > 3.0:
             warnings.append(
-                f"Away goals expectation is statistical outlier (z={away_z:.1f})"
+                f"Away goals expectation is statistical outlier (z={away_z:.1f})",
             )
             score -= 10.0
         elif away_z > 2.0:
@@ -406,7 +401,7 @@ class SmartDataValidator:
         return max(score, 0.0)
 
     def _validate_temporal(
-        self, match_data: dict[str, Any], issues: list[str], warnings: list[str]
+        self, match_data: dict[str, Any], issues: list[str], warnings: list[str],
     ) -> float:
         """Validate temporal aspects and data freshness"""
         score = 100.0
@@ -459,7 +454,7 @@ class SmartDataValidator:
         return max(score, 0.0)
 
     def _validate_contextual(
-        self, match_data: dict[str, Any], issues: list[str], warnings: list[str]
+        self, match_data: dict[str, Any], issues: list[str], warnings: list[str],
     ) -> float:
         """Validate contextual relevance and league-specific factors"""
         score = 100.0
@@ -474,7 +469,7 @@ class SmartDataValidator:
 
         # Validate home advantage
         home_adv = match_data.get("home_performance_analysis", {}).get(
-            "home_advantage", 0
+            "home_advantage", 0,
         )
         expected_home_adv = league_context["home_advantage"]
 
@@ -482,13 +477,13 @@ class SmartDataValidator:
             abs(home_adv / 100 - expected_home_adv) > expected_home_adv
         ):  # More than 100% deviation
             warnings.append(
-                f"Home advantage ({home_adv:.1f}%) deviates from league norm ({expected_home_adv:.1%})"
+                f"Home advantage ({home_adv:.1f}%) deviates from league norm ({expected_home_adv:.1%})",
             )
             score -= 5.0
 
         # Validate goal expectations against league average
         total_expected_goals = match_data.get(
-            "expected_home_goals", 1
+            "expected_home_goals", 1,
         ) + match_data.get("expected_away_goals", 1)
         league_avg = league_context["typical_goals_per_match"]
 
@@ -496,14 +491,14 @@ class SmartDataValidator:
             abs(total_expected_goals - league_avg) > league_avg * 0.5
         ):  # More than 50% deviation
             warnings.append(
-                f"Total expected goals ({total_expected_goals:.1f}) deviates significantly from league average ({league_avg:.1f})"
+                f"Total expected goals ({total_expected_goals:.1f}) deviates significantly from league average ({league_avg:.1f})",
             )
             score -= 8.0
 
         return max(score, 0.0)
 
     def _calculate_consensus_metrics(
-        self, data_sources: list[dict[str, Any]]
+        self, data_sources: list[dict[str, Any]],
     ) -> dict[str, list[float]]:
         """Calculate consensus metrics across data sources"""
         consensus = defaultdict(list)
@@ -528,7 +523,6 @@ class SmartDataValidator:
         warnings: list[str],
     ) -> float:
         """Calculate impact on prediction confidence based on data quality"""
-
         # Base confidence impact from quality metrics
         base_impact = (
             quality_metrics.completeness * 0.2
@@ -550,25 +544,25 @@ class SmartDataValidator:
 
         # Final confidence impact
         confidence_impact = max(
-            0.3, base_impact - critical_penalty - issue_penalty - warning_penalty
+            0.3, base_impact - critical_penalty - issue_penalty - warning_penalty,
         )
 
         return min(confidence_impact, 0.95)  # Cap at 95%
 
     def _generate_enhancements(
-        self, quality_metrics: DataQualityMetrics, match_data: dict[str, Any]
+        self, quality_metrics: DataQualityMetrics, match_data: dict[str, Any],
     ) -> list[str]:
         """Generate suggestions for data enhancement"""
         enhancements = []
 
         if quality_metrics.completeness < 80:
             enhancements.append(
-                "Consider adding more comprehensive team performance data"
+                "Consider adding more comprehensive team performance data",
             )
 
         if quality_metrics.timeliness < 70:
             enhancements.append(
-                "Update with more recent match data for better accuracy"
+                "Update with more recent match data for better accuracy",
             )
 
         if quality_metrics.consistency < 60:
@@ -576,15 +570,15 @@ class SmartDataValidator:
 
         # Specific suggestions based on data gaps
         h2h_meetings = match_data.get("head_to_head_analysis", {}).get(
-            "total_meetings", 0
+            "total_meetings", 0,
         )
         if h2h_meetings == 0:
             enhancements.append(
-                "Historical head-to-head data would significantly improve prediction accuracy"
+                "Historical head-to-head data would significantly improve prediction accuracy",
             )
         elif h2h_meetings < 5:
             enhancements.append(
-                "Additional head-to-head history would enhance confidence"
+                "Additional head-to-head history would enhance confidence",
             )
 
         home_matches = (
@@ -600,12 +594,12 @@ class SmartDataValidator:
 
         if home_matches < 10:
             enhancements.append(
-                "More home team match history would improve reliability"
+                "More home team match history would improve reliability",
             )
 
         if away_matches < 10:
             enhancements.append(
-                "More away team match history would improve reliability"
+                "More away team match history would improve reliability",
             )
 
         # Enhanced data suggestions
@@ -614,7 +608,7 @@ class SmartDataValidator:
 
         if "weather_conditions" not in match_data:
             enhancements.append(
-                "Weather conditions data would provide additional context"
+                "Weather conditions data would provide additional context",
             )
 
         return enhancements
@@ -625,12 +619,10 @@ class SmartDataValidator:
         current_confidence: float,
         data_sources: list[dict[str, Any]] | None = None,
     ) -> tuple[float, ValidationResult]:
-        """
-        Validate data and calculate enhanced confidence score
+        """Validate data and calculate enhanced confidence score
 
         Returns enhanced confidence and validation result
         """
-
         validation_result = self.comprehensive_validation(match_data, data_sources)
 
         # Calculate enhanced confidence
@@ -669,17 +661,17 @@ if __name__ == "__main__":
         "draw_probability": 25.0,
         "away_win_probability": 30.0,
         "home_performance_analysis": {
-            "home": {"matches": 8, "win_rate": 62.5, "avg_goals_for": 2.1}
+            "home": {"matches": 8, "win_rate": 62.5, "avg_goals_for": 2.1},
         },
         "away_performance_analysis": {
-            "away": {"matches": 6, "win_rate": 50.0, "avg_goals_for": 1.5}
+            "away": {"matches": 6, "win_rate": 50.0, "avg_goals_for": 1.5},
         },
         "head_to_head_analysis": {"total_meetings": 3},
     }
 
     # Validate and enhance
     enhanced_confidence, validation = validator.validate_and_enhance_confidence(
-        match_data, 0.7
+        match_data, 0.7,
     )
 
     print("Original Confidence: 70.0%")

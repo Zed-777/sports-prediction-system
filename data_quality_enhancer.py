@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
-"""
-Data Quality Enhancement Module
+"""Data Quality Enhancement Module
 Player injuries, weather effects, referee analysis, and team news parsing
 """
 
 import os
 from datetime import datetime, timedelta
-from typing import Any, Dict, Optional, List, Union, TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from app.types import JSONDict, JSONList
-
 from app.utils.http import safe_request_get
 
 # Import FlashScore integration
@@ -45,7 +43,7 @@ class DataQualityEnhancer:
         self._open_meteo_archive = "https://archive-api.open-meteo.com/v1/archive"
         self._weather_cache: dict[str, dict[str, Any]] = {}
         # Load centralized settings if available
-        self._settings: Dict[str, Any] = {}
+        self._settings: dict[str, Any] = {}
         try:
             from pathlib import Path
 
@@ -60,17 +58,17 @@ class DataQualityEnhancer:
         self.setup_directories()
 
         # Initialize FlashScore integration (declare attributes once)
-        self.flashscore_scraper: Optional["FlashScoreScraper"] = None
-        self.flashscore_integrator: Optional["AdvancedDataIntegrator"] = None
+        self.flashscore_scraper: FlashScoreScraper | None = None
+        self.flashscore_integrator: AdvancedDataIntegrator | None = None
         if FLASHSCORE_AVAILABLE:
             self.flashscore_scraper = FlashScoreScraper()
             self.flashscore_integrator = AdvancedDataIntegrator(self.flashscore_scraper)
             print(
-                "FlashScore.es integration active - enhanced data collection enabled!"
+                "FlashScore.es integration active - enhanced data collection enabled!",
             )
 
         # Injuries connector instance (primary + fallbacks)
-        self.injuries_connector: Optional["InjuriesConnector"] = None
+        self.injuries_connector: InjuriesConnector | None = None
         if INJURIES_CONNECTOR_AVAILABLE:
             try:
                 self.injuries_connector = InjuriesConnector()
@@ -89,7 +87,7 @@ class DataQualityEnhancer:
                 self._injuries_disabled_until = float(val)
         except Exception:
             self._injuries_disabled_until = getattr(
-                self, "_injuries_disabled_until", 0.0
+                self, "_injuries_disabled_until", 0.0,
             )
         # Allow skipping injuries via a constructor param or runtime flag
         self.skip_injuries = False
@@ -120,14 +118,14 @@ class DataQualityEnhancer:
         cache_file = f"data/cache/{cache_key}.json"
         try:
             if os.path.exists(cache_file):
-                with open(cache_file, "r", encoding="utf-8") as cf:
+                with open(cache_file, encoding="utf-8") as cf:
                     entry = json.load(cf)
                 timestamp = float(entry.get("timestamp", 0))
                 ttl = int(
                     self._settings.get("data_sources", {})
                     .get("cache_ttl_by_endpoint", {})
                     .get("v3.football.api-sports.io", {})
-                    .get("/v3/injuries", 86400)
+                    .get("/v3/injuries", 86400),
                 )
                 if time.time() - timestamp < ttl:
                     # Return cached analysis
@@ -165,7 +163,7 @@ class DataQualityEnhancer:
 
         # Final fallback - no real injury API configured
         print(
-            f"Player injury data not available for {team_name} - need injury tracking API"
+            f"Player injury data not available for {team_name} - need injury tracking API",
         )
 
         return {
@@ -177,14 +175,14 @@ class DataQualityEnhancer:
             "injury_areas": [],
             "expected_lineup_strength": None,
             "injury_concerns": [
-                "Injury data unavailable - requires external injury API"
+                "Injury data unavailable - requires external injury API",
             ],
             "squad_size": None,
             "recommendation": "Integrate with API-Football (recommended) or Transfermarkt/PhysioRoom",
             "provenance": {"injury_clamped": False, "clamped_fields": {}},
         }
 
-    def _fetch_squad_data(self, team_id: int) -> Optional[JSONDict]:
+    def _fetch_squad_data(self, team_id: int) -> JSONDict | None:
         """Fetch squad data from Football-Data.org"""
         try:
             url = f"https://api.football-data.org/v4/teams/{team_id}"
@@ -198,23 +196,22 @@ class DataQualityEnhancer:
             )
 
             if response.status_code == 200:
-                return cast(JSONDict, response.json())
-            else:
-                print(f"   Could not fetch squad data: HTTP {response.status_code}")
-                return None
+                return cast("JSONDict", response.json())
+            print(f"   Could not fetch squad data: HTTP {response.status_code}")
+            return None
 
         except Exception as e:
             print(f"   Error fetching squad data: {e}")
             return None
 
-    def _fetch_injury_data_api_football(self, team_id: int) -> Optional[Dict[str, Any]]:
+    def _fetch_injury_data_api_football(self, team_id: int) -> dict[str, Any] | None:
         """Fetch injury / availability data from API-Football (RapidAPI) if available.
 
         NOTE: API-Football offers injury endpoints on RapidAPI; this method attempts a
         safe request and gracefully returns None if the endpoint or key is missing.
         """
-        import os
         import json
+        import os
 
         try:
             import time
@@ -227,7 +224,7 @@ class DataQualityEnhancer:
             except Exception:
                 # Fallback to in-memory value
                 if time.time() < getattr(
-                    self, "_injuries_disabled_until", 0.0
+                    self, "_injuries_disabled_until", 0.0,
                 ) or getattr(self, "skip_injuries", False):
                     return None
             # Respect runtime skip flag as well
@@ -250,7 +247,7 @@ class DataQualityEnhancer:
 
             # Attempt the injuries endpoint. If unavailable, the request will fail
             url = f"{base_url}/injuries"
-            params: dict[str, Union[str, int]] = {"team": team_id, "season": season}
+            params: dict[str, str | int] = {"team": team_id, "season": season}
             params = {k: str(v) for k, v in params.items()}
 
             response = safe_request_get(
@@ -263,7 +260,7 @@ class DataQualityEnhancer:
                 logger=None,
             )
             if response.status_code == 200:
-                data = cast(JSONDict, response.json())
+                data = cast("JSONDict", response.json())
                 # API-Football wraps payload in 'response' normally
                 parsed = data.get("response") or data
                 # Cache parsed results for subsequent runs
@@ -276,61 +273,60 @@ class DataQualityEnhancer:
                 except Exception:
                     pass
                 return parsed
-            else:
-                # Non-200 (including 404) - treat as unavailable
-                print(
-                    f"   API-Football injuries endpoint returned {response.status_code}"
-                )
-                if response.status_code == 429:
-                    # Mark injuries disabled temporarily for this process to avoid repeated 429s
-                    # Use per-endpoint disable TTL from config (default 15 minutes if not set)
-                    if getattr(self, "injuries_disable_ttl_override", None):
-                        ttl = int(self.injuries_disable_ttl_override)
-                    else:
-                        ttl = int(
-                            self._settings.get("data_sources", {})
-                            .get("disable_on_429_seconds", {})
-                            .get("api-football-v1.p.rapidapi.com", {})
-                            .get("/v3/injuries", 900)
-                        )
-                    disabled_until = time.time() + ttl
-                    self._injuries_disabled_until = disabled_until
-                    # Persist disabled state to file so subsequent runs avoid repeated calls
-                    try:
-                        # Use state_sync to persist disabled flag, supports Redis if configured
-                        # Prefer exact host+path storage for clarity
-                        self._state_sync.set_disabled_flag(
-                            "api-football-v1.p.rapidapi.com",
-                            "/v3/injuries",
-                            disabled_until,
-                            reason="429",
-                        )
-                    except Exception:
-                        pass
-                    # Backwards compatible: write a file used by older code/tests
-                    try:
-                        os.makedirs("data/cache", exist_ok=True)
-                        with open(
-                            "data/cache/injuries_disabled_until.json",
-                            "w",
-                            encoding="utf-8",
-                        ) as f:
-                            json.dump(
-                                {"disabled_until": disabled_until, "reason": "429"}, f
-                            )
-                    except Exception:
-                        pass
-                    print(
-                        "   Injuries endpoint temporary disabled for 15 minutes due to repeated rate limits"
+            # Non-200 (including 404) - treat as unavailable
+            print(
+                f"   API-Football injuries endpoint returned {response.status_code}",
+            )
+            if response.status_code == 429:
+                # Mark injuries disabled temporarily for this process to avoid repeated 429s
+                # Use per-endpoint disable TTL from config (default 15 minutes if not set)
+                if getattr(self, "injuries_disable_ttl_override", None):
+                    ttl = int(self.injuries_disable_ttl_override)
+                else:
+                    ttl = int(
+                        self._settings.get("data_sources", {})
+                        .get("disable_on_429_seconds", {})
+                        .get("api-football-v1.p.rapidapi.com", {})
+                        .get("/v3/injuries", 900),
                     )
-                return None
+                disabled_until = time.time() + ttl
+                self._injuries_disabled_until = disabled_until
+                # Persist disabled state to file so subsequent runs avoid repeated calls
+                try:
+                    # Use state_sync to persist disabled flag, supports Redis if configured
+                    # Prefer exact host+path storage for clarity
+                    self._state_sync.set_disabled_flag(
+                        "api-football-v1.p.rapidapi.com",
+                        "/v3/injuries",
+                        disabled_until,
+                        reason="429",
+                    )
+                except Exception:
+                    pass
+                # Backwards compatible: write a file used by older code/tests
+                try:
+                    os.makedirs("data/cache", exist_ok=True)
+                    with open(
+                        "data/cache/injuries_disabled_until.json",
+                        "w",
+                        encoding="utf-8",
+                    ) as f:
+                        json.dump(
+                            {"disabled_until": disabled_until, "reason": "429"}, f,
+                        )
+                except Exception:
+                    pass
+                print(
+                    "   Injuries endpoint temporary disabled for 15 minutes due to repeated rate limits",
+                )
+            return None
 
         except Exception as e:
             print(f"   Error contacting API-Football injuries endpoint: {e}")
             return None
 
     def _analyze_injury_data(
-        self, injury_payload: JSONDict | list[JSONDict], team_name: str
+        self, injury_payload: JSONDict | list[JSONDict], team_name: str,
     ) -> JSONDict:
         """Convert API-Football injury payload into our internal injury report format."""
         if not injury_payload:
@@ -362,13 +358,13 @@ class DataQualityEnhancer:
                     "reason": reason,
                     "status": status,
                     "estimated_return": estimated_return,
-                }
+                },
             )
 
         # Simple impact heuristic
         injured_count = len(injured_players)
         strength_reduction_pct = min(
-            40.0, injured_count * 8.0
+            40.0, injured_count * 8.0,
         )  # 8% per injured key player (heuristic)
 
         return {
@@ -378,10 +374,10 @@ class DataQualityEnhancer:
             "injured_count": injured_count,
             "strength_reduction_pct": round(strength_reduction_pct, 1),
             "expected_lineup_strength": round(
-                max(0.0, 100.0 - strength_reduction_pct), 1
+                max(0.0, 100.0 - strength_reduction_pct), 1,
             ),
             "injury_areas": list(
-                {p.get("reason") for p in injured_players if p.get("reason")}
+                {p.get("reason") for p in injured_players if p.get("reason")},
             ),
             "key_players_available": None,
             "key_players_injured": [p["name"] for p in injured_players],
@@ -398,16 +394,15 @@ class DataQualityEnhancer:
         }
 
     def _analyze_squad_availability(
-        self, squad_data: JSONDict, team_name: str
+        self, squad_data: JSONDict, team_name: str,
     ) -> JSONDict:
         """Analyze squad data for basic availability information"""
-
         squad = squad_data.get("squad", [])
         if not squad:
             return self._get_empty_injury_data(team_name)
 
         # Basic squad analysis
-        players_by_position: Dict[str, List[JSONDict]] = {
+        players_by_position: dict[str, list[JSONDict]] = {
             "Goalkeeper": [],
             "Defender": [],
             "Midfielder": [],
@@ -559,22 +554,22 @@ class DataQualityEnhancer:
         per_player = float(
             self._settings.get("constants", {})
             .get("injury", {})
-            .get("per_player_pct", 3.5)
+            .get("per_player_pct", 3.5),
         )
         midfield_penalty = float(
             self._settings.get("constants", {})
             .get("injury", {})
-            .get("midfield_penalty", 5)
+            .get("midfield_penalty", 5),
         )
         defense_penalty = float(
             self._settings.get("constants", {})
             .get("injury", {})
-            .get("defense_penalty", 3)
+            .get("defense_penalty", 3),
         )
         max_reduction = float(
             self._settings.get("constants", {})
             .get("injury", {})
-            .get("max_reduction_pct", 25)
+            .get("max_reduction_pct", 25),
         )
 
         base_reduction = injured_count * per_player
@@ -596,15 +591,14 @@ class DataQualityEnhancer:
                         "original": base_reduction,
                         "clamped_to": final_reduction,
                         "max_reduction_pct": max_reduction,
-                    }
+                    },
                 }
             else:
                 self._last_injury_clamps = {}
             return float(final_reduction)
-        else:
-            # No clamping, clear any previous clamp record
-            self._last_injury_clamps = {}
-            return float(base_reduction)
+        # No clamping, clear any previous clamp record
+        self._last_injury_clamps = {}
+        return float(base_reduction)
 
     def get_weather_impact(self, venue_city: str, match_datetime: str) -> JSONDict:
         """Get weather conditions and predict impact on match.
@@ -613,6 +607,7 @@ class DataQualityEnhancer:
             venue_city: City or venue name for the match
             match_datetime: Date/time string (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS)
                            If time is provided, fetches weather for that specific hour
+
         """
         try:
             # Use Open-Meteo API (free tier available)
@@ -649,6 +644,7 @@ class DataQualityEnhancer:
         Args:
             city: City or venue name
             match_datetime: Date/time in format 'YYYY-MM-DD' or 'YYYY-MM-DDTHH:MM:SS' or 'YYYY-MM-DD HH:MM'
+
         """
         # Include time in cache key for accuracy
         cache_key = (
@@ -661,12 +657,12 @@ class DataQualityEnhancer:
         try:
             stadium_coordinates = self._get_stadium_coordinates(city)
             resolved = self._fetch_open_meteo_weather(
-                stadium_coordinates, match_datetime
+                stadium_coordinates, match_datetime,
             )
             if resolved:
                 self._weather_cache[cache_key] = resolved
                 print(
-                    f"🌤️ Weather for {city} at {match_datetime}: {resolved.get('temperature')}°C, {resolved.get('conditions')}"
+                    f"🌤️ Weather for {city} at {match_datetime}: {resolved.get('temperature')}°C, {resolved.get('conditions')}",
                 )
                 return resolved
         except Exception as e:
@@ -679,14 +675,15 @@ class DataQualityEnhancer:
         return fallback
 
     def _fetch_open_meteo_weather(
-        self, coords: Dict[str, Any], match_datetime: str
-    ) -> Optional[JSONDict]:
+        self, coords: dict[str, Any], match_datetime: str,
+    ) -> JSONDict | None:
         """Call Open-Meteo forecast/archive endpoints for specific match date/time.
 
         Args:
             coords: Dictionary with 'lat' and 'lon' keys
             match_datetime: Date string in format 'YYYY-MM-DD' or 'YYYY-MM-DDTHH:MM:SS'
                            If time is provided, fetches weather for that specific hour
+
         """
         try:
             # Parse date and optional time
@@ -700,7 +697,7 @@ class DataQualityEnhancer:
                 time_parts = parts[1].split(":")
                 match_hour = int(time_parts[0])
                 match_dt = datetime.combine(
-                    match_day, datetime.min.time().replace(hour=match_hour)
+                    match_day, datetime.min.time().replace(hour=match_hour),
                 )
             else:
                 match_dt = datetime.strptime(match_datetime[:10], "%Y-%m-%d")
@@ -715,7 +712,7 @@ class DataQualityEnhancer:
             self._open_meteo_archive if use_archive else self._open_meteo_forecast
         )
 
-        params: dict[str, Union[str, int, float]] = {
+        params: dict[str, str | int | float] = {
             "latitude": coords.get("lat", 40.0),
             "longitude": coords.get("lon", 0.0),
             "start_date": match_day.isoformat(),
@@ -727,7 +724,7 @@ class DataQualityEnhancer:
         response = safe_request_get(base_url, params=params, timeout=10, logger=None)
         response.raise_for_status()
 
-        payload = cast(JSONDict, response.json())
+        payload = cast("JSONDict", response.json())
         hourly = payload.get("hourly", {})
         if not hourly:
             return None
@@ -735,7 +732,7 @@ class DataQualityEnhancer:
         # Extract weather for the specific match hour (with ±1 hour window for accuracy)
         hour_indices = [max(0, match_hour - 1), match_hour, min(23, match_hour + 1)]
 
-        def _get_values_at_hours(series: Any, indices: List[int]) -> List[float]:
+        def _get_values_at_hours(series: Any, indices: list[int]) -> list[float]:
             """Extract values at specific hour indices"""
             if not series:
                 return []
@@ -748,20 +745,20 @@ class DataQualityEnhancer:
                         pass
             return values
 
-        def _avg(values: List[float]) -> float | None:
+        def _avg(values: list[float]) -> float | None:
             return sum(values) / len(values) if values else None
 
         temp_values = _get_values_at_hours(
-            hourly.get("temperature_2m", []), hour_indices
+            hourly.get("temperature_2m", []), hour_indices,
         )
         wind_values = _get_values_at_hours(
-            hourly.get("wind_speed_10m", []), hour_indices
+            hourly.get("wind_speed_10m", []), hour_indices,
         )
         humidity_values = _get_values_at_hours(
-            hourly.get("relative_humidity_2m", []), hour_indices
+            hourly.get("relative_humidity_2m", []), hour_indices,
         )
         precip_values = _get_values_at_hours(
-            hourly.get("precipitation", []), hour_indices
+            hourly.get("precipitation", []), hour_indices,
         )
 
         temperature = _avg(temp_values)
@@ -805,7 +802,7 @@ class DataQualityEnhancer:
             "location": {"lat": coords.get("lat"), "lon": coords.get("lon")},
         }
 
-    def _get_stadium_coordinates(self, city: str) -> Dict[str, Any]:
+    def _get_stadium_coordinates(self, city: str) -> dict[str, Any]:
         """Get coordinates for football cities - uses geocoding API for unknown cities"""
         # Known stadium locations for major football cities
         stadium_locations = {
@@ -1150,7 +1147,7 @@ class DataQualityEnhancer:
             geocode_url = "https://geocoding-api.open-meteo.com/v1/search"
             params = {"name": city, "count": 1, "language": "en", "format": "json"}
             response = safe_request_get(
-                geocode_url, params=params, timeout=5, logger=None
+                geocode_url, params=params, timeout=5, logger=None,
             )
             if response.status_code == 200:
                 data = response.json()
@@ -1168,7 +1165,7 @@ class DataQualityEnhancer:
                     # Cache for future use
                     stadium_locations[city_key] = coords
                     print(
-                        f"📍 Geocoded '{city}' → {coords['lat']:.4f}, {coords['lon']:.4f}"
+                        f"📍 Geocoded '{city}' → {coords['lat']:.4f}, {coords['lon']:.4f}",
                     )
                     return coords
         except Exception as e:
@@ -1253,7 +1250,7 @@ class DataQualityEnhancer:
             "wind_speed": round(base_wind, 1),
             "precipitation": round(precipitation, 2),
             "conditions": self._determine_conditions(
-                temperature, precipitation, base_wind
+                temperature, precipitation, base_wind,
             ),
             "visibility": (
                 random.uniform(8, 20) if precipitation < 1 else random.uniform(3, 10)
@@ -1265,20 +1262,19 @@ class DataQualityEnhancer:
         """Determine weather condition description"""
         if precip > 5:
             return "heavy_rain"
-        elif precip > 2:
+        if precip > 2:
             return "moderate_rain"
-        elif precip > 0.5:
+        if precip > 0.5:
             return "light_rain"
-        elif wind > 30:
+        if wind > 30:
             return "very_windy"
-        elif wind > 20:
+        if wind > 20:
             return "windy"
-        elif temp > 25:
+        if temp > 25:
             return "hot"
-        elif temp < 5:
+        if temp < 5:
             return "cold"
-        else:
-            return "clear"
+        return "clear"
 
     def _get_fallback_weather(self, city: str, match_date: str) -> JSONDict:
         """Fallback weather data when API fails - uses seasonal/geographic patterns"""
@@ -1327,11 +1323,10 @@ class DataQualityEnhancer:
     def analyze_weather_impact(
         self,
         weather: JSONDict,
-        stadium_info: Optional[JSONDict] | None = None,
-        team_styles: Optional[JSONDict] | None = None,
+        stadium_info: JSONDict | None = None,
+        team_styles: JSONDict | None = None,
     ) -> JSONDict:
-        """
-        Advanced weather impact analysis using regression-based coefficients.
+        """Advanced weather impact analysis using regression-based coefficients.
 
         Based on analysis of 25,000+ matches with weather data, the goal modifier
         follows a polynomial regression model with interaction terms.
@@ -1407,7 +1402,7 @@ class DataQualityEnhancer:
         optimal_temp = 18.0
         temp_sigma = 12.0  # Standard deviation - wider = less sensitivity
         temp_effect = math.exp(
-            -((temperature - optimal_temp) ** 2) / (2 * temp_sigma**2)
+            -((temperature - optimal_temp) ** 2) / (2 * temp_sigma**2),
         )
         # Scale to 0.75-1.0 range (don't penalize more than 25% for temperature)
         temp_modifier = 0.75 + 0.25 * temp_effect
@@ -1417,7 +1412,7 @@ class DataQualityEnhancer:
         rain_coefficient = -0.025  # 2.5% reduction per mm
         rain_decay_rate = 0.1  # Diminishing returns factor
         precip_modifier = math.exp(
-            rain_coefficient * precipitation / (1 + rain_decay_rate * precipitation)
+            rain_coefficient * precipitation / (1 + rain_decay_rate * precipitation),
         )
         precip_modifier = max(0.70, precip_modifier)  # Cap at 30% reduction
 
@@ -1482,7 +1477,7 @@ class DataQualityEnhancer:
             if roof_type == "retractable" and precipitation > 1.0:
                 stadium_modifier *= 1.12  # Roof closed
                 stadium_effects.append(
-                    "Retractable roof closed - weather impact reduced"
+                    "Retractable roof closed - weather impact reduced",
                 )
             elif roof_type == "partial":
                 stadium_modifier *= 1.03
@@ -1553,7 +1548,7 @@ class DataQualityEnhancer:
 
         # Generate tactical adjustments based on conditions
         tactical_adjustments = self._generate_tactical_adjustments(
-            temperature, precipitation, wind_speed, humidity, final_modifier
+            temperature, precipitation, wind_speed, humidity, final_modifier,
         )
 
         # Weather advantage assessment
@@ -1573,10 +1568,10 @@ class DataQualityEnhancer:
             "stadium_effects": stadium_effects,
             "adaptability_notes": adaptability_notes,
             "weather_severity": self._assess_weather_severity(
-                temperature, precipitation, wind_speed
+                temperature, precipitation, wind_speed,
             ),
             "conditions_summary": self._generate_conditions_summary(
-                weather, final_modifier
+                weather, final_modifier,
             ),
             # Component breakdown for transparency
             "modifier_components": {
@@ -1601,7 +1596,7 @@ class DataQualityEnhancer:
         return result
 
     def _generate_tactical_adjustments(
-        self, temp: float, precip: float, wind: float, humidity: float, modifier: float
+        self, temp: float, precip: float, wind: float, humidity: float, modifier: float,
     ) -> list:
         """Generate tactical adjustment recommendations based on conditions"""
         adjustments = []
@@ -1613,14 +1608,14 @@ class DataQualityEnhancer:
 
         if precip > 3.0:
             adjustments.extend(
-                ["Long ball tactics favored", "Increased goalkeeper errors possible"]
+                ["Long ball tactics favored", "Increased goalkeeper errors possible"],
             )
         elif precip > 1.0:
             adjustments.append("Direct play favored over possession")
 
         if wind > 30:
             adjustments.extend(
-                ["Aerial play severely affected", "Shooting accuracy reduced"]
+                ["Aerial play severely affected", "Shooting accuracy reduced"],
             )
         elif wind > 20:
             adjustments.append("Crosses and corners affected by wind")
@@ -1631,7 +1626,7 @@ class DataQualityEnhancer:
         if modifier < 0.80:
             adjustments.append("Expect lower-quality match with fewer goals")
 
-        return adjustments if adjustments else ["Normal playing conditions expected"]
+        return adjustments or ["Normal playing conditions expected"]
 
     def _assess_weather_severity(self, temp: float, precip: float, wind: float) -> str:
         """Assess overall weather severity for match"""
@@ -1658,15 +1653,14 @@ class DataQualityEnhancer:
 
         if severity_score >= 6:
             return "EXTREME"
-        elif severity_score >= 4:
+        if severity_score >= 4:
             return "SEVERE"
-        elif severity_score >= 2:
+        if severity_score >= 2:
             return "MODERATE"
-        else:
-            return "MILD"
+        return "MILD"
 
     def _generate_conditions_summary(
-        self, weather: Dict[str, Any], modifier: float
+        self, weather: dict[str, Any], modifier: float,
     ) -> str:
         """Generate human-readable weather impact summary"""
         temp = weather.get("temperature", 20)
@@ -1675,14 +1669,13 @@ class DataQualityEnhancer:
 
         if modifier < 0.80:
             return f"Severe weather conditions ({temp}°C, {precip}mm rain, {wind} km/h wind) will significantly impact play quality"
-        elif modifier < 0.90:
+        if modifier < 0.90:
             return f"Challenging conditions ({temp}°C, {precip}mm rain, {wind} km/h wind) likely to affect match dynamics"
-        elif modifier < 0.95:
+        if modifier < 0.95:
             return f"Mild weather impact ({temp}°C, {precip}mm rain, {wind} km/h wind) may slightly influence play"
-        else:
-            return f"Good playing conditions ({temp}°C, {precip}mm rain, {wind} km/h wind) minimal weather impact expected"
+        return f"Good playing conditions ({temp}°C, {precip}mm rain, {wind} km/h wind) minimal weather impact expected"
 
-    def get_referee_analysis(self, referee_name: Optional[str] = None) -> JSONDict:
+    def get_referee_analysis(self, referee_name: str | None = None) -> JSONDict:
         """Get referee analysis with real Football-Data.org referee information"""
         if not referee_name or referee_name in [
             "TBD",
@@ -1711,10 +1704,9 @@ class DataQualityEnhancer:
         return result
 
     def _analyze_referee_impact(
-        self, referee_stats: JSONDict, referee_name: str
+        self, referee_stats: JSONDict, referee_name: str,
     ) -> JSONDict:
-        """
-        Analyze detailed referee impact using statistical regression model.
+        """Analyze detailed referee impact using statistical regression model.
 
         Instead of hardcoded thresholds, uses:
         - Z-score normalization against league averages
@@ -1808,16 +1800,16 @@ class DataQualityEnhancer:
         if z_home_bias > 1.0:
             bias_strength = "significant" if z_home_bias > 1.5 else "moderate"
             key_patterns.append(
-                f"Home team advantage: {bias_strength} ({home_bias:.1f}% home-favorable decisions)"
+                f"Home team advantage: {bias_strength} ({home_bias:.1f}% home-favorable decisions)",
             )
         elif z_home_bias < -1.0:
             bias_strength = "significant" if z_home_bias < -1.5 else "moderate"
             key_patterns.append(
-                f"Away team advantage: {bias_strength} ({home_bias:.1f}% home-favorable decisions)"
+                f"Away team advantage: {bias_strength} ({home_bias:.1f}% home-favorable decisions)",
             )
         else:
             key_patterns.append(
-                f"Balanced officiating ({home_bias:.1f}% home decisions, within normal range)"
+                f"Balanced officiating ({home_bias:.1f}% home decisions, within normal range)",
             )
 
         # Card tendency analysis
@@ -1832,18 +1824,18 @@ class DataQualityEnhancer:
         if z_penalties > 1.0:
             p_penalty = 0.35 + (z_penalties * 0.08)  # Regression-adjusted probability
             key_patterns.append(
-                f"Elevated penalty likelihood ({p_penalty:.0%} per match)"
+                f"Elevated penalty likelihood ({p_penalty:.0%} per match)",
             )
         elif z_penalties < -1.0:
             p_penalty = 0.20 + (z_penalties * 0.05)
             key_patterns.append(
-                f"Conservative penalty calls ({max(0.05, p_penalty):.0%} per match)"
+                f"Conservative penalty calls ({max(0.05, p_penalty):.0%} per match)",
             )
 
         # Red card analysis
         if z_red > 1.5:
             key_patterns.append(
-                f"Higher red card frequency ({red_cards:.2f}/match vs {LEAGUE_BASELINES['red_cards_per_game']['mean']:.2f} avg)"
+                f"Higher red card frequency ({red_cards:.2f}/match vs {LEAGUE_BASELINES['red_cards_per_game']['mean']:.2f} avg)",
             )
 
         # Context-adjusted card prediction using regression
@@ -1853,7 +1845,7 @@ class DataQualityEnhancer:
         # Match intensity adjustment (from match importance if available)
         match_importance = referee_stats.get("match_importance", "normal")
         importance_factor = {"high": 1.15, "normal": 1.0, "low": 0.9}.get(
-            match_importance, 1.0
+            match_importance, 1.0,
         )
 
         # Derby/rivalry adjustment
@@ -1908,7 +1900,7 @@ class DataQualityEnhancer:
                 },
                 "penalty_probability": round(min(1.0, penalty_rate), 3),
                 "red_card_probability": round(
-                    min(1.0, red_cards * importance_factor * derby_factor), 3
+                    min(1.0, red_cards * importance_factor * derby_factor), 3,
                 ),
             },
             "context_factors": {
@@ -1919,7 +1911,7 @@ class DataQualityEnhancer:
             },
         }
 
-    def _fetch_real_referee_stats(self, referee_name: str) -> Optional[JSONDict]:
+    def _fetch_real_referee_stats(self, referee_name: str) -> JSONDict | None:
         """Fetch real referee statistics from Football-Data.org historical matches"""
         try:
             # Get recent finished matches from multiple competitions to find this referee's history
@@ -1930,7 +1922,7 @@ class DataQualityEnhancer:
                 "BL1",
                 "FL1",
             ]  # La Liga, Premier League, Serie A, Bundesliga, Ligue 1
-            referee_matches: List[JSONDict] = []
+            referee_matches: list[JSONDict] = []
 
             for comp in competitions:
                 if len(referee_matches) >= 20:  # Stop if we have enough data
@@ -1940,7 +1932,7 @@ class DataQualityEnhancer:
                     url = (
                         f"https://api.football-data.org/v4/competitions/{comp}/matches"
                     )
-                    params: dict[str, Union[str, int]] = {
+                    params: dict[str, str | int] = {
                         "status": "FINISHED",
                         "limit": 50,
                     }
@@ -1954,7 +1946,7 @@ class DataQualityEnhancer:
                         logger=None,
                     )
                     if response.status_code == 200:
-                        data = cast(JSONDict, response.json())
+                        data = cast("JSONDict", response.json())
 
                         # Find matches refereed by this referee
                         for match in data.get("matches", []):
@@ -1982,8 +1974,8 @@ class DataQualityEnhancer:
             return None
 
     def _analyze_real_referee_data(
-        self, referee_name: str, matches: JSONList
-    ) -> Optional[JSONDict]:
+        self, referee_name: str, matches: JSONList,
+    ) -> JSONDict | None:
         """Analyze real referee performance data from match history"""
         if not matches:
             return None
@@ -2032,10 +2024,10 @@ class DataQualityEnhancer:
 
         # Estimate cards based on match intensity (goals as proxy)
         avg_goals_per_match = (total_home_goals + total_away_goals) / max(
-            total_matches, 1
+            total_matches, 1,
         )
         estimated_cards = min(
-            2.0 + (avg_goals_per_match * 0.3), 6.0
+            2.0 + (avg_goals_per_match * 0.3), 6.0,
         )  # Estimate based on match intensity
 
         return {
@@ -2048,15 +2040,14 @@ class DataQualityEnhancer:
             "avg_goals_per_match": round(avg_goals_per_match, 2),
             "estimated_cards_per_match": round(estimated_cards, 1),
             "data_quality_score": min(
-                85, 60 + (total_matches * 2)
+                85, 60 + (total_matches * 2),
             ),  # Higher score with more matches
         }
 
     def _build_referee_analysis(
-        self, stats: JSONDict, referee_name: str = "Unknown"
+        self, stats: JSONDict, referee_name: str = "Unknown",
     ) -> JSONDict:
-        """
-        Build comprehensive referee analysis from real statistics with ML-enhanced predictions.
+        """Build comprehensive referee analysis from real statistics with ML-enhanced predictions.
 
         Integrates statistical z-score analysis and regression-based predictions.
         """
@@ -2070,7 +2061,7 @@ class DataQualityEnhancer:
         # Determine experience level with Bayesian confidence
         # More matches = higher confidence in our estimates
         confidence_score = 1.0 - math.exp(
-            -matches_count / 15.0
+            -matches_count / 15.0,
         )  # Exponential approach to 1.0
 
         if confidence_score >= 0.65:
@@ -2100,9 +2091,9 @@ class DataQualityEnhancer:
         # Build comprehensive tendencies from statistical analysis
         key_tendencies = [
             f"Analyzed {matches_count} recent matches (confidence: {confidence_score:.0%})",
-            impact_analysis.get("statistical_profile", {}).get("z_cards", 0) > 0.5
-            and f"Above-average card frequency (z={impact_analysis.get('statistical_profile', {}).get('z_cards', 0):+.1f}σ)"
-            or f"Card frequency within normal range",
+            (impact_analysis.get("statistical_profile", {}).get("z_cards", 0) > 0.5
+            and f"Above-average card frequency (z={impact_analysis.get('statistical_profile', {}).get('z_cards', 0):+.1f}σ)")
+            or "Card frequency within normal range",
             f"Home bias: {bias_pct:.1f}% (league avg: 52.5%)",
         ]
 
@@ -2110,7 +2101,7 @@ class DataQualityEnhancer:
         predictions = impact_analysis.get("predictions", {})
         if predictions.get("penalty_probability", 0) > 0.30:
             key_tendencies.append(
-                f"Elevated penalty likelihood: {predictions.get('penalty_probability', 0):.0%}"
+                f"Elevated penalty likelihood: {predictions.get('penalty_probability', 0):.0%}",
             )
 
         return {
@@ -2138,13 +2129,12 @@ class DataQualityEnhancer:
 
     def parse_team_news(self, team_name: str, match_date: str) -> JSONDict:
         """Parse team news and predicted lineups with available data sources"""
-
         # Try to get team news from available sources
         try:
             team_news = self._fetch_team_news_data(team_name, match_date)
             if team_news and team_news.get("news_items"):
                 print(
-                    f"Found {len(team_news.get('news_items', []))} news items for {team_name}"
+                    f"Found {len(team_news.get('news_items', []))} news items for {team_name}",
                 )
                 return self._analyze_team_news(team_news, team_name)
         except Exception as e:
@@ -2157,8 +2147,8 @@ class DataQualityEnhancer:
         return result
 
     def _fetch_team_news_data(
-        self, team_name: str, match_date: str
-    ) -> Optional[JSONDict]:
+        self, team_name: str, match_date: str,
+    ) -> JSONDict | None:
         """Fetch real team news data using NewsAPI (if `NEWSAPI_KEY` present).
 
         Returns None if no key configured or an error occurs. The function makes a
@@ -2174,7 +2164,7 @@ class DataQualityEnhancer:
             # Build a focused query for lineup/injury mentions
             query = f'"{team_name}" AND (lineup OR injury OR suspended OR formation OR starting XI)'
             url = "https://newsapi.org/v2/everything"
-            params: dict[str, Union[str, int]] = {
+            params: dict[str, str | int] = {
                 "q": query,
                 "language": "en",
                 "sortBy": "publishedAt",
@@ -2185,20 +2175,18 @@ class DataQualityEnhancer:
             params = {k: str(v) for k, v in params.items()}
             response = safe_request_get(url, params=params, timeout=10, logger=None)
             if response.status_code == 200:
-                return cast(JSONDict, response.json())
-            else:
-                print(f"   NewsAPI responded with status {response.status_code}")
-                return None
+                return cast("JSONDict", response.json())
+            print(f"   NewsAPI responded with status {response.status_code}")
+            return None
 
         except Exception as e:
             print(f"   Error fetching NewsAPI data: {e}")
             return None
 
     def _analyze_team_news(
-        self, news_data: Dict[str, Any], team_name: str
-    ) -> Dict[str, Any]:
+        self, news_data: dict[str, Any], team_name: str,
+    ) -> dict[str, Any]:
         """Analyze team news articles for lineup and tactical insights"""
-
         articles = news_data.get("articles", [])
         if not articles:
             return self.get_default_team_news()
@@ -2253,7 +2241,7 @@ class DataQualityEnhancer:
         # Determine overall insights
         if lineup_mentions > 0:
             key_findings.append(
-                f"Lineup discussions in {lineup_mentions} recent articles"
+                f"Lineup discussions in {lineup_mentions} recent articles",
             )
         if tactical_mentions > 0:
             key_findings.append(f"Tactical analysis in {tactical_mentions} articles")
@@ -2333,7 +2321,7 @@ class DataQualityEnhancer:
         }
 
     def comprehensive_data_enhancement(
-        self, match: JSONDict, venue_info: Optional[JSONDict] = None
+        self, match: JSONDict, venue_info: JSONDict | None = None,
     ) -> JSONDict:
         """Collect all enhanced data for a match with FlashScore integration"""
 
@@ -2421,13 +2409,13 @@ class DataQualityEnhancer:
         # Collect all enhanced data (defensive)
         try:
             home_injuries = self.get_player_injury_impact(
-                home_team_id or 0, home_team_name or ""
+                home_team_id or 0, home_team_name or "",
             )
         except Exception:
             home_injuries = self.get_default_injury_data()
         try:
             away_injuries = self.get_player_injury_impact(
-                away_team_id or 0, away_team_name or ""
+                away_team_id or 0, away_team_name or "",
             )
         except Exception:
             away_injuries = self.get_default_injury_data()
@@ -2455,7 +2443,7 @@ class DataQualityEnhancer:
                 league_key = self._get_league_key_from_match(normalized_match)
                 enhanced_match = (
                     self.flashscore_integrator.enhance_match_data(
-                        normalized_match, league_key
+                        normalized_match, league_key,
                     )
                     or {}
                 )
@@ -2468,7 +2456,7 @@ class DataQualityEnhancer:
                     "advanced_metrics": enhanced_match.get("advanced_metrics", {}),
                     "odds_data": enhanced_match.get("odds_data", {}),
                     "flashscore_quality_score": enhanced_match.get(
-                        "data_quality_score", 75
+                        "data_quality_score", 75,
                     ),
                 }
                 print("FlashScore data integrated successfully!")
@@ -2554,17 +2542,17 @@ class DataQualityEnhancer:
                     if key_injured == 0 and strength_loss < 5:
                         quality_score += 20  # Excellent: full squad available
                         quality_details.append(
-                            "✅ Home team: Full squad (0 key injuries)"
+                            "✅ Home team: Full squad (0 key injuries)",
                         )
                     elif key_injured <= 2 and strength_loss < 15:
                         quality_score += 16  # Good: minor injuries
                         quality_details.append(
-                            f"⚠️ Home team: {key_injured} key injuries"
+                            f"⚠️ Home team: {key_injured} key injuries",
                         )
                     else:
                         quality_score += 12  # Fair: some impact
                         quality_details.append(
-                            f"⚠️ Home team: {key_injured} injuries ({strength_loss}% impact)"
+                            f"⚠️ Home team: {key_injured} injuries ({strength_loss}% impact)",
                         )
                 elif data_avail:
                     quality_score += 8  # Limited data but available
@@ -2589,17 +2577,17 @@ class DataQualityEnhancer:
                     if key_injured == 0 and strength_loss < 5:
                         quality_score += 20  # Excellent: full squad available
                         quality_details.append(
-                            "✅ Away team: Full squad (0 key injuries)"
+                            "✅ Away team: Full squad (0 key injuries)",
                         )
                     elif key_injured <= 2 and strength_loss < 15:
                         quality_score += 16  # Good: minor injuries
                         quality_details.append(
-                            f"⚠️ Away team: {key_injured} key injuries"
+                            f"⚠️ Away team: {key_injured} key injuries",
                         )
                     else:
                         quality_score += 12  # Fair: some impact
                         quality_details.append(
-                            f"⚠️ Away team: {key_injured} injuries ({strength_loss}% impact)"
+                            f"⚠️ Away team: {key_injured} injuries ({strength_loss}% impact)",
                         )
                 elif data_avail:
                     quality_score += 8
@@ -2634,7 +2622,7 @@ class DataQualityEnhancer:
                 if has_real_conditions and has_impact and has_goal_adj:
                     quality_score += 15  # Complete weather integration
                     quality_details.append(
-                        f"✅ Weather: {cond_str} (with impact analysis)"
+                        f"✅ Weather: {cond_str} (with impact analysis)",
                     )
                 elif has_real_conditions and has_impact:
                     quality_score += 11  # Good weather data
@@ -2667,12 +2655,12 @@ class DataQualityEnhancer:
                     if exp_level and strict_level and cards_per_game > 0:
                         quality_score += 20  # Complete referee profile
                         quality_details.append(
-                            f"✅ Referee: {referee_name} ({exp_level}, {cards_per_game} cards/game)"
+                            f"✅ Referee: {referee_name} ({exp_level}, {cards_per_game} cards/game)",
                         )
                     elif exp_level and cards_per_game > 0:
                         quality_score += 16  # Good profile
                         quality_details.append(
-                            f"⚠️ Referee: {referee_name} ({exp_level})"
+                            f"⚠️ Referee: {referee_name} ({exp_level})",
                         )
                     else:
                         quality_score += 10  # Basic name only
@@ -2703,7 +2691,7 @@ class DataQualityEnhancer:
                 if home_avail and formation and sentiment not in [None, "unknown", ""]:
                     home_news_score = 8  # Complete home news
                     quality_details.append(
-                        f"✅ Home news: {formation} ({sentiment} sentiment)"
+                        f"✅ Home news: {formation} ({sentiment} sentiment)",
                     )
                 elif home_avail and (formation or sentiment):
                     home_news_score = 5
@@ -2727,7 +2715,7 @@ class DataQualityEnhancer:
                 if away_avail and formation and sentiment not in [None, "unknown", ""]:
                     away_news_score = 7  # Complete away news
                     quality_details.append(
-                        f"✅ Away news: {formation} ({sentiment} sentiment)"
+                        f"✅ Away news: {formation} ({sentiment} sentiment)",
                     )
                 elif away_avail and (formation or sentiment):
                     away_news_score = 5
@@ -2763,7 +2751,7 @@ class DataQualityEnhancer:
                     if true_sources >= 3:
                         quality_score += 10  # Full FlashScore integration
                         quality_details.append(
-                            "✅ FlashScore: Full integration (stats+metrics+odds)"
+                            "✅ FlashScore: Full integration (stats+metrics+odds)",
                         )
                     elif true_sources >= 2:
                         quality_score += 7  # Good integration
@@ -2781,7 +2769,7 @@ class DataQualityEnhancer:
                 quality_score += 1
                 quality_details.append("❌ No FlashScore data")
 
-        except (IndexError, KeyError, TypeError, ValueError) as e:
+        except (IndexError, KeyError, TypeError, ValueError):
             # Fallback: use source count as baseline
             try:
                 data_count = sum(
@@ -2791,7 +2779,7 @@ class DataQualityEnhancer:
                 )
                 quality_score = 55 + min(25, data_count * 4)
                 quality_details = [
-                    f"Fallback: {data_count}/{len(data_sources)} sources available"
+                    f"Fallback: {data_count}/{len(data_sources)} sources available",
                 ]
             except Exception:
                 quality_score = 65.0
@@ -2815,16 +2803,15 @@ class DataQualityEnhancer:
         """Convert quality score to letter grade"""
         if score >= 90:
             return "A+ (Excellent)"
-        elif score >= 80:
+        if score >= 80:
             return "A (Very Good)"
-        elif score >= 70:
+        if score >= 70:
             return "B (Good)"
-        elif score >= 60:
+        if score >= 60:
             return "C (Fair)"
-        elif score >= 50:
+        if score >= 50:
             return "D (Poor)"
-        else:
-            return "F (Very Poor)"
+        return "F (Very Poor)"
 
     def get_data_quality_breakdown(self) -> JSONDict:
         """Get detailed breakdown of the last data quality assessment"""
@@ -2848,6 +2835,7 @@ class DataQualityEnhancer:
 
         Returns:
             Inferred city name, or 'Madrid' as ultimate fallback
+
         """
         if not team_name:
             return "Madrid"
@@ -3127,10 +3115,10 @@ class DataQualityEnhancer:
             return ""
 
         home_team = _extract_team_name(match.get("homeTeam")) or _extract_team_name(
-            match.get("home_team")
+            match.get("home_team"),
         )
         away_team = _extract_team_name(match.get("awayTeam")) or _extract_team_name(
-            match.get("away_team")
+            match.get("away_team"),
         )
 
         for league_key, teams in league_indicators.items():

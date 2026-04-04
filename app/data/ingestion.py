@@ -1,5 +1,4 @@
-"""
-Data ingestion pipeline for sports data from multiple sources
+"""Data ingestion pipeline for sports data from multiple sources
 """
 
 import hashlib
@@ -8,7 +7,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from app.data.connectors import BasketballDataConnector, FootballDataConnector
 from app.data.schemas import validate_raw_data
@@ -31,23 +30,22 @@ class DataIngestionResult:
 
 
 class DataIngestionPipeline:
-    """
-    Main data ingestion pipeline that orchestrates data collection
+    """Main data ingestion pipeline that orchestrates data collection
     from multiple sources with fallback mechanisms.
     """
 
     def __init__(self, config: dict[str, Any]):
         self.config = config
         self.cache_manager = CacheManager(
-            config.get("data_engineering", {}).get("caching", {})
+            config.get("data_engineering", {}).get("caching", {}),
         )
 
         # Initialize connectors
         self.football_connector = FootballDataConnector(
-            config["data_sources"]["football"]
+            config["data_sources"]["football"],
         )
         self.basketball_connector = BasketballDataConnector(
-            config["data_sources"]["basketball"]
+            config["data_sources"]["basketball"],
         )
 
         # Setup directories
@@ -69,9 +67,8 @@ class DataIngestionPipeline:
         start_date: str | None = None,
         end_date: str | None = None,
         force_refresh: bool = False,
-    ) -> List[DataIngestionResult]:
-        """
-        Ingest data for a specific league and time period.
+    ) -> list[DataIngestionResult]:
+        """Ingest data for a specific league and time period.
 
         Args:
             league: League name (e.g., "La Liga", "Premier League")
@@ -82,6 +79,7 @@ class DataIngestionPipeline:
 
         Returns:
             List of ingestion results for each data source
+
         """
         logger.info(f"Starting data ingestion for {league}")
 
@@ -123,7 +121,7 @@ class DataIngestionPipeline:
             await self._create_data_snapshot(league, season, results)
 
         logger.info(
-            f"Data ingestion completed for {league}. Success rate: {sum(r.success for r in results)}/{len(results)}"
+            f"Data ingestion completed for {league}. Success rate: {sum(r.success for r in results)}/{len(results)}",
         )
 
         return results
@@ -138,8 +136,7 @@ class DataIngestionPipeline:
         end_date: str | None = None,
         force_refresh: bool = False,
     ) -> DataIngestionResult:
-        """
-        Ingest data with fallback mechanism across multiple sources.
+        """Ingest data with fallback mechanism across multiple sources.
         """
         fallback_order = self.config["data_engineering"]["fallbacks"]["order"]
 
@@ -178,20 +175,20 @@ class DataIngestionPipeline:
                     validation_result = validate_raw_data(data, data_type)
                     if not validation_result.is_valid:
                         logger.warning(
-                            f"Data validation failed for {source_name}: {validation_result.errors}"
+                            f"Data validation failed for {source_name}: {validation_result.errors}",
                         )
                         continue
 
                     # Save raw data
                     await self._save_raw_data(
-                        data, league, data_type, source_name, season
+                        data, league, data_type, source_name, season,
                     )
 
                     # Cache data
                     await self.cache_manager.set(cache_key, data)
 
                     logger.info(
-                        f"Successfully fetched {len(data)} records from {source_name}"
+                        f"Successfully fetched {len(data)} records from {source_name}",
                     )
 
                     return DataIngestionResult(
@@ -203,7 +200,7 @@ class DataIngestionPipeline:
                     )
 
             except Exception as e:
-                logger.error(f"Failed to fetch data from {source_name}: {str(e)}")
+                logger.error(f"Failed to fetch data from {source_name}: {e!s}")
 
                 # If this is the last fallback option, return failure
                 if source_priority == len(fallback_order) - 1:
@@ -238,35 +235,32 @@ class DataIngestionPipeline:
         season: str | None = None,
         start_date: str | None = None,
         end_date: str | None = None,
-    ) -> Optional[List[Dict[str, Any]]]:
-        """
-        Fetch data from a specific source using the appropriate connector.
+    ) -> list[dict[str, Any]] | None:
+        """Fetch data from a specific source using the appropriate connector.
         """
         if source_name == "primary_api":
             return await connector.fetch_from_primary_api(
-                league, data_type, season, start_date, end_date
+                league, data_type, season, start_date, end_date,
             )
-        elif source_name == "secondary_api":
+        if source_name == "secondary_api":
             return await connector.fetch_from_secondary_api(
-                league, data_type, season, start_date, end_date
+                league, data_type, season, start_date, end_date,
             )
-        elif source_name == "backup_csv":
+        if source_name == "backup_csv":
             return await connector.fetch_from_backup_csv(
-                league, data_type, season, start_date, end_date
+                league, data_type, season, start_date, end_date,
             )
-        else:
-            raise ValueError(f"Unknown source: {source_name}")
+        raise ValueError(f"Unknown source: {source_name}")
 
     async def _save_raw_data(
         self,
-        data: List[Dict[str, Any]],
+        data: list[dict[str, Any]],
         league: str,
         data_type: str,
         source: str,
         season: str | None = None,
     ) -> None:
-        """
-        Save raw data to disk with appropriate structure.
+        """Save raw data to disk with appropriate structure.
         """
         # Create directory structure
         league_dir = self.raw_data_dir / league.replace(" ", "_").lower()
@@ -286,10 +280,9 @@ class DataIngestionPipeline:
         logger.info(f"Raw data saved to {file_path}")
 
     async def _create_data_snapshot(
-        self, league: str, season: str | None, results: list[DataIngestionResult]
+        self, league: str, season: str | None, results: list[DataIngestionResult],
     ) -> None:
-        """
-        Create an immutable data snapshot for reproducibility.
+        """Create an immutable data snapshot for reproducibility.
         """
         snapshot_info = {
             "league": league,
@@ -311,7 +304,7 @@ class DataIngestionPipeline:
 
         # Generate snapshot ID
         snapshot_id = hashlib.sha256(
-            f"{league}_{season}_{datetime.utcnow().isoformat()}".encode()
+            f"{league}_{season}_{datetime.utcnow().isoformat()}".encode(),
         ).hexdigest()[:12]
 
         snapshot_file = self.snapshots_dir / f"snapshot_{snapshot_id}.json"
@@ -322,8 +315,7 @@ class DataIngestionPipeline:
         logger.info(f"Data snapshot created: {snapshot_file}")
 
     def _get_sport_type(self, league: str) -> str:
-        """
-        Determine sport type from league name.
+        """Determine sport type from league name.
         """
         football_leagues = [
             "la liga",
@@ -343,23 +335,20 @@ class DataIngestionPipeline:
 
         if any(fl in league_lower for fl in football_leagues):
             return "football"
-        elif any(bl in league_lower for bl in basketball_leagues):
+        if any(bl in league_lower for bl in basketball_leagues):
             return "basketball"
-        else:
-            # Default to football for unknown leagues
-            logger.warning(f"Unknown league type for {league}, defaulting to football")
-            return "football"
+        # Default to football for unknown leagues
+        logger.warning(f"Unknown league type for {league}, defaulting to football")
+        return "football"
 
     def _calculate_data_hash(self, data: list[dict[str, Any]]) -> str:
-        """
-        Calculate hash of data for integrity checking.
+        """Calculate hash of data for integrity checking.
         """
         data_str = json.dumps(data, sort_keys=True, default=str)
         return hashlib.sha256(data_str.encode()).hexdigest()
 
     async def get_ingestion_status(self, league: str) -> dict[str, Any]:
-        """
-        Get status of data ingestion for a league.
+        """Get status of data ingestion for a league.
         """
         league_dir = self.raw_data_dir / league.replace(" ", "_").lower()
 

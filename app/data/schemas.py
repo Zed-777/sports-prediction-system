@@ -1,10 +1,9 @@
-"""
-Data validation schemas
+"""Data validation schemas
 """
 
 import logging
 from dataclasses import dataclass
-from typing import Any, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -19,8 +18,7 @@ class ValidationResult:
 
 
 def validate_raw_data(data: Any, data_type: str) -> ValidationResult:
-    """
-    Validate raw data against expected schema
+    """Validate raw data against expected schema
 
     Args:
         data: List of data records
@@ -28,9 +26,10 @@ def validate_raw_data(data: Any, data_type: str) -> ValidationResult:
 
     Returns:
         ValidationResult with validation status and any errors
+
     """
-    errors: List[str] = []
-    warnings: List[str] = []
+    errors: list[str] = []
+    warnings: list[str] = []
 
     if not isinstance(data, list):
         errors.append("Data must be a list")
@@ -54,7 +53,7 @@ def validate_raw_data(data: Any, data_type: str) -> ValidationResult:
     return ValidationResult(is_valid, errors, warnings)
 
 
-def _validate_matches(data: Any) -> List[str]:
+def _validate_matches(data: Any) -> list[str]:
     """Validate match data"""
     errors = []
     required_fields = ["home_team", "away_team", "date"]
@@ -73,7 +72,7 @@ def _validate_matches(data: Any) -> List[str]:
     return errors
 
 
-def _validate_teams(data: Any) -> List[str]:
+def _validate_teams(data: Any) -> list[str]:
     """Validate team data"""
     errors = []
     required_fields = ["name"]
@@ -92,7 +91,7 @@ def _validate_teams(data: Any) -> List[str]:
     return errors
 
 
-def _validate_players(data: Any) -> List[str]:
+def _validate_players(data: Any) -> list[str]:
     """Validate player data"""
     errors = []
     required_fields = ["name", "team"]

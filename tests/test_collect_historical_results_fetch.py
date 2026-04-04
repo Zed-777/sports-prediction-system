@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from scripts.collect_historical_results import HistoricalResultsCollector
 
 
@@ -66,7 +67,7 @@ def test_fetch_and_update_from_api(monkeypatch, tmp_path):
     assert updated == 1
 
     # Verify file updated
-    with open(out_file, "r", encoding="utf-8") as f:
+    with open(out_file, encoding="utf-8") as f:
         data = json.load(f)
     assert data[0]["actual_result"]["home_score"] == 2
     assert data[0]["actual_result"]["away_score"] == 1

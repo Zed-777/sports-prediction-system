@@ -1,5 +1,4 @@
-"""
-Probability Calibration Suite (TODO #24, #27, #34)
+"""Probability Calibration Suite (TODO #24, #27, #34)
 ====================================================
 Isotonic-regression probability calibration, Brier-score tracking, Expected
 Calibration Error (ECE), and per-league calibration registries.
@@ -29,11 +28,9 @@ Typical usage
 from __future__ import annotations
 
 import json
-import math
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 from sklearn.isotonic import IsotonicRegression
@@ -54,6 +51,7 @@ DEFAULT_ECE_BINS = 10
 @dataclass
 class ReliabilityBin:
     """One bin of a reliability diagram."""
+
     bin_lower: float
     bin_upper: float
     mean_predicted_prob: float
@@ -65,15 +63,16 @@ class ReliabilityBin:
 @dataclass
 class CalibrationReport:
     """Full calibration quality report for a set of (prob, outcome) pairs."""
+
     n_samples: int
     brier_score: float            # lower is better; perfect = 0, baseline = 0.25
     brier_skill_score: float      # 1 - BS/BS_reference; > 0 = better than climatology
     ece: float                    # Expected Calibration Error (0-1, lower better)
     mce: float                    # Maximum Calibration Error
     log_loss: float               # cross-entropy loss
-    reliability_bins: List[ReliabilityBin]
+    reliability_bins: list[ReliabilityBin]
     is_calibrated: bool           # True if fitted calibrator was applied
-    league: Optional[str] = None
+    league: str | None = None
 
     def summary(self) -> str:
         status = "CALIBRATED" if self.is_calibrated else "RAW"
@@ -89,8 +88,7 @@ class CalibrationReport:
 # ---------------------------------------------------------------------------
 
 class ProbabilityCalibrator:
-    """
-    Wraps sklearn IsotonicRegression to provide probability calibration with
+    """Wraps sklearn IsotonicRegression to provide probability calibration with
     built-in Brier score / ECE diagnostics.
 
     The calibrator is lazy: it returns raw probabilities until ``fit()`` is
@@ -99,7 +97,7 @@ class ProbabilityCalibrator:
 
     def __init__(self, n_ece_bins: int = DEFAULT_ECE_BINS) -> None:
         self.n_ece_bins = n_ece_bins
-        self._iso: Optional[IsotonicRegression] = None
+        self._iso: IsotonicRegression | None = None
         self._is_fitted: bool = False
         self._n_train: int = 0
 
@@ -107,14 +105,14 @@ class ProbabilityCalibrator:
     # Fitting
     # ------------------------------------------------------------------
 
-    def fit(self, probs: List[float], outcomes: List[int]) -> "ProbabilityCalibrator":
-        """
-        Fit isotonic regression on (prob, outcome) pairs.
+    def fit(self, probs: list[float], outcomes: list[int]) -> ProbabilityCalibrator:
+        """Fit isotonic regression on (prob, outcome) pairs.
 
         Parameters
         ----------
         probs    : raw model probabilities for the selected outcome (0-1)
         outcomes : 1 if selected outcome occurred, 0 otherwise
+
         """
         if len(probs) < MIN_SAMPLES_FOR_FIT:
             # Not enough data — stay un-fitted; calibrate() will pass through
@@ -134,9 +132,8 @@ class ProbabilityCalibrator:
     # Calibration
     # ------------------------------------------------------------------
 
-    def calibrate(self, probs: List[float]) -> np.ndarray:
-        """
-        Apply calibration to a list of probabilities.
+    def calibrate(self, probs: list[float]) -> np.ndarray:
+        """Apply calibration to a list of probabilities.
         Returns raw probs unchanged if not yet fitted.
         """
         arr = np.array(probs, dtype=float).clip(1e-7, 1 - 1e-7)
@@ -157,7 +154,7 @@ class ProbabilityCalibrator:
     # ------------------------------------------------------------------
 
     @staticmethod
-    def brier_score(probs: List[float], outcomes: List[int]) -> float:
+    def brier_score(probs: list[float], outcomes: list[int]) -> float:
         """Mean squared error between predicted probabilities and binary outcomes."""
         if not probs:
             return float("nan")
@@ -166,9 +163,8 @@ class ProbabilityCalibrator:
         return float(np.mean((ps - ys) ** 2))
 
     @staticmethod
-    def brier_skill_score(probs: List[float], outcomes: List[int]) -> float:
-        """
-        Brier Skill Score = 1 - BS(model) / BS(climatology).
+    def brier_skill_score(probs: list[float], outcomes: list[int]) -> float:
+        """Brier Skill Score = 1 - BS(model) / BS(climatology).
         Climatology (no-skill) uses the base rate as prediction for every sample.
         Positive = better than climatology.
         """
@@ -182,7 +178,7 @@ class ProbabilityCalibrator:
         return float(1.0 - bs / bs_ref)
 
     @staticmethod
-    def log_loss(probs: List[float], outcomes: List[int]) -> float:
+    def log_loss(probs: list[float], outcomes: list[int]) -> float:
         """Binary cross-entropy."""
         if not probs:
             return float("nan")
@@ -190,7 +186,7 @@ class ProbabilityCalibrator:
         ys = np.array(outcomes, dtype=float)
         return float(-np.mean(ys * np.log(ps) + (1 - ys) * np.log(1 - ps)))
 
-    def ece(self, probs: List[float], outcomes: List[int]) -> float:
+    def ece(self, probs: list[float], outcomes: list[int]) -> float:
         """Expected Calibration Error (equal-width bins, weighted by frequency)."""
         bins = self._reliability_bins(probs, outcomes)
         total = sum(b.n_samples for b in bins)
@@ -198,7 +194,7 @@ class ProbabilityCalibrator:
             return float("nan")
         return float(sum(b.calibration_error * b.n_samples for b in bins) / total)
 
-    def mce(self, probs: List[float], outcomes: List[int]) -> float:
+    def mce(self, probs: list[float], outcomes: list[int]) -> float:
         """Maximum Calibration Error across bins."""
         bins = self._reliability_bins(probs, outcomes)
         if not bins:
@@ -206,11 +202,11 @@ class ProbabilityCalibrator:
         return float(max(b.calibration_error for b in bins))
 
     def _reliability_bins(
-        self, probs: List[float], outcomes: List[int]
-    ) -> List[ReliabilityBin]:
+        self, probs: list[float], outcomes: list[int],
+    ) -> list[ReliabilityBin]:
         ps = np.array(probs, dtype=float)
         ys = np.array(outcomes, dtype=float)
-        bins: List[ReliabilityBin] = []
+        bins: list[ReliabilityBin] = []
         edges = np.linspace(0.0, 1.0, self.n_ece_bins + 1)
         for lo, hi in zip(edges[:-1], edges[1:]):
             mask = (ps >= lo) & (ps < hi if hi < 1.0 else ps <= hi)
@@ -227,15 +223,15 @@ class ProbabilityCalibrator:
                     mean_actual_prob=mean_y,
                     n_samples=n,
                     calibration_error=abs(mean_p - mean_y),
-                )
+                ),
             )
         return bins
 
     def report(
         self,
-        probs: List[float],
-        outcomes: List[int],
-        league: Optional[str] = None,
+        probs: list[float],
+        outcomes: list[int],
+        league: str | None = None,
         already_calibrated: bool = False,
     ) -> CalibrationReport:
         """Produce a full CalibrationReport for the given (prob, outcome) pairs."""
@@ -275,7 +271,7 @@ class ProbabilityCalibrator:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> "ProbabilityCalibrator":
+    def from_dict(cls, data: dict) -> ProbabilityCalibrator:
         cal = cls()
         if not data.get("fitted"):
             return cal
@@ -295,8 +291,7 @@ class ProbabilityCalibrator:
 # ---------------------------------------------------------------------------
 
 class LeagueCalibrationRegistry:
-    """
-    Maintains one ``ProbabilityCalibrator`` per league, with persistence to
+    """Maintains one ``ProbabilityCalibrator`` per league, with persistence to
     ``models/calibration/<league>.json``.
 
     Usage
@@ -312,17 +307,16 @@ class LeagueCalibrationRegistry:
 
     def __init__(self, registry_dir: str = DEFAULT_CALIBRATION_DIR) -> None:
         self.registry_dir = registry_dir
-        self._calibrators: Dict[str, ProbabilityCalibrator] = {}
+        self._calibrators: dict[str, ProbabilityCalibrator] = {}
 
     # ------------------------------------------------------------------
     # Fitting
     # ------------------------------------------------------------------
 
     def fit_league(
-        self, league: str, probs: List[float], outcomes: List[int]
+        self, league: str, probs: list[float], outcomes: list[int],
     ) -> bool:
-        """
-        Fit (or refit) the calibrator for a league.
+        """Fit (or refit) the calibrator for a league.
         Returns True if calibrator was successfully fitted.
         """
         cal = ProbabilityCalibrator()
@@ -330,9 +324,8 @@ class LeagueCalibrationRegistry:
         self._calibrators[league] = cal
         return cal.is_fitted
 
-    def fit_all(self, data: Dict[str, Tuple[List[float], List[int]]]) -> None:
-        """
-        Fit all leagues at once.
+    def fit_all(self, data: dict[str, tuple[list[float], list[int]]]) -> None:
+        """Fit all leagues at once.
         data = {"premier-league": ([probs], [outcomes]), ...}
         """
         for league, (probs, outcomes) in data.items():
@@ -343,8 +336,7 @@ class LeagueCalibrationRegistry:
     # ------------------------------------------------------------------
 
     def calibrate(self, league: str, raw_prob: float) -> float:
-        """
-        Return calibrated probability for the given league.
+        """Return calibrated probability for the given league.
         Falls back to raw_prob if no fitted calibrator exists for the league
         (graceful degradation: no exception thrown).
         """
@@ -353,7 +345,7 @@ class LeagueCalibrationRegistry:
             return float(np.clip(raw_prob, 1e-7, 1 - 1e-7))
         return cal.calibrate_single(raw_prob)
 
-    def calibrate_batch(self, league: str, probs: List[float]) -> List[float]:
+    def calibrate_batch(self, league: str, probs: list[float]) -> list[float]:
         """Batch calibration for a list of probabilities."""
         cal = self._calibrators.get(league)
         if cal is None or not cal.is_fitted:
@@ -364,7 +356,7 @@ class LeagueCalibrationRegistry:
         cal = self._calibrators.get(league)
         return cal is not None and cal.is_fitted
 
-    def leagues(self) -> List[str]:
+    def leagues(self) -> list[str]:
         return list(self._calibrators.keys())
 
     # ------------------------------------------------------------------
@@ -373,10 +365,9 @@ class LeagueCalibrationRegistry:
 
     def report_all(
         self,
-        data: Dict[str, Tuple[List[float], List[int]]],
-    ) -> Dict[str, CalibrationReport]:
-        """
-        Produce calibration reports for all leagues.
+        data: dict[str, tuple[list[float], list[int]]],
+    ) -> dict[str, CalibrationReport]:
+        """Produce calibration reports for all leagues.
         ``data`` = {"league": ([probs], [outcomes])}
         Reports are produced for *calibrated* probs where a calibrator exists.
         """
@@ -405,8 +396,7 @@ class LeagueCalibrationRegistry:
                 json.dump(cal.to_dict(), fh, indent=2)
 
     def load_all(self) -> int:
-        """
-        Load all calibrators from ``registry_dir``.
+        """Load all calibrators from ``registry_dir``.
         Returns the number of fitted calibrators loaded.
         """
         if not os.path.isdir(self.registry_dir):
@@ -434,8 +424,7 @@ class LeagueCalibrationRegistry:
 # ---------------------------------------------------------------------------
 
 class BrierScoreTracker:
-    """
-    Lightweight rolling Brier score tracker.
+    """Lightweight rolling Brier score tracker.
     Designed to be integrated with PerformanceMonitor for real-time monitoring.
 
     Usage
@@ -455,21 +444,21 @@ class BrierScoreTracker:
         if len(self._buffer) > self.window:
             self._buffer.pop(0)
 
-    def current_brier(self) -> Optional[float]:
+    def current_brier(self) -> float | None:
         if not self._buffer:
             return None
         ps = [x[0] for x in self._buffer]
         ys = [x[1] for x in self._buffer]
         return ProbabilityCalibrator.brier_score(ps, ys)
 
-    def current_bss(self) -> Optional[float]:
+    def current_bss(self) -> float | None:
         if not self._buffer:
             return None
         ps = [x[0] for x in self._buffer]
         ys = [x[1] for x in self._buffer]
         return ProbabilityCalibrator.brier_skill_score(ps, ys)
 
-    def current_log_loss(self) -> Optional[float]:
+    def current_log_loss(self) -> float | None:
         if not self._buffer:
             return None
         ps = [x[0] for x in self._buffer]
@@ -494,11 +483,10 @@ class BrierScoreTracker:
 
 def calibrate_prediction(
     prediction: dict,
-    registry: Optional[LeagueCalibrationRegistry],
-    league: Optional[str] = None,
+    registry: LeagueCalibrationRegistry | None,
+    league: str | None = None,
 ) -> dict:
-    """
-    Take a prediction dict (containing keys ``home_win_prob``, ``draw_prob``,
+    """Take a prediction dict (containing keys ``home_win_prob``, ``draw_prob``,
     ``away_win_prob``) and return a new dict with calibrated probabilities.
 
     If no registry or no fitted calibrator for the league, returns prediction

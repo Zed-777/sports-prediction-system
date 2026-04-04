@@ -1,32 +1,30 @@
-"""
-Calibration Manager - Non-Linear Probability Calibration
+"""Calibration Manager - Non-Linear Probability Calibration
 Implements isotonic regression and other calibration techniques to improve prediction reliability.
 Phase 2 Optimization: +2-4% confidence improvement expected.
 """
 
-import numpy as np
-from sklearn.isotonic import IsotonicRegression
-from typing import Dict, List, Optional
 import json
 from datetime import datetime
 
+import numpy as np
+from sklearn.isotonic import IsotonicRegression
+
 
 class CalibrationManager:
-    """
-    Manages probability calibration using isotonic regression.
+    """Manages probability calibration using isotonic regression.
     Improves reliability of model confidence predictions.
     """
 
     def __init__(self, model_name: str = "default"):
-        """
-        Initialize calibration manager.
+        """Initialize calibration manager.
 
         Args:
             model_name: Name of the model being calibrated
+
         """
         self.model_name = model_name
-        self.isotonic_regressor: Optional[IsotonicRegression] = None
-        self.calibration_data: Dict = {
+        self.isotonic_regressor: IsotonicRegression | None = None
+        self.calibration_data: dict = {
             "predictions": [],
             "outcomes": [],
             "timestamps": [],
@@ -38,15 +36,15 @@ class CalibrationManager:
         self,
         predicted_prob: float,
         actual_outcome: float,
-        timestamp: Optional[float] = None,
+        timestamp: float | None = None,
     ):
-        """
-        Add a prediction-outcome pair for calibration.
+        """Add a prediction-outcome pair for calibration.
 
         Args:
             predicted_prob: Model's predicted probability (0-1)
             actual_outcome: Actual outcome (0 or 1, or 0-1 for soft labels)
             timestamp: Optional timestamp of prediction
+
         """
         # Clip to valid range
         predicted_prob = max(0.0, min(1.0, predicted_prob))
@@ -55,22 +53,22 @@ class CalibrationManager:
         self.calibration_data["predictions"].append(predicted_prob)
         self.calibration_data["outcomes"].append(actual_outcome)
         self.calibration_data["timestamps"].append(
-            timestamp or datetime.now().timestamp()
+            timestamp or datetime.now().timestamp(),
         )
 
     def add_batch_calibration_samples(
         self,
-        predictions: List[float],
-        outcomes: List[float],
-        timestamps: Optional[List[float]] = None,
+        predictions: list[float],
+        outcomes: list[float],
+        timestamps: list[float] | None = None,
     ):
-        """
-        Add multiple prediction-outcome pairs.
+        """Add multiple prediction-outcome pairs.
 
         Args:
             predictions: List of predicted probabilities
             outcomes: List of actual outcomes
             timestamps: Optional list of timestamps
+
         """
         if len(predictions) != len(outcomes):
             raise ValueError("Predictions and outcomes must have same length")
@@ -84,14 +82,14 @@ class CalibrationManager:
             self.add_calibration_sample(pred, outcome, ts)
 
     def train_calibration(self, min_samples: int = 30):
-        """
-        Train isotonic regression calibrator on accumulated data.
+        """Train isotonic regression calibrator on accumulated data.
 
         Args:
             min_samples: Minimum samples required to train
 
         Returns:
             bool: True if training successful, False otherwise
+
         """
         if len(self.calibration_data["predictions"]) < min_samples:
             return False
@@ -110,18 +108,18 @@ class CalibrationManager:
             return True
 
         except Exception as e:
-            print(f"Calibration training failed: {str(e)}")
+            print(f"Calibration training failed: {e!s}")
             return False
 
     def calibrate_probability(self, predicted_prob: float) -> float:
-        """
-        Apply calibration to a predicted probability.
+        """Apply calibration to a predicted probability.
 
         Args:
             predicted_prob: Raw model probability (0-1)
 
         Returns:
             Calibrated probability (0-1)
+
         """
         # Clip to valid range
         predicted_prob = max(0.0, min(1.0, predicted_prob))
@@ -137,24 +135,24 @@ class CalibrationManager:
         except Exception:
             return predicted_prob
 
-    def calibrate_batch(self, probabilities: List[float]) -> List[float]:
-        """
-        Apply calibration to multiple probabilities.
+    def calibrate_batch(self, probabilities: list[float]) -> list[float]:
+        """Apply calibration to multiple probabilities.
 
         Args:
             probabilities: List of raw probabilities
 
         Returns:
             List of calibrated probabilities
+
         """
         return [self.calibrate_probability(p) for p in probabilities]
 
-    def get_calibration_stats(self) -> Dict:
-        """
-        Get statistics about calibration.
+    def get_calibration_stats(self) -> dict:
+        """Get statistics about calibration.
 
         Returns:
             Dict with calibration statistics
+
         """
         if len(self.calibration_data["predictions"]) == 0:
             return {
@@ -185,10 +183,9 @@ class CalibrationManager:
         }
 
     def _calculate_ece(
-        self, predictions: np.ndarray, outcomes: np.ndarray, num_bins: int = 10
+        self, predictions: np.ndarray, outcomes: np.ndarray, num_bins: int = 10,
     ) -> float:
-        """
-        Calculate expected calibration error.
+        """Calculate expected calibration error.
 
         Args:
             predictions: Array of predicted probabilities
@@ -197,6 +194,7 @@ class CalibrationManager:
 
         Returns:
             ECE value (0-1, lower is better)
+
         """
         bin_edges = np.linspace(0, 1, num_bins + 1)
         ece = 0.0
@@ -213,11 +211,11 @@ class CalibrationManager:
         return ece / bin_count if bin_count > 0 else 0.0
 
     def save_calibration(self, filepath: str):
-        """
-        Save calibration data and model to file.
+        """Save calibration data and model to file.
 
         Args:
             filepath: Path to save calibration
+
         """
         try:
             calibration_dict = {
@@ -235,20 +233,20 @@ class CalibrationManager:
                 json.dump(calibration_dict, f, indent=2, default=str)
 
         except Exception as e:
-            print(f"Failed to save calibration: {str(e)}")
+            print(f"Failed to save calibration: {e!s}")
 
     def load_calibration(self, filepath: str) -> bool:
-        """
-        Load calibration data from file.
+        """Load calibration data from file.
 
         Args:
             filepath: Path to load calibration from
 
         Returns:
             bool: True if loading successful
+
         """
         try:
-            with open(filepath, "r") as f:
+            with open(filepath) as f:
                 calibration_dict = json.load(f)
 
             self.model_name = calibration_dict.get("model_name", "default")
@@ -272,28 +270,27 @@ class CalibrationManager:
             return True
 
         except Exception as e:
-            print(f"Failed to load calibration: {str(e)}")
+            print(f"Failed to load calibration: {e!s}")
             return False
 
 
 class ModelPerformanceTracker:
-    """
-    Tracks per-model performance for dynamic weighting.
+    """Tracks per-model performance for dynamic weighting.
     Used in Phase 2 Model-Specific Weighting optimization.
     """
 
-    def __init__(self, model_names: List[str]):
-        """
-        Initialize performance tracker.
+    def __init__(self, model_names: list[str]):
+        """Initialize performance tracker.
 
         Args:
             model_names: List of model names to track
+
         """
         self.model_names = model_names
-        self.performance_history: Dict[str, List[Dict]] = {
+        self.performance_history: dict[str, list[dict]] = {
             name: [] for name in model_names
         }
-        self.current_weights: Dict[str, float] = {
+        self.current_weights: dict[str, float] = {
             name: 1.0 / len(model_names) for name in model_names
         }
 
@@ -302,16 +299,16 @@ class ModelPerformanceTracker:
         model_name: str,
         prediction: float,
         actual_outcome: float,
-        context: Optional[Dict] = None,
+        context: dict | None = None,
     ):
-        """
-        Record a model prediction and outcome.
+        """Record a model prediction and outcome.
 
         Args:
             model_name: Name of the model
             prediction: Predicted value
             actual_outcome: Actual outcome
             context: Optional context dict (league, confidence level, etc.)
+
         """
         if model_name not in self.model_names:
             return
@@ -327,9 +324,8 @@ class ModelPerformanceTracker:
 
         self.performance_history[model_name].append(record)
 
-    def get_model_metrics(self, model_name: str, window: int = 50) -> Dict:
-        """
-        Get performance metrics for a model.
+    def get_model_metrics(self, model_name: str, window: int = 50) -> dict:
+        """Get performance metrics for a model.
 
         Args:
             model_name: Name of the model
@@ -337,6 +333,7 @@ class ModelPerformanceTracker:
 
         Returns:
             Dict with metrics (MAE, RMSE, accuracy)
+
         """
         if model_name not in self.performance_history:
             return {}
@@ -358,10 +355,9 @@ class ModelPerformanceTracker:
         }
 
     def calculate_dynamic_weights(
-        self, window: int = 50, power: float = 2.0
-    ) -> Dict[str, float]:
-        """
-        Calculate dynamic weights based on recent performance.
+        self, window: int = 50, power: float = 2.0,
+    ) -> dict[str, float]:
+        """Calculate dynamic weights based on recent performance.
 
         Args:
             window: Number of recent samples to consider
@@ -369,6 +365,7 @@ class ModelPerformanceTracker:
 
         Returns:
             Dict of model weights normalized to sum to 1.0
+
         """
         weights = {}
 
@@ -390,7 +387,7 @@ class ModelPerformanceTracker:
         self.current_weights = weights
         return weights
 
-    def get_all_metrics(self) -> Dict[str, Dict]:
+    def get_all_metrics(self) -> dict[str, dict]:
         """Get metrics for all models."""
         return {name: self.get_model_metrics(name) for name in self.model_names}
 
@@ -408,22 +405,22 @@ class ModelPerformanceTracker:
                 json.dump(history_dict, f, indent=2, default=str)
 
         except Exception as e:
-            print(f"Failed to save performance history: {str(e)}")
+            print(f"Failed to save performance history: {e!s}")
 
     def load_performance_history(self, filepath: str) -> bool:
         """Load performance history from file."""
         try:
-            with open(filepath, "r") as f:
+            with open(filepath) as f:
                 history_dict = json.load(f)
 
             self.model_names = history_dict.get("model_names", self.model_names)
             self.current_weights = history_dict.get(
-                "current_weights", self.current_weights
+                "current_weights", self.current_weights,
             )
             self.performance_history = history_dict.get("performance_history", {})
 
             return True
 
         except Exception as e:
-            print(f"Failed to load performance history: {str(e)}")
+            print(f"Failed to load performance history: {e!s}")
             return False

@@ -43,7 +43,7 @@ def test_phase4_integration():
         if "btts" in result:
             btts = result["btts"]
             print(
-                f"   BTTS: {btts.get('prediction')} (Yes: {btts.get('yes_prob', 0):.1%}, No: {btts.get('no_prob', 0):.1%})"
+                f"   BTTS: {btts.get('prediction')} (Yes: {btts.get('yes_prob', 0):.1%}, No: {btts.get('no_prob', 0):.1%})",
             )
 
         if "over_under" in result:
@@ -51,7 +51,7 @@ def test_phase4_integration():
             if "lines" in ou:
                 line25 = ou["lines"].get("2.5", {})
                 print(
-                    f"   O/U 2.5: {line25.get('prediction')} (Over: {line25.get('over_prob', 0):.1%}, Under: {line25.get('under_prob', 0):.1%})"
+                    f"   O/U 2.5: {line25.get('prediction')} (Over: {line25.get('over_prob', 0):.1%}, Under: {line25.get('under_prob', 0):.1%})",
                 )
 
         if "exact_scores" in result:

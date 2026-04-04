@@ -1,5 +1,4 @@
-"""
-Backtesting CLI Runner (VB-001 / TODO #32)
+"""Backtesting CLI Runner (VB-001 / TODO #32)
 ==========================================
 Runs the BacktestingFramework against historical data using the
 EnhancedPredictor, saves results to reports/backtests/ and prints a summary.
@@ -39,7 +38,7 @@ def _setup_logging(verbose: bool) -> logging.Logger:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Run historical backtesting for prediction accuracy validation"
+        description="Run historical backtesting for prediction accuracy validation",
     )
     parser.add_argument(
         "--leagues",
@@ -114,7 +113,7 @@ def main() -> None:
     if not matches:
         logger.warning(
             "No historical data found. Run `scripts/collect_historical_results.py` first "
-            "or ensure data/historical/ contains match JSON files."
+            "or ensure data/historical/ contains match JSON files.",
         )
         # Write empty marker so CI can see the job ran
         out = Path(args.results_dir)
@@ -133,7 +132,7 @@ def main() -> None:
 
     logger.info(
         f"Loaded {len(matches)} historical matches. "
-        f"Date range: {matches[0]['date'].date()} to {matches[-1]['date'].date()}"
+        f"Date range: {matches[0]['date'].date()} to {matches[-1]['date'].date()}",
     )
 
     # Build predictor
@@ -166,7 +165,7 @@ def main() -> None:
     # Run backtest
     logger.info(
         f"Running backtest | model={args.model_name} | "
-        f"train_window={args.train_window}d | test_window={args.test_window}d"
+        f"train_window={args.train_window}d | test_window={args.test_window}d",
     )
     summary = framework.run_backtest(
         predictor=predictor,
@@ -195,7 +194,7 @@ def main() -> None:
         print(f"  High-conf accuracy: {summary.high_confidence_accuracy*100:.1f}%")
         print(f"  Med-conf  accuracy: {summary.medium_confidence_accuracy*100:.1f}%")
         if summary.league_accuracy:
-            print(f"\n  Accuracy by league:")
+            print("\n  Accuracy by league:")
             for league, acc in sorted(summary.league_accuracy.items(), key=lambda x: -x[1]):
                 print(f"    {league}: {acc*100:.1f}%")
         print(f"{'='*60}\n")

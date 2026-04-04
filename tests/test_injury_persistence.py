@@ -1,8 +1,7 @@
-import os
 import json
+import os
 import time
 from types import SimpleNamespace
-
 
 from data_quality_enhancer import DataQualityEnhancer
 
@@ -40,7 +39,7 @@ def test_injury_disable_persistent_on_429(monkeypatch):
         backoff=None,
         logger=None,
     ):
-        return SimpleNamespace(status_code=429, text="429", json=lambda: {})
+        return SimpleNamespace(status_code=429, text="429", json=dict)
 
     monkeypatch.setattr("data_quality_enhancer.safe_request_get", fake_safe_get)
     # Ensure no disabled state initially
@@ -55,7 +54,7 @@ def test_injury_disable_persistent_on_429(monkeypatch):
     # Disabled flag should be set and persisted
     assert enhancer._injuries_disabled_until > time.time()
     assert os.path.exists("data/cache/injuries_disabled_until.json")
-    with open("data/cache/injuries_disabled_until.json", "r", encoding="utf-8") as f:
+    with open("data/cache/injuries_disabled_until.json", encoding="utf-8") as f:
         payload = json.load(f)
     assert float(payload.get("disabled_until", 0)) == enhancer._injuries_disabled_until
 
@@ -69,8 +68,8 @@ def test_injury_cache_written_on_success(monkeypatch):
 
     sample_payload = {
         "response": [
-            {"player": {"name": "John Doe"}, "reason": "knee", "status": "out"}
-        ]
+            {"player": {"name": "John Doe"}, "reason": "knee", "status": "out"},
+        ],
     }
 
     def fake_safe_get(
@@ -89,7 +88,7 @@ def test_injury_cache_written_on_success(monkeypatch):
     assert res is not None
     cache_file = f"data/cache/injuries_{team_id}_{time.localtime().tm_year}.json"
     assert os.path.exists(cache_file)
-    with open(cache_file, "r", encoding="utf-8") as f:
+    with open(cache_file, encoding="utf-8") as f:
         payload = json.load(f)
     assert payload.get("data") is not None
     assert isinstance(payload.get("timestamp"), (int, float))

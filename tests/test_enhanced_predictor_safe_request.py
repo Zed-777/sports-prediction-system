@@ -1,6 +1,6 @@
 import enhanced_predictor
-from enhanced_predictor import EnhancedPredictor
 from app.utils import http as http_utils
+from enhanced_predictor import EnhancedPredictor
 
 
 class FakeResp:
@@ -22,8 +22,8 @@ def test_fetch_team_home_away_stats_uses_safe_request(monkeypatch):
                 "awayTeam": {"id": 2, "name": "Test Away"},
                 "score": {"fullTime": {"home": 2, "away": 1}},
                 "referees": [],
-            }
-        ]
+            },
+        ],
     }
 
     # Craft a fake response class that mimics `requests.Response` enough for the code under test

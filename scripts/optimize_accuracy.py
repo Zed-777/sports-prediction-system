@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Accuracy Optimization Runner for SportsPredictionSystem
+"""Accuracy Optimization Runner for SportsPredictionSystem
 ========================================================
 
 This script uses the implemented optimization tools to:
@@ -21,15 +20,15 @@ The system has these tunable parameters that affect accuracy:
 - h2h_max_weight (0.35): Maximum weight for head-to-head history
 """
 
-import sys
+import argparse
 import json
 import logging
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, Any, Optional
-from dataclasses import dataclass
-import argparse
 import os
+import sys
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -37,7 +36,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
@@ -56,7 +55,7 @@ class OptimizableParameter:
 
 
 # All parameters that can be optimized
-OPTIMIZABLE_PARAMS: Dict[str, OptimizableParameter] = {
+OPTIMIZABLE_PARAMS: dict[str, OptimizableParameter] = {
     "market_blend_weight": OptimizableParameter(
         name="market_blend_weight",
         current_value=0.18,
@@ -106,8 +105,7 @@ OPTIMIZABLE_PARAMS: Dict[str, OptimizableParameter] = {
 
 
 class AccuracyOptimizer:
-    """
-    Main class for running accuracy optimization experiments
+    """Main class for running accuracy optimization experiments
     """
 
     def __init__(self):
@@ -148,10 +146,9 @@ class AccuracyOptimizer:
             self.tracker = None
 
     def _apply_param_overrides_to_predictor(
-        self, predictor, overrides: Dict[str, float]
+        self, predictor, overrides: dict[str, float],
     ) -> None:
-        """
-        Apply parameter overrides to an EnhancedPredictor instance by mapping known
+        """Apply parameter overrides to an EnhancedPredictor instance by mapping known
         optimizable parameters to either predictor._settings or attributes.
         """
         if not overrides:
@@ -199,10 +196,9 @@ class AccuracyOptimizer:
         self,
         league: str = "la-liga",
         days_back: int = 90,
-        parameter_overrides: Optional[Dict[str, float]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Run backtesting to evaluate current (or modified) parameters
+        parameter_overrides: dict[str, float] | None = None,
+    ) -> dict[str, Any]:
+        """Run backtesting to evaluate current (or modified) parameters
 
         Args:
             league: League to backtest on
@@ -211,6 +207,7 @@ class AccuracyOptimizer:
 
         Returns:
             Dict with accuracy metrics
+
         """
         logger.info(f"Running backtest for {league} over last {days_back} days...")
 
@@ -227,22 +224,22 @@ class AccuracyOptimizer:
             return self._simulate_backtest(league, days_back, parameter_overrides)
 
         try:
-            with open(historical_file, "r", encoding="utf-8") as f:
+            with open(historical_file, encoding="utf-8") as f:
                 historical_data = json.load(f)
 
             # Build a predictor wrapper for the backtester
             try:
-                from enhanced_predictor import EnhancedPredictor
                 from app.models.backtesting import create_simple_predictor
+                from enhanced_predictor import EnhancedPredictor
 
                 enhanced_pred = EnhancedPredictor(
-                    api_key=os.getenv("FOOTBALL_DATA_API_KEY", "DUMMY_API_KEY")
+                    api_key=os.getenv("FOOTBALL_DATA_API_KEY", "DUMMY_API_KEY"),
                 )
 
                 # Apply parameter overrides to the predictor if provided
                 if parameter_overrides:
                     self._apply_param_overrides_to_predictor(
-                        enhanced_pred, parameter_overrides
+                        enhanced_pred, parameter_overrides,
                     )
 
                 predictor_fn = create_simple_predictor(enhanced_pred)
@@ -300,10 +297,9 @@ class AccuracyOptimizer:
             return self._simulate_backtest(league, days_back, parameter_overrides)
 
     def _simulate_backtest(
-        self, league: str, days_back: int, params: Optional[Dict[str, float]] = None
-    ) -> Dict[str, Any]:
-        """
-        Simulated backtest when real data isn't available.
+        self, league: str, days_back: int, params: dict[str, float] | None = None,
+    ) -> dict[str, Any]:
+        """Simulated backtest when real data isn't available.
         Uses mathematical model to estimate accuracy based on parameter values.
         """
         logger.info("Running simulated backtest (no historical data available)")
@@ -356,39 +352,37 @@ class AccuracyOptimizer:
                 "accuracy": round(estimated_accuracy, 4),
                 "accuracy_pct": f"{estimated_accuracy * 100:.1f}%",
                 "home_accuracy": round(
-                    estimated_accuracy + 0.02, 4
+                    estimated_accuracy + 0.02, 4,
                 ),  # Usually better at home predictions
                 "away_accuracy": round(estimated_accuracy - 0.03, 4),
                 "draw_accuracy": round(
-                    estimated_accuracy - 0.08, 4
+                    estimated_accuracy - 0.08, 4,
                 ),  # Draws hardest to predict
                 "confidence_calibration": round(
-                    0.85 + (estimated_accuracy - 0.58) * 0.5, 4
+                    0.85 + (estimated_accuracy - 0.58) * 0.5, 4,
                 ),
                 "brier_score": round(
-                    0.25 - (estimated_accuracy - 0.50) * 0.2, 4
+                    0.25 - (estimated_accuracy - 0.50) * 0.2, 4,
                 ),  # Lower is better
             },
             "recommendation": self._generate_recommendation(estimated_accuracy, params),
             "timestamp": datetime.now().isoformat(),
         }
 
-    def _generate_recommendation(self, accuracy: float, params: Optional[Dict]) -> str:
+    def _generate_recommendation(self, accuracy: float, params: dict | None) -> str:
         """Generate optimization recommendation based on results"""
         if accuracy >= 0.65:
             return "Excellent accuracy. Parameters are well-tuned."
-        elif accuracy >= 0.60:
+        if accuracy >= 0.60:
             return "Good accuracy. Minor tuning may yield small improvements."
-        elif accuracy >= 0.55:
+        if accuracy >= 0.55:
             return "Moderate accuracy. Consider running parameter sweep experiments."
-        else:
-            return "Below target accuracy. Recommend systematic A/B testing of all parameters."
+        return "Below target accuracy. Recommend systematic A/B testing of all parameters."
 
     def run_parameter_sweep(
-        self, param_name: str, league: str = "la-liga"
-    ) -> Dict[str, Any]:
-        """
-        Test all values of a parameter to find optimal value
+        self, param_name: str, league: str = "la-liga",
+    ) -> dict[str, Any]:
+        """Test all values of a parameter to find optimal value
 
         Args:
             param_name: Name of parameter to optimize
@@ -396,16 +390,17 @@ class AccuracyOptimizer:
 
         Returns:
             Dict with sweep results and optimal value
+
         """
         if param_name not in OPTIMIZABLE_PARAMS:
             raise ValueError(
-                f"Unknown parameter: {param_name}. Available: {list(OPTIMIZABLE_PARAMS.keys())}"
+                f"Unknown parameter: {param_name}. Available: {list(OPTIMIZABLE_PARAMS.keys())}",
             )
 
         param = OPTIMIZABLE_PARAMS[param_name]
         logger.info(f"Running parameter sweep for {param_name}")
         logger.info(
-            f"  Range: {param.min_value} to {param.max_value}, step {param.step}"
+            f"  Range: {param.min_value} to {param.max_value}, step {param.step}",
         )
 
         results = []
@@ -415,7 +410,7 @@ class AccuracyOptimizer:
             # Test this value
             test_params = {param_name: current_value}
             backtest_result = self.run_backtest(
-                league=league, parameter_overrides=test_params
+                league=league, parameter_overrides=test_params,
             )
             backtest_norm = self._normalize_backtest_output(backtest_result)
 
@@ -424,7 +419,7 @@ class AccuracyOptimizer:
                     "value": current_value,
                     "accuracy": backtest_norm["metrics"]["accuracy"],
                     "brier_score": backtest_norm["metrics"].get("brier_score", 0.0),
-                }
+                },
             )
 
             current_value = round(current_value + param.step, 4)
@@ -462,10 +457,9 @@ class AccuracyOptimizer:
         return sweep_result
 
     def run_ab_experiment(
-        self, param_name: str, variant_value: float, sample_size: int = 100
-    ) -> Dict[str, Any]:
-        """
-        Set up an A/B experiment comparing current vs new parameter value
+        self, param_name: str, variant_value: float, sample_size: int = 100,
+    ) -> dict[str, Any]:
+        """Set up an A/B experiment comparing current vs new parameter value
 
         Args:
             param_name: Parameter to test
@@ -474,6 +468,7 @@ class AccuracyOptimizer:
 
         Returns:
             Experiment configuration (results come later after actual predictions)
+
         """
         if param_name not in OPTIMIZABLE_PARAMS:
             raise ValueError(f"Unknown parameter: {param_name}")
@@ -498,7 +493,7 @@ class AccuracyOptimizer:
                 f"1. Experiment ID: {experiment_id}",
                 f"2. Control (A): {param_name}={param.current_value}",
                 f"3. Variant (B): {param_name}={variant_value}",
-                f"4. Run predictions and record results with experiment_id",
+                "4. Run predictions and record results with experiment_id",
                 f"5. After {sample_size} predictions, run evaluate_experiment('{experiment_id}')",
             ],
         }
@@ -512,9 +507,8 @@ class AccuracyOptimizer:
         logger.info(f"A/B experiment configured: {experiment_id}")
         return experiment_config
 
-    def _normalize_backtest_output(self, result) -> Dict[str, Any]:
-        """
-        Normalize backtest outputs to a consistent dictionary format with 'metrics'
+    def _normalize_backtest_output(self, result) -> dict[str, Any]:
+        """Normalize backtest outputs to a consistent dictionary format with 'metrics'
         containing 'accuracy' and 'accuracy_pct', whether the source is a dict
         or a BacktestSummary object.
         """
@@ -540,9 +534,8 @@ class AccuracyOptimizer:
         except Exception:
             return {"metrics": {"accuracy": 0.0, "accuracy_pct": "0.0%"}}
 
-    def full_optimization(self, league: str = "la-liga") -> Dict[str, Any]:
-        """
-        Run complete optimization: sweep all parameters and generate recommendations
+    def full_optimization(self, league: str = "la-liga") -> dict[str, Any]:
+        """Run complete optimization: sweep all parameters and generate recommendations
         Supports running for a single league or all leagues (pass league='all').
         """
         leagues_to_run = [league]
@@ -565,7 +558,7 @@ class AccuracyOptimizer:
             baseline = self.run_backtest(league=run_league)
             baseline_norm = self._normalize_backtest_output(baseline)
             logger.info(
-                f"Baseline accuracy: {baseline_norm['metrics']['accuracy_pct']}"
+                f"Baseline accuracy: {baseline_norm['metrics']['accuracy_pct']}",
             )
 
             # Sweep each parameter
@@ -578,13 +571,13 @@ class AccuracyOptimizer:
                 all_sweeps[param_name] = sweep
                 optimal_params[param_name] = sweep["optimal_value"]
                 logger.info(
-                    f"  Optimal: {sweep['optimal_value']} (accuracy: {sweep['optimal_accuracy']:.1%})"
+                    f"  Optimal: {sweep['optimal_value']} (accuracy: {sweep['optimal_accuracy']:.1%})",
                 )
 
             # Test all optimal params together
             logger.info("\nTesting combined optimal parameters...")
             combined_result = self.run_backtest(
-                league=run_league, parameter_overrides=optimal_params
+                league=run_league, parameter_overrides=optimal_params,
             )
             combined_norm = self._normalize_backtest_output(combined_result)
 
@@ -610,7 +603,7 @@ class AccuracyOptimizer:
                             "current": current,
                             "recommended": optimal,
                             "config_path": OPTIMIZABLE_PARAMS[param_name].config_path,
-                        }
+                        },
                     )
 
             # Save per-league results
@@ -636,7 +629,7 @@ class AccuracyOptimizer:
                         "current": current,
                         "recommended": optimal,
                         "config_path": OPTIMIZABLE_PARAMS[param_name].config_path,
-                    }
+                    },
                 )
 
         # Save full results
@@ -657,7 +650,7 @@ class AccuracyOptimizer:
         print("\nRecommended parameter changes:")
         for change in optimization_result["recommended_changes"]:
             print(
-                f"  {change['parameter']}: {change['current']} → {change['recommended']}"
+                f"  {change['parameter']}: {change['current']} → {change['recommended']}",
             )
         print(f"\nFull results saved to: {output_file}")
 
@@ -673,11 +666,11 @@ def main():
         help="Optimization mode",
     )
     parser.add_argument(
-        "--param", type=str, help="Parameter to optimize (for sweep/experiment)"
+        "--param", type=str, help="Parameter to optimize (for sweep/experiment)",
     )
     parser.add_argument("--value", type=float, help="Value to test (for experiment)")
     parser.add_argument(
-        "--league", type=str, default="la-liga", help="League to test on"
+        "--league", type=str, default="la-liga", help="League to test on",
     )
 
     args = parser.parse_args()

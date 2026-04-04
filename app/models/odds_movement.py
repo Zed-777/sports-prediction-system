@@ -1,5 +1,4 @@
-"""
-Pre-Match Odds Movement Tracking (RT-001)
+"""Pre-Match Odds Movement Tracking (RT-001)
 ==========================================
 
 Tracks odds movements before matches to detect sharp money and market signals.
@@ -8,13 +7,13 @@ When professional bettors move the lines, it's a strong signal of information.
 Expected accuracy boost: +2-4%
 """
 
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any, Tuple
-from datetime import datetime, timedelta
 import json
-import os
 import logging
+import os
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +45,7 @@ class OddsSnapshot:
     away_odds: float
     source: str = "unknown"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "timestamp": self.timestamp.isoformat(),
             "home_odds": self.home_odds,
@@ -56,7 +55,7 @@ class OddsSnapshot:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict) -> "OddsSnapshot":
+    def from_dict(cls, data: dict) -> "OddsSnapshot":
         return cls(
             timestamp=datetime.fromisoformat(data["timestamp"]),
             home_odds=data["home_odds"],
@@ -73,9 +72,9 @@ class OddsMovement:
     match_id: str
     home_team: str
     away_team: str
-    opening_odds: Optional[OddsSnapshot] = None
-    current_odds: Optional[OddsSnapshot] = None
-    snapshots: List[OddsSnapshot] = field(default_factory=list)
+    opening_odds: OddsSnapshot | None = None
+    current_odds: OddsSnapshot | None = None
+    snapshots: list[OddsSnapshot] = field(default_factory=list)
 
     # Movement analysis
     home_movement: MovementDirection = MovementDirection.STABLE
@@ -86,7 +85,7 @@ class OddsMovement:
 
     # Sharp money signals
     sharp_money_detected: bool = False
-    sharp_money_side: Optional[str] = None  # 'home', 'draw', 'away'
+    sharp_money_side: str | None = None  # 'home', 'draw', 'away'
     sharp_confidence: float = 0.0  # 0-1 scale
 
     # Market consensus
@@ -95,7 +94,7 @@ class OddsMovement:
     implied_draw_prob: float = 0.0
     implied_away_prob: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "match_id": self.match_id,
             "home_team": self.home_team,
@@ -118,8 +117,7 @@ class OddsMovement:
 
 
 class OddsMovementTracker:
-    """
-    Tracks pre-match odds movements and detects sharp money.
+    """Tracks pre-match odds movements and detects sharp money.
 
     RT-001: Pre-match odds movement tracking
     - Poll odds APIs to track movement
@@ -140,7 +138,7 @@ class OddsMovementTracker:
         self.cache_dir = cache_dir
         self.odds_cache_dir = os.path.join(cache_dir, "odds_movements")
         os.makedirs(self.odds_cache_dir, exist_ok=True)
-        self._movements: Dict[str, OddsMovement] = {}
+        self._movements: dict[str, OddsMovement] = {}
         self._load_cached_movements()
 
     def _load_cached_movements(self):
@@ -148,7 +146,7 @@ class OddsMovementTracker:
         try:
             cache_file = os.path.join(self.odds_cache_dir, "movements.json")
             if os.path.exists(cache_file):
-                with open(cache_file, "r") as f:
+                with open(cache_file) as f:
                     data = json.load(f)
                 # Only load recent movements (last 7 days)
                 cutoff = (datetime.now() - timedelta(days=7)).isoformat()
@@ -187,8 +185,8 @@ class OddsMovementTracker:
         return (current - opening) / opening
 
     def _classify_movement(
-        self, movement_pct: float
-    ) -> Tuple[MovementDirection, MovementStrength]:
+        self, movement_pct: float,
+    ) -> tuple[MovementDirection, MovementStrength]:
         """Classify the direction and strength of movement."""
         abs_movement = abs(movement_pct)
 
@@ -222,8 +220,7 @@ class OddsMovementTracker:
         away_odds: float,
         source: str = "api",
     ) -> OddsMovement:
-        """
-        Record odds snapshot for a match.
+        """Record odds snapshot for a match.
 
         Args:
             match_id: Unique match identifier
@@ -236,6 +233,7 @@ class OddsMovementTracker:
 
         Returns:
             Updated OddsMovement analysis
+
         """
         snapshot = OddsSnapshot(
             timestamp=datetime.now(),
@@ -294,21 +292,21 @@ class OddsMovementTracker:
 
         # Calculate movement percentages
         movement.home_movement_pct = self._calculate_movement_pct(
-            opening.home_odds, current.home_odds
+            opening.home_odds, current.home_odds,
         )
         movement.away_movement_pct = self._calculate_movement_pct(
-            opening.away_odds, current.away_odds
+            opening.away_odds, current.away_odds,
         )
         draw_movement_pct = self._calculate_movement_pct(
-            opening.draw_odds, current.draw_odds
+            opening.draw_odds, current.draw_odds,
         )
 
         # Classify movements
         movement.home_movement, home_strength = self._classify_movement(
-            movement.home_movement_pct
+            movement.home_movement_pct,
         )
         movement.away_movement, away_strength = self._classify_movement(
-            movement.away_movement_pct
+            movement.away_movement_pct,
         )
 
         # Overall movement strength is the max
@@ -412,7 +410,7 @@ class OddsMovementTracker:
 
         return movement
 
-    def get_movement(self, match_id: str) -> Optional[OddsMovement]:
+    def get_movement(self, match_id: str) -> OddsMovement | None:
         """Get odds movement for a match."""
         movement = self._movements.get(match_id)
         if isinstance(movement, dict):
@@ -436,9 +434,8 @@ class OddsMovementTracker:
         away_prob: float,
         odds_movement: OddsMovement,
         blend_weight: float = 0.15,
-    ) -> Tuple[float, float, float, List[str]]:
-        """
-        Adjust predictions based on market odds and movement.
+    ) -> tuple[float, float, float, list[str]]:
+        """Adjust predictions based on market odds and movement.
 
         Args:
             home_prob: Model's home win probability
@@ -449,6 +446,7 @@ class OddsMovementTracker:
 
         Returns:
             Tuple of (adjusted_home, adjusted_draw, adjusted_away, reasons)
+
         """
         reasons = []
 
@@ -531,12 +529,12 @@ class OddsIntegrationSuite:
         draw_prob: float,
         away_prob: float,
         source: str = "api",
-    ) -> Dict[str, Any]:
-        """
-        Record odds and adjust predictions.
+    ) -> dict[str, Any]:
+        """Record odds and adjust predictions.
 
         Returns:
             Dictionary with movement analysis and adjusted probabilities
+
         """
         # Record the odds
         movement = self.tracker.record_odds(
@@ -615,10 +613,10 @@ if __name__ == "__main__":
     print(f"  Movement strength: {result2['movement']['movement_strength']}")
     print(f"  Home movement: {result2['movement']['home_movement_pct']:.1%}")
 
-    print(f"\nPrediction Adjustments:")
+    print("\nPrediction Adjustments:")
     print(f"  Original: H={0.45:.1%}, D={0.28:.1%}, A={0.27:.1%}")
     print(
-        f"  Adjusted: H={result2['adjusted_home_prob']:.1%}, D={result2['adjusted_draw_prob']:.1%}, A={result2['adjusted_away_prob']:.1%}"
+        f"  Adjusted: H={result2['adjusted_home_prob']:.1%}, D={result2['adjusted_draw_prob']:.1%}, A={result2['adjusted_away_prob']:.1%}",
     )
     print(f"  Reasons: {', '.join(result2['adjustment_reasons'])}")
 

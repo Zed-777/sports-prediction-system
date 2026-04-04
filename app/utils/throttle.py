@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import threading
 import time
-from typing import Dict
 from urllib.parse import urlparse
+
 from app.utils import state_sync
 
 
@@ -16,13 +16,13 @@ class ThrottleManager:
     """
 
     def __init__(self) -> None:
-        self._last_call: Dict[str, float] = {}
-        self._locks: Dict[str, threading.Lock] = {}
-        self._buckets: Dict[str, "TokenBucket"] = {}
+        self._last_call: dict[str, float] = {}
+        self._locks: dict[str, threading.Lock] = {}
+        self._buckets: dict[str, TokenBucket] = {}
         # Endpoint specific mappings: host -> {path_prefix: min_interval}
-        self._endpoint_min_intervals: Dict[str, Dict[str, float]] = {}
+        self._endpoint_min_intervals: dict[str, dict[str, float]] = {}
         # Endpoint specific token buckets: host -> {path_prefix: TokenBucket}
-        self._endpoint_buckets: Dict[str, Dict[str, "TokenBucket"]] = {}
+        self._endpoint_buckets: dict[str, dict[str, TokenBucket]] = {}
 
     def _get_host(self, url: str) -> str:
         parsed = urlparse(url)
@@ -43,11 +43,11 @@ class ThrottleManager:
                 time.sleep(sleep_for)
             self._last_call[host] = time.time()
 
-    def set_bucket(self, host: str, bucket: "TokenBucket") -> None:
+    def set_bucket(self, host: str, bucket: TokenBucket) -> None:
         self._buckets[host] = bucket
 
     def set_endpoint_bucket(
-        self, host: str, path_prefix: str, bucket: "TokenBucket"
+        self, host: str, path_prefix: str, bucket: TokenBucket,
     ) -> None:
         m = self._endpoint_buckets.get(host)
         if m is None:
@@ -56,7 +56,7 @@ class ThrottleManager:
         m[path_prefix] = bucket
 
     def set_endpoint_min_interval(
-        self, host: str, path_prefix: str, min_interval: float
+        self, host: str, path_prefix: str, min_interval: float,
     ) -> None:
         m = self._endpoint_min_intervals.get(host)
         if m is None:
@@ -64,7 +64,7 @@ class ThrottleManager:
             self._endpoint_min_intervals[host] = m
         m[path_prefix] = float(min_interval)
 
-    def get_bucket(self, url: str) -> "TokenBucket | None":
+    def get_bucket(self, url: str) -> TokenBucket | None:
         host = self._get_host(url)
         # Prefer endpoint-specific bucket matching the longest path prefix
         path = urlparse(url).path

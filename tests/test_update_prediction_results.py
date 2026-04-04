@@ -1,11 +1,7 @@
+"""Tests for scripts/update_prediction_results.py (PredictionTracker result-fetch loop)
 """
-Tests for scripts/update_prediction_results.py (PredictionTracker result-fetch loop)
-"""
-import json
-import os
 from datetime import datetime, timedelta
 from pathlib import Path
-import pytest
 
 
 def test_run_dry_run_no_api_key(tmp_path, monkeypatch):
@@ -31,7 +27,7 @@ def test_run_updates_when_result_available(tmp_path, monkeypatch):
     if _root not in sys.path:
         sys.path.insert(0, _root)
 
-    from app.models.prediction_tracker import PredictionTracker, PredictionRecord
+    from app.models.prediction_tracker import PredictionRecord, PredictionTracker
 
     db_path = str(tmp_path / "test_predictions.db")
     tracker = PredictionTracker(db_path=db_path)

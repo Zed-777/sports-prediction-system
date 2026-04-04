@@ -4,8 +4,8 @@ Usage: python scripts/setup_test_env.py --yes
 This will create a .env file with safe dummy values for optional providers used in tests.
 """
 
-from pathlib import Path
 import argparse
+from pathlib import Path
 
 ENV_CONTENT = """
 # Local test environment (safe dummy values)

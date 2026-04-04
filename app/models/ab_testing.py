@@ -1,5 +1,4 @@
-"""
-A/B Testing Infrastructure (VB-002)
+"""A/B Testing Infrastructure (VB-002)
 ====================================
 
 Infrastructure for comparing model versions and running experiments.
@@ -12,15 +11,16 @@ Key Features:
 - Experiment tracking and logging
 """
 
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any, Tuple, Callable
-from datetime import datetime
-import json
-import os
-import logging
 import hashlib
-from enum import Enum
+import json
+import logging
 import math
+import os
+from collections.abc import Callable
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -41,10 +41,10 @@ class ModelVariant:
 
     name: str
     description: str
-    config: Dict[str, Any]
+    config: dict[str, Any]
     is_control: bool = False
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "description": self.description,
@@ -64,12 +64,12 @@ class PredictionResult:
     predicted_away_prob: float
     predicted_outcome: str  # '1', 'X', '2'
     confidence: float
-    actual_outcome: Optional[str] = None
-    is_correct: Optional[bool] = None
-    brier_score: Optional[float] = None
+    actual_outcome: str | None = None
+    is_correct: bool | None = None
+    brier_score: float | None = None
     timestamp: datetime = field(default_factory=datetime.now)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "match_id": self.match_id,
             "variant_name": self.variant_name,
@@ -98,7 +98,7 @@ class VariantMetrics:
     high_confidence_accuracy: float = 0.0  # Accuracy on >65% confidence predictions
     calibration_error: float = 0.0  # Difference between confidence and accuracy
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "variant_name": self.variant_name,
             "predictions_count": self.predictions_count,
@@ -119,14 +119,14 @@ class ExperimentResult:
     status: ExperimentStatus
     control_metrics: VariantMetrics
     treatment_metrics: VariantMetrics
-    winner: Optional[str] = None  # 'control', 'treatment', None
+    winner: str | None = None  # 'control', 'treatment', None
     improvement_pct: float = 0.0
     statistical_significance: float = 0.0
     sample_size: int = 0
     min_sample_size: int = 30
     conclusion: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "experiment_id": self.experiment_id,
             "status": self.status.value,
@@ -152,14 +152,14 @@ class Experiment:
     treatment: ModelVariant
     status: ExperimentStatus = ExperimentStatus.PENDING
     created_at: datetime = field(default_factory=datetime.now)
-    started_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
     min_sample_size: int = 30
     max_sample_size: int = 500
     significance_threshold: float = 0.95
-    predictions: List[PredictionResult] = field(default_factory=list)
+    predictions: list[PredictionResult] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
             "name": self.name,
@@ -180,8 +180,7 @@ class Experiment:
 
 
 class ABTestingFramework:
-    """
-    A/B testing infrastructure for model comparison.
+    """A/B testing infrastructure for model comparison.
 
     VB-002: A/B Testing Infrastructure
     - Run parallel predictions with different configurations
@@ -193,7 +192,7 @@ class ABTestingFramework:
     def __init__(self, storage_dir: str = "data/experiments"):
         self.storage_dir = storage_dir
         os.makedirs(storage_dir, exist_ok=True)
-        self.experiments: Dict[str, Experiment] = {}
+        self.experiments: dict[str, Experiment] = {}
         self._load_experiments()
 
     def _load_experiments(self):
@@ -201,7 +200,7 @@ class ABTestingFramework:
         try:
             experiments_file = os.path.join(self.storage_dir, "experiments.json")
             if os.path.exists(experiments_file):
-                with open(experiments_file, "r") as f:
+                with open(experiments_file) as f:
                     data = json.load(f)
                 for exp_id, exp_data in data.items():
                     self.experiments[exp_id] = self._experiment_from_dict(exp_data)
@@ -218,7 +217,7 @@ class ABTestingFramework:
         except Exception as e:
             logger.debug(f"Failed to save experiments: {e}")
 
-    def _experiment_from_dict(self, data: Dict) -> Experiment:
+    def _experiment_from_dict(self, data: dict) -> Experiment:
         """Reconstruct experiment from dict."""
         return Experiment(
             id=data["id"],
@@ -262,15 +261,14 @@ class ABTestingFramework:
         self,
         name: str,
         description: str,
-        control_config: Dict[str, Any],
-        treatment_config: Dict[str, Any],
+        control_config: dict[str, Any],
+        treatment_config: dict[str, Any],
         control_name: str = "control",
         treatment_name: str = "treatment",
         min_sample_size: int = 30,
         max_sample_size: int = 500,
     ) -> Experiment:
-        """
-        Create a new A/B experiment.
+        """Create a new A/B experiment.
 
         Args:
             name: Experiment name
@@ -284,6 +282,7 @@ class ABTestingFramework:
 
         Returns:
             Created Experiment object
+
         """
         exp_id = self._generate_experiment_id(name)
 
@@ -335,8 +334,7 @@ class ABTestingFramework:
         away_prob: float,
         confidence: float,
     ) -> PredictionResult:
-        """
-        Record a prediction for an experiment variant.
+        """Record a prediction for an experiment variant.
 
         Args:
             experiment_id: Experiment to record for
@@ -349,6 +347,7 @@ class ABTestingFramework:
 
         Returns:
             Created PredictionResult
+
         """
         if experiment_id not in self.experiments:
             raise ValueError(f"Experiment {experiment_id} not found")
@@ -384,8 +383,7 @@ class ABTestingFramework:
         home_goals: int = 0,
         away_goals: int = 0,
     ):
-        """
-        Record actual match result and update predictions.
+        """Record actual match result and update predictions.
 
         Args:
             experiment_id: Experiment to update
@@ -393,6 +391,7 @@ class ABTestingFramework:
             actual_outcome: '1' for home, 'X' for draw, '2' for away
             home_goals: Home team goals (for Brier score)
             away_goals: Away team goals (for Brier score)
+
         """
         if experiment_id not in self.experiments:
             return
@@ -420,7 +419,7 @@ class ABTestingFramework:
         self._check_experiment_completion(experiment_id)
 
     def _calculate_variant_metrics(
-        self, predictions: List[PredictionResult], variant_name: str
+        self, predictions: list[PredictionResult], variant_name: str,
     ) -> VariantMetrics:
         """Calculate metrics for a variant."""
         variant_preds = [
@@ -474,11 +473,11 @@ class ABTestingFramework:
         treatment_correct: int,
         treatment_total: int,
     ) -> float:
-        """
-        Calculate statistical significance using two-proportion z-test.
+        """Calculate statistical significance using two-proportion z-test.
 
         Returns:
             Confidence level (0-1) that treatment is different from control
+
         """
         if control_total == 0 or treatment_total == 0:
             return 0.0
@@ -496,7 +495,7 @@ class ABTestingFramework:
 
         # Standard error
         se = math.sqrt(
-            p_pool * (1 - p_pool) * (1 / control_total + 1 / treatment_total)
+            p_pool * (1 - p_pool) * (1 / control_total + 1 / treatment_total),
         )
 
         if se == 0:
@@ -509,14 +508,13 @@ class ABTestingFramework:
         # Using standard normal approximation
         if z > 2.576:
             return 0.99
-        elif z > 1.96:
+        if z > 1.96:
             return 0.95
-        elif z > 1.645:
+        if z > 1.645:
             return 0.90
-        elif z > 1.28:
+        if z > 1.28:
             return 0.80
-        else:
-            return 0.5 + (z / 5)  # Rough approximation
+        return 0.5 + (z / 5)  # Rough approximation
 
     def _check_experiment_completion(self, experiment_id: str):
         """Check if experiment should be completed and evaluate."""
@@ -551,14 +549,14 @@ class ABTestingFramework:
                 self._save_experiments()
 
     def evaluate_experiment(self, experiment_id: str) -> ExperimentResult:
-        """
-        Evaluate current experiment results.
+        """Evaluate current experiment results.
 
         Args:
             experiment_id: Experiment to evaluate
 
         Returns:
             ExperimentResult with metrics and conclusion
+
         """
         if experiment_id not in self.experiments:
             raise ValueError(f"Experiment {experiment_id} not found")
@@ -567,14 +565,14 @@ class ABTestingFramework:
 
         # Calculate metrics for each variant
         control_metrics = self._calculate_variant_metrics(
-            exp.predictions, exp.control.name
+            exp.predictions, exp.control.name,
         )
         treatment_metrics = self._calculate_variant_metrics(
-            exp.predictions, exp.treatment.name
+            exp.predictions, exp.treatment.name,
         )
 
         sample_size = min(
-            control_metrics.predictions_count, treatment_metrics.predictions_count
+            control_metrics.predictions_count, treatment_metrics.predictions_count,
         )
 
         # Calculate significance
@@ -625,13 +623,13 @@ class ABTestingFramework:
             conclusion=conclusion,
         )
 
-    def get_experiment(self, experiment_id: str) -> Optional[Experiment]:
+    def get_experiment(self, experiment_id: str) -> Experiment | None:
         """Get experiment by ID."""
         return self.experiments.get(experiment_id)
 
     def list_experiments(
-        self, status: Optional[ExperimentStatus] = None
-    ) -> List[Experiment]:
+        self, status: ExperimentStatus | None = None,
+    ) -> list[Experiment]:
         """List all experiments, optionally filtered by status."""
         if status:
             return [e for e in self.experiments.values() if e.status == status]
@@ -662,10 +660,9 @@ class ExperimentRunner:
         match_id: str,
         control_predictor: Callable,
         treatment_predictor: Callable,
-        match_data: Dict[str, Any],
-    ) -> Tuple[PredictionResult, PredictionResult]:
-        """
-        Run prediction through both control and treatment models.
+        match_data: dict[str, Any],
+    ) -> tuple[PredictionResult, PredictionResult]:
+        """Run prediction through both control and treatment models.
 
         Args:
             experiment_id: Active experiment ID
@@ -676,6 +673,7 @@ class ExperimentRunner:
 
         Returns:
             Tuple of (control_result, treatment_result)
+
         """
         exp = self.framework.get_experiment(experiment_id)
         if not exp:
@@ -725,7 +723,7 @@ if __name__ == "__main__":
 
     # Start experiment
     framework.start_experiment(exp.id)
-    print(f"Started experiment")
+    print("Started experiment")
 
     # Simulate some predictions
     import random
@@ -742,7 +740,7 @@ if __name__ == "__main__":
         c_conf = random.uniform(0.55, 0.70)
 
         framework.record_prediction(
-            exp.id, "control", match_id, c_home, c_draw, c_away, c_conf
+            exp.id, "control", match_id, c_home, c_draw, c_away, c_conf,
         )
 
         # Treatment predictions (slightly better)
@@ -752,7 +750,7 @@ if __name__ == "__main__":
         t_conf = c_conf + random.uniform(0, 0.05)
 
         framework.record_prediction(
-            exp.id, "treatment", match_id, t_home, t_draw, t_away, t_conf
+            exp.id, "treatment", match_id, t_home, t_draw, t_away, t_conf,
         )
 
         # Simulate actual results
@@ -764,7 +762,7 @@ if __name__ == "__main__":
     # Evaluate
     result = framework.evaluate_experiment(exp.id)
 
-    print(f"\n=== Experiment Results ===")
+    print("\n=== Experiment Results ===")
     print(f"Sample Size: {result.sample_size}")
     print(f"Control Accuracy: {result.control_metrics.accuracy:.1%}")
     print(f"Treatment Accuracy: {result.treatment_metrics.accuracy:.1%}")

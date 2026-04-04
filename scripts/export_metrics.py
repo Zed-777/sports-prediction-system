@@ -5,10 +5,9 @@ from __future__ import annotations
 import csv
 import json
 import os
-from datetime import datetime
 import subprocess
 import uuid
-import os
+from datetime import datetime
 
 from app.utils.metrics import get_metrics
 
@@ -18,7 +17,7 @@ def export_metrics_to_json(out_dir: str) -> str:
     metrics = get_metrics()
     metadata = collect_run_metadata()
     filename = os.path.join(
-        out_dir, f"metrics_{datetime.utcnow().strftime('%Y%m%dT%H%M%S%fZ')}.json"
+        out_dir, f"metrics_{datetime.utcnow().strftime('%Y%m%dT%H%M%S%fZ')}.json",
     )
     with open(filename, "w", encoding="utf-8") as f:
         json.dump({"metadata": metadata, "metrics": metrics}, f, indent=2)
@@ -29,7 +28,7 @@ def export_metrics_to_csv(out_dir: str) -> str:
     os.makedirs(out_dir, exist_ok=True)
     metrics = get_metrics()
     filename = os.path.join(
-        out_dir, f"metrics_{datetime.utcnow().strftime('%Y%m%dT%H%M%S%fZ')}.csv"
+        out_dir, f"metrics_{datetime.utcnow().strftime('%Y%m%dT%H%M%S%fZ')}.csv",
     )
     # Flatten metrics for CSV
     rows = []
@@ -79,7 +78,7 @@ def collect_run_metadata() -> dict:
     try:
         meta["commit_sha"] = (
             subprocess.check_output(
-                ["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL
+                ["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL,
             )
             .decode()
             .strip()
@@ -89,7 +88,7 @@ def collect_run_metadata() -> dict:
     try:
         meta["git_branch"] = (
             subprocess.check_output(
-                ["git", "rev-parse", "--abbrev-ref", "HEAD"], stderr=subprocess.DEVNULL
+                ["git", "rev-parse", "--abbrev-ref", "HEAD"], stderr=subprocess.DEVNULL,
             )
             .decode()
             .strip()

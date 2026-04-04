@@ -1,5 +1,4 @@
-"""
-Unit tests for configuration management
+"""Unit tests for configuration management
 """
 
 import tempfile
@@ -89,7 +88,7 @@ class TestSubstituteEnvVars:
         }
 
         with patch.dict(
-            "os.environ", {"DB_URL": "postgres://...", "API_KEY": "key123"}
+            "os.environ", {"DB_URL": "postgres://...", "API_KEY": "key123"},
         ):
             result = _substitute_env_vars(data)
             assert result["database"]["url"] == "postgres://..."
@@ -129,7 +128,7 @@ class TestValidateConfig:
         }
 
         with pytest.raises(
-            ValueError, match="Football data source configuration is required"
+            ValueError, match="Football data source configuration is required",
         ):
             validate_config(config)
 

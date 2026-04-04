@@ -1,5 +1,4 @@
-"""
-Phase 4: Real-Time Performance Monitoring & Drift Detection
+"""Phase 4: Real-Time Performance Monitoring & Drift Detection
 
 Tracks live prediction performance, detects statistical drift, and maintains
 per-league and per-model performance baselines for continuous system optimization.
@@ -7,14 +6,12 @@ per-league and per-model performance baselines for continuous system optimizatio
 
 import json
 import os
-from typing import Dict, List, Tuple, Optional
-from datetime import datetime
 from collections import deque
+from datetime import datetime
 
 
 class PerformanceMonitor:
-    """
-    Real-time performance tracking with drift detection and performance alerting.
+    """Real-time performance tracking with drift detection and performance alerting.
 
     Monitors:
     - Per-league accuracy and calibration
@@ -24,12 +21,12 @@ class PerformanceMonitor:
     """
 
     def __init__(self, cache_dir: str = "data/cache", window_size: int = 50):
-        """
-        Initialize performance monitor.
+        """Initialize performance monitor.
 
         Args:
             cache_dir: Directory for persistence
             window_size: Number of recent matches to track (for drift detection)
+
         """
         self.cache_dir = cache_dir
         self.window_size = window_size
@@ -75,10 +72,9 @@ class PerformanceMonitor:
         model: str,
         confidence: float,
         outcome: float,
-        timestamp: Optional[datetime] = None,
+        timestamp: datetime | None = None,
     ) -> None:
-        """
-        Record a single prediction outcome for monitoring.
+        """Record a single prediction outcome for monitoring.
 
         Args:
             league: League identifier (e.g., 'la-liga')
@@ -86,6 +82,7 @@ class PerformanceMonitor:
             confidence: Predicted confidence (0.0-1.0)
             outcome: Actual outcome (0.0 = loss, 0.5 = draw, 1.0 = win)
             timestamp: Optional timestamp (defaults to now)
+
         """
         timestamp = timestamp or datetime.now()
 
@@ -144,7 +141,7 @@ class PerformanceMonitor:
         self._detect_drift()
 
     def _update_system_metrics(
-        self, confidence: float, is_correct: float, calibration_error: float
+        self, confidence: float, is_correct: float, calibration_error: float,
     ) -> None:
         """Update overall system performance metrics."""
         n = self.system_metrics["total_predictions"]
@@ -186,33 +183,33 @@ class PerformanceMonitor:
         self.system_metrics["drift_severity"] = min(1.0, drift_score / 2.0)
         self.system_metrics["drift_detected"] = drift_score > 0.5
 
-    def get_league_performance(self, league: str) -> Dict:
+    def get_league_performance(self, league: str) -> dict:
         """Get performance metrics for a specific league."""
         return self.league_performance.get(
-            league, {"accuracy": 0.0, "calibration_error": 0.0, "samples": 0}
+            league, {"accuracy": 0.0, "calibration_error": 0.0, "samples": 0},
         )
 
-    def get_model_performance(self, model: str) -> Dict:
+    def get_model_performance(self, model: str) -> dict:
         """Get performance metrics for a specific model."""
         return self.model_performance.get(model, {"accuracy": 0.0, "samples": 0})
 
-    def get_system_metrics(self) -> Dict:
+    def get_system_metrics(self) -> dict:
         """Get overall system performance metrics."""
         return self.system_metrics.copy()
 
-    def get_drift_status(self) -> Tuple[bool, float]:
-        """
-        Get current drift detection status.
+    def get_drift_status(self) -> tuple[bool, float]:
+        """Get current drift detection status.
 
         Returns:
             (is_drifting, severity_0_to_1)
+
         """
         return (
             self.system_metrics["drift_detected"],
             self.system_metrics["drift_severity"],
         )
 
-    def get_recommendations(self) -> List[str]:
+    def get_recommendations(self) -> list[str]:
         """Generate performance optimization recommendations based on current metrics."""
         recommendations = []
 
@@ -222,7 +219,7 @@ class PerformanceMonitor:
         )
         if accuracy_drop > 0.03:
             recommendations.append(
-                f"⚠️ Accuracy dropped {accuracy_drop * 100:.1f}% below baseline - recalibrate models"
+                f"⚠️ Accuracy dropped {accuracy_drop * 100:.1f}% below baseline - recalibrate models",
             )
 
         # Check for calibration drift
@@ -232,21 +229,21 @@ class PerformanceMonitor:
         )
         if calibration_increase > 0.02:
             recommendations.append(
-                f"⚠️ Calibration error increased {calibration_increase * 100:.1f}% - rerun isotonic regression"
+                f"⚠️ Calibration error increased {calibration_increase * 100:.1f}% - rerun isotonic regression",
             )
 
         # Check per-league performance
         for league, stats in self.league_performance.items():
             if stats["samples"] >= 5 and stats["accuracy"] < 0.55:
                 recommendations.append(
-                    f"⚠️ {league}: Low accuracy ({stats['accuracy'] * 100:.1f}%) - review league tuning"
+                    f"⚠️ {league}: Low accuracy ({stats['accuracy'] * 100:.1f}%) - review league tuning",
                 )
 
         # Check per-model performance
         for model, stats in self.model_performance.items():
             if stats["samples"] >= 5 and stats["accuracy"] < 0.50:
                 recommendations.append(
-                    f"⚠️ {model}: Poor performance ({stats['accuracy'] * 100:.1f}%) - consider model retraining"
+                    f"⚠️ {model}: Poor performance ({stats['accuracy'] * 100:.1f}%) - consider model retraining",
                 )
 
         if not recommendations:
@@ -255,13 +252,13 @@ class PerformanceMonitor:
         return recommendations
 
     def get_recent_window(
-        self, league: str, window_size: Optional[int] = None
-    ) -> List[Tuple[float, float]]:
-        """
-        Get recent predictions for drift analysis.
+        self, league: str, window_size: int | None = None,
+    ) -> list[tuple[float, float]]:
+        """Get recent predictions for drift analysis.
 
         Returns:
             List of (confidence, outcome) tuples
+
         """
         if league not in self.league_windows:
             return []
@@ -293,12 +290,12 @@ class PerformanceMonitor:
         filepath = os.path.join(self.cache_dir, "phase4_monitor_state.json")
         if os.path.exists(filepath):
             try:
-                with open(filepath, "r") as f:
+                with open(filepath) as f:
                     state = json.load(f)
                     self.league_performance = state.get("league_performance", {})
                     self.model_performance = state.get("model_performance", {})
                     self.system_metrics = state.get(
-                        "system_metrics", self.system_metrics
+                        "system_metrics", self.system_metrics,
                     )
                     self.baselines = state.get("baselines", self.baselines)
             except Exception:
@@ -306,31 +303,30 @@ class PerformanceMonitor:
 
 
 class DriftAnalyzer:
-    """
-    Advanced drift analysis using statistical tests.
+    """Advanced drift analysis using statistical tests.
     Detects concept drift, performance degradation, and data distribution changes.
     """
 
     def __init__(self, reference_window_size: int = 30, test_window_size: int = 10):
-        """
-        Initialize drift analyzer.
+        """Initialize drift analyzer.
 
         Args:
             reference_window_size: Size of reference window for comparison
             test_window_size: Size of test window for current performance
+
         """
         self.reference_window_size = reference_window_size
         self.test_window_size = test_window_size
 
-    def analyze_drift(self, predictions: List[Tuple[float, float]]) -> Dict:
-        """
-        Analyze predictions for drift using statistical methods.
+    def analyze_drift(self, predictions: list[tuple[float, float]]) -> dict:
+        """Analyze predictions for drift using statistical methods.
 
         Args:
             predictions: List of (confidence, outcome) tuples
 
         Returns:
             Drift analysis results
+
         """
         if len(predictions) < self.reference_window_size + self.test_window_size:
             return {"drift_detected": False, "test_statistic": 0.0}

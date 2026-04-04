@@ -1,12 +1,12 @@
 import json
-from pathlib import Path
 import re
+from pathlib import Path
 
 
 def extract_confidence_from_summary(md_text: str):
     # Match the line like: - **Prediction Confidence:** **70.3%**
     m = re.search(
-        r"\*\*Prediction Confidence:\*\* \*\*(?P<p>[0-9]+\.?[0-9]*)%\*\*", md_text
+        r"\*\*Prediction Confidence:\*\* \*\*(?P<p>[0-9]+\.?[0-9]*)%\*\*", md_text,
     )
     if not m:
         return None

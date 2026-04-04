@@ -1,5 +1,4 @@
-"""
-Update Prediction Results (CC-002 / TODO #48)
+"""Update Prediction Results (CC-002 / TODO #48)
 ============================================
 Fetches actual match results for pending predictions tracked in the
 PredictionTracker SQLite database and updates accuracy metrics.
@@ -21,13 +20,25 @@ import argparse
 import logging
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
+HTTP_OK = 200
+
+try:
+    import requests
+except ImportError:
+    requests = None
 
 # Ensure repo root is on the path
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
+
+try:
+    from app.models.prediction_tracker import PredictionTracker
+except ImportError:
+    PredictionTracker = None
 
 
 def _setup_logging(verbose: bool) -> logging.Logger:
@@ -44,73 +55,82 @@ def _fetch_result_from_api(
     match_id: int,
     home_team: str,
     away_team: str,
-    league: str,
-    match_date: str,
+    _league: str,
+    _match_date: str,
     api_key: str,
     logger: logging.Logger,
 ) -> tuple[int, int] | None:
-    """
-    Try to fetch the actual final score from Football-Data.org for a given match.
+    """Try to fetch the actual final score from Football-Data.org for a given match.
 
     Returns (home_goals, away_goals) tuple or None if result not found.
     """
+    if requests is None:
+        logger.warning("requests package not installed; skipping API fetch")
+        return None
+
+    headers = {"X-Auth-Token": api_key}
+    url = f"https://api.football-data.org/v4/matches/{match_id}"
+
     try:
-        import requests  # type: ignore
-
-        headers = {"X-Auth-Token": api_key}
-
-        # Attempt to retrieve the specific match by its Football-Data match ID
-        url = f"https://api.football-data.org/v4/matches/{match_id}"
         resp = requests.get(url, headers=headers, timeout=15)
 
-        if resp.status_code == 200:
+        if resp.status_code == HTTP_OK:
             data = resp.json()
             score = data.get("score", {}).get("fullTime", {})
-            home = score.get("home") if score.get("home") is not None else score.get("homeTeam")
-            away = score.get("away") if score.get("away") is not None else score.get("awayTeam")
+            home = score.get("home")
+            if home is None:
+                home = score.get("homeTeam")
+            away = score.get("away")
+            if away is None:
+                away = score.get("awayTeam")
             if home is not None and away is not None:
                 logger.debug(
-                    f"  [API] {home_team} {home}-{away} {away_team} (match_id={match_id})"
+                    "  [API] %s %s-%s %s (match_id=%s)",
+                    home_team,
+                    home,
+                    away,
+                    away_team,
+                    match_id,
                 )
                 return int(home), int(away)
         elif resp.status_code == 429:
             logger.warning("  [API] Rate-limited by Football-Data.org; backing off")
         else:
-            logger.debug(f"  [API] Match {match_id} not found (HTTP {resp.status_code})")
+            logger.debug("  [API] Match %s not found (HTTP %s)", match_id, resp.status_code)
+    except requests.RequestException as exc:
+        logger.debug("  [API] Error fetching match %s: %s", match_id, exc)
 
-    except Exception as exc:
-        logger.debug(f"  [API] Error fetching match {match_id}: {exc}")
+    return None
 
     return None
 
 
-def run(days_back: int = 7, dry_run: bool = False, verbose: bool = False) -> int:
+def run(days_back: int = 7, dry_run: bool = False, verbose: bool = False) -> int:  # noqa: C901,PLR0912,PLR0915,FBT001,FBT002
     """Main entry point. Returns count of results updated."""
     logger = _setup_logging(verbose)
 
-    try:
-        from app.models.prediction_tracker import PredictionTracker
-    except ImportError as exc:
-        logger.error(f"Cannot import PredictionTracker: {exc}")
+    if PredictionTracker is None:
+        logger.exception("Cannot import PredictionTracker")
         return 0
 
     api_key = os.getenv("FOOTBALL_DATA_API_KEY", "")
     if not api_key:
         logger.warning(
             "FOOTBALL_DATA_API_KEY not set — result fetching will be skipped; "
-            "only manual updates via record_result() will work."
+            "only manual updates via record_result() will work.",
         )
 
     tracker = PredictionTracker()  # default db path: data/predictions.db
     pending = tracker.get_pending_results(limit=100)
 
     # Filter to predictions for matches within days_back
-    cutoff = (datetime.now() - timedelta(days=days_back)).isoformat()
+    cutoff = (datetime.now(tz=timezone.utc) - timedelta(days=days_back)).isoformat()
     pending = [p for p in pending if p.get("match_date", "9999") >= cutoff]
 
     logger.info(
-        f"Found {len(pending)} predictions pending results "
-        f"(matches up to {days_back} days ago)"
+        "Found %d predictions pending results (matches up to %d days ago)",
+        len(pending),
+        days_back,
     )
 
     updated = 0
@@ -124,8 +144,13 @@ def run(days_back: int = 7, dry_run: bool = False, verbose: bool = False) -> int
         match_date = p["match_date"]
 
         logger.info(
-            f"  [{updated + failed + 1}/{len(pending)}] "
-            f"{home_team} vs {away_team} [{league}] on {match_date}"
+            "  [%d/%d] %s vs %s [%s] on %s",
+            updated + failed + 1,
+            len(pending),
+            home_team,
+            away_team,
+            league,
+            match_date,
         )
 
         if not api_key:
@@ -144,25 +169,28 @@ def run(days_back: int = 7, dry_run: bool = False, verbose: bool = False) -> int
         )
 
         if result is None:
-            logger.debug(f"    Result not available yet for match {match_id}")
+            logger.debug("    Result not available yet for match %s", match_id)
             failed += 1
             continue
 
         home_goals, away_goals = result
         outcome = "home" if home_goals > away_goals else ("away" if away_goals > home_goals else "draw")
-        logger.info(f"    Result: {home_goals}-{away_goals} ({outcome})")
+        logger.info("    Result: %s-%s (%s)", home_goals, away_goals, outcome)
 
         if not dry_run:
             updated_record = tracker.record_result(match_id, home_goals, away_goals)
             if updated_record:
                 correct = "✓" if updated_record.prediction_correct else "✗"
                 logger.info(
-                    f"    {correct} Prediction was '{updated_record.predicted_outcome}', "
-                    f"actual '{outcome}' | brier={updated_record.brier_score:.4f}"
+                    "    %s Prediction was '%s', actual '%s' | brier=%.4f",
+                    correct,
+                    updated_record.predicted_outcome,
+                    outcome,
+                    updated_record.brier_score,
                 )
                 updated += 1
             else:
-                logger.warning(f"    Could not update record for match {match_id}")
+                logger.warning("    Could not update record for match %s", match_id)
                 failed += 1
         else:
             logger.info("    [DRY RUN] Would update result")
@@ -175,27 +203,31 @@ def run(days_back: int = 7, dry_run: bool = False, verbose: bool = False) -> int
             total = stats.get("total_predictions", 0)
             if total > 0:
                 logger.info(
-                    f"\n📊 Accuracy summary (last 90 days): "
-                    f"{stats['accuracy_pct']} over {total} predictions "
-                    f"| Brier={stats.get('brier_score', 'N/A')}"
+                    "\n📊 Accuracy summary (last 90 days): %s over %s predictions | Brier=%s",
+                    stats['accuracy_pct'],
+                    total,
+                    stats.get('brier_score', 'N/A'),
                 )
                 league_comp = tracker.get_league_comparison()
                 for league, data in league_comp.items():
                     if data["total_predictions"] > 0:
                         acc = data["accuracy"] or 0
                         logger.info(
-                            f"  {league}: {acc:.1%} ({data['total_predictions']} predictions)"
+                            "  %s: %.1f%% (%s predictions)",
+                            league,
+                            acc * 100,
+                            data["total_predictions"],
                         )
-        except Exception as exc:
-            logger.debug(f"Could not generate summary: {exc}")
+        except (ValueError, KeyError, TypeError) as exc:
+            logger.debug("Could not generate summary: %s", exc)
 
-    logger.info(f"\nDone — {updated} updated, {failed} skipped/unavailable")
+    logger.info("\nDone — %s updated, %s skipped/unavailable", updated, failed)
     return updated
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Fetch and record actual match results for tracked predictions"
+        description="Fetch and record actual match results for tracked predictions",
     )
     parser.add_argument(
         "--days-back",
@@ -219,7 +251,7 @@ def main() -> None:
     try:
         run(days_back=args.days_back, dry_run=args.dry_run, verbose=args.verbose)
     except Exception as exc:
-        logging.getLogger("update_prediction_results").error(f"Fatal error: {exc}", exc_info=True)
+        logging.getLogger("update_prediction_results").exception("Fatal error: %s", exc)
         sys.exit(1)
 
 

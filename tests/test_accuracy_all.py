@@ -21,14 +21,14 @@ def test_accuracy_all_writes_summary(tmp_path):
                 "away_win_prob": 0.2,
             },
             "actual_result": {"home_score": 1, "away_score": 0, "outcome": "home_win"},
-        }
+        },
     ]
     test_file.write_text(json.dumps(entry), encoding="utf-8")
 
     try:
         # Run the script to generate accuracy summary
         subprocess.check_call(
-            ["python", "scripts/collect_historical_results.py", "--accuracy-all"]
+            ["python", "scripts/collect_historical_results.py", "--accuracy-all"],
         )
         # Find the most recent accuracy_summary_*.json in reports/historical
         files = sorted(

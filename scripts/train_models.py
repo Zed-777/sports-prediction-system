@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Train models using the ML enhancer from processed historical dataset
+"""Train models using the ML enhancer from processed historical dataset
 """
 
 import sys

@@ -8,8 +8,8 @@ Hosts file contains one host per line (e.g., www.flashscore.es)
 from __future__ import annotations
 
 import sys
+
 import requests
-from typing import Dict, List
 
 
 def fetch_robots_txt(host: str, timeout: int = 10) -> str | None:
@@ -23,9 +23,9 @@ def fetch_robots_txt(host: str, timeout: int = 10) -> str | None:
         return None
 
 
-def parse_disallows(robots_txt: str) -> List[str]:
+def parse_disallows(robots_txt: str) -> list[str]:
     lines = robots_txt.splitlines()
-    disallows: List[str] = []
+    disallows: list[str] = []
     user_agent_all = False
     for line in lines:
         line = line.strip()
@@ -41,8 +41,8 @@ def parse_disallows(robots_txt: str) -> List[str]:
     return disallows
 
 
-def check_hosts(hosts: List[str]) -> Dict[str, List[str]]:
-    report: Dict[str, List[str]] = {}
+def check_hosts(hosts: list[str]) -> dict[str, list[str]]:
+    report: dict[str, list[str]] = {}
     for h in hosts:
         txt = fetch_robots_txt(h)
         if not txt:

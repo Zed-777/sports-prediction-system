@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Confidence Optimization System v2.0
+"""Confidence Optimization System v2.0
 Advanced confidence calibration for 80%+ prediction accuracy
 """
 
@@ -30,8 +29,7 @@ class ConfidenceMetrics:
 
 
 class ConfidenceOptimizer:
-    """
-    Advanced confidence optimization system for achieving 80%+ accuracy
+    """Advanced confidence optimization system for achieving 80%+ accuracy
 
     Optimization Strategies:
     1. Bayesian Confidence Calibration - Probabilistic uncertainty quantification
@@ -72,8 +70,7 @@ class ConfidenceOptimizer:
         ensemble_predictions: dict[str, Any] | None = None,
         validation_result: Any | None = None,
     ) -> ConfidenceMetrics:
-        """
-        Optimize confidence score using multiple advanced techniques
+        """Optimize confidence score using multiple advanced techniques
 
         Args:
             base_confidence: Initial confidence from prediction model
@@ -83,36 +80,36 @@ class ConfidenceOptimizer:
 
         Returns:
             Optimized confidence metrics with uncertainty quantification
-        """
 
+        """
         # 1. Bayesian Confidence Calibration
         bayesian_confidence = self._bayesian_calibration(
-            base_confidence, prediction_data
+            base_confidence, prediction_data,
         )
 
         # 2. Ensemble Agreement Analysis
         ensemble_agreement, ensemble_confidence = self._analyze_ensemble_agreement(
-            ensemble_predictions, base_confidence
+            ensemble_predictions, base_confidence,
         )
 
         # 3. Data Sufficiency Assessment
         data_sufficiency = self._assess_data_sufficiency(
-            prediction_data, validation_result
+            prediction_data, validation_result,
         )
 
         # 4. Historical Performance Calibration
         calibrated_confidence = self._apply_historical_calibration(
-            bayesian_confidence, prediction_data
+            bayesian_confidence, prediction_data,
         )
 
         # 5. Uncertainty Bounds Calculation
         uncertainty_bounds = self._calculate_uncertainty_bounds(
-            calibrated_confidence, ensemble_agreement, data_sufficiency
+            calibrated_confidence, ensemble_agreement, data_sufficiency,
         )
 
         # 6. Prediction Stability Analysis
         stability_score = self._analyze_prediction_stability(
-            prediction_data, ensemble_predictions
+            prediction_data, ensemble_predictions,
         )
 
         # 7. Final Confidence Integration
@@ -134,14 +131,12 @@ class ConfidenceOptimizer:
         )
 
     def _bayesian_calibration(
-        self, base_confidence: float, prediction_data: dict[str, Any]
+        self, base_confidence: float, prediction_data: dict[str, Any],
     ) -> float:
-        """
-        Apply Bayesian calibration to adjust confidence based on evidence strength
+        """Apply Bayesian calibration to adjust confidence based on evidence strength
 
         Uses prior knowledge and data evidence to calibrate confidence
         """
-
         # Prior confidence (league-specific baseline)
         league = prediction_data.get("league", "").lower()
         prior_confidence = self._get_league_prior_confidence(league)
@@ -158,7 +153,7 @@ class ConfidenceOptimizer:
             / (
                 likelihood * prior_confidence
                 + (1 - likelihood) * (1 - prior_confidence)
-            )
+            ),
         )
 
         # Blend with base confidence (avoid over-adjustment)
@@ -167,14 +162,12 @@ class ConfidenceOptimizer:
         return min(bayesian_confidence, 0.95)
 
     def _analyze_ensemble_agreement(
-        self, ensemble_predictions: dict[str, Any] | None, base_confidence: float
+        self, ensemble_predictions: dict[str, Any] | None, base_confidence: float,
     ) -> tuple[float, float]:
-        """
-        Analyze agreement between ensemble models for confidence adjustment
+        """Analyze agreement between ensemble models for confidence adjustment
 
         High agreement = higher confidence, low agreement = lower confidence
         """
-
         if not ensemble_predictions or "model_predictions" not in ensemble_predictions:
             return 0.5, base_confidence  # Default values when no ensemble available
 
@@ -206,14 +199,12 @@ class ConfidenceOptimizer:
         return float(ensemble_agreement), float(ensemble_confidence)
 
     def _assess_data_sufficiency(
-        self, prediction_data: dict[str, Any], validation_result: Any | None
+        self, prediction_data: dict[str, Any], validation_result: Any | None,
     ) -> float:
-        """
-        Assess data sufficiency for confident predictions
+        """Assess data sufficiency for confident predictions
 
         More data = higher confidence potential
         """
-
         sufficiency_factors = []
 
         # Match history sufficiency
@@ -236,7 +227,7 @@ class ConfidenceOptimizer:
 
         # Head-to-head data sufficiency
         h2h_meetings = prediction_data.get("head_to_head_analysis", {}).get(
-            "total_meetings", 0
+            "total_meetings", 0,
         )
         h2h_sufficiency = min(h2h_meetings / 8.0, 1.0)  # 8+ meetings = full score
         sufficiency_factors.append(h2h_sufficiency)
@@ -249,21 +240,19 @@ class ConfidenceOptimizer:
         # Data source diversity
         data_sources_used = prediction_data.get("data_sources_used", 1)
         source_sufficiency = min(
-            data_sources_used / 3.0, 1.0
+            data_sources_used / 3.0, 1.0,
         )  # 3+ sources = full score
         sufficiency_factors.append(source_sufficiency)
 
         return float(np.mean(sufficiency_factors))
 
     def _apply_historical_calibration(
-        self, base_confidence: float, prediction_data: dict[str, Any]
+        self, base_confidence: float, prediction_data: dict[str, Any],
     ) -> float:
-        """
-        Apply calibration based on historical prediction performance
+        """Apply calibration based on historical prediction performance
 
         Learn from past prediction accuracy to adjust current confidence
         """
-
         # Load historical performance for this prediction type
         prediction_type = self._classify_prediction_type(prediction_data)
         historical_perf = self.historical_performance.get(prediction_type, {})
@@ -286,14 +275,12 @@ class ConfidenceOptimizer:
         return min(calibrated, 0.95)
 
     def _calculate_uncertainty_bounds(
-        self, confidence: float, ensemble_agreement: float, data_sufficiency: float
+        self, confidence: float, ensemble_agreement: float, data_sufficiency: float,
     ) -> tuple[float, float]:
-        """
-        Calculate uncertainty bounds around the confidence estimate
+        """Calculate uncertainty bounds around the confidence estimate
 
         Returns (lower_bound, upper_bound) for confidence interval
         """
-
         # Base uncertainty from confidence level (higher confidence = lower uncertainty)
         base_uncertainty = (1 - confidence) * 0.3
 
@@ -311,7 +298,7 @@ class ConfidenceOptimizer:
         # Calculate bounds
         lower_bound = max(0.3, confidence - total_uncertainty)
         upper_bound = min(
-            0.95, confidence + total_uncertainty * 0.5
+            0.95, confidence + total_uncertainty * 0.5,
         )  # Asymmetric bounds
 
         return (lower_bound, upper_bound)
@@ -321,12 +308,10 @@ class ConfidenceOptimizer:
         prediction_data: dict[str, Any],
         ensemble_predictions: dict[str, Any] | None,
     ) -> float:
-        """
-        Analyze prediction stability across different models and inputs
+        """Analyze prediction stability across different models and inputs
 
         Stable predictions = higher confidence
         """
-
         stability_factors = []
 
         # Check if win probabilities are reasonably separated
@@ -350,7 +335,7 @@ class ConfidenceOptimizer:
             model_count = len(ensemble_predictions["model_predictions"])
             if model_count >= 2:
                 ensemble_stability = min(
-                    model_count / 5.0, 1.0
+                    model_count / 5.0, 1.0,
                 )  # 5+ models = full stability
                 stability_factors.append(ensemble_stability)
 
@@ -376,10 +361,8 @@ class ConfidenceOptimizer:
         stability_score: float,
         validation_result: Any | None,
     ) -> float:
+        """Integrate all confidence factors into final optimized confidence
         """
-        Integrate all confidence factors into final optimized confidence
-        """
-
         # Weighted combination of different confidence estimates
         weights = {
             "calibrated": 0.4,  # Historical calibration
@@ -417,7 +400,7 @@ class ConfidenceOptimizer:
                 integrated,
                 self.confidence_thresholds["minimum_viable"],
                 self.confidence_thresholds["maximum_achievable"],
-            )
+            ),
         )
 
         return final_confidence
@@ -435,7 +418,6 @@ class ConfidenceOptimizer:
 
     def _classify_prediction_type(self, prediction_data: dict[str, Any]) -> str:
         """Classify prediction type for historical calibration"""
-
         home_prob = prediction_data.get("home_win_probability", 33)
         draw_prob = prediction_data.get("draw_probability", 33)
         away_prob = prediction_data.get("away_win_probability", 33)
@@ -444,19 +426,17 @@ class ConfidenceOptimizer:
 
         if max_prob > 60:
             return "strong_favorite"
-        elif max_prob > 45:
+        if max_prob > 45:
             return "moderate_favorite"
-        else:
-            return "balanced_match"
+        return "balanced_match"
 
     def _get_confidence_bucket(self, confidence: float) -> str:
         """Get confidence bucket for historical lookup"""
         if confidence >= 0.8:
             return "high_confidence"
-        elif confidence >= 0.6:
+        if confidence >= 0.6:
             return "medium_confidence"
-        else:
-            return "low_confidence"
+        return "low_confidence"
 
     def update_historical_performance(
         self,
@@ -464,12 +444,10 @@ class ConfidenceOptimizer:
         actual_outcome: str,
         predicted_confidence: float,
     ) -> None:
-        """
-        Update historical performance data with actual outcomes
+        """Update historical performance data with actual outcomes
 
         This enables continuous learning and calibration improvement
         """
-
         prediction_type = self._classify_prediction_type(prediction_data)
         confidence_bucket = self._get_confidence_bucket(predicted_confidence)
 
@@ -512,12 +490,10 @@ class ConfidenceOptimizer:
         self.save_calibration_models()
 
     def get_confidence_recommendation(
-        self, confidence_metrics: ConfidenceMetrics
+        self, confidence_metrics: ConfidenceMetrics,
     ) -> dict[str, Any]:
+        """Get actionable recommendations based on confidence analysis
         """
-        Get actionable recommendations based on confidence analysis
-        """
-
         final_confidence = confidence_metrics.final_confidence
         data_sufficiency = confidence_metrics.data_sufficiency
 
@@ -566,15 +542,15 @@ class ConfidenceOptimizer:
         # Improvement suggestions
         if data_sufficiency < 0.6:
             recommendations["improvement_suggestions"].append(
-                "Collect more historical match data"
+                "Collect more historical match data",
             )
         if confidence_metrics.ensemble_agreement < 0.6:
             recommendations["improvement_suggestions"].append(
-                "Add more prediction models for validation"
+                "Add more prediction models for validation",
             )
         if confidence_metrics.prediction_stability < 0.6:
             recommendations["improvement_suggestions"].append(
-                "Review input data for inconsistencies"
+                "Review input data for inconsistencies",
             )
 
         return recommendations
@@ -589,7 +565,7 @@ class ConfidenceOptimizer:
             }
 
             with open(
-                os.path.join(self.calibration_path, "calibration_data.pkl"), "wb"
+                os.path.join(self.calibration_path, "calibration_data.pkl"), "wb",
             ) as f:
                 pickle.dump(calibration_data, f)
 
@@ -602,7 +578,7 @@ class ConfidenceOptimizer:
         """Load existing calibration models and historical performance"""
         try:
             calibration_file = os.path.join(
-                self.calibration_path, "calibration_data.pkl"
+                self.calibration_path, "calibration_data.pkl",
             )
 
             if os.path.exists(calibration_file):
@@ -610,10 +586,10 @@ class ConfidenceOptimizer:
                     calibration_data = pickle.load(f)
 
                 self.historical_performance = calibration_data.get(
-                    "historical_performance", {}
+                    "historical_performance", {},
                 )
                 self.confidence_thresholds.update(
-                    calibration_data.get("confidence_thresholds", {})
+                    calibration_data.get("confidence_thresholds", {}),
                 )
 
                 self.logger.info("Calibration data loaded successfully")
@@ -648,7 +624,7 @@ if __name__ == "__main__":
     print("Original Confidence: 65.0%")
     print(f"Optimized Confidence: {confidence_metrics.final_confidence:.1%}")
     print(
-        f"Uncertainty Bounds: {confidence_metrics.uncertainty_bounds[0]:.1%} - {confidence_metrics.uncertainty_bounds[1]:.1%}"
+        f"Uncertainty Bounds: {confidence_metrics.uncertainty_bounds[0]:.1%} - {confidence_metrics.uncertainty_bounds[1]:.1%}",
     )
     print(f"Recommendation: {recommendations['recommendation']}")
     print(f"Reliability: {recommendations['reliability_assessment']}")

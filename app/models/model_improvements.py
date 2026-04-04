@@ -1,5 +1,4 @@
-"""
-Model Improvements - Phase 3
+"""Model Improvements - Phase 3
 ===========================
 
 Advanced model enhancements for improved prediction accuracy:
@@ -16,7 +15,6 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 
@@ -46,8 +44,7 @@ class ModelPrediction:
 
 
 class EnsembleDisagreementDetector:
-    """
-    Detects when ensemble models disagree significantly.
+    """Detects when ensemble models disagree significantly.
 
     When ELO, Poisson, and ML models predict different outcomes,
     confidence should drop dramatically - disagreement is a signal
@@ -74,14 +71,14 @@ class EnsembleDisagreementDetector:
         }
 
     def analyze_ensemble(self, predictions: list[ModelPrediction]) -> dict:
-        """
-        Analyze agreement/disagreement among model predictions.
+        """Analyze agreement/disagreement among model predictions.
 
         Args:
             predictions: List of predictions from different models
 
         Returns:
             Dictionary with agreement metrics and adjusted confidence
+
         """
         if len(predictions) < 2:
             return {
@@ -133,7 +130,7 @@ class EnsembleDisagreementDetector:
             agreement_level = "severe_disagreement"
             confidence_multiplier = 0.65
             warnings.append(
-                f"SEVERE model disagreement (std={max_std:.2f}) - high uncertainty"
+                f"SEVERE model disagreement (std={max_std:.2f}) - high uncertainty",
             )
 
         # Additional check: do models disagree on outcome?
@@ -165,10 +162,9 @@ class EnsembleDisagreementDetector:
         }
 
     def adjust_confidence(
-        self, base_confidence: float, predictions: list[ModelPrediction]
+        self, base_confidence: float, predictions: list[ModelPrediction],
     ) -> tuple[float, list[str]]:
-        """
-        Adjust confidence based on model agreement.
+        """Adjust confidence based on model agreement.
 
         Args:
             base_confidence: Original confidence score
@@ -176,6 +172,7 @@ class EnsembleDisagreementDetector:
 
         Returns:
             Tuple of (adjusted_confidence, warnings)
+
         """
         analysis = self.analyze_ensemble(predictions)
 
@@ -204,8 +201,7 @@ class MatchContext:
 
 
 class MatchContextClassifier:
-    """
-    Classifies match context to adjust predictions.
+    """Classifies match context to adjust predictions.
 
     A mid-table team playing for nothing vs a relegation 6-pointer
     are completely different matches. High-stakes matches are:
@@ -244,16 +240,15 @@ class MatchContextClassifier:
         self,
         home_team: str,
         away_team: str,
-        home_position: Optional[int] = None,
-        away_position: Optional[int] = None,
-        home_points: Optional[int] = None,
-        away_points: Optional[int] = None,
+        home_position: int | None = None,
+        away_position: int | None = None,
+        home_points: int | None = None,
+        away_points: int | None = None,
         total_teams: int = 20,
         matches_remaining: int = 10,
         is_cup: bool = False,
     ) -> MatchContext:
-        """
-        Classify the context of a match.
+        """Classify the context of a match.
 
         Args:
             home_team: Home team name
@@ -268,6 +263,7 @@ class MatchContextClassifier:
 
         Returns:
             MatchContext with classification
+
         """
         home_lower = home_team.lower()
         away_lower = away_team.lower()
@@ -277,10 +273,10 @@ class MatchContextClassifier:
 
         # Calculate stakes based on positions
         home_stakes = self._calculate_stakes(
-            home_position, home_points, total_teams, matches_remaining
+            home_position, home_points, total_teams, matches_remaining,
         )
         away_stakes = self._calculate_stakes(
-            away_position, away_points, total_teams, matches_remaining
+            away_position, away_points, total_teams, matches_remaining,
         )
 
         motivation_diff = home_stakes - away_stakes
@@ -291,7 +287,7 @@ class MatchContextClassifier:
             description = "Cup match - increased unpredictability"
         elif is_derby:
             context_type = "derby"
-            description = f"Local derby - form often irrelevant"
+            description = "Local derby - form often irrelevant"
         elif home_stakes > 0.7 and away_stakes > 0.7:
             context_type = "high_stakes"
             description = "High stakes for both teams"
@@ -331,13 +327,12 @@ class MatchContextClassifier:
 
     def _calculate_stakes(
         self,
-        position: Optional[int],
-        points: Optional[int],
+        position: int | None,
+        points: int | None,
         total_teams: int,
         matches_remaining: int,
     ) -> float:
-        """
-        Calculate how much is at stake for a team.
+        """Calculate how much is at stake for a team.
 
         Returns value 0-1 representing importance of match.
         """
@@ -349,7 +344,7 @@ class MatchContextClassifier:
             # Title race
             if matches_remaining <= 5:
                 return 0.95
-            elif matches_remaining <= 10:
+            if matches_remaining <= 10:
                 return 0.8
             return 0.6
 
@@ -382,8 +377,7 @@ class MatchContextClassifier:
         away_prob: float,
         confidence: float,
     ) -> dict:
-        """
-        Adjust predictions based on match context.
+        """Adjust predictions based on match context.
 
         Args:
             context: Classified match context
@@ -394,6 +388,7 @@ class MatchContextClassifier:
 
         Returns:
             Dictionary with adjusted values
+
         """
         adj_home = home_prob
         adj_draw = draw_prob
@@ -465,8 +460,7 @@ class MatchContextClassifier:
 
 
 class UpsetDetector:
-    """
-    Detects conditions that favor upsets.
+    """Detects conditions that favor upsets.
 
     Upsets (underdog wins) are where most predictions fail.
     This model identifies conditions that historically correlate
@@ -483,7 +477,6 @@ class UpsetDetector:
 
     def __init__(self):
         """Initialize upset detector."""
-        pass
 
     def calculate_upset_probability(
         self,
@@ -491,14 +484,13 @@ class UpsetDetector:
         underdog_prob: float,
         is_cup: bool = False,
         is_derby: bool = False,
-        favorite_form: Optional[str] = None,  # 'WWWWW', 'WWLLD', etc.
-        underdog_form: Optional[str] = None,
+        favorite_form: str | None = None,  # 'WWWWW', 'WWLLD', etc.
+        underdog_form: str | None = None,
         favorite_new_manager_days: int = 0,
         underdog_new_manager_days: int = 0,
         stakes_imbalance: float = 0,  # Positive = underdog has more at stake
     ) -> dict:
-        """
-        Calculate probability of upset occurring.
+        """Calculate probability of upset occurring.
 
         Args:
             favorite_prob: Predicted probability for favorite
@@ -513,6 +505,7 @@ class UpsetDetector:
 
         Returns:
             Dictionary with upset analysis
+
         """
         # Start with base upset probability
         upset_multiplier = 1.0
@@ -571,22 +564,21 @@ class UpsetDetector:
             "upset_factors": factors,
             "is_upset_alert": is_upset_alert,
             "recommendation": self._get_recommendation(
-                favorite_prob, adjusted_upset * 100, is_upset_alert
+                favorite_prob, adjusted_upset * 100, is_upset_alert,
             ),
         }
 
     def _get_recommendation(
-        self, favorite_prob: float, upset_prob: float, is_alert: bool
+        self, favorite_prob: float, upset_prob: float, is_alert: bool,
     ) -> str:
         """Generate recommendation based on upset analysis."""
         if is_alert and favorite_prob > 70:
             return f"CAUTION: High upset risk ({upset_prob:.0f}%) despite favorite's {favorite_prob:.0f}% probability"
-        elif is_alert:
-            return f"Elevated upset conditions - consider underdog"
-        elif upset_prob < 15:
+        if is_alert:
+            return "Elevated upset conditions - consider underdog"
+        if upset_prob < 15:
             return "Low upset risk - favorite should be reliable"
-        else:
-            return "Normal upset probability"
+        return "Normal upset probability"
 
 
 # ============================================================================
@@ -595,8 +587,7 @@ class UpsetDetector:
 
 
 class IsotonicCalibrator:
-    """
-    Isotonic regression calibration for probability estimates.
+    """Isotonic regression calibration for probability estimates.
 
     When we say 70% confident, we should be right 70% of the time.
     Isotonic regression is a non-parametric method that ensures
@@ -607,11 +598,11 @@ class IsotonicCalibrator:
     """
 
     def __init__(self, calibration_file: str = "data/cache/calibration_data.json"):
-        """
-        Initialize calibrator.
+        """Initialize calibrator.
 
         Args:
             calibration_file: File to store calibration data
+
         """
         self.calibration_file = Path(calibration_file)
         self.calibration_file.parent.mkdir(parents=True, exist_ok=True)
@@ -625,7 +616,7 @@ class IsotonicCalibrator:
         """Load historical calibration data."""
         if self.calibration_file.exists():
             try:
-                with open(self.calibration_file, "r") as f:
+                with open(self.calibration_file) as f:
                     data = json.load(f)
                 self._calibration_map = {
                     int(k): v for k, v in data.get("map", {}).items()
@@ -634,7 +625,7 @@ class IsotonicCalibrator:
                     int(k): v for k, v in data.get("counts", {}).items()
                 }
                 logger.info(
-                    f"Loaded calibration data with {len(self._calibration_map)} buckets"
+                    f"Loaded calibration data with {len(self._calibration_map)} buckets",
                 )
             except Exception as e:
                 logger.warning(f"Could not load calibration data: {e}")
@@ -650,12 +641,12 @@ class IsotonicCalibrator:
             json.dump(data, f, indent=2)
 
     def add_outcome(self, predicted_probability: float, was_correct: bool):
-        """
-        Add a prediction outcome for calibration learning.
+        """Add a prediction outcome for calibration learning.
 
         Args:
             predicted_probability: What we predicted (0-100)
             was_correct: Whether the prediction was correct
+
         """
         # Bucket into 5% intervals
         bucket = int(predicted_probability // 5) * 5
@@ -679,14 +670,14 @@ class IsotonicCalibrator:
             self._save_calibration_data()
 
     def calibrate(self, probability: float) -> float:
-        """
-        Calibrate a probability estimate using isotonic regression.
+        """Calibrate a probability estimate using isotonic regression.
 
         Args:
             probability: Raw predicted probability (0-100)
 
         Returns:
             Calibrated probability (0-100)
+
         """
         if not self._calibration_map:
             # No calibration data - use identity with slight regression
@@ -727,19 +718,19 @@ class IsotonicCalibrator:
             upper_val = self._calibration_map[upper_bucket] * 100
             ratio = (bucket - lower_bucket) / (upper_bucket - lower_bucket)
             return lower_val + ratio * (upper_val - lower_val)
-        elif lower_bucket is not None:
+        if lower_bucket is not None:
             return self._calibration_map[lower_bucket] * 100
-        elif upper_bucket is not None:
+        if upper_bucket is not None:
             return self._calibration_map[upper_bucket] * 100
 
         return probability
 
     def get_calibration_curve(self) -> dict:
-        """
-        Get the full calibration curve for visualization.
+        """Get the full calibration curve for visualization.
 
         Returns:
             Dictionary mapping predicted probability to actual accuracy
+
         """
         return {
             "curve": {
@@ -755,8 +746,7 @@ class IsotonicCalibrator:
         }
 
     def _calculate_reliability(self) -> float:
-        """
-        Calculate reliability score (how well calibrated we are).
+        """Calculate reliability score (how well calibrated we are).
 
         Returns value 0-1, where 1 is perfectly calibrated.
         """
@@ -790,8 +780,7 @@ class IsotonicCalibrator:
 
 
 class ModelEnhancementSuite:
-    """
-    Unified interface for all model enhancements.
+    """Unified interface for all model enhancements.
 
     Combines:
     - Ensemble disagreement detection
@@ -815,18 +804,18 @@ class ModelEnhancementSuite:
         draw_prob: float,
         away_prob: float,
         confidence: float,
-        model_predictions: Optional[list[ModelPrediction]] = None,
-        home_position: Optional[int] = None,
-        away_position: Optional[int] = None,
+        model_predictions: list[ModelPrediction] | None = None,
+        home_position: int | None = None,
+        away_position: int | None = None,
         is_cup: bool = False,
-        home_form: Optional[str] = None,
-        away_form: Optional[str] = None,
+        home_form: str | None = None,
+        away_form: str | None = None,
     ) -> dict:
-        """
-        Apply all model enhancements to a prediction.
+        """Apply all model enhancements to a prediction.
 
         Returns:
             Enhanced prediction with all adjustments applied
+
         """
         enhancements = []
 
@@ -901,7 +890,7 @@ class ModelEnhancementSuite:
             away_prob = away_prob / total * 100
 
             enhancements.append(
-                f"Calibration adjustment: {winner_prob:.0f}% -> {calibrated_prob:.0f}%"
+                f"Calibration adjustment: {winner_prob:.0f}% -> {calibrated_prob:.0f}%",
             )
 
         return {
@@ -948,6 +937,6 @@ if __name__ == "__main__":
     print(f"  Confidence: {result['confidence']}")
     print(f"  Context: {result['match_context']} - {result['context_description']}")
     print(
-        f"  Upset alert: {result['upset_alert']} ({result['upset_probability']:.1f}%)"
+        f"  Upset alert: {result['upset_alert']} ({result['upset_probability']:.1f}%)",
     )
     print(f"  Enhancements: {result['enhancements_applied']}")

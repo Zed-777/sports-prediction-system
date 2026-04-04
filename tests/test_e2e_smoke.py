@@ -1,5 +1,4 @@
-"""
-End-to-End Smoke Test — Full prediction pipeline integration (TODO #67)
+"""End-to-End Smoke Test — Full prediction pipeline integration (TODO #67)
 =======================================================================
 Validates that all modules introduced in the current sprint work together
 in a realistic pipeline without requiring any external API calls.
@@ -34,16 +33,15 @@ from app.models.calibration import (
 )
 from app.models.data_gap_handler import DataGapHandler, infer_available_fields
 from app.models.ensemble_disagreement import (
-    EnsembleDisagreementDetector,
     DisagreementLevel,
+    EnsembleDisagreementDetector,
 )
-from app.models.staleness import ModelStalenessDetector, Severity
-from app.monitoring.synthetic_rate_monitor import AlertLevel, SyntheticRateMonitor
 
 # Existing market infrastructure
 from app.models.market_simulator import SyntheticMatchGenerator
 from app.models.qualifying_gate import QualifyingGate, QualifyingParams
-
+from app.models.staleness import ModelStalenessDetector, Severity
+from app.monitoring.synthetic_rate_monitor import AlertLevel, SyntheticRateMonitor
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -207,7 +205,7 @@ class TestSyntheticRateSmoke:
 
     def test_high_synthetic_critical(self) -> None:
         mon = SyntheticRateMonitor(
-            warn_threshold=0.50, critical_threshold=0.80, min_real_for_live=5
+            warn_threshold=0.50, critical_threshold=0.80, min_real_for_live=5,
         )
         for _ in range(5):
             mon.record(is_synthetic=False)
@@ -233,15 +231,13 @@ class TestSyntheticRateSmoke:
 # ---------------------------------------------------------------------------
 
 class TestFullPipelineSmoke:
-    """
-    Simulates the full flow:
-      synthetic matches → calibration → gap handling → ensemble analysis
-      → qualifying gate → synthetic rate monitor
+    """Simulates the full flow:
+    synthetic matches → calibration → gap handling → ensemble analysis
+    → qualifying gate → synthetic rate monitor
     """
 
     def test_full_pipeline_no_errors(self, synthetic_matches, calibration_registry) -> None:
-        """
-        Run the entire new-module stack on 100 synthetic matches.
+        """Run the entire new-module stack on 100 synthetic matches.
         Asserts no exceptions and that the output is structurally valid.
         """
         gap_handler   = DataGapHandler()
@@ -263,7 +259,7 @@ class TestFullPipelineSmoke:
 
             # 2. Calibrate probabilities
             cal_pred = calibrate_prediction(
-                pred, calibration_registry, league="premier-league"
+                pred, calibration_registry, league="premier-league",
             )
 
             # 3. Apply data gap handling (simulate: lineup missing)
@@ -311,10 +307,10 @@ class TestFullPipelineSmoke:
 
     def test_new_modules_importable(self) -> None:
         """All new sprint modules must be importable without errors."""
-        import app.models.calibration               # noqa: F401
-        import app.models.data_gap_handler          # noqa: F401
-        import app.models.staleness                 # noqa: F401
-        import app.models.ensemble_disagreement     # noqa: F401
+        import app.models.calibration
+        import app.models.data_gap_handler
+        import app.models.ensemble_disagreement
+        import app.models.staleness
         import app.monitoring.synthetic_rate_monitor  # noqa: F401
 
     def test_brier_score_tracker_in_pipeline(self, synthetic_matches) -> None:

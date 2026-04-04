@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 
 PAT = re.compile(
-    r"ax\.text\s*\(\s*([-+]?[0-9]*\.?[0-9]+)\s*,\s*([-+]?[0-9]*\.?[0-9]+)\s*,"
+    r"ax\.text\s*\(\s*([-+]?[0-9]*\.?[0-9]+)\s*,\s*([-+]?[0-9]*\.?[0-9]+)\s*,",
 )
 
 root = Path(__file__).resolve().parents[1]

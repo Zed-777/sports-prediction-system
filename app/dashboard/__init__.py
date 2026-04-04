@@ -1,3 +1,2 @@
-"""
-Dashboard package for the Sports Prediction System
+"""Dashboard package for the Sports Prediction System
 """

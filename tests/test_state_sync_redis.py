@@ -1,5 +1,6 @@
 import json
 import time
+
 import pytest
 
 from app.utils import state_sync
@@ -20,7 +21,7 @@ def test_state_sync_redis_ops_with_fakeredis():
 
     disabled_until = time.time() + 3600
     state_sync.set_disabled_flag(
-        host, path, disabled_until, reason="429", set_by="test"
+        host, path, disabled_until, reason="429", set_by="test",
     )
 
     # Check Redis' storage and state_sync get method

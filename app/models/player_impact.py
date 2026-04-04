@@ -1,5 +1,4 @@
-"""
-Player Impact Scoring Module (DQ-002)
+"""Player Impact Scoring Module (DQ-002)
 ======================================
 
 Implements player-level impact scoring for improved prediction accuracy.
@@ -15,12 +14,12 @@ Key Features:
 - Injury/suspension tracking integration
 """
 
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any, Tuple
-from enum import Enum
 import json
-import os
 import logging
+import os
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -89,9 +88,9 @@ class PlayerStats:
 
     # Status
     status: PlayerStatus = PlayerStatus.UNKNOWN
-    injury_return_date: Optional[str] = None
+    injury_return_date: str | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "player_id": self.player_id,
             "player_name": self.player_name,
@@ -116,15 +115,15 @@ class TeamSquad:
 
     team_id: str
     team_name: str
-    players: Dict[str, PlayerStats] = field(default_factory=dict)
+    players: dict[str, PlayerStats] = field(default_factory=dict)
 
     # Calculated squad metrics
     total_squad_value: float = 0.0  # Sum of impact scores
-    key_players: List[str] = field(default_factory=list)  # Top 5 by impact
-    unavailable_players: List[str] = field(default_factory=list)
+    key_players: list[str] = field(default_factory=list)  # Top 5 by impact
+    unavailable_players: list[str] = field(default_factory=list)
     unavailable_impact: float = 0.0  # Sum of missing player impacts
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "team_id": self.team_id,
             "team_name": self.team_name,
@@ -137,8 +136,7 @@ class TeamSquad:
 
 
 class PlayerImpactCalculator:
-    """
-    Calculates player impact scores based on statistical contributions.
+    """Calculates player impact scores based on statistical contributions.
 
     Impact is weighted by position:
     - Forwards: Goals, xG, assists, xA heavily weighted
@@ -194,8 +192,7 @@ class PlayerImpactCalculator:
     }
 
     def calculate_impact(self, player: PlayerStats) -> float:
-        """
-        Calculate player impact score (0-100).
+        """Calculate player impact score (0-100).
 
         Higher scores = more impactful player = bigger loss when missing.
         """
@@ -216,7 +213,7 @@ class PlayerImpactCalculator:
         player.xg_contribution_per_90 = xg_per_90 + xa_per_90
 
         weights = self.POSITION_WEIGHTS.get(
-            player.position, self.POSITION_WEIGHTS[PlayerPosition.MIDFIELDER]
+            player.position, self.POSITION_WEIGHTS[PlayerPosition.MIDFIELDER],
         )
 
         score = 0.0
@@ -225,10 +222,10 @@ class PlayerImpactCalculator:
         if player.position == PlayerPosition.FORWARD:
             # Normalize against league averages
             goal_factor = min(
-                2.0, goals_per_90 / self.LEAGUE_BENCHMARKS["goals_per_90"]
+                2.0, goals_per_90 / self.LEAGUE_BENCHMARKS["goals_per_90"],
             )
             assist_factor = min(
-                2.0, assists_per_90 / self.LEAGUE_BENCHMARKS["assists_per_90"]
+                2.0, assists_per_90 / self.LEAGUE_BENCHMARKS["assists_per_90"],
             )
             xg_factor = min(2.0, xg_per_90 / self.LEAGUE_BENCHMARKS["xg_per_90"])
             xa_factor = min(2.0, xa_per_90 / self.LEAGUE_BENCHMARKS["xa_per_90"])
@@ -250,13 +247,13 @@ class PlayerImpactCalculator:
 
         elif player.position == PlayerPosition.MIDFIELDER:
             goal_factor = min(
-                2.0, goals_per_90 / (self.LEAGUE_BENCHMARKS["goals_per_90"] * 0.7)
+                2.0, goals_per_90 / (self.LEAGUE_BENCHMARKS["goals_per_90"] * 0.7),
             )
             assist_factor = min(
-                2.0, assists_per_90 / self.LEAGUE_BENCHMARKS["assists_per_90"]
+                2.0, assists_per_90 / self.LEAGUE_BENCHMARKS["assists_per_90"],
             )
             xg_factor = min(
-                2.0, xg_per_90 / (self.LEAGUE_BENCHMARKS["xg_per_90"] * 0.7)
+                2.0, xg_per_90 / (self.LEAGUE_BENCHMARKS["xg_per_90"] * 0.7),
             )
             xa_factor = min(2.0, xa_per_90 / self.LEAGUE_BENCHMARKS["xa_per_90"])
             bcc_factor = (
@@ -360,8 +357,7 @@ class PlayerImpactCalculator:
 
 
 class PlayerDatabase:
-    """
-    Database of player statistics and impact scores.
+    """Database of player statistics and impact scores.
 
     Stores player data with caching and provides lookup functionality.
     """
@@ -370,8 +366,8 @@ class PlayerDatabase:
         self.cache_dir = cache_dir
         os.makedirs(cache_dir, exist_ok=True)
         self.calculator = PlayerImpactCalculator()
-        self._players: Dict[str, PlayerStats] = {}
-        self._teams: Dict[str, TeamSquad] = {}
+        self._players: dict[str, PlayerStats] = {}
+        self._teams: dict[str, TeamSquad] = {}
         self._load_cache()
 
     def _load_cache(self):
@@ -379,7 +375,7 @@ class PlayerDatabase:
         try:
             players_file = os.path.join(self.cache_dir, "players.json")
             if os.path.exists(players_file):
-                with open(players_file, "r", encoding="utf-8") as f:
+                with open(players_file, encoding="utf-8") as f:
                     data = json.load(f)
                 for player_id, player_data in data.items():
                     self._players[player_id] = self._player_from_dict(player_data)
@@ -396,7 +392,7 @@ class PlayerDatabase:
         except Exception as e:
             logger.debug(f"Failed to save player cache: {e}")
 
-    def _player_from_dict(self, data: Dict) -> PlayerStats:
+    def _player_from_dict(self, data: dict) -> PlayerStats:
         """Reconstruct player from dict."""
         return PlayerStats(
             player_id=data["player_id"],
@@ -423,23 +419,23 @@ class PlayerDatabase:
         # Update team squad
         if player.team_id not in self._teams:
             self._teams[player.team_id] = TeamSquad(
-                team_id=player.team_id, team_name=player.team_name
+                team_id=player.team_id, team_name=player.team_name,
             )
         self._teams[player.team_id].players[player.player_id] = player
 
         self._save_cache()
         return player
 
-    def get_player(self, player_id: str) -> Optional[PlayerStats]:
+    def get_player(self, player_id: str) -> PlayerStats | None:
         """Get player by ID."""
         return self._players.get(player_id)
 
-    def get_team_squad(self, team_id: str) -> Optional[TeamSquad]:
+    def get_team_squad(self, team_id: str) -> TeamSquad | None:
         """Get team squad with all players."""
         return self._teams.get(team_id)
 
     def update_player_status(
-        self, player_id: str, status: PlayerStatus, return_date: Optional[str] = None
+        self, player_id: str, status: PlayerStatus, return_date: str | None = None,
     ):
         """Update player availability status."""
         if player_id in self._players:
@@ -447,7 +443,7 @@ class PlayerDatabase:
             self._players[player_id].injury_return_date = return_date
             self._save_cache()
 
-    def get_unavailable_players(self, team_id: str) -> List[PlayerStats]:
+    def get_unavailable_players(self, team_id: str) -> list[PlayerStats]:
         """Get list of unavailable players for a team."""
         if team_id not in self._teams:
             return []
@@ -458,12 +454,12 @@ class PlayerDatabase:
                 unavailable.append(player)
         return unavailable
 
-    def calculate_team_impact_loss(self, team_id: str) -> Tuple[float, List[Dict]]:
-        """
-        Calculate total impact lost due to unavailable players.
+    def calculate_team_impact_loss(self, team_id: str) -> tuple[float, list[dict]]:
+        """Calculate total impact lost due to unavailable players.
 
         Returns:
             Tuple of (total_impact_loss, list of missing player info)
+
         """
         if team_id not in self._teams:
             return 0.0, []
@@ -493,8 +489,7 @@ class PlayerDatabase:
 
 
 class PlayerImpactAdjuster:
-    """
-    Adjusts team strength predictions based on player availability.
+    """Adjusts team strength predictions based on player availability.
 
     When key players are missing, team's expected performance should decrease.
     """
@@ -523,10 +518,9 @@ class PlayerImpactAdjuster:
         team_name: str,
         base_expected_goals: float,
         base_expected_against: float,
-        unavailable_players: Optional[List[Dict]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Calculate goal expectation adjustments based on player availability.
+        unavailable_players: list[dict] | None = None,
+    ) -> dict[str, Any]:
+        """Calculate goal expectation adjustments based on player availability.
 
         Args:
             team_id: Team identifier
@@ -537,11 +531,12 @@ class PlayerImpactAdjuster:
 
         Returns:
             Dictionary with adjustments and explanations
+
         """
         # Get unavailable players from database if not provided
         if unavailable_players is None:
             impact_loss, missing_info = self.database.calculate_team_impact_loss(
-                team_id
+                team_id,
             )
         else:
             impact_loss = sum(p.get("impact", 0) for p in unavailable_players)
@@ -581,7 +576,7 @@ class PlayerImpactAdjuster:
             player_impact = player.get("impact", 0) / 100  # Normalize to 0-1
 
             impacts = self.POSITION_GOAL_IMPACT.get(
-                pos, {"for": -0.05, "against": 0.05}
+                pos, {"for": -0.05, "against": 0.05},
             )
             goals_for_adj += impacts["for"] * player_impact * 2
             goals_against_adj += impacts["against"] * player_impact * 2
@@ -606,11 +601,10 @@ class PlayerImpactAdjuster:
         home_prob: float,
         draw_prob: float,
         away_prob: float,
-        home_impact: Dict[str, Any],
-        away_impact: Dict[str, Any],
-    ) -> Tuple[float, float, float, List[str]]:
-        """
-        Adjust win probabilities based on player availability.
+        home_impact: dict[str, Any],
+        away_impact: dict[str, Any],
+    ) -> tuple[float, float, float, list[str]]:
+        """Adjust win probabilities based on player availability.
 
         Args:
             home_prob: Base home win probability
@@ -621,6 +615,7 @@ class PlayerImpactAdjuster:
 
         Returns:
             Tuple of (adj_home, adj_draw, adj_away, reasons)
+
         """
         reasons = []
 
@@ -653,13 +648,13 @@ class PlayerImpactAdjuster:
         if home_impact.get("missing_players"):
             top_missing = home_impact["missing_players"][0]
             reasons.append(
-                f"home without {top_missing['name']} ({top_missing['impact']:.0f} impact)"
+                f"home without {top_missing['name']} ({top_missing['impact']:.0f} impact)",
             )
 
         if away_impact.get("missing_players"):
             top_missing = away_impact["missing_players"][0]
             reasons.append(
-                f"away without {top_missing['name']} ({top_missing['impact']:.0f} impact)"
+                f"away without {top_missing['name']} ({top_missing['impact']:.0f} impact)",
             )
 
         # Normalize
@@ -673,8 +668,7 @@ class PlayerImpactAdjuster:
 
 
 class PlayerImpactSuite:
-    """
-    Unified interface for player impact analysis.
+    """Unified interface for player impact analysis.
 
     DQ-002: Complete implementation
     """
@@ -695,14 +689,14 @@ class PlayerImpactSuite:
         home_prob: float,
         draw_prob: float,
         away_prob: float,
-        home_unavailable: Optional[List[Dict]] = None,
-        away_unavailable: Optional[List[Dict]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Full player impact analysis for a match.
+        home_unavailable: list[dict] | None = None,
+        away_unavailable: list[dict] | None = None,
+    ) -> dict[str, Any]:
+        """Full player impact analysis for a match.
 
         Returns:
             Dictionary with all adjustments and analysis
+
         """
         # Analyze each team's player availability
         home_impact = self.adjuster.calculate_adjustment(
@@ -723,7 +717,7 @@ class PlayerImpactSuite:
 
         # Adjust probabilities
         adj_home, adj_draw, adj_away, reasons = self.adjuster.adjust_win_probability(
-            home_prob, draw_prob, away_prob, home_impact, away_impact
+            home_prob, draw_prob, away_prob, home_impact, away_impact,
         )
 
         return {
@@ -746,7 +740,7 @@ class PlayerImpactSuite:
         team_id: str,
         team_name: str,
         position: str,
-        stats: Dict[str, Any],
+        stats: dict[str, Any],
     ) -> PlayerStats:
         """Register a player with their stats."""
         pos = (
@@ -781,7 +775,7 @@ class PlayerImpactSuite:
         return self.database.add_player(player)
 
     def set_player_unavailable(
-        self, player_id: str, reason: str = "injured", return_date: Optional[str] = None
+        self, player_id: str, reason: str = "injured", return_date: str | None = None,
     ):
         """Mark a player as unavailable."""
         status = PlayerStatus.INJURED if reason == "injured" else PlayerStatus.SUSPENDED
@@ -902,7 +896,7 @@ if __name__ == "__main__":
                 "position": "FWD",
                 "impact": 85.0,
                 "status": "injured",
-            }
+            },
         ],
     )
 
@@ -910,7 +904,7 @@ if __name__ == "__main__":
     print(f"Home Goals: {2.0:.2f} → {result['adjusted_home_goals']:.2f}")
     print(f"Away Goals: {1.3:.2f} → {result['adjusted_away_goals']:.2f}")
 
-    print(f"\nProbability Adjustments:")
+    print("\nProbability Adjustments:")
     print(f"  Home: {0.45:.1%} → {result['adjusted_home_prob']:.1%}")
     print(f"  Draw: {0.28:.1%} → {result['adjusted_draw_prob']:.1%}")
     print(f"  Away: {0.27:.1%} → {result['adjusted_away_prob']:.1%}")

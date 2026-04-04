@@ -1,5 +1,4 @@
-"""
-Ensemble Disagreement Detection (TODO #12)
+"""Ensemble Disagreement Detection (TODO #12)
 ===========================================
 Measures and classifies disagreement across constituent models in an
 ensemble, using it to penalise confidence and optionally block bets when
@@ -41,17 +40,15 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional, Tuple
 
 import numpy as np
-
 
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 
 #: Outcome keys used consistently throughout this module
-OUTCOME_KEYS: Tuple[str, str, str] = ("home_win_prob", "draw_prob", "away_win_prob")
+OUTCOME_KEYS: tuple[str, str, str] = ("home_win_prob", "draw_prob", "away_win_prob")
 
 #: DisagreementLevel thresholds for the composite score (0-1)
 LEVEL_LOW_THRESHOLD      = 0.25
@@ -98,9 +95,10 @@ class DisagreementLevel(str, Enum):
 @dataclass
 class DisagreementReport:
     """Full disagreement analysis for a set of model predictions."""
+
     n_models:             int
     winner_agreement:     bool        # True = all models predict the same winner
-    predicted_winners:    List[str]   # per-model predicted winner
+    predicted_winners:    list[str]   # per-model predicted winner
     majority_winner:      str         # plurality winner
     winner_consensus_pct: float       # fraction of models agreeing on plurality winner
 
@@ -116,9 +114,9 @@ class DisagreementReport:
     confidence_penalty:   float
 
     # Per-outcome variances
-    variances:            Dict[str, float] = field(default_factory=dict)
+    variances:            dict[str, float] = field(default_factory=dict)
     # Mean probabilities across models
-    mean_probs:           Dict[str, float] = field(default_factory=dict)
+    mean_probs:           dict[str, float] = field(default_factory=dict)
 
     def summary(self) -> str:
         winner_str = (
@@ -139,23 +137,23 @@ class DisagreementReport:
 # ---------------------------------------------------------------------------
 
 class EnsembleDisagreementDetector:
-    """
-    Analyses disagreement across an ensemble's constituent predictions.
+    """Analyses disagreement across an ensemble's constituent predictions.
 
     Parameters
     ----------
     level_thresholds : (low, moderate, high) composite-score thresholds
     custom_penalties : override default confidence penalties per level
+
     """
 
     def __init__(
         self,
-        level_thresholds: Tuple[float, float, float] = (
+        level_thresholds: tuple[float, float, float] = (
             LEVEL_LOW_THRESHOLD,
             LEVEL_MODERATE_THRESHOLD,
             LEVEL_HIGH_THRESHOLD,
         ),
-        custom_penalties: Optional[Dict[DisagreementLevel, float]] = None,
+        custom_penalties: dict[DisagreementLevel, float] | None = None,
     ) -> None:
         self._thresh_low, self._thresh_moderate, self._thresh_high = level_thresholds
         self._custom_penalties = custom_penalties or {}
@@ -166,10 +164,9 @@ class EnsembleDisagreementDetector:
 
     def analyse(
         self,
-        predictions: List[Dict[str, float]],
+        predictions: list[dict[str, float]],
     ) -> DisagreementReport:
-        """
-        Analyse disagreement across a list of model-prediction dicts.
+        """Analyse disagreement across a list of model-prediction dicts.
 
         Each prediction dict must contain the three outcome keys:
         ``home_win_prob``, ``draw_prob``, ``away_win_prob``.
@@ -183,6 +180,7 @@ class EnsembleDisagreementDetector:
         Returns
         -------
         DisagreementReport
+
         """
         if len(predictions) < MIN_MODELS:
             return self._trivial_report(predictions)
@@ -212,7 +210,7 @@ class EnsembleDisagreementDetector:
             0.40 * mean_js / math.log(2)        # normalised JSD → [0,1]
             + 0.25 * min(mean_var / 0.12, 1.0)  # variance term
             + 0.20 * winner_penalty               # winner split
-            + 0.15 * entropy / math.log(3)       # entropy term
+            + 0.15 * entropy / math.log(3),       # entropy term
         )
         composite = max(0.0, min(1.0, composite))
 
@@ -242,20 +240,18 @@ class EnsembleDisagreementDetector:
 
     def analyse_named(
         self,
-        named_predictions: Dict[str, Dict[str, float]],
+        named_predictions: dict[str, dict[str, float]],
     ) -> DisagreementReport:
-        """
-        Convenience wrapper when predictions come as a dict keyed by model name.
+        """Convenience wrapper when predictions come as a dict keyed by model name.
         """
         return self.analyse(list(named_predictions.values()))
 
     def apply_to_prediction(
         self,
-        base_prediction: Dict,
-        constituent_predictions: List[Dict[str, float]],
-    ) -> Dict:
-        """
-        Compute disagreement and apply the confidence penalty to ``base_prediction``.
+        base_prediction: dict,
+        constituent_predictions: list[dict[str, float]],
+    ) -> dict:
+        """Compute disagreement and apply the confidence penalty to ``base_prediction``.
 
         Returns a new dict (shallow copy of ``base_prediction``) with:
         - ``confidence`` lowered by the disagreement penalty (if key exists)
@@ -285,7 +281,7 @@ class EnsembleDisagreementDetector:
     # ------------------------------------------------------------------
 
     def _extract_prob_matrix(
-        self, predictions: List[Dict[str, float]]
+        self, predictions: list[dict[str, float]],
     ) -> np.ndarray:
         """Return [n_models × 3] normalised probability matrix."""
         rows = []
@@ -321,31 +317,29 @@ class EnsembleDisagreementDetector:
         for i in range(n):
             for j in range(i + 1, n):
                 d = float(np.sum(np.abs(prob_matrix[i] - prob_matrix[j])))
-                if d > worst:
-                    worst = d
+                worst = max(worst, d)
         return worst
 
     def _composite_to_level(self, composite: float) -> DisagreementLevel:
         if composite < 0.05:
             return DisagreementLevel.UNANIMOUS
-        elif composite < self._thresh_low:
+        if composite < self._thresh_low:
             return DisagreementLevel.LOW
-        elif composite < self._thresh_moderate:
+        if composite < self._thresh_moderate:
             return DisagreementLevel.MODERATE
-        elif composite < self._thresh_high:
+        if composite < self._thresh_high:
             return DisagreementLevel.HIGH
-        else:
-            return DisagreementLevel.SEVERE
+        return DisagreementLevel.SEVERE
 
     def _trivial_report(
-        self, predictions: List[Dict[str, float]]
+        self, predictions: list[dict[str, float]],
     ) -> DisagreementReport:
         """Return a report when there's only 0 or 1 model (no comparison possible)."""
         if predictions:
             probs = {k: float(predictions[0].get(k, 1 / 3)) for k in OUTCOME_KEYS}
             winner = max(probs, key=lambda k: probs[k])
         else:
-            probs   = {k: 1 / 3 for k in OUTCOME_KEYS}
+            probs   = dict.fromkeys(OUTCOME_KEYS, 1 / 3)
             winner  = OUTCOME_KEYS[0]
         return DisagreementReport(
             n_models=len(predictions),
@@ -360,7 +354,7 @@ class EnsembleDisagreementDetector:
             composite_score=0.0,
             level=DisagreementLevel.UNANIMOUS,
             confidence_penalty=0.0,
-            variances={k: 0.0 for k in OUTCOME_KEYS},
+            variances=dict.fromkeys(OUTCOME_KEYS, 0.0),
             mean_probs=probs,
         )
 
@@ -377,8 +371,7 @@ def _entropy(probs: np.ndarray) -> float:
 
 
 def _js_divergence(p: np.ndarray, q: np.ndarray) -> float:
-    """
-    Jensen-Shannon divergence between two distributions (nats).
+    """Jensen-Shannon divergence between two distributions (nats).
     Bounded [0, ln 2].
     """
     p = np.clip(p, 1e-15, 1.0)
@@ -394,11 +387,10 @@ def _js_divergence(p: np.ndarray, q: np.ndarray) -> float:
 # ---------------------------------------------------------------------------
 
 def disagreement_from_named(
-    named_predictions: Dict[str, Dict[str, float]],
-    detector: Optional[EnsembleDisagreementDetector] = None,
+    named_predictions: dict[str, dict[str, float]],
+    detector: EnsembleDisagreementDetector | None = None,
 ) -> DisagreementReport:
-    """
-    Quick helper: run disagreement analysis on named model predictions.
+    """Quick helper: run disagreement analysis on named model predictions.
 
     Example::
         report = disagreement_from_named({

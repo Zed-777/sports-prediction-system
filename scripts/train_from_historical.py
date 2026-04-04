@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Train models using processed historical dataset
+"""Train models using processed historical dataset
 """
 
 import sys

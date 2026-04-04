@@ -1,5 +1,4 @@
-"""
-Adaptive Adjustment Engine - Phase 4
+"""Adaptive Adjustment Engine - Phase 4
 
 Automatically adjusts model parameters based on performance monitoring
 Implements learning feedback loops for continuous improvement
@@ -8,8 +7,9 @@ Implements learning feedback loops for continuous improvement
 import json
 import logging
 from datetime import datetime
-from typing import Dict, List, Optional, Any
 from pathlib import Path
+from typing import Any
+
 import numpy as np
 
 
@@ -17,11 +17,11 @@ class AdaptiveAdjustmentEngine:
     """Automatically adjusts confidence levels and weights based on performance"""
 
     def __init__(self, cache_dir: str = "data/cache"):
-        """
-        Initialize adaptive adjustment engine
+        """Initialize adaptive adjustment engine
 
         Args:
             cache_dir: Directory for adjustment history
+
         """
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -29,10 +29,10 @@ class AdaptiveAdjustmentEngine:
         self.logger = logging.getLogger(__name__)
 
         # Adjustment history per league
-        self.adjustment_history: Dict[str, List[Dict]] = {}
+        self.adjustment_history: dict[str, list[dict]] = {}
 
         # Current adjustments
-        self.current_adjustments: Dict[str, Dict[str, float]] = {}
+        self.current_adjustments: dict[str, dict[str, float]] = {}
 
         # Learning rate controls how aggressively we adjust
         self.learning_rate = 0.1
@@ -50,8 +50,7 @@ class AdaptiveAdjustmentEngine:
         target_accuracy: float = 0.65,
         recent_window_size: int = 10,
     ) -> float:
-        """
-        Suggest confidence adjustment based on accuracy drift
+        """Suggest confidence adjustment based on accuracy drift
 
         Args:
             league: League name
@@ -61,6 +60,7 @@ class AdaptiveAdjustmentEngine:
 
         Returns:
             Adjustment multiplier (0.85 to 1.15)
+
         """
         error = target_accuracy - accuracy
 
@@ -94,11 +94,10 @@ class AdaptiveAdjustmentEngine:
     def suggest_weight_adjustments(
         self,
         league: str,
-        model_accuracies: Dict[str, float],
+        model_accuracies: dict[str, float],
         target_accuracy: float = 0.65,
-    ) -> Dict[str, float]:
-        """
-        Suggest weight adjustments for ensemble models
+    ) -> dict[str, float]:
+        """Suggest weight adjustments for ensemble models
 
         Args:
             league: League name
@@ -107,6 +106,7 @@ class AdaptiveAdjustmentEngine:
 
         Returns:
             Dict of model_name -> weight_multiplier
+
         """
         adjustments = {}
 
@@ -145,10 +145,9 @@ class AdaptiveAdjustmentEngine:
         return adjustments
 
     def suggest_calibration_adjustment(
-        self, league: str, ece: float, target_ece: float = 0.03
-    ) -> Dict[str, Any]:
-        """
-        Suggest calibration adjustments
+        self, league: str, ece: float, target_ece: float = 0.03,
+    ) -> dict[str, Any]:
+        """Suggest calibration adjustments
 
         Args:
             league: League name
@@ -157,6 +156,7 @@ class AdaptiveAdjustmentEngine:
 
         Returns:
             Calibration adjustment recommendations
+
         """
         ece_error = ece - target_ece
 
@@ -174,7 +174,7 @@ class AdaptiveAdjustmentEngine:
                     "severity": "high",
                     "action": "Run full isotonic regression recalibration",
                     "reason": "ECE significantly above target",
-                }
+                },
             )
         elif ece > target_ece:
             recommendations["actions"].append(
@@ -182,7 +182,7 @@ class AdaptiveAdjustmentEngine:
                     "severity": "medium",
                     "action": "Update calibration with recent predictions",
                     "reason": "ECE above target, incremental adjustment recommended",
-                }
+                },
             )
         else:
             recommendations["actions"].append(
@@ -190,7 +190,7 @@ class AdaptiveAdjustmentEngine:
                     "severity": "low",
                     "action": "Monitor calibration, maintain current state",
                     "reason": "ECE within acceptable range",
-                }
+                },
             )
 
         # Record adjustment
@@ -209,11 +209,10 @@ class AdaptiveAdjustmentEngine:
     def suggest_threshold_adjustments(
         self,
         league: str,
-        precision_recall: Dict[str, float],
+        precision_recall: dict[str, float],
         current_threshold: float = 0.5,
-    ) -> Dict[str, Any]:
-        """
-        Suggest decision threshold adjustments
+    ) -> dict[str, Any]:
+        """Suggest decision threshold adjustments
 
         Args:
             league: League name
@@ -222,6 +221,7 @@ class AdaptiveAdjustmentEngine:
 
         Returns:
             Threshold adjustment recommendations
+
         """
         precision = precision_recall.get("precision", 0.5)
         recall = precision_recall.get("recall", 0.5)
@@ -251,7 +251,7 @@ class AdaptiveAdjustmentEngine:
             recommendations["reasoning"] = "Threshold is well-balanced"
 
         recommendations["suggested_threshold"] = np.clip(
-            recommendations["suggested_threshold"], 0.3, 0.7
+            recommendations["suggested_threshold"], 0.3, 0.7,
         )
 
         # Record adjustment
@@ -266,15 +266,15 @@ class AdaptiveAdjustmentEngine:
 
         return recommendations
 
-    def get_adjustment_status(self, league: str) -> Dict[str, Any]:
-        """
-        Get current adjustment status for a league
+    def get_adjustment_status(self, league: str) -> dict[str, Any]:
+        """Get current adjustment status for a league
 
         Args:
             league: League name
 
         Returns:
             Current adjustment state
+
         """
         history = self.adjustment_history.get(league, [])
 
@@ -300,11 +300,11 @@ class AdaptiveAdjustmentEngine:
         }
 
     def get_adjustment_recommendations_summary(self) -> str:
-        """
-        Get summary of all adjustment recommendations
+        """Get summary of all adjustment recommendations
 
         Returns:
             Formatted recommendation summary
+
         """
         summary = []
         summary.append("=" * 70)
@@ -325,7 +325,7 @@ class AdaptiveAdjustmentEngine:
                     summary.append(f"    Timestamp: {adj_data.get('timestamp', 'N/A')}")
                     if "adjustment" in adj_data:
                         summary.append(
-                            f"    Adjustment Factor: {adj_data['adjustment']:.4f}"
+                            f"    Adjustment Factor: {adj_data['adjustment']:.4f}",
                         )
                     if "reasoning" in adj_data:
                         summary.append(f"    Reasoning: {adj_data['reasoning']}")
@@ -333,7 +333,7 @@ class AdaptiveAdjustmentEngine:
         summary.append("\n" + "=" * 70)
         return "\n".join(summary)
 
-    def _record_adjustment(self, league: str, adjustment: Dict) -> None:
+    def _record_adjustment(self, league: str, adjustment: dict) -> None:
         """Record an adjustment for history tracking"""
         if league not in self.adjustment_history:
             self.adjustment_history[league] = []
@@ -368,12 +368,12 @@ class AdaptiveAdjustmentEngine:
                 self.logger.debug("No adjustment history found, starting fresh")
                 return
 
-            with open(history_file, "r") as f:
+            with open(history_file) as f:
                 data = json.load(f)
 
             self.adjustment_history = data.get("adjustments", {})
             self.logger.debug(
-                f"Loaded adjustment history for {len(self.adjustment_history)} leagues"
+                f"Loaded adjustment history for {len(self.adjustment_history)} leagues",
             )
 
         except Exception as e:
@@ -384,28 +384,27 @@ class LearningFeedbackLoop:
     """Manages feedback loops for continuous learning"""
 
     def __init__(
-        self, performance_monitor, adjustment_engine, cache_dir: str = "data/cache"
+        self, performance_monitor, adjustment_engine, cache_dir: str = "data/cache",
     ):
-        """
-        Initialize feedback loop
+        """Initialize feedback loop
 
         Args:
             performance_monitor: PerformanceMonitor instance
             adjustment_engine: AdaptiveAdjustmentEngine instance
             cache_dir: Cache directory
+
         """
         self.performance_monitor = performance_monitor
         self.adjustment_engine = adjustment_engine
         self.cache_dir = Path(cache_dir)
         self.logger = logging.getLogger(__name__)
 
-        self.feedback_history: Dict[str, List[Dict]] = {}
+        self.feedback_history: dict[str, list[dict]] = {}
 
     def run_feedback_cycle(
-        self, league: str, model_accuracies: Optional[Dict] = None
-    ) -> Dict[str, Any]:
-        """
-        Run a complete feedback cycle for a league
+        self, league: str, model_accuracies: dict | None = None,
+    ) -> dict[str, Any]:
+        """Run a complete feedback cycle for a league
 
         Args:
             league: League name
@@ -413,6 +412,7 @@ class LearningFeedbackLoop:
 
         Returns:
             Feedback cycle results
+
         """
         results = {
             "league": league,
@@ -432,19 +432,19 @@ class LearningFeedbackLoop:
 
         # Suggest confidence adjustment
         conf_adj = self.adjustment_engine.suggest_confidence_adjustment(
-            league, accuracy
+            league, accuracy,
         )
         results["confidence_adjustment"] = conf_adj
 
         if conf_adj != 1.0:
             results["recommendations"].append(
-                f"Adjust confidence by {(conf_adj - 1) * 100:+.1f}% based on accuracy"
+                f"Adjust confidence by {(conf_adj - 1) * 100:+.1f}% based on accuracy",
             )
 
         # Suggest weight adjustments if model accuracies provided
         if model_accuracies:
             weight_adj = self.adjustment_engine.suggest_weight_adjustments(
-                league, model_accuracies
+                league, model_accuracies,
             )
             results["weight_adjustments"] = weight_adj
             results["recommendations"].append("Update ensemble model weights")
@@ -460,7 +460,7 @@ class LearningFeedbackLoop:
         drift = self.performance_monitor.detect_performance_drift(league)
         if drift.get("drift_detected"):
             results["recommendations"].append(
-                drift.get("recommendation", "Monitor drift")
+                drift.get("recommendation", "Monitor drift"),
             )
 
         # Record feedback cycle
@@ -471,15 +471,15 @@ class LearningFeedbackLoop:
 
         return results
 
-    def get_feedback_report(self, league: Optional[str] = None) -> str:
-        """
-        Get feedback loop report
+    def get_feedback_report(self, league: str | None = None) -> str:
+        """Get feedback loop report
 
         Args:
             league: Specific league or None for all
 
         Returns:
             Formatted report
+
         """
         report = []
         report.append("=" * 70)

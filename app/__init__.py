@@ -1,5 +1,4 @@
-"""
-Sports Prediction System - Main Application Module
+"""Sports Prediction System - Main Application Module
 Educational sports forecasting system for analytical purposes only.
 """
 

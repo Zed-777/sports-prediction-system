@@ -1,5 +1,4 @@
-"""
-Prediction Tracking System - Phase 2 Data Foundation (CC-002)
+"""Prediction Tracking System - Phase 2 Data Foundation (CC-002)
 Tracks predictions and actual results to measure and improve accuracy.
 
 This is CRITICAL infrastructure - without tracking, we can't:
@@ -14,7 +13,7 @@ import os
 import sqlite3
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -42,21 +41,21 @@ class PredictionRecord:
     # Metadata
     prediction_timestamp: str
     model_version: str = "v4.2"
-    enhancements_applied: List[str] = field(default_factory=list)
+    enhancements_applied: list[str] = field(default_factory=list)
 
     # Actual results (filled in after match)
-    actual_home_goals: Optional[int] = None
-    actual_away_goals: Optional[int] = None
-    actual_outcome: Optional[str] = None  # 'home', 'draw', 'away'
-    result_timestamp: Optional[str] = None
+    actual_home_goals: int | None = None
+    actual_away_goals: int | None = None
+    actual_outcome: str | None = None  # 'home', 'draw', 'away'
+    result_timestamp: str | None = None
 
     # Accuracy metrics (calculated after result)
-    predicted_outcome: Optional[str] = None  # What we predicted
-    prediction_correct: Optional[bool] = None
-    probability_for_outcome: Optional[float] = (
+    predicted_outcome: str | None = None  # What we predicted
+    prediction_correct: bool | None = None
+    probability_for_outcome: float | None = (
         None  # Prob we assigned to actual outcome
     )
-    brier_score: Optional[float] = None  # Probabilistic accuracy
+    brier_score: float | None = None  # Probabilistic accuracy
 
     def calculate_metrics(self):
         """Calculate accuracy metrics after result is known"""
@@ -88,8 +87,7 @@ class PredictionRecord:
 
 
 class PredictionTracker:
-    """
-    Tracks all predictions and results in SQLite database.
+    """Tracks all predictions and results in SQLite database.
 
     Features:
     - Store predictions at time of generation
@@ -141,19 +139,19 @@ class PredictionTracker:
                 probability_for_outcome REAL,
                 brier_score REAL
             )
-        """
+        """,
         )
 
         # Index for efficient queries
         cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_match_date ON predictions(match_date)"
+            "CREATE INDEX IF NOT EXISTS idx_match_date ON predictions(match_date)",
         )
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_league ON predictions(league)")
         cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_result ON predictions(actual_outcome)"
+            "CREATE INDEX IF NOT EXISTS idx_result ON predictions(actual_outcome)",
         )
         cursor.execute(
-            "CREATE INDEX IF NOT EXISTS idx_correct ON predictions(prediction_correct)"
+            "CREATE INDEX IF NOT EXISTS idx_correct ON predictions(prediction_correct)",
         )
 
         conn.commit()
@@ -215,8 +213,8 @@ class PredictionTracker:
         return record.prediction_id
 
     def record_result(
-        self, match_id: int, home_goals: int, away_goals: int
-    ) -> Optional[PredictionRecord]:
+        self, match_id: int, home_goals: int, away_goals: int,
+    ) -> PredictionRecord | None:
         """Record actual match result and calculate accuracy"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -325,15 +323,15 @@ class PredictionTracker:
 
     def get_accuracy_stats(
         self,
-        league: Optional[str] = None,
+        league: str | None = None,
         days_back: int = 90,
         min_confidence: float = 0.0,
-    ) -> Dict[str, Any]:
-        """
-        Get accuracy statistics for predictions.
+    ) -> dict[str, Any]:
+        """Get accuracy statistics for predictions.
 
         Returns:
             Overall accuracy, Brier score, calibration metrics, breakdowns
+
         """
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -346,7 +344,7 @@ class PredictionTracker:
             AND prediction_timestamp > ?
             AND confidence >= ?
         """
-        params: List[Any] = [cutoff, min_confidence]
+        params: list[Any] = [cutoff, min_confidence]
 
         if league:
             query += " AND league = ?"
@@ -419,9 +417,8 @@ class PredictionTracker:
             },
         }
 
-    def _calculate_calibration(self, records: List[PredictionRecord]) -> Dict[str, Any]:
-        """
-        Calculate calibration metrics.
+    def _calculate_calibration(self, records: list[PredictionRecord]) -> dict[str, Any]:
+        """Calculate calibration metrics.
 
         Good calibration means: when we say 70%, we're right 70% of the time.
         """
@@ -483,7 +480,7 @@ class PredictionTracker:
 
         return calibration_data
 
-    def get_pending_results(self, limit: int = 50) -> List[Dict[str, Any]]:
+    def get_pending_results(self, limit: int = 50) -> list[dict[str, Any]]:
         """Get predictions that need results fetched"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -516,7 +513,7 @@ class PredictionTracker:
             for row in rows
         ]
 
-    def get_league_comparison(self) -> Dict[str, Dict[str, Any]]:
+    def get_league_comparison(self) -> dict[str, dict[str, Any]]:
         """Compare accuracy across leagues"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -530,7 +527,7 @@ class PredictionTracker:
             FROM predictions
             WHERE actual_outcome IS NOT NULL
             GROUP BY league
-        """
+        """,
         )
 
         rows = cursor.fetchall()
@@ -551,13 +548,12 @@ class PredictionTracker:
 
 # Convenience function to create prediction record from prediction result
 def create_prediction_record(
-    match: Dict[str, Any] | None = None,
-    prediction: Dict[str, Any] | None = None,
+    match: dict[str, Any] | None = None,
+    prediction: dict[str, Any] | None = None,
     league: str | None = None,
     **kwargs,
 ) -> PredictionRecord:
-    """
-    Create a PredictionRecord from match data and prediction result.
+    """Create a PredictionRecord from match data and prediction result.
 
     Supports two calling conventions:
     1) create_prediction_record(match, prediction, league)
@@ -565,15 +561,16 @@ def create_prediction_record(
 
     Returns:
         PredictionRecord ready to be stored
+
     """
     # If kwargs provided, prefer them (for backwards compatibility with enhanced_predictor usage)
     if kwargs:
         match_id = kwargs.get("match_id", 0)
         home_team_name = kwargs.get(
-            "home_team", kwargs.get("home_team_name", "Unknown")
+            "home_team", kwargs.get("home_team_name", "Unknown"),
         )
         away_team_name = kwargs.get(
-            "away_team", kwargs.get("away_team_name", "Unknown")
+            "away_team", kwargs.get("away_team_name", "Unknown"),
         )
         predicted_home = kwargs.get("home_prob", kwargs.get("home_win_prob", 33))
         predicted_draw = kwargs.get("draw_prob", kwargs.get("draw_probability", 33))
@@ -624,13 +621,13 @@ def create_prediction_record(
         league=league or "unknown",
         match_date=(match or {}).get("utcDate", ""),
         predicted_home_prob=prediction.get(
-            "home_win_prob", prediction.get("home_win_probability", 33)
+            "home_win_prob", prediction.get("home_win_probability", 33),
         ),
         predicted_draw_prob=prediction.get(
-            "draw_prob", prediction.get("draw_probability", 33)
+            "draw_prob", prediction.get("draw_probability", 33),
         ),
         predicted_away_prob=prediction.get(
-            "away_win_prob", prediction.get("away_win_probability", 34)
+            "away_win_prob", prediction.get("away_win_probability", 34),
         ),
         predicted_home_goals=prediction.get("expected_home_goals", 1.5),
         predicted_away_goals=prediction.get("expected_away_goals", 1.0),

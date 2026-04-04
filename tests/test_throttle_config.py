@@ -4,7 +4,7 @@ from app.utils.http import get_min_interval_for_host
 def test_get_min_interval_for_known_hosts():
     assert (
         get_min_interval_for_host(
-            "https://api.football-data.org/v4/competitions/PL/matches"
+            "https://api.football-data.org/v4/competitions/PL/matches",
         )
         == 6.0
     )

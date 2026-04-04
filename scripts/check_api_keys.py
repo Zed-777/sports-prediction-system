@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Check API keys presence (env / registry) and test a small SportsData API request if available.
+"""Check API keys presence (env / registry) and test a small SportsData API request if available.
 This script prints boolean presence for each key and prints HTTP status for SportsData if checked.
 It DOES NOT print key values and it should not be used to pass secrets through logs.
 
@@ -9,12 +8,12 @@ PowerShell SecretManagement (SecretStore) or a proper cloud secrets manager. To 
 secrets available in your session, use `scripts/run_with_secrets.ps1 -Command "python scripts/check_api_keys.py"`.
 """
 
-import os
 import json
-import sys
+import os
 import subprocess
-import urllib.request
+import sys
 import urllib.parse
+import urllib.request
 
 # Optional: try reading from user registry on Windows if key not present in the current process env
 try:
@@ -75,10 +74,10 @@ else:
         out_ps = completed.stdout.strip()
         if out_ps == "true":
             print(
-                "Detected SPORTSDATA_API_KEY in PowerShell SecretManagement. Use `scripts/run_with_secrets.ps1` to run commands with secrets loaded. Example:"
+                "Detected SPORTSDATA_API_KEY in PowerShell SecretManagement. Use `scripts/run_with_secrets.ps1` to run commands with secrets loaded. Example:",
             )
             print(
-                "    .\\scripts\\run_with_secrets.ps1 -Command 'python scripts/check_api_keys.py'"
+                "    .\\scripts\\run_with_secrets.ps1 -Command 'python scripts/check_api_keys.py'",
             )
     except Exception:
         # If powershell or SecretManagement not available, ignore silently

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Advanced Feature Engineering System v1.0
+"""Advanced Feature Engineering System v1.0
 State-of-the-art feature extraction for sports prediction with:
 - Team/player embeddings for latent representation learning
 - Fourier features for periodic patterns (seasonal, day-of-week)
@@ -17,7 +16,7 @@ import math
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 from scipy import stats as scipy_stats
@@ -31,8 +30,8 @@ class FeatureSet:
     temporal_features: np.ndarray
     interaction_features: np.ndarray
     embedding_features: np.ndarray
-    feature_names: List[str]
-    feature_importances: Dict[str, float] = field(default_factory=dict)
+    feature_names: list[str]
+    feature_importances: dict[str, float] = field(default_factory=dict)
 
     def to_flat_array(self) -> np.ndarray:
         """Concatenate all features into a single array"""
@@ -42,21 +41,20 @@ class FeatureSet:
                 self.temporal_features.flatten(),
                 self.interaction_features.flatten(),
                 self.embedding_features.flatten(),
-            ]
+            ],
         )
 
 
 class TeamEmbedding:
-    """
-    Learned team embeddings for capturing latent team characteristics.
+    """Learned team embeddings for capturing latent team characteristics.
     Uses matrix factorization of historical match results.
     """
 
     def __init__(self, embedding_dim: int = 16, learning_rate: float = 0.01):
         self.embedding_dim = embedding_dim
         self.learning_rate = learning_rate
-        self.team_embeddings: Dict[str, np.ndarray] = {}
-        self.team_biases: Dict[str, float] = {}
+        self.team_embeddings: dict[str, np.ndarray] = {}
+        self.team_biases: dict[str, float] = {}
         self.global_mean = 0.0
 
     def get_embedding(self, team_name: str) -> np.ndarray:
@@ -68,7 +66,7 @@ class TeamEmbedding:
         return self.team_embeddings[team_name]
 
     def update_from_match(
-        self, home_team: str, away_team: str, home_goals: int, away_goals: int
+        self, home_team: str, away_team: str, home_goals: int, away_goals: int,
     ):
         """Update embeddings based on match result using matrix factorization"""
         home_emb = self.get_embedding(home_team)
@@ -126,8 +124,7 @@ class TeamEmbedding:
 
 
 class FourierFeatures:
-    """
-    Fourier features for capturing periodic patterns.
+    """Fourier features for capturing periodic patterns.
     Transforms temporal features into sine/cosine components.
     """
 
@@ -135,8 +132,7 @@ class FourierFeatures:
         self.num_frequencies = num_frequencies
 
     def encode_periodic(self, value: float, period: float) -> np.ndarray:
-        """
-        Encode a periodic value using Fourier features.
+        """Encode a periodic value using Fourier features.
 
         Args:
             value: Current value (e.g., day of year)
@@ -144,6 +140,7 @@ class FourierFeatures:
 
         Returns:
             Array of [sin1, cos1, sin2, cos2, ...] features
+
         """
         features = []
         for freq in range(1, self.num_frequencies + 1):
@@ -151,12 +148,12 @@ class FourierFeatures:
             features.extend([math.sin(angle), math.cos(angle)])
         return np.array(features)
 
-    def encode_datetime(self, dt: datetime) -> Dict[str, np.ndarray]:
-        """
-        Encode datetime with multiple periodic patterns.
+    def encode_datetime(self, dt: datetime) -> dict[str, np.ndarray]:
+        """Encode datetime with multiple periodic patterns.
 
         Returns:
             Dict with keys: 'day_of_week', 'day_of_year', 'month', 'hour'
+
         """
         return {
             "day_of_week": self.encode_periodic(dt.weekday(), 7),
@@ -171,39 +168,38 @@ class FourierFeatures:
 
 
 class TargetEncoder:
-    """
-    Bayesian target encoding for categorical features.
+    """Bayesian target encoding for categorical features.
     Applies shrinkage towards global mean based on sample size.
     """
 
     def __init__(self, min_samples_leaf: int = 10, smoothing: float = 10.0):
         self.min_samples_leaf = min_samples_leaf
         self.smoothing = smoothing
-        self.encodings: Dict[str, Dict[str, float]] = {}
-        self.global_means: Dict[str, float] = {}
-        self.category_counts: Dict[str, Dict[str, int]] = {}
+        self.encodings: dict[str, dict[str, float]] = {}
+        self.global_means: dict[str, float] = {}
+        self.category_counts: dict[str, dict[str, int]] = {}
 
     def fit(
         self,
-        category_values: List[str],
-        targets: List[float],
+        category_values: list[str],
+        targets: list[float],
         category_name: str = "default",
     ):
-        """
-        Fit target encoder on training data.
+        """Fit target encoder on training data.
 
         Args:
             category_values: List of category values
             targets: Corresponding target values
             category_name: Name of the categorical feature
+
         """
         self.global_means[category_name] = np.mean(targets)
         self.encodings[category_name] = {}
         self.category_counts[category_name] = {}
 
         # Group by category
-        category_sums: Dict[str, float] = {}
-        category_counts: Dict[str, int] = {}
+        category_sums: dict[str, float] = {}
+        category_counts: dict[str, int] = {}
 
         for cat, target in zip(category_values, targets):
             if cat not in category_sums:
@@ -242,17 +238,15 @@ class TargetEncoder:
 
 
 class MomentumIndicator:
-    """
-    Technical analysis-style momentum indicators for form tracking.
+    """Technical analysis-style momentum indicators for form tracking.
     Includes RSI, MACD-like features, and trend strength.
     """
 
     def __init__(self):
         pass
 
-    def calculate_rsi(self, values: List[float], period: int = 5) -> float:
-        """
-        Calculate Relative Strength Index for form values.
+    def calculate_rsi(self, values: list[float], period: int = 5) -> float:
+        """Calculate Relative Strength Index for form values.
         RSI > 70 = strong form, RSI < 30 = poor form
         """
         if len(values) < 2:
@@ -282,17 +276,16 @@ class MomentumIndicator:
         return float(rsi)
 
     def calculate_macd(
-        self, values: List[float], fast_period: int = 3, slow_period: int = 6
-    ) -> Tuple[float, float]:
-        """
-        Calculate MACD-like indicator for form momentum.
+        self, values: list[float], fast_period: int = 3, slow_period: int = 6,
+    ) -> tuple[float, float]:
+        """Calculate MACD-like indicator for form momentum.
         Returns (macd_value, signal_line)
         """
         if len(values) < slow_period:
             return 0.0, 0.0
 
         # EMA calculation
-        def ema(data: List[float], period: int) -> float:
+        def ema(data: list[float], period: int) -> float:
             if len(data) < period:
                 return np.mean(data)
             alpha = 2 / (period + 1)
@@ -310,9 +303,8 @@ class MomentumIndicator:
 
         return float(macd), float(signal)
 
-    def calculate_trend_strength(self, values: List[float]) -> Tuple[float, str]:
-        """
-        Calculate trend strength and direction using linear regression.
+    def calculate_trend_strength(self, values: list[float]) -> tuple[float, str]:
+        """Calculate trend strength and direction using linear regression.
         Returns (r_squared, direction)
         """
         if len(values) < 3:
@@ -331,25 +323,24 @@ class MomentumIndicator:
 
 
 class PolynomialInteractions:
-    """
-    Generate polynomial feature interactions up to degree N.
+    """Generate polynomial feature interactions up to degree N.
     With feature selection based on importance.
     """
 
     def __init__(self, degree: int = 2, max_features: int = 50):
         self.degree = degree
         self.max_features = max_features
-        self.interaction_names: List[str] = []
+        self.interaction_names: list[str] = []
 
-    def generate(self, features: Dict[str, float]) -> Tuple[np.ndarray, List[str]]:
-        """
-        Generate polynomial interactions.
+    def generate(self, features: dict[str, float]) -> tuple[np.ndarray, list[str]]:
+        """Generate polynomial interactions.
 
         Args:
             features: Dict of feature_name -> value
 
         Returns:
             (interaction_array, interaction_names)
+
         """
         names = list(features.keys())
         values = np.array(list(features.values()))
@@ -388,22 +379,20 @@ class PolynomialInteractions:
 
 
 class TimeDecayAggregator:
-    """
-    Aggregate historical data with exponential time decay.
+    """Aggregate historical data with exponential time decay.
     More recent observations weighted more heavily.
     """
 
     def __init__(self, half_life_days: float = 30.0):
-        """
-        Args:
-            half_life_days: Days until weight decays to 50%
+        """Args:
+        half_life_days: Days until weight decays to 50%
+
         """
         self.half_life_days = half_life_days
         self.decay_rate = math.log(2) / half_life_days
 
-    def aggregate(self, values: List[float], days_ago: List[float]) -> float:
-        """
-        Calculate time-weighted average.
+    def aggregate(self, values: list[float], days_ago: list[float]) -> float:
+        """Calculate time-weighted average.
 
         Args:
             values: Historical values
@@ -411,6 +400,7 @@ class TimeDecayAggregator:
 
         Returns:
             Time-weighted average
+
         """
         if not values:
             return 0.0
@@ -425,13 +415,13 @@ class TimeDecayAggregator:
         return weighted_sum / total_weight
 
     def aggregate_with_variance(
-        self, values: List[float], days_ago: List[float]
-    ) -> Tuple[float, float]:
-        """
-        Calculate time-weighted mean and variance.
+        self, values: list[float], days_ago: list[float],
+    ) -> tuple[float, float]:
+        """Calculate time-weighted mean and variance.
 
         Returns:
             (weighted_mean, weighted_variance)
+
         """
         if not values or len(values) < 2:
             return np.mean(values) if values else 0.0, 0.0
@@ -448,8 +438,7 @@ class TimeDecayAggregator:
 
 
 class AdvancedFeatureEngineer:
-    """
-    Complete feature engineering pipeline combining all advanced techniques.
+    """Complete feature engineering pipeline combining all advanced techniques.
     """
 
     def __init__(self, models_dir: str = "models/features"):
@@ -471,10 +460,9 @@ class AdvancedFeatureEngineer:
         self.logger.info("Advanced Feature Engineer initialized")
 
     def engineer_features(
-        self, match_data: Dict[str, Any], match_datetime: Optional[datetime] = None
+        self, match_data: dict[str, Any], match_datetime: datetime | None = None,
     ) -> FeatureSet:
-        """
-        Generate complete feature set for a match.
+        """Generate complete feature set for a match.
 
         Args:
             match_data: Raw match data dictionary
@@ -482,6 +470,7 @@ class AdvancedFeatureEngineer:
 
         Returns:
             Complete FeatureSet with all engineered features
+
         """
         feature_names = []
 
@@ -491,13 +480,13 @@ class AdvancedFeatureEngineer:
 
         # 2. Embedding features
         embedding_features, embedding_names = self._extract_embedding_features(
-            match_data
+            match_data,
         )
         feature_names.extend(embedding_names)
 
         # 3. Temporal features (Fourier encoded time)
         temporal_features, temporal_names = self._extract_temporal_features(
-            match_data, match_datetime
+            match_data, match_datetime,
         )
         feature_names.extend(temporal_names)
 
@@ -516,7 +505,7 @@ class AdvancedFeatureEngineer:
             "away_xg": match_data.get("away_xg", 1.0) / 3.0,
         }
         interaction_features, interaction_names = self.poly_interactions.generate(
-            key_features
+            key_features,
         )
         feature_names.extend(interaction_names)
 
@@ -529,8 +518,8 @@ class AdvancedFeatureEngineer:
         )
 
     def _extract_static_features(
-        self, match_data: Dict[str, Any]
-    ) -> Tuple[np.ndarray, List[str]]:
+        self, match_data: dict[str, Any],
+    ) -> tuple[np.ndarray, list[str]]:
         """Extract static numerical features"""
         features = []
         names = []
@@ -613,8 +602,8 @@ class AdvancedFeatureEngineer:
         return np.array(features), names
 
     def _extract_embedding_features(
-        self, match_data: Dict[str, Any]
-    ) -> Tuple[np.ndarray, List[str]]:
+        self, match_data: dict[str, Any],
+    ) -> tuple[np.ndarray, list[str]]:
         """Extract team embedding features"""
         home_team = match_data.get("home_team", "Unknown")
         away_team = match_data.get("away_team", "Unknown")
@@ -629,7 +618,7 @@ class AdvancedFeatureEngineer:
                 away_emb,
                 home_emb - away_emb,  # Difference
                 home_emb * away_emb,  # Element-wise product (interaction)
-            ]
+            ],
         )
 
         names = []
@@ -650,8 +639,8 @@ class AdvancedFeatureEngineer:
         return features, names
 
     def _extract_temporal_features(
-        self, match_data: Dict[str, Any], match_datetime: Optional[datetime]
-    ) -> Tuple[np.ndarray, List[str]]:
+        self, match_data: dict[str, Any], match_datetime: datetime | None,
+    ) -> tuple[np.ndarray, list[str]]:
         """Extract temporal features with Fourier encoding"""
         if match_datetime is None:
             match_datetime = datetime.now()
@@ -710,8 +699,8 @@ class AdvancedFeatureEngineer:
         return np.array(features), names
 
     def _extract_momentum_features(
-        self, match_data: Dict[str, Any]
-    ) -> Tuple[np.ndarray, List[str]]:
+        self, match_data: dict[str, Any],
+    ) -> tuple[np.ndarray, list[str]]:
         """Extract momentum indicators from form history"""
         features = []
         names = []
@@ -737,7 +726,7 @@ class AdvancedFeatureEngineer:
         features.append(home_r2)
         names.append("home_trend_strength")
         features.append(
-            1.0 if home_trend == "up" else (-1.0 if home_trend == "down" else 0.0)
+            1.0 if home_trend == "up" else (-1.0 if home_trend == "down" else 0.0),
         )
         names.append("home_trend_direction")
 
@@ -758,7 +747,7 @@ class AdvancedFeatureEngineer:
         features.append(away_r2)
         names.append("away_trend_strength")
         features.append(
-            1.0 if away_trend == "up" else (-1.0 if away_trend == "down" else 0.0)
+            1.0 if away_trend == "up" else (-1.0 if away_trend == "down" else 0.0),
         )
         names.append("away_trend_direction")
 
@@ -771,12 +760,12 @@ class AdvancedFeatureEngineer:
         return np.array(features), names
 
     def update_from_result(
-        self, home_team: str, away_team: str, home_goals: int, away_goals: int
+        self, home_team: str, away_team: str, home_goals: int, away_goals: int,
     ):
         """Update feature engineering models from match result"""
         # Update team embeddings
         self.team_embeddings.update_from_match(
-            home_team, away_team, home_goals, away_goals
+            home_team, away_team, home_goals, away_goals,
         )
 
         # Save state periodically
@@ -807,7 +796,7 @@ class AdvancedFeatureEngineer:
             return
 
         try:
-            with open(state_path, "r") as f:
+            with open(state_path) as f:
                 state = json.load(f)
 
             self.team_embeddings.team_embeddings = {
@@ -870,7 +859,7 @@ if __name__ == "__main__":
     print(f"   Interaction features: {len(feature_set.interaction_features)} dims")
     print(f"   Embedding features: {len(feature_set.embedding_features)} dims")
     print(f"   Total features: {len(feature_set.to_flat_array())} dims")
-    print(f"\n   Sample feature names:")
+    print("\n   Sample feature names:")
     for name in feature_set.feature_names[:10]:
         print(f"      - {name}")
     print(f"   ... and {len(feature_set.feature_names) - 10} more")

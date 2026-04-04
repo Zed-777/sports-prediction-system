@@ -37,7 +37,7 @@ def test_run_backtest_calls_backtester(tmp_path, monkeypatch):
 
     class StubBacktester:
         def run_backtest(
-            self, predictor=None, model_name=None, test_matches=None, **kwargs
+            self, predictor=None, model_name=None, test_matches=None, **kwargs,
         ):
             # Record what we got
             called["predictor_callable"] = callable(predictor)
