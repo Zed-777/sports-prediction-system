@@ -2,7 +2,6 @@ import json
 import time
 from types import SimpleNamespace
 
-
 from app.data.connectors.injuries import InjuriesConnector
 
 
@@ -27,7 +26,7 @@ def test_api_429_fallback_to_flashscore(monkeypatch, tmp_path):
 
     # Simulate 429 from API-Football
     def fake_safe_get_429(url, headers=None, params=None, timeout=None, retries=None, backoff=None):
-        return SimpleNamespace(status_code=429, headers={}, text="429", json=lambda: {})
+        return SimpleNamespace(status_code=429, headers={}, text="429", json=dict)
 
     monkeypatch.setattr("app.data.connectors.injuries.safe_request_get", fake_safe_get_429)
 

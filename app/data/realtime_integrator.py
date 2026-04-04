@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""
-Real-Time Data Integration System
+"""Real-Time Data Integration System
 Phase 1: Enhanced data collection with player injuries, team form, weather, and referee analysis
 """
 
 import json
 import os
 from dataclasses import dataclass
-from typing import Any, Union, Dict
+from typing import Any
 
 import numpy as np
+
 from app.utils.http import safe_request_get
 
 
@@ -65,7 +65,7 @@ class RealTimeDataIntegrator:
 
     def __init__(self) -> None:
         self.football_api_key = os.getenv(
-            "FOOTBALL_DATA_API_KEY", "REDACTED_API_KEY"
+            "FOOTBALL_DATA_API_KEY", "REDACTED_API_KEY",
         )
         self.weather_api_base = "https://api.open-meteo.com/v1/forecast"
         self.headers = {"X-Auth-Token": self.football_api_key}
@@ -99,30 +99,29 @@ class RealTimeDataIntegrator:
         # Referee profiles (simulated but realistic)
         self.referee_database = {
             "Antonio Mateu Lahoz": RefereeProfile(
-                "Antonio Mateu Lahoz", 4.2, 0.3, 0.05, 0.85
+                "Antonio Mateu Lahoz", 4.2, 0.3, 0.05, 0.85,
             ),
             "José María Sánchez Martínez": RefereeProfile(
-                "José María Sánchez Martínez", 3.8, 0.25, -0.02, 0.75
+                "José María Sánchez Martínez", 3.8, 0.25, -0.02, 0.75,
             ),
             "Carlos del Cerro Grande": RefereeProfile(
-                "Carlos del Cerro Grande", 4.0, 0.28, 0.08, 0.80
+                "Carlos del Cerro Grande", 4.0, 0.28, 0.08, 0.80,
             ),
             "Jesús Gil Manzano": RefereeProfile(
-                "Jesús Gil Manzano", 4.5, 0.35, 0.03, 0.90
+                "Jesús Gil Manzano", 4.5, 0.35, 0.03, 0.90,
             ),
         }
 
     def get_team_recent_form(self, team_name: str, team_id: int) -> TeamForm:
         """Analyze team's last 5 matches for form rating"""
-
         try:
             # Get recent matches
             url = f"https://api.football-data.org/v4/teams/{team_id}/matches"
-            params: Dict[str, Union[str, int]] = {"status": "FINISHED", "limit": 5}
+            params: dict[str, str | int] = {"status": "FINISHED", "limit": 5}
             params = {k: str(v) for k, v in params.items()}
 
             response = safe_request_get(
-                url, headers=self.headers, params=params, timeout=10, logger=None
+                url, headers=self.headers, params=params, timeout=10, logger=None,
             )
 
             if response.status_code == 200:
@@ -182,7 +181,7 @@ class RealTimeDataIntegrator:
         # Fallback form data
         simulated_results = np.random.choice(["W", "D", "L"], 5, p=[0.4, 0.3, 0.3])
         points = sum(
-            [3 if r == "W" else 1 if r == "D" else 0 for r in simulated_results]
+            [3 if r == "W" else 1 if r == "D" else 0 for r in simulated_results],
         )
 
         return TeamForm(
@@ -196,12 +195,11 @@ class RealTimeDataIntegrator:
         )
 
     def get_weather_conditions(
-        self, latitude: float, longitude: float, match_date: str
+        self, latitude: float, longitude: float, match_date: str,
     ) -> WeatherConditions:
         """Get weather forecast for match location and date"""
-
         try:
-            params: Dict[str, Union[str, int, float]] = {
+            params: dict[str, str | int | float] = {
                 "latitude": latitude,
                 "longitude": longitude,
                 "start_date": match_date,
@@ -212,7 +210,7 @@ class RealTimeDataIntegrator:
             params = {k: str(v) for k, v in params.items()}
 
             response = safe_request_get(
-                self.weather_api_base, params=params, timeout=10, logger=None
+                self.weather_api_base, params=params, timeout=10, logger=None,
             )
 
             if response.status_code == 200:
@@ -271,7 +269,6 @@ class RealTimeDataIntegrator:
 
     def get_player_availability_impact(self, team_name: str) -> tuple[float, list[str]]:
         """Calculate team strength impact from player availability"""
-
         if team_name not in self.key_players:
             return 1.0, ["No key player data available"]
 
@@ -287,7 +284,7 @@ class RealTimeDataIntegrator:
                 availability_notes.append(f"{player.name} doubtful ({player.position})")
             elif player.status in ["injured", "suspended"]:
                 availability_notes.append(
-                    f"{player.name} unavailable ({player.position})"
+                    f"{player.name} unavailable ({player.position})",
                 )
 
         # Normalize impact (assume max possible impact is sum of all key players)
@@ -300,7 +297,6 @@ class RealTimeDataIntegrator:
 
     def get_referee_impact(self, referee_name: str | None = None) -> RefereeProfile:
         """Get referee profile and expected impact"""
-
         if referee_name and referee_name in self.referee_database:
             return self.referee_database[referee_name]
 
@@ -309,9 +305,8 @@ class RealTimeDataIntegrator:
 
         return random.choice(list(self.referee_database.values()))
 
-    def integrate_realtime_data(self, match_data: Dict[str, Any]) -> Dict[str, Any]:
+    def integrate_realtime_data(self, match_data: dict[str, Any]) -> dict[str, Any]:
         """Integrate all real-time data sources for a match"""
-
         home_team = match_data["homeTeam"]["name"]
         away_team = match_data["awayTeam"]["name"]
         match_date = match_data["utcDate"][:10]
@@ -320,10 +315,10 @@ class RealTimeDataIntegrator:
 
         # Get team forms
         home_form = self.get_team_recent_form(
-            home_team, match_data["homeTeam"].get("id", 0)
+            home_team, match_data["homeTeam"].get("id", 0),
         )
         away_form = self.get_team_recent_form(
-            away_team, match_data["awayTeam"].get("id", 0)
+            away_team, match_data["awayTeam"].get("id", 0),
         )
 
         # Get player availability impact
@@ -416,9 +411,8 @@ class RealTimeDataIntegrator:
         away_avail: float,
         weather: WeatherConditions,
         referee: RefereeProfile,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Calculate probabilities adjusted for real-time factors"""
-
         # Base probabilities (from previous system)
         base_home = 0.45
         base_away = 0.30

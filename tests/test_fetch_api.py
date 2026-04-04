@@ -15,7 +15,7 @@ from scripts.fetch_historical_api import (
 
 
 @pytest.mark.parametrize(
-    "status,should_raise", [(200, False), (403, True), (429, True)]
+    "status,should_raise", [(200, False), (403, True), (429, True)],
 )
 def test_safe_request_get(tmp_path, status, should_raise):
     url = "https://api.football-data.org/test"
@@ -47,8 +47,8 @@ def test_fetch_fd_matches_parsing(monkeypatch):
                 "awayTeam": {"name": "B"},
                 "score": {"fullTime": {"homeTeam": 2, "awayTeam": 1}},
                 "status": "FINISHED",
-            }
-        ]
+            },
+        ],
     }
     with mock.patch("scripts.fetch_historical_api.safe_request_get") as mock_get:
         mock_resp = mock.Mock()
@@ -70,8 +70,8 @@ def test_fetch_af_matches_parsing(monkeypatch):
                 },
                 "teams": {"home": {"name": "A"}, "away": {"name": "B"}},
                 "score": {"fulltime": {"home": 1, "away": 0}},
-            }
-        ]
+            },
+        ],
     }
     with mock.patch("scripts.fetch_historical_api.safe_request_get") as mock_get:
         mock_resp = mock.Mock()
@@ -95,9 +95,7 @@ def _read_env_key(key: str) -> str | None:
             if line.startswith(f"{key}="):
                 value = line.split("=", 1)[1]
                 # Remove quotes if present
-                if value.startswith('"') and value.endswith('"'):
-                    value = value[1:-1]
-                elif value.startswith("'") and value.endswith("'"):
+                if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
                     value = value[1:-1]
                 return value
     return None
@@ -106,11 +104,11 @@ def _read_env_key(key: str) -> str | None:
 @pytest.mark.skip(reason="Requires real API key; for manual testing only")
 def test_fetch_football_data_org():
     api_key = os.environ.get("FOOTBALL_DATA_API_KEY") or _read_env_key(
-        "FOOTBALL_DATA_API_KEY"
+        "FOOTBALL_DATA_API_KEY",
     )
     if not api_key or api_key.startswith("YOUR_"):
         pytest.skip(
-            "FOOTBALL_DATA_API_KEY not set or placeholder; skipping Football-Data.org API test"
+            "FOOTBALL_DATA_API_KEY not set or placeholder; skipping Football-Data.org API test",
         )
     # Try fetching one season for PD
     # Use sys.executable to ensure we use the same Python as the test
@@ -125,7 +123,7 @@ def test_fetch_api_football():
     api_key = os.environ.get("API_FOOTBALL_KEY") or _read_env_key("API_FOOTBALL_KEY")
     if not api_key or api_key.startswith("YOUR_"):
         pytest.skip(
-            "API_FOOTBALL_KEY not set or placeholder; skipping API-Football test"
+            "API_FOOTBALL_KEY not set or placeholder; skipping API-Football test",
         )
     # Try fetching one season for La Liga (league id 140)
     # Use sys.executable to ensure we use the same Python as the test

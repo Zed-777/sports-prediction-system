@@ -1,7 +1,8 @@
 import os
-import yaml
-import pytest
 from pathlib import Path
+
+import pytest
+import yaml
 
 
 def test_odds_connector_env_present():
@@ -21,9 +22,7 @@ def test_odds_connector_env_present():
                 line = line.strip()
                 if line.startswith(f"{key}="):
                     value = line.split("=", 1)[1]
-                    if value.startswith('"') and value.endswith('"'):
-                        value = value[1:-1]
-                    elif value.startswith("'") and value.endswith("'"):
+                    if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
                         value = value[1:-1]
                     return value
         return None
@@ -32,7 +31,7 @@ def test_odds_connector_env_present():
         # Skip if env var not set and no value in .env (optional for local dev, required in CI)
         if os.environ.get(env_key) is None and _read_env_key(env_key) is None:
             pytest.skip(
-                f"Optional env var {env_key} not set for odds provider {provider}"
+                f"Optional env var {env_key} not set for odds provider {provider}",
             )
     # If not configured or env var present, test passes
     assert True

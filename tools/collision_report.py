@@ -71,7 +71,7 @@ def main(image_path):
                 "data_rect": (x, y, w, h),
                 "rect": rect,
                 "area": area(rect),
-            }
+            },
         )
     for name, (cx, cy, r) in gauges:
         x = cx - r
@@ -86,7 +86,7 @@ def main(image_path):
                 "data_rect": (x, y, w, h),
                 "rect": rect,
                 "area": area(rect),
-            }
+            },
         )
     for name, (x, y, w, h) in cols:
         rect = data_to_pixels_rect(x, y, w, h, img_w, img_h)
@@ -97,7 +97,7 @@ def main(image_path):
                 "data_rect": (x, y, w, h),
                 "rect": rect,
                 "area": area(rect),
-            }
+            },
         )
 
     # compute pairwise overlaps
@@ -124,7 +124,7 @@ def main(image_path):
                         "overlap_pct_a": overlap_pct_a,
                         "overlap_pct_b": overlap_pct_b,
                         "inter_rect": inter,
-                    }
+                    },
                 )
 
     overlaps.sort(key=lambda x: x["inter_area"], reverse=True)
@@ -145,7 +145,7 @@ def main(image_path):
         print("Top overlaps:")
         for o in overlaps[:10]:
             print(
-                f"{o['a']} ({o['a_type']}) <-> {o['b']} ({o['b_type']}): area={o['inter_area']} px, {o['overlap_pct_a'] * 100:.1f}% of {o['a']}, {o['overlap_pct_b'] * 100:.1f}% of {o['b']}"
+                f"{o['a']} ({o['a_type']}) <-> {o['b']} ({o['b_type']}): area={o['inter_area']} px, {o['overlap_pct_a'] * 100:.1f}% of {o['a']}, {o['overlap_pct_b'] * 100:.1f}% of {o['b']}",
             )
     else:
         print("No overlaps detected")

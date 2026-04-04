@@ -1,0 +1,81 @@
+graph TB
+    subgraph "External Sources"
+        FDAPI["Football-Data.org API"]
+        AFAPI["API-Football RapidAPI"]
+        FBREF["FBref / Understat"]
+        WEATHER["Open-Meteo Weather"]
+        ODDS["The Odds API"]
+    end
+
+    subgraph "App Layer - Data Ingestion"
+        CONNECTORS["app/data/connectors/"]
+        CACHE["Cache Layer<br/>data/cache/"]
+        VALIDATE["Data Validation<br/>data_quality_enhancer.py"]
+    end
+
+    subgraph "App Layer - Processing"
+        FEATURES["Feature Engineering<br/>app/features/"]
+        MODELS["ML Models<br/>app/models/"]
+        ENSEMBLE["Ensemble Aggregation<br/>+ 6-layer Calibration"]
+    end
+
+    subgraph "App Layer - Output"
+        REPORTS["Report Generation<br/>app/reports/"]
+        STORAGE["Output Storage<br/>data/processed/<br/>reports/"]
+    end
+
+    subgraph "Configuration & Utilities"
+        CONFIG["config/<br/>settings.yaml<br/>team_name_map.yaml"]
+        UTILS["app/utils/<br/>HTTP, Logging, Cache"]
+    end
+
+    subgraph "CI/CD & Automation"
+        TESTS["tests/<br/>Unit + Integration"]
+        CI["GitHub Actions<br/>.github/workflows/"]
+        SCHED["Scheduled Tasks<br/>scripts/"]
+    end
+
+    %% Data flow
+    FDAPI --> CONNECTORS
+    AFAPI --> CONNECTORS
+    FBREF --> CONNECTORS
+    WEATHER --> CONNECTORS
+    ODDS --> CONNECTORS
+
+    CONNECTORS --> CACHE
+    CACHE --> VALIDATE
+
+    VALIDATE --> FEATURES
+    FEATURES --> MODELS
+
+    MODELS --> ENSEMBLE
+    ENSEMBLE --> REPORTS
+    REPORTS --> STORAGE
+
+    %% Config connections
+    CONFIG -.->|rate limits, cache TTL| CONNECTORS
+    CONFIG -.->|model params| MODELS
+    UTILS -.->|used by all| CONNECTORS
+    UTILS -.->|used by all| VALIDATE
+    UTILS -.->|used by all| FEATURES
+
+    %% Testing/CI
+    TESTS -.->|validates| FEATURES
+    TESTS -.->|validates| MODELS
+    CI -.->|runs on| TESTS
+    SCHED -.->|triggers| CONNECTORS
+
+    %% Styling
+    classDef external fill:#ff9999
+    classDef ingestion fill:#ffcc99
+    classDef processing fill:#99ccff
+    classDef output fill:#99ff99
+    classDef config fill:#ffff99
+    classDef devops fill:#cc99ff
+
+    class FDAPI,AFAPI,FBREF,WEATHER,ODDS external
+    class CONNECTORS,CACHE,VALIDATE ingestion
+    class FEATURES,MODELS,ENSEMBLE processing
+    class REPORTS,STORAGE output
+    class CONFIG,UTILS config
+    class TESTS,CI,SCHED devops

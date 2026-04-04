@@ -18,7 +18,7 @@ def test_shrink_toward_neutral_applied():
 
     expected_shrink = (80.0 - 50.0) / 140.0
     assert math.isclose(
-        result["shrink_factor"], round(expected_shrink, 3), rel_tol=1e-6
+        result["shrink_factor"], round(expected_shrink, 3), rel_tol=1e-6,
     )
 
     pre = result["pre_calibration_probabilities"]
@@ -37,7 +37,7 @@ def test_shrink_toward_neutral_applied():
     out_percentages = _to_percent_list(result["probabilities"])
 
     for out_value, expected_value in zip(
-        out_percentages, expected_percentages, strict=True
+        out_percentages, expected_percentages, strict=True,
     ):
         assert math.isclose(out_value, expected_value, rel_tol=1e-6)
 

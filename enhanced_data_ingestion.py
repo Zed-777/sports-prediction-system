@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Enhanced Data Ingestion System
+"""Enhanced Data Ingestion System
 Multi-source data collection with FlashScore.es integration and advanced caching
 """
 
@@ -18,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 import requests
+
 from app.utils.http import safe_request_get
 
 # Import FlashScore integration
@@ -32,7 +32,7 @@ except ImportError:
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
@@ -111,7 +111,7 @@ class LeagueConfig:
             )
         except KeyError as exc:
             raise ValueError(
-                f"Unknown league '{key}'. Supported: {', '.join(sorted(LEAGUE_CONFIG.keys()))}"
+                f"Unknown league '{key}'. Supported: {', '.join(sorted(LEAGUE_CONFIG.keys()))}",
             ) from exc
 
 
@@ -127,7 +127,7 @@ class EnhancedDataIngestion:
             if FlashScoreScraper is not None and AdvancedDataIntegrator is not None:
                 self.flashscore_scraper = FlashScoreScraper()
                 self.flashscore_integrator = AdvancedDataIntegrator(
-                    self.flashscore_scraper
+                    self.flashscore_scraper,
                 )
                 logger.info("[FLASHSCORE] FlashScore.es integration enabled")
             else:
@@ -139,7 +139,7 @@ class EnhancedDataIngestion:
             self.flashscore_integrator = None
             if enable_flashscore and not FLASHSCORE_AVAILABLE:
                 logger.warning(
-                    "[WARNING] FlashScore integration requested but not available"
+                    "[WARNING] FlashScore integration requested but not available",
                 )
 
         # Rate limiting
@@ -152,14 +152,14 @@ class EnhancedDataIngestion:
         elapsed = time.time() - self.last_request
         if elapsed < self.min_delay:
             sleep_time = min(
-                self.max_delay, self.min_delay + (self.max_delay - self.min_delay) * 0.1
+                self.max_delay, self.min_delay + (self.max_delay - self.min_delay) * 0.1,
             )
             logger.debug(f"Rate limiting: sleeping {sleep_time:.2f}s")
             time.sleep(sleep_time)
         self.last_request = time.time()
 
     def fetch_football_data_matches(
-        self, league: LeagueConfig, season: int
+        self, league: LeagueConfig, season: int,
     ) -> dict[str, Any] | None:
         """Fetch match data from Football-Data.org"""
         url = f"https://api.football-data.org/v4/competitions/{league.code}/matches"
@@ -169,7 +169,7 @@ class EnhancedDataIngestion:
 
         try:
             logger.info(
-                f"[DATA] Fetching {league.name} season {season} from Football-Data.org"
+                f"[DATA] Fetching {league.name} season {season} from Football-Data.org",
             )
             response = safe_request_get(
                 url,
@@ -192,12 +192,12 @@ class EnhancedDataIngestion:
 
         except requests.RequestException as e:
             logger.error(
-                f"[ERROR] Failed to fetch Football-Data for {league.code} season {season}: {e}"
+                f"[ERROR] Failed to fetch Football-Data for {league.code} season {season}: {e}",
             )
             return None
 
     def fetch_flashscore_data(
-        self, league: LeagueConfig, days_ahead: int = 30
+        self, league: LeagueConfig, days_ahead: int = 30,
     ) -> dict[str, Any] | None:
         """Fetch additional data from FlashScore"""
         if not self.flashscore_scraper or not league.flashscore_url:
@@ -227,7 +227,7 @@ class EnhancedDataIngestion:
             else:
                 # Get upcoming matches
                 matches = self.flashscore_scraper.get_league_matches(
-                    league.folder, days_ahead
+                    league.folder, days_ahead,
                 )
 
                 # Get live scores if any
@@ -245,7 +245,7 @@ class EnhancedDataIngestion:
 
         except Exception as e:
             logger.error(
-                f"[ERROR] Failed to fetch FlashScore data for {league.name}: {e}"
+                f"[ERROR] Failed to fetch FlashScore data for {league.name}: {e}",
             )
             return None
 
@@ -282,10 +282,10 @@ class EnhancedDataIngestion:
 
             for fs_match in flashscore_data.get("matches", []):
                 fs_home = normalize(
-                    fs_match.get("home_team", "") or fs_match.get("home", "")
+                    fs_match.get("home_team", "") or fs_match.get("home", ""),
                 )
                 fs_away = normalize(
-                    fs_match.get("away_team", "") or fs_match.get("away", "")
+                    fs_match.get("away_team", "") or fs_match.get("away", ""),
                 )
 
                 matched = False
@@ -332,7 +332,7 @@ class EnhancedDataIngestion:
                         m
                         for m in football_data.get("matches", [])
                         if "flashscore_data" in m
-                    ]
+                    ],
                 ),
                 "live_scores_available": len(flashscore_data.get("live_scores", []))
                 > 0,
@@ -398,7 +398,7 @@ class EnhancedDataIngestion:
             "data_sources": data.get("data_integration", {}).get("sources", []),
             "quality_score": data.get("data_integration", {}).get("quality_score", 0),
             "flashscore_integrated": data.get("flashscore_metadata", {}).get(
-                "integrated", False
+                "integrated", False,
             ),
         }
 
@@ -408,23 +408,23 @@ class EnhancedDataIngestion:
         tmp_path.replace(target)
 
         logger.info(
-            f"[SAVE] Enhanced snapshot: {target} (Quality: {data['snapshot_metadata']['quality_score']:.1f}%)"
+            f"[SAVE] Enhanced snapshot: {target} (Quality: {data['snapshot_metadata']['quality_score']:.1f}%)",
         )
         return target
 
     def ingest_league_season(
-        self, league: LeagueConfig, season: int, force: bool = False
+        self, league: LeagueConfig, season: int, force: bool = False,
     ) -> bool:
         """Ingest complete season data from all available sources"""
         logger.info(
-            f"[START] Starting enhanced ingestion for {league.name} season {season}"
+            f"[START] Starting enhanced ingestion for {league.name} season {season}",
         )
 
         # Fetch Football-Data.org data
         football_data = self.fetch_football_data_matches(league, season)
         if not football_data:
             logger.error(
-                f"[ERROR] Failed to fetch base data for {league.name} season {season}"
+                f"[ERROR] Failed to fetch base data for {league.name} season {season}",
             )
             return False
 
@@ -440,14 +440,14 @@ class EnhancedDataIngestion:
         self.save_enhanced_snapshot(league, season, enhanced_data, force)
 
         logger.info(
-            f"[SUCCESS] Enhanced ingestion complete for {league.name} season {season}"
+            f"[SUCCESS] Enhanced ingestion complete for {league.name} season {season}",
         )
         return True
 
 
 def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Enhanced multi-source data ingestion system."
+        description="Enhanced multi-source data ingestion system.",
     )
     parser.add_argument(
         "--league",
@@ -511,7 +511,7 @@ def resolve_seasons(raw: str | None, years_back: int) -> list[int]:
                 seasons.append(int(chunk))
             except ValueError as exc:
                 raise SystemExit(
-                    f"Invalid season value '{chunk}'. Must be an integer like 2023."
+                    f"Invalid season value '{chunk}'. Must be an integer like 2023.",
                 ) from exc
         return sorted(set(seasons))
     # Football seasons refer to starting year; assume we want completed seasons.
@@ -525,7 +525,7 @@ def main(argv: Iterable[str] | None = None) -> None:
     if args.live_only:
         if not FLASHSCORE_AVAILABLE or FlashScoreScraper is None:
             raise SystemExit(
-                "[ERROR] FlashScore integration required for live-only mode but not available."
+                "[ERROR] FlashScore integration required for live-only mode but not available.",
             )
 
         logger.info("[LIVE] Fetching live scores only...")
@@ -535,7 +535,7 @@ def main(argv: Iterable[str] | None = None) -> None:
         print(f"[DATA] Found {len(live_scores)} live matches:")
         for score in live_scores[:10]:  # Show first 10
             print(
-                f"  • {score.get('home_team', 'Unknown')} vs {score.get('away_team', 'Unknown')}"
+                f"  • {score.get('home_team', 'Unknown')} vs {score.get('away_team', 'Unknown')}",
             )
 
         return
@@ -553,7 +553,7 @@ def main(argv: Iterable[str] | None = None) -> None:
     ingestion = EnhancedDataIngestion(api_key, enable_flashscore)
 
     logger.info(
-        f"[START] Starting enhanced ingestion for {len(seasons)} season(s) of {args.league}"
+        f"[START] Starting enhanced ingestion for {len(seasons)} season(s) of {args.league}",
     )
     if enable_flashscore:
         logger.info("[FLASHSCORE] FlashScore.es integration enabled")
@@ -577,7 +577,7 @@ def main(argv: Iterable[str] | None = None) -> None:
             time.sleep(max(args.delay, 0.0))
 
     logger.info(
-        f"[COMPLETE] Successfully ingested {success_count}/{len(seasons)} seasons for {args.league}"
+        f"[COMPLETE] Successfully ingested {success_count}/{len(seasons)} seasons for {args.league}",
     )
 
 

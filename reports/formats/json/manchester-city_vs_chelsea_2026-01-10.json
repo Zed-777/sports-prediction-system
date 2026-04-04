@@ -40,10 +40,10 @@
       "injury_areas": [],
       "expected_lineup_strength": null,
       "injury_concerns": [
-        "Squad data unavailable"
+        "Injury data unavailable - requires external injury API"
       ],
       "squad_size": null,
-      "recommendation": "Check Football-Data.org API connectivity",
+      "recommendation": "Integrate with API-Football (recommended) or Transfermarkt/PhysioRoom",
       "provenance": {
         "injury_clamped": false,
         "clamped_fields": {}
@@ -58,10 +58,10 @@
       "injury_areas": [],
       "expected_lineup_strength": null,
       "injury_concerns": [
-        "Squad data unavailable"
+        "Injury data unavailable - requires external injury API"
       ],
       "squad_size": null,
-      "recommendation": "Check Football-Data.org API connectivity",
+      "recommendation": "Integrate with API-Football (recommended) or Transfermarkt/PhysioRoom",
       "provenance": {
         "injury_clamped": false,
         "clamped_fields": {}
@@ -207,7 +207,7 @@
     "optimization_applied": false,
     "ensemble_weights": {}
   },
-  "generated_at": "2026-03-23T22:44:49.626190",
+  "generated_at": "2026-04-03T20:03:55.911662",
   "provider_ids": {
     "football_data_id": null,
     "flashscore_id": null

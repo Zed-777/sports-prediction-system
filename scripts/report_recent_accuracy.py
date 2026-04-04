@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
-"""
-Report recent accuracy per league from data/historical/*.json
+"""Report recent accuracy per league from data/historical/*.json
 
 Usage:
     python scripts/report_recent_accuracy.py --recent 10
 """
 
-import json
-from pathlib import Path
-from datetime import datetime
 import argparse
+import json
+from datetime import datetime
+from pathlib import Path
 
 HIST_DIR = Path(__file__).parent.parent / "data" / "historical"
 
@@ -95,7 +94,7 @@ def main():
 
     for f in files:
         league = f.name.replace("_results.json", "")
-        with open(f, "r", encoding="utf-8") as fh:
+        with open(f, encoding="utf-8") as fh:
             try:
                 data = json.load(fh)
             except Exception:
@@ -111,7 +110,7 @@ def main():
             if not r.get("prediction", {}).get("predicted_outcome"):
                 r["prediction"]["predicted_outcome"] = derive_predicted(r)
         completed.sort(
-            key=lambda x: x.get("_parsed_date") or datetime.min, reverse=True
+            key=lambda x: x.get("_parsed_date") or datetime.min, reverse=True,
         )
 
         total = len(completed)
@@ -140,7 +139,7 @@ def main():
                     "correct": bool(r.get("prediction_correct", False)),
                     "exact": bool(r.get("exact_score_correct", False)),
                     "top3": bool(r.get("score_in_top3", False)),
-                }
+                },
             )
 
     # Print report
@@ -163,5 +162,5 @@ def main():
             top3_mark = "TOP3" if m.get("top3") else ""
             markers = " ".join([x for x in (exact_mark, top3_mark) if x])
             print(
-                f"    {status} {m['date']} | {m['teams']} | Predicted: {m['predicted']} | Actual: {m['actual']} {markers}"
+                f"    {status} {m['date']} | {m['teams']} | Predicted: {m['predicted']} | Actual: {m['actual']} {markers}",
             )

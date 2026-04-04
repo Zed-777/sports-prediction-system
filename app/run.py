@@ -1,5 +1,4 @@
-"""
-Main CLI entry point for the Sports Prediction System
+"""Main CLI entry point for the Sports Prediction System
 """
 
 import asyncio
@@ -24,7 +23,7 @@ console = Console()
 @click.group()
 @click.version_option(version="1.0.0")
 @click.option(
-    "--config", "-c", default="config/settings.yaml", help="Configuration file path"
+    "--config", "-c", default="config/settings.yaml", help="Configuration file path",
 )
 @click.option("--verbose", "-v", is_flag=True, help="Enable verbose logging")
 @click.pass_context
@@ -60,7 +59,7 @@ def main(ctx: click.Context, config: str, verbose: bool) -> None:
 
 @main.command()
 @click.option(
-    "--league", required=True, help='League name (e.g., "La Liga", "Premier League")'
+    "--league", required=True, help='League name (e.g., "La Liga", "Premier League")',
 )
 @click.option("--season", help='Season (e.g., "2023-24")')
 @click.option("--start-date", help="Start date for data collection (YYYY-MM-DD)")
@@ -79,6 +78,7 @@ def ingest(
 
     Example:
         sports-forecast ingest --league "La Liga" --season "2023-24"
+
     """
     config = ctx.obj["config"]
 
@@ -94,7 +94,7 @@ def ingest(
                 start_date=start_date,
                 end_date=end_date,
                 force_refresh=force,
-            )
+            ),
         )
         console.print(f"[green]✅ Data ingestion completed for {league}[/green]")
 
@@ -127,6 +127,7 @@ def train(
 
     Example:
         sports-forecast train --league "La Liga" --model ensemble --tune
+
     """
     config = ctx.obj["config"]
 
@@ -186,6 +187,7 @@ def predict(
 
     Example:
         sports-forecast predict --league "La Liga" --date "2025-10-20"
+
     """
     config = ctx.obj["config"]
 
@@ -195,7 +197,7 @@ def predict(
 
     try:
         predictions = engine.predict_matches(
-            league=league, prediction_date=date, model_name=model
+            league=league, prediction_date=date, model_name=model,
         )
 
         if output_format == "table":
@@ -217,13 +219,12 @@ def predict(
 
             console.print(table)
 
+        # Save to file or print
+        elif output:
+            engine.save_predictions(predictions, output, output_format)
+            console.print(f"[green]📁 Predictions saved to {output}[/green]")
         else:
-            # Save to file or print
-            if output:
-                engine.save_predictions(predictions, output, output_format)
-                console.print(f"[green]📁 Predictions saved to {output}[/green]")
-            else:
-                console.print(predictions)
+            console.print(predictions)
 
         console.print("[green]✅ Predictions generated successfully[/green]")
 
@@ -255,6 +256,7 @@ def report(
 
     Example:
         sports-forecast report --league "La Liga" --date "2025-10-20" --formats "md,png,pdf"
+
     """
     config = ctx.obj["config"]
     format_list = [f.strip() for f in formats.split(",")]
@@ -286,7 +288,7 @@ def report(
                 formats=format_list,
                 output_dir=output_dir,
                 template_path=template,
-            )
+            ),
         )
 
         console.print("[green]✅ Reports generated:[/green]")
@@ -308,6 +310,7 @@ def dashboard(ctx: click.Context, host: str, port: int, dev: bool) -> None:
 
     Example:
         sports-forecast dashboard --host 0.0.0.0 --port 8000
+
     """
     config = ctx.obj["config"]
 
@@ -340,6 +343,7 @@ def validate(
 
     Example:
         sports-forecast validate --league "La Liga" --model ensemble
+
     """
     console.print("[blue]🧪 Running model validation...[/blue]")
 
@@ -353,12 +357,13 @@ def validate(
 @click.option("--min-matches", default=50, help="Minimum training matches required for backtest")
 @click.pass_context
 def backtest(
-    ctx: click.Context, league: str, model: str, min_matches: int
+    ctx: click.Context, league: str, model: str, min_matches: int,
 ) -> None:
     """Run a historical backtest for a specific league using the optimizer/backtester.
 
     Example:
         sports-forecast backtest --league "La Liga" --min-matches 50
+
     """
     console.print(f"[blue]🧪 Running backtest for {league} (min matches: {min_matches})[/blue]")
 
@@ -368,7 +373,7 @@ def backtest(
         optimizer = AccuracyOptimizer()
         # Use min_matches as parameter override
         result = optimizer.run_backtest(
-            league=league, parameter_overrides={"min_train_matches": min_matches}
+            league=league, parameter_overrides={"min_train_matches": min_matches},
         )
         normalized = optimizer._normalize_backtest_output(result)
 
@@ -376,7 +381,7 @@ def backtest(
         if "summary" in normalized:
             s = normalized["summary"]
             console.print(
-                f"[green]✅ Backtest complete: {s['total_matches']} matches, accuracy {s['accuracy']:.2%}[/green]"
+                f"[green]✅ Backtest complete: {s['total_matches']} matches, accuracy {s['accuracy']:.2%}[/green]",
             )
             console.print(f"  Mean Brier: {s['mean_brier_score']:.4f}  Mean log loss: {s['mean_log_loss']:.4f}")
         else:
@@ -397,10 +402,11 @@ if __name__ == "__main__":
 @main.command()
 @click.pass_context
 def run_prune(ctx: click.Context) -> None:
-    """
-    Prune all generated reports and outputs, preserving directory structure and .keep files.
+    """Prune all generated reports and outputs, preserving directory structure and .keep files.
+
     Example:
         python -m app.cli run-prune
+
     """
     console.print("[blue]🧹 Pruning all generated reports...[/blue]")
     try:
@@ -427,7 +433,7 @@ def run_prune(ctx: click.Context) -> None:
                         remaining.append(path)
         if remaining:
             console.print(
-                "[yellow]⚠️ Warning: Some match directories remain after prune:[/yellow]"
+                "[yellow]⚠️ Warning: Some match directories remain after prune:[/yellow]",
             )
             for path in remaining:
                 console.print(f"  [red]{path}[/red]")

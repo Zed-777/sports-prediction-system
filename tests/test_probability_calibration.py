@@ -1,5 +1,4 @@
-"""
-Tests for app/models/calibration.py  (TODO #24, #27, #34)
+"""Tests for app/models/calibration.py  (TODO #24, #27, #34)
 Isotonic regression, Brier score, ECE, league registry, BrierScoreTracker.
 """
 
@@ -18,7 +17,6 @@ from app.models.calibration import (
     ProbabilityCalibrator,
     calibrate_prediction,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

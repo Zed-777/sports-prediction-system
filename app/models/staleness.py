@@ -1,5 +1,4 @@
-"""
-Model Staleness Detection (TODO #38)
+"""Model Staleness Detection (TODO #38)
 =====================================
 Detects when a trained model or data artifact is too old / degraded to be
 trusted for live predictions, preventing stale-model bets.
@@ -26,14 +25,11 @@ Typical usage
 
 from __future__ import annotations
 
-import os
 import time
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional
-
 
 # ---------------------------------------------------------------------------
 # Enums / constants
@@ -63,14 +59,14 @@ DEFAULT_PROB_WINDOW         = 100    # number of recent predictions for drift ch
 class FileAgeCheck:
     path: str
     exists: bool
-    age_days: Optional[float]         # None if file does not exist
+    age_days: float | None         # None if file does not exist
     severity: Severity
     message: str
 
 
 @dataclass
 class AccuracyCheck:
-    rolling_accuracy: Optional[float]  # None if not enough data
+    rolling_accuracy: float | None  # None if not enough data
     baseline_accuracy: float
     n_samples: int
     severity: Severity
@@ -79,9 +75,9 @@ class AccuracyCheck:
 
 @dataclass
 class DriftCheck:
-    current_mean_prob: Optional[float]
+    current_mean_prob: float | None
     baseline_mean_prob: float
-    shift: Optional[float]             # |current - baseline|, None if insufficient
+    shift: float | None             # |current - baseline|, None if insufficient
     n_samples: int
     severity: Severity
     message: str
@@ -90,14 +86,15 @@ class DriftCheck:
 @dataclass
 class StalenessReport:
     """Aggregated staleness report for one model / artifact."""
+
     model_name: str
     checked_at: str                    # ISO-8601 UTC
-    file_check:     Optional[FileAgeCheck]
-    accuracy_check: Optional[AccuracyCheck]
-    drift_check:    Optional[DriftCheck]
+    file_check:     FileAgeCheck | None
+    accuracy_check: AccuracyCheck | None
+    drift_check:    DriftCheck | None
     overall_severity: Severity
     blocking: bool                     # True → live predictions should be halted
-    reasons: List[str] = field(default_factory=list)
+    reasons: list[str] = field(default_factory=list)
 
     def summary(self) -> str:
         icon = {"OK": "✓", "WARNING": "⚠", "STALE": "✗"}.get(self.overall_severity, "?")
@@ -110,8 +107,7 @@ class StalenessReport:
 # ---------------------------------------------------------------------------
 
 class ModelStalenessDetector:
-    """
-    Checks model artifacts and live performance metrics for staleness.
+    """Checks model artifacts and live performance metrics for staleness.
 
     Parameters
     ----------
@@ -122,6 +118,7 @@ class ModelStalenessDetector:
     drift_warn         : probability drift WARNING threshold (default 0.10)
     drift_hard         : probability drift STALE threshold   (default 0.20)
     prob_window        : rolling window size for drift detection (default 100)
+
     """
 
     def __init__(
@@ -144,16 +141,15 @@ class ModelStalenessDetector:
 
         # Rolling buffers for live accuracy / drift tracking
         # Populated externally by calling ``record_prediction``
-        self._recent_correct:  List[int]   = []  # 1 = correct, 0 = incorrect
-        self._recent_probs:    List[float] = []  # predicted probability values
+        self._recent_correct:  list[int]   = []  # 1 = correct, 0 = incorrect
+        self._recent_probs:    list[float] = []  # predicted probability values
 
     # ------------------------------------------------------------------
     # External update interface
     # ------------------------------------------------------------------
 
     def record_prediction(self, predicted_prob: float, is_correct: bool) -> None:
-        """
-        Feed a new live prediction result into the rolling buffers.
+        """Feed a new live prediction result into the rolling buffers.
         Call this every time the model makes a verifiable prediction.
         """
         self._recent_correct.append(1 if is_correct else 0)
@@ -200,11 +196,10 @@ class ModelStalenessDetector:
 
     def check_accuracy(
         self,
-        recent_correct: Optional[List[int]] = None,
+        recent_correct: list[int] | None = None,
         baseline: float = 0.60,
     ) -> AccuracyCheck:
-        """
-        Check rolling accuracy vs baseline.
+        """Check rolling accuracy vs baseline.
         Uses internal buffer if ``recent_correct`` is not supplied.
         """
         buf = recent_correct if recent_correct is not None else self._recent_correct
@@ -230,11 +225,10 @@ class ModelStalenessDetector:
 
     def check_drift(
         self,
-        recent_probs: Optional[List[float]] = None,
+        recent_probs: list[float] | None = None,
         baseline_mean_prob: float = 0.60,
     ) -> DriftCheck:
-        """
-        Check whether the distribution of predicted probabilities has shifted.
+        """Check whether the distribution of predicted probabilities has shifted.
         Uses internal buffer if ``recent_probs`` is not supplied.
         """
         buf = recent_probs if recent_probs is not None else self._recent_probs
@@ -265,15 +259,14 @@ class ModelStalenessDetector:
 
     def check_model(
         self,
-        model_path: Optional[str] = None,
+        model_path: str | None = None,
         model_name: str = "model",
         baseline_accuracy: float = 0.60,
         baseline_mean_prob: float = 0.60,
-        recent_correct: Optional[List[int]] = None,
-        recent_probs:   Optional[List[float]] = None,
+        recent_correct: list[int] | None = None,
+        recent_probs:   list[float] | None = None,
     ) -> StalenessReport:
-        """
-        Run all configured checks and return an aggregated StalenessReport.
+        """Run all configured checks and return an aggregated StalenessReport.
 
         Parameters
         ----------
@@ -283,13 +276,14 @@ class ModelStalenessDetector:
         baseline_mean_prob: expected mean predicted probability
         recent_correct   : override for accuracy buffer
         recent_probs     : override for drift buffer
+
         """
         file_check     = self.check_file_age(model_path) if model_path else None
         accuracy_check = self.check_accuracy(recent_correct, baseline=baseline_accuracy)
         drift_check    = self.check_drift(recent_probs, baseline_mean_prob=baseline_mean_prob)
 
         # Determine overall severity (worst of all checks)
-        severities: List[Severity] = []
+        severities: list[Severity] = []
         if file_check:     severities.append(file_check.severity)
         if accuracy_check: severities.append(accuracy_check.severity)
         if drift_check:    severities.append(drift_check.severity)
@@ -308,7 +302,7 @@ class ModelStalenessDetector:
 
         return StalenessReport(
             model_name=model_name,
-            checked_at=datetime.now(timezone.utc).isoformat(),
+            checked_at=datetime.now(UTC).isoformat(),
             file_check=file_check,
             accuracy_check=accuracy_check,
             drift_check=drift_check,
@@ -322,10 +316,9 @@ class ModelStalenessDetector:
     # ------------------------------------------------------------------
 
     def check_many(
-        self, model_paths: Dict[str, str], **kwargs
-    ) -> Dict[str, StalenessReport]:
-        """
-        Check multiple model artifacts at once.
+        self, model_paths: dict[str, str], **kwargs,
+    ) -> dict[str, StalenessReport]:
+        """Check multiple model artifacts at once.
         ``model_paths`` = {"model_name": "/path/to/artifact", ...}
         ``kwargs`` are passed to each ``check_model`` call.
         """
@@ -334,7 +327,7 @@ class ModelStalenessDetector:
             for name, path in model_paths.items()
         }
 
-    def any_blocking(self, reports: Dict[str, StalenessReport]) -> bool:
+    def any_blocking(self, reports: dict[str, StalenessReport]) -> bool:
         """Return True if any report in the dict requires blocking."""
         return any(r.blocking for r in reports.values())
 
@@ -346,11 +339,10 @@ class ModelStalenessDetector:
 def is_model_stale(
     model_path: str,
     max_age_days: float = DEFAULT_MAX_AGE_DAYS,
-    recent_accuracy: Optional[float] = None,
+    recent_accuracy: float | None = None,
     accuracy_floor: float = DEFAULT_ACCURACY_FLOOR_WARN,
 ) -> bool:
-    """
-    Quick yes/no check: is the model stale?
+    """Quick yes/no check: is the model stale?
 
     Parameters
     ----------
@@ -362,6 +354,7 @@ def is_model_stale(
     Returns
     -------
     True if model should be considered stale.
+
     """
     detector = ModelStalenessDetector(
         max_age_days_warn=max_age_days,

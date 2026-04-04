@@ -1,5 +1,4 @@
-"""
-Synthetic Rate Monitor (TODO #49)
+"""Synthetic Rate Monitor (TODO #49)
 ===================================
 Tracks the fraction of qualifying bets / predictions that are based on
 *synthetic* (simulated) data vs *real* historical outcomes, and raises
@@ -35,11 +34,9 @@ import json
 import os
 from collections import deque
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional
-
 
 # ---------------------------------------------------------------------------
 # Enums / constants
@@ -65,6 +62,7 @@ DEFAULT_WINDOW             = 500    # rolling window size
 @dataclass
 class SyntheticRateAlert:
     """Current alert state from the synthetic rate monitor."""
+
     level:             AlertLevel
     synthetic_count:   int
     real_count:        int
@@ -74,7 +72,7 @@ class SyntheticRateAlert:
     min_real_met:      bool           # True if real ≥ min_real_for_live
     message:           str
     checked_at:        str            # ISO-8601
-    per_league:        Dict[str, dict] = field(default_factory=dict)
+    per_league:        dict[str, dict] = field(default_factory=dict)
 
     def is_safe_for_live(self) -> bool:
         return self.level == AlertLevel.SAFE and self.min_real_met
@@ -95,8 +93,7 @@ class SyntheticRateAlert:
 # ---------------------------------------------------------------------------
 
 class SyntheticRateMonitor:
-    """
-    Rolling-window monitor for the synthetic vs real data ratio.
+    """Rolling-window monitor for the synthetic vs real data ratio.
 
     Parameters
     ----------
@@ -105,6 +102,7 @@ class SyntheticRateMonitor:
     min_real_for_live   : minimum number of real bets before live-trading ok (100)
     window              : rolling window size (500)
     persist_path        : optional JSON file for state persistence
+
     """
 
     def __init__(
@@ -113,7 +111,7 @@ class SyntheticRateMonitor:
         critical_threshold: float = DEFAULT_CRITICAL_THRESHOLD,
         min_real_for_live: int   = DEFAULT_MIN_REAL_FOR_LIVE,
         window:            int   = DEFAULT_WINDOW,
-        persist_path:      Optional[str] = None,
+        persist_path:      str | None = None,
     ) -> None:
         self.warn_threshold     = warn_threshold
         self.critical_threshold = critical_threshold
@@ -125,8 +123,8 @@ class SyntheticRateMonitor:
         self._buffer: deque = deque(maxlen=window)
 
         # Per-league accumulators (all-time, not just rolling window)
-        self._league_real:      Dict[str, int] = {}
-        self._league_synthetic: Dict[str, int] = {}
+        self._league_real:      dict[str, int] = {}
+        self._league_synthetic: dict[str, int] = {}
 
         # All-time totals (supplement rolling window stats)
         self._total_real      = 0
@@ -142,17 +140,17 @@ class SyntheticRateMonitor:
     def record(
         self,
         is_synthetic: bool,
-        league:       Optional[str] = None,
-        timestamp:    Optional[str] = None,
+        league:       str | None = None,
+        timestamp:    str | None = None,
     ) -> None:
-        """
-        Record one bet/prediction.
+        """Record one bet/prediction.
 
         Parameters
         ----------
         is_synthetic : True if based on synthetic/simulated data
         league       : league code (optional, for per-league breakdown)
         timestamp    : ISO-8601 string (optional, informational only)
+
         """
         lg = league or "_all"
         self._buffer.append((is_synthetic, lg))
@@ -165,9 +163,8 @@ class SyntheticRateMonitor:
             self._league_real[lg] = self._league_real.get(lg, 0) + 1
             self._total_real += 1
 
-    def record_batch(self, records: List[dict]) -> None:
-        """
-        Record multiple bets at once.
+    def record_batch(self, records: list[dict]) -> None:
+        """Record multiple bets at once.
         Each record must have ``is_synthetic`` key; ``league`` is optional.
 
         Example::
@@ -221,7 +218,7 @@ class SyntheticRateMonitor:
             msg += f"  (min real-data bets not yet met: {self._total_real}/{self.min_real_for_live})"
 
         # Per-league breakdown
-        per_league: Dict[str, dict] = {}
+        per_league: dict[str, dict] = {}
         all_leagues = set(self._league_real) | set(self._league_synthetic)
         for lg in sorted(all_leagues):
             r = self._league_real.get(lg, 0)
@@ -241,7 +238,7 @@ class SyntheticRateMonitor:
             real_rate=real_rate,
             min_real_met=min_real_met,
             message=msg,
-            checked_at=datetime.now(timezone.utc).isoformat(),
+            checked_at=datetime.now(UTC).isoformat(),
             per_league=per_league,
         )
 
@@ -249,7 +246,7 @@ class SyntheticRateMonitor:
     # Stats helpers
     # ------------------------------------------------------------------
 
-    def rolling_synthetic_rate(self) -> Optional[float]:
+    def rolling_synthetic_rate(self) -> float | None:
         """Synthetic fraction in the current rolling window (None if empty)."""
         n = len(self._buffer)
         if n == 0:
@@ -270,7 +267,7 @@ class SyntheticRateMonitor:
     # Persistence
     # ------------------------------------------------------------------
 
-    def save(self, path: Optional[str] = None) -> None:
+    def save(self, path: str | None = None) -> None:
         """Persist monitor state to JSON."""
         target = path or self.persist_path
         if not target:
@@ -297,7 +294,7 @@ class SyntheticRateMonitor:
         except Exception:   # noqa: BLE001
             pass  # corrupt state — start fresh
 
-    def load(self, path: Optional[str] = None) -> None:
+    def load(self, path: str | None = None) -> None:
         """Restore state from JSON."""
         target = path or self.persist_path
         if target and os.path.isfile(target):

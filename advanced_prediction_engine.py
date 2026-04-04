@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Advanced Sports Prediction Engine with Dynamic Confidence Calculation
+"""Advanced Sports Prediction Engine with Dynamic Confidence Calculation
 """
 
 import json
@@ -9,6 +8,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import numpy as np
+
 from app.utils.http import safe_request_get
 
 
@@ -17,7 +17,7 @@ class AdvancedPredictionEngine:
 
     def __init__(self):
         self.api_key = os.getenv(
-            "FOOTBALL_DATA_API_KEY", "REDACTED_API_KEY"
+            "FOOTBALL_DATA_API_KEY", "REDACTED_API_KEY",
         )
         self.headers = {"X-Auth-Token": self.api_key}
 
@@ -58,7 +58,6 @@ class AdvancedPredictionEngine:
 
     def calculate_dynamic_confidence(self, home_team, away_team, match_data):
         """Calculate confidence based on multiple factors"""
-
         confidence_factors = {
             "data_quality": 0.0,
             "team_knowledge": 0.0,
@@ -126,8 +125,7 @@ class AdvancedPredictionEngine:
         if team_name in self.team_ratings:
             ratings = self.team_ratings[team_name]
             return (ratings["attack"] + ratings["defense"]) / 2
-        else:
-            return 0.55  # Default for unknown teams
+        return 0.55  # Default for unknown teams
 
     def simulate_h2h_knowledge(self, home_team, away_team):
         """Simulate head-to-head historical knowledge"""
@@ -139,20 +137,18 @@ class AdvancedPredictionEngine:
 
         if home_big and away_big:
             return 0.9  # El Clásico type matches - lots of history
-        elif home_big or away_big:
+        if home_big or away_big:
             return 0.7  # One big club
-        else:
-            return 0.5  # Regular matches
+        return 0.5  # Regular matches
 
     def calculate_advanced_probabilities(self, home_team, away_team, match_data):
         """Calculate probabilities with advanced factors"""
-
         # Get team strengths
         home_ratings = self.team_ratings.get(
-            home_team, {"attack": 0.55, "defense": 0.55}
+            home_team, {"attack": 0.55, "defense": 0.55},
         )
         away_ratings = self.team_ratings.get(
-            away_team, {"attack": 0.55, "defense": 0.55}
+            away_team, {"attack": 0.55, "defense": 0.55},
         )
 
         # Calculate attacking vs defensive matchup
@@ -162,7 +158,7 @@ class AdvancedPredictionEngine:
         # Venue-specific home advantage
         venue = match_data.get("venue", "default")
         home_advantage = self.venue_advantages.get(
-            venue, self.venue_advantages["default"]
+            venue, self.venue_advantages["default"],
         )
 
         # Adjust for team-specific home advantage (some teams play better at home)
@@ -208,12 +204,11 @@ class AdvancedPredictionEngine:
 
     def calculate_expected_goals(self, home_team, away_team, probabilities):
         """Calculate more realistic expected goals"""
-
         home_ratings = self.team_ratings.get(
-            home_team, {"attack": 0.55, "defense": 0.55}
+            home_team, {"attack": 0.55, "defense": 0.55},
         )
         away_ratings = self.team_ratings.get(
-            away_team, {"attack": 0.55, "defense": 0.55}
+            away_team, {"attack": 0.55, "defense": 0.55},
         )
 
         # Base expected goals for La Liga (lower scoring than Premier League)
@@ -241,7 +236,6 @@ class AdvancedPredictionEngine:
 
     def generate_advanced_predictions(self, league="La Liga", prediction_date=None):
         """Generate predictions with advanced analytics"""
-
         if prediction_date is None:
             prediction_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
 
@@ -277,22 +271,22 @@ class AdvancedPredictionEngine:
 
             # Calculate dynamic confidence
             confidence, confidence_breakdown = self.calculate_dynamic_confidence(
-                home_team, away_team, match
+                home_team, away_team, match,
             )
 
             # Calculate advanced probabilities
             probabilities = self.calculate_advanced_probabilities(
-                home_team, away_team, match
+                home_team, away_team, match,
             )
 
             # Calculate expected goals
             home_goals, away_goals = self.calculate_expected_goals(
-                home_team, away_team, probabilities
+                home_team, away_team, probabilities,
             )
 
             # Generate enhanced key factors
             key_factors = self.generate_key_factors(
-                home_team, away_team, match, confidence_breakdown
+                home_team, away_team, match, confidence_breakdown,
             )
 
             prediction = {
@@ -318,15 +312,15 @@ class AdvancedPredictionEngine:
                     "away_team_rating": self.get_team_strength(away_team),
                     "strength_difference": abs(
                         self.get_team_strength(home_team)
-                        - self.get_team_strength(away_team)
+                        - self.get_team_strength(away_team),
                     ),
                     "home_advantage_applied": self.venue_advantages.get(
-                        match.get("venue", "default"), 0.15
+                        match.get("venue", "default"), 0.15,
                     ),
                     "predicted_total_goals": home_goals + away_goals,
                     "match_competitiveness": 1
                     - abs(
-                        probabilities["home_win_prob"] - probabilities["away_win_prob"]
+                        probabilities["home_win_prob"] - probabilities["away_win_prob"],
                     ),
                 },
             }
@@ -335,7 +329,7 @@ class AdvancedPredictionEngine:
 
             print(f"  ✅ {home_team} vs {away_team}")
             print(
-                f"     Probabilities: {probabilities['home_win_prob']:.1%} | {probabilities['draw_prob']:.1%} | {probabilities['away_win_prob']:.1%}"
+                f"     Probabilities: {probabilities['home_win_prob']:.1%} | {probabilities['draw_prob']:.1%} | {probabilities['away_win_prob']:.1%}",
             )
             print(f"     Confidence: {confidence:.1%} (Dynamic)")
             print(f"     Expected Goals: {home_goals} - {away_goals}")
@@ -344,7 +338,6 @@ class AdvancedPredictionEngine:
 
     def generate_key_factors(self, home_team, away_team, match, confidence_breakdown):
         """Generate intelligent key factors based on analysis"""
-
         factors = [
             "REAL DATA from Football-Data.org API",
             f"Match ID: {match['id']} (Verified)",
@@ -357,11 +350,11 @@ class AdvancedPredictionEngine:
 
         if home_strength > away_strength + 0.15:
             factors.append(
-                f"{home_team} significantly stronger (Rating diff: {(home_strength - away_strength):.2f})"
+                f"{home_team} significantly stronger (Rating diff: {(home_strength - away_strength):.2f})",
             )
         elif away_strength > home_strength + 0.15:
             factors.append(
-                f"{away_team} significantly stronger (Rating diff: {(away_strength - home_strength):.2f})"
+                f"{away_team} significantly stronger (Rating diff: {(away_strength - home_strength):.2f})",
             )
         else:
             factors.append("Evenly matched teams - low predictability")
@@ -370,7 +363,7 @@ class AdvancedPredictionEngine:
         venue = match.get("venue", "TBD")
         if venue in self.venue_advantages and self.venue_advantages[venue] > 0.2:
             factors.append(
-                f"Strong home advantage at {venue} (+{int(self.venue_advantages[venue] * 100)}%)"
+                f"Strong home advantage at {venue} (+{int(self.venue_advantages[venue] * 100)}%)",
             )
 
         # Tactical insights
@@ -387,7 +380,7 @@ def main():
 
     if predictions:
         print(
-            f"\n🎯 Generated {len(predictions)} advanced predictions with dynamic confidence!"
+            f"\n🎯 Generated {len(predictions)} advanced predictions with dynamic confidence!",
         )
         print("\n📊 Confidence Analysis:")
         confidences = [p["confidence"] for p in predictions]
@@ -401,7 +394,7 @@ def main():
             "metadata": {
                 "league": "La Liga",
                 "prediction_date": (datetime.now() + timedelta(days=1)).strftime(
-                    "%Y-%m-%d"
+                    "%Y-%m-%d",
                 ),
                 "generated_at": datetime.now().isoformat(),
                 "data_source": "Football-Data.org API (REAL DATA)",

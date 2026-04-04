@@ -8,6 +8,6 @@ if str(ROOT) not in sys.path:
 
 from generate_fast_reports import SingleMatchGenerator
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     gen = SingleMatchGenerator()
-    gen.generate_matches_report(50, 'premier-league', home_team='Manchester City', away_team='Chelsea')
+    gen.generate_matches_report(50, "premier-league", home_team="Manchester City", away_team="Chelsea")

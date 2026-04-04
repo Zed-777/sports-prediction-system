@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Bulk Historical Data Seeder (HIST-001)
+"""Bulk Historical Data Seeder (HIST-001)
 =======================================
 Fetches all finished matches for the last two seasons from
 Football-Data.org, generates pre-match probability predictions
@@ -38,7 +37,7 @@ import logging
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -118,13 +117,13 @@ def _get(url: str, headers: dict, delay: float = 0.0) -> dict:
 # ---------------------------------------------------------------------------
 
 def _generate_prediction(match: dict, comp_code: str, predictor: Any) -> dict | None:
-    """
-    Call EnhancedPredictor.enhanced_prediction with the match dict.
+    """Call EnhancedPredictor.enhanced_prediction with the match dict.
     Returns the prediction dict, or None on failure.
     """
     try:
         # Suppress the voluminous print output from the predictor
-        import io, contextlib
+        import contextlib
+        import io
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
             result = predictor.enhanced_prediction(match, comp_code)
@@ -163,7 +162,7 @@ def _save_progress(seeded: set[str]) -> None:
     PROGRESS_FILE.parent.mkdir(parents=True, exist_ok=True)
     PROGRESS_FILE.write_text(
         json.dumps({"seeded_ids": sorted(seeded), "updated_at": datetime.now().isoformat()},
-                   indent=2)
+                   indent=2),
     )
 
 
@@ -276,7 +275,7 @@ def seed_league(
                 "actual_result":  _actual_result(home_score, away_score),
                 "home_score":     home_score,
                 "away_score":     away_score,
-                "seeded_at":      datetime.now(timezone.utc).isoformat(),
+                "seeded_at":      datetime.now(UTC).isoformat(),
             }
 
             if not dry_run:
@@ -306,7 +305,7 @@ def seed_league(
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Bulk-seed historical match data with predictions and actual results"
+        description="Bulk-seed historical match data with predictions and actual results",
     )
     parser.add_argument(
         "--leagues", nargs="+",
@@ -362,7 +361,8 @@ def main() -> None:
     predictor = None
     if not args.no_predictor:
         try:
-            import io, contextlib
+            import contextlib
+            import io
             log.info("Loading EnhancedPredictor ...")
             buf = io.StringIO()
             with contextlib.redirect_stdout(buf):
@@ -404,7 +404,7 @@ def main() -> None:
 
     print()
     print("=" * 56)
-    print(f"  Seeding complete.")
+    print("  Seeding complete.")
     print(f"  Records added   : {total_stats['added']}")
     print(f"  Records skipped : {total_stats['skipped']}")
     if not args.dry_run:

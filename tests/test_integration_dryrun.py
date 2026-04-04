@@ -1,7 +1,6 @@
 import os
 
 
-
 class FakeResponse:
     def __init__(self, payload):
         self._payload = payload
@@ -26,7 +25,7 @@ def test_generate_dryrun(monkeypatch, tmp_path):
             "utcDate": "2025-11-02T20:00:00Z",
             "homeTeam": {"id": 1, "name": "Dryrun Home"},
             "awayTeam": {"id": 2, "name": "Dryrun Away"},
-        }
+        },
     ]
 
     fake_payload = {"matches": matches}
@@ -40,13 +39,13 @@ def test_generate_dryrun(monkeypatch, tmp_path):
 
     # Create generator instance without running full init side-effects
     gen = generate_fast_reports.SingleMatchGenerator.__new__(
-        generate_fast_reports.SingleMatchGenerator
+        generate_fast_reports.SingleMatchGenerator,
     )
     # Minimal attributes expected by generate_matches_report
     gen.api_key = "test"
     gen.headers = {"X-Auth-Token": "test"}
     gen._settings = getattr(
-        generate_fast_reports.SingleMatchGenerator(), "_settings", {}
+        generate_fast_reports.SingleMatchGenerator(), "_settings", {},
     )
     gen.phase2_lite_predictor = None
 

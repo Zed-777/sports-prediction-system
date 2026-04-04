@@ -6,16 +6,22 @@ Usage (local dev):
 """
 
 import argparse
-from pathlib import Path
 import json
 import os
 import sys
+from pathlib import Path
 
 # Make repo root importable for local runs
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import pandas as pd
 import numpy as np
+import pandas as pd
+from pathlib import Path
+
+try:
+    import joblib
+except Exception:
+    joblib = None
 
 try:
     import lightgbm as lgb
@@ -25,14 +31,16 @@ except Exception:
 # Fallback to scikit-learn RandomForest if LightGBM is not available
 try:
     from sklearn.ensemble import RandomForestClassifier
+    from sklearn.metrics import log_loss
 except Exception:
     RandomForestClassifier = None
+    log_loss = None
 
 
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument(
-        "--input", type=str, default="data/processed/advanced_model/train.csv"
+        "--input", type=str, default="data/processed/advanced_model/train.csv",
     )
     p.add_argument("--outdir", type=str, default="models/advanced")
     p.add_argument("--seed", type=int, default=42)
@@ -43,7 +51,7 @@ def train_baseline(train_path: Path, outdir: Path, seed: int = 42):
     # Minimal behavior: load CSV with columns: features..., target
     if not train_path.exists():
         raise FileNotFoundError(
-            f"Training data not found at {train_path}. Create processed features first."
+            f"Training data not found at {train_path}. Create processed features first.",
         )
 
     df = pd.read_csv(train_path)
@@ -57,7 +65,7 @@ def train_baseline(train_path: Path, outdir: Path, seed: int = 42):
         X = X.drop(columns=["target"])
     if X.shape[1] == 0:
         raise ValueError(
-            "No numeric features found for training. Ensure feature pipeline produces numeric columns."
+            "No numeric features found for training. Ensure feature pipeline produces numeric columns.",
         )
 
     # quick deterministic split
@@ -125,12 +133,12 @@ def train_baseline(train_path: Path, outdir: Path, seed: int = 42):
                                 np.arange(len(preds)),
                                 y.iloc[val_idx].astype(int).to_numpy(),
                             ],
-                        )
-                    )
-                )
-            )
+                        ),
+                    ),
+                ),
+            ),
         }
-        with open(outdir / "metrics.json", "w", encoding="utf-8") as f:
+        with (outdir / "metrics.json").open("w", encoding="utf-8") as f:
             json.dump(metrics, f, indent=2)
 
         # write a simple manifest for model registry
@@ -141,54 +149,52 @@ def train_baseline(train_path: Path, outdir: Path, seed: int = 42):
             "input": str(train_path),
             "metrics": metrics,
         }
-        with open(outdir / "manifest.json", "w", encoding="utf-8") as f:
+        with (outdir / "manifest.json").open("w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=2)
 
-        print("Saved model to:", model_path)
-        print("Metrics:", metrics)
+        # Avoid T201 prints in scripts where logging is expected
         return model_path, metrics
-    else:
-        if RandomForestClassifier is None:
-            raise RuntimeError(
-                "Neither lightgbm nor scikit-learn RandomForest are available in this environment"
-            )
+    if RandomForestClassifier is None:
+        raise RuntimeError(
+            "Neither lightgbm nor scikit-learn RandomForest are available in this environment",
+        )
 
-        # Train a simple RandomForest as fallback
-        clf = RandomForestClassifier(n_estimators=100, random_state=seed)
-        clf.fit(X.iloc[train_idx], y.iloc[train_idx])
-        preds = clf.predict_proba(X.iloc[val_idx])
+    # Train a simple RandomForest as fallback
+    clf = RandomForestClassifier(n_estimators=100, random_state=seed)
+    clf.fit(X.iloc[train_idx], y.iloc[train_idx])
+    preds = clf.predict_proba(X.iloc[val_idx])
 
-        outdir.mkdir(parents=True, exist_ok=True)
-        import joblib
+    outdir.mkdir(parents=True, exist_ok=True)
 
-        model_path = outdir / f"rf_baseline_{seed}.joblib"
-        joblib.dump(clf, model_path)
+    if joblib is None:
+        raise RuntimeError("joblib is required to serialize fallback RandomForest model")
 
-        # metrics: log loss (robust to tiny validation sets)
-        from sklearn.metrics import log_loss
+    model_path = outdir / f"rf_baseline_{seed}.joblib"
+    joblib.dump(clf, model_path)
 
+    # metrics: log loss (robust to tiny validation sets)
+    val_loss = None
+    if log_loss is not None:
         try:
             val_loss = float(log_loss(y.iloc[val_idx], preds))
-        except Exception:
+        except ValueError:
             # In very small validation sets log_loss may fail if only one class present
             val_loss = None
-        metrics = {"val_loss": val_loss}
-        with open(outdir / "metrics.json", "w", encoding="utf-8") as f:
-            json.dump(metrics, f, indent=2)
+    metrics = {"val_loss": val_loss}
+    with (outdir / "metrics.json").open("w", encoding="utf-8") as f:
+        json.dump(metrics, f, indent=2)
 
-        manifest = {
-            "artifact": str(model_path),
-            "framework": "sklearn",
-            "seed": seed,
-            "input": str(train_path),
-            "metrics": metrics,
-        }
-        with open(outdir / "manifest.json", "w", encoding="utf-8") as f:
-            json.dump(manifest, f, indent=2)
+    manifest = {
+        "artifact": str(model_path),
+        "framework": "sklearn",
+        "seed": seed,
+        "input": str(train_path),
+        "metrics": metrics,
+    }
+    with (outdir / "manifest.json").open("w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2)
 
-        print("Saved RF model to:", model_path)
-        print("Metrics:", metrics)
-        return model_path, metrics
+    return model_path, metrics
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import json
+
 from scripts.regenerate_reports import prune_old_reports
 
 
@@ -44,13 +45,13 @@ def test_prune_old_reports_with_match_filter(tmp_path):
 
     # prune with filter 'remove' should only affect directories containing 'remove'
     removed = prune_old_reports(
-        league=str(league), keep=0, match_filter='remove', debug=True, base_dir=tmp_path / "reports" / "leagues"
+        league=str(league), keep=0, match_filter="remove", debug=True, base_dir=tmp_path / "reports" / "leagues",
     )
     assert removed == 1
 
     # prune with filter 'keepme' and keep=1 should remove 1 (since two keepme dirs exist and keep=1 keeps newest)
     removed2 = prune_old_reports(
-        league=str(league), keep=1, match_filter='keepme', debug=True, base_dir=tmp_path / "reports" / "leagues"
+        league=str(league), keep=1, match_filter="keepme", debug=True, base_dir=tmp_path / "reports" / "leagues",
     )
     assert removed2 in (0, 1)
 

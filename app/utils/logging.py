@@ -1,5 +1,4 @@
-"""
-Logging configuration and utilities
+"""Logging configuration and utilities
 """
 
 import json
@@ -9,12 +8,11 @@ import sys
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional, Dict, List
+from typing import Any
 
 
 class JSONFormatter(logging.Formatter):
-    """
-    Custom JSON formatter for structured logging
+    """Custom JSON formatter for structured logging
     """
 
     def format(self, record: logging.LogRecord) -> str:
@@ -39,12 +37,13 @@ class JSONFormatter(logging.Formatter):
         return json.dumps(log_entry)
 
 
-def setup_logging(level: str = "INFO", config: Optional[Dict[str, Any]] = None) -> None:
+def setup_logging(level: str = "INFO", config: dict[str, Any] | None = None) -> None:
     """Set up logging configuration for the application.
 
     Args:
         level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
         config: Logging configuration dictionary
+
     """
     if config is None:
         config = {}
@@ -62,11 +61,11 @@ def setup_logging(level: str = "INFO", config: Optional[Dict[str, Any]] = None) 
         formatter = JSONFormatter()
     else:
         formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         )
 
     # Create handlers
-    handlers: List[logging.Handler] = []
+    handlers: list[logging.Handler] = []
 
     # Console handler
     console_handler = logging.StreamHandler(sys.stdout)
@@ -75,14 +74,14 @@ def setup_logging(level: str = "INFO", config: Optional[Dict[str, Any]] = None) 
 
     # File handler
     file_handler = logging.FileHandler(
-        logs_dir / "sports_prediction.log", encoding="utf-8"
+        logs_dir / "sports_prediction.log", encoding="utf-8",
     )
     file_handler.setFormatter(formatter)
     handlers.append(file_handler)
 
     # Error file handler
     error_handler = logging.FileHandler(
-        logs_dir / "sports_prediction_errors.log", encoding="utf-8"
+        logs_dir / "sports_prediction_errors.log", encoding="utf-8",
     )
     error_handler.setLevel(logging.ERROR)
     error_handler.setFormatter(formatter)
@@ -90,7 +89,7 @@ def setup_logging(level: str = "INFO", config: Optional[Dict[str, Any]] = None) 
 
     # Configure root logger
     logging.basicConfig(
-        level=getattr(logging, level.upper()), handlers=handlers, force=True
+        level=getattr(logging, level.upper()), handlers=handlers, force=True,
     )
 
     # Set up correlation ID context
@@ -99,31 +98,26 @@ def setup_logging(level: str = "INFO", config: Optional[Dict[str, Any]] = None) 
 
 
 def setup_correlation_id_filter() -> None:
-    """
-    Set up correlation ID filter for request tracing
+    """Set up correlation ID filter for request tracing
     """
     # Simplified implementation without thread locals
-    pass
 
 
-def set_correlation_id(correlation_id: Optional[str] = None) -> str:
-    """
-    Set correlation ID for the current context
+def set_correlation_id(correlation_id: str | None = None) -> str:
+    """Set correlation ID for the current context
     """
     if correlation_id is None:
         correlation_id = str(uuid.uuid4())
     return correlation_id
 
 
-def get_correlation_id() -> Optional[str]:
-    """
-    Get current correlation ID
+def get_correlation_id() -> str | None:
+    """Get current correlation ID
     """
     return None
 
 
 def get_logger(name: str) -> logging.Logger:
-    """
-    Get a logger instance with the given name
+    """Get a logger instance with the given name
     """
     return logging.getLogger(name)

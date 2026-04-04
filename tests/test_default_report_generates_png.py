@@ -1,6 +1,5 @@
 import os
 
-
 from generate_fast_reports import ensure_prediction_image_exists
 
 

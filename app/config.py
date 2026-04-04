@@ -1,5 +1,4 @@
-"""
-Configuration management for the Sports Prediction System
+"""Configuration management for the Sports Prediction System
 """
 
 import os
@@ -64,8 +63,7 @@ class Config:
 
 
 def load_config(config_path: str = "config/settings.yaml") -> dict[str, Any]:
-    """
-    Load configuration from YAML file with environment variable substitution.
+    """Load configuration from YAML file with environment variable substitution.
 
     Args:
         config_path: Path to the configuration file
@@ -76,6 +74,7 @@ def load_config(config_path: str = "config/settings.yaml") -> dict[str, Any]:
     Raises:
         FileNotFoundError: If configuration file doesn't exist
         yaml.YAMLError: If YAML parsing fails
+
     """
     config_file = Path(config_path)
 
@@ -86,10 +85,10 @@ def load_config(config_path: str = "config/settings.yaml") -> dict[str, Any]:
         with open(config_file, encoding="utf-8") as f:
             config_data = yaml.safe_load(f)
         # Ensure the loaded YAML is a dict for typing purposes
-        config_data = cast(dict[str, Any], config_data or {})
+        config_data = cast("dict[str, Any]", config_data or {})
 
         # Substitute environment variables
-        config_data = cast(dict[str, Any], _substitute_env_vars(config_data))
+        config_data = cast("dict[str, Any]", _substitute_env_vars(config_data))
 
         # Load environment-specific overrides
         env = config_data.get("environment", "dev")
@@ -98,7 +97,7 @@ def load_config(config_path: str = "config/settings.yaml") -> dict[str, Any]:
         if env_config_path.exists():
             with open(env_config_path, encoding="utf-8") as f:
                 env_config = yaml.safe_load(f)
-            env_config = cast(dict[str, Any], env_config or {})
+            env_config = cast("dict[str, Any]", env_config or {})
             config_data = _merge_configs(config_data, env_config)
 
         return config_data
@@ -108,34 +107,30 @@ def load_config(config_path: str = "config/settings.yaml") -> dict[str, Any]:
 
 
 def _substitute_env_vars(data: Any) -> Any:
-    """
-    Recursively substitute environment variables in configuration data.
+    """Recursively substitute environment variables in configuration data.
 
     Variables should be in format: ${ENV_VAR_NAME:default_value}
     """
     if isinstance(data, dict):
         return {key: _substitute_env_vars(value) for key, value in data.items()}
-    elif isinstance(data, list):
+    if isinstance(data, list):
         return [_substitute_env_vars(item) for item in data]
-    elif isinstance(data, str):
+    if isinstance(data, str):
         # Simple environment variable substitution
         if data.startswith("${") and data.endswith("}"):
             var_spec = data[2:-1]
             if ":" in var_spec:
                 var_name, default_value = var_spec.split(":", 1)
                 return os.getenv(var_name, default_value)
-            else:
-                return os.getenv(var_spec, data)
+            return os.getenv(var_spec, data)
         return data
-    else:
-        return data
+    return data
 
 
 def _merge_configs(
-    base_config: dict[str, Any], override_config: dict[str, Any]
+    base_config: dict[str, Any], override_config: dict[str, Any],
 ) -> dict[str, Any]:
-    """
-    Merge two configuration dictionaries, with override_config taking precedence.
+    """Merge two configuration dictionaries, with override_config taking precedence.
     """
     merged = base_config.copy()
 
@@ -149,11 +144,11 @@ def _merge_configs(
 
 
 def get_env_config() -> dict[str, str]:
-    """
-    Get environment-specific configuration from environment variables.
+    """Get environment-specific configuration from environment variables.
 
     Returns:
         Dictionary of environment variables relevant to the application
+
     """
     env_vars = {}
 
@@ -194,8 +189,7 @@ def get_env_config() -> dict[str, str]:
 
 
 def validate_config(config: dict[str, Any]) -> bool:
-    """
-    Validate configuration settings.
+    """Validate configuration settings.
 
     Args:
         config: Configuration dictionary
@@ -205,6 +199,7 @@ def validate_config(config: dict[str, Any]) -> bool:
 
     Raises:
         ValueError: If configuration is invalid
+
     """
     required_sections = ["data_sources", "models", "features"]
 
@@ -228,11 +223,11 @@ def validate_config(config: dict[str, Any]) -> bool:
 
 
 def create_default_config() -> dict[str, Any]:
-    """
-    Create a default configuration dictionary.
+    """Create a default configuration dictionary.
 
     Returns:
         Default configuration dictionary
+
     """
     return {
         "environment": "dev",
@@ -254,7 +249,7 @@ def create_default_config() -> dict[str, Any]:
                     "injuries",
                     "fixtures",
                 ],
-            }
+            },
         },
         "models": {"elo": {"enabled": True}, "ensemble": {"enabled": True}},
         "features": {

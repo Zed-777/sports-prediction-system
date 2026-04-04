@@ -12,11 +12,10 @@ import json
 import os
 import time
 from datetime import datetime
-from typing import List, Optional
 
 from app.types import JSONDict
-from app.utils.http import safe_request_get
 from app.utils import state_sync
+from app.utils.http import safe_request_get
 
 # Optional FlashScore integration
 try:
@@ -33,11 +32,11 @@ class InjuriesConnector:
         os.makedirs(self.cache_dir, exist_ok=True)
         self._host = "api-football-v1.p.rapidapi.com"
 
-    def _cache_path(self, team_id: int, season: Optional[int] = None) -> str:
+    def _cache_path(self, team_id: int, season: int | None = None) -> str:
         year = season or datetime.now().year
         return os.path.join(self.cache_dir, f"injuries_{team_id}_{year}.json")
 
-    def fetch_injuries(self, team_id: int, team_name: Optional[str] = None, season: Optional[int] = None) -> Optional[List[JSONDict]]:
+    def fetch_injuries(self, team_id: int, team_name: str | None = None, season: int | None = None) -> list[JSONDict] | None:
         """Fetch injury list for `team_id`.
 
         Returns a list of injury dicts compatible with `_analyze_injury_data`'s expected format,
@@ -47,7 +46,7 @@ class InjuriesConnector:
         cache_file = self._cache_path(team_id, season=season)
         try:
             if os.path.exists(cache_file):
-                with open(cache_file, "r", encoding="utf-8") as f:
+                with open(cache_file, encoding="utf-8") as f:
                     payload = json.load(f)
                 ts = float(payload.get("timestamp", 0))
                 # Use 24h TTL by default
@@ -77,7 +76,7 @@ class InjuriesConnector:
                     except Exception:
                         pass
                     return parsed
-                elif r.status_code == 429:
+                if r.status_code == 429:
                     # Persist disable flag to avoid repeated 429s
                     ttl = 900  # default 15 minutes
                     disabled_until = time.time() + ttl
@@ -112,7 +111,7 @@ class InjuriesConnector:
                 team_slug = team_name.lower().replace(" ", "-")
                 # Try a couple of common country directories (es, en) and fallback to root
                 urls = [f"https://www.flashscore.es/team/{team_slug}/", f"https://www.flashscore.com/team/{team_slug}/"]
-                injuries_found: List[JSONDict] = []
+                injuries_found: list[JSONDict] = []
                 for url in urls:
                     html = scraper.get_page(url, use_cache=True)
                     if not html:
@@ -150,14 +149,14 @@ class InjuriesConnector:
         # 4. No data available
         return None
 
-    def _parse_injuries_from_team_html(self, html: str, source_url: str) -> List[JSONDict]:
+    def _parse_injuries_from_team_html(self, html: str, source_url: str) -> list[JSONDict]:
         """Extract injury instances from team HTML using heuristics.
 
         Returns a list of dicts: {'player': {'name': ..}, 'reason': .., 'status': .., 'estimated_return': .., 'provenance': {'source': url, 'snippet': ..}}
         """
         import re
 
-        results: List[JSONDict] = []
+        results: list[JSONDict] = []
         text = re.sub(r"\s+", " ", html)
         lowered = text.lower()
         # Sentences likely to contain injury info
@@ -210,11 +209,11 @@ class InjuriesConnector:
 
         return results
 
-    def _parse_transfermarkt_html(self, html: str, source_url: str) -> List[JSONDict]:
+    def _parse_transfermarkt_html(self, html: str, source_url: str) -> list[JSONDict]:
         """Parse Transfermarkt injury list HTML (very small heuristic parser suitable for fixtures)."""
         import re
 
-        results: List[JSONDict] = []
+        results: list[JSONDict] = []
         # Look for list items containing player name and date
         for m in re.finditer(r"<li>(.*?)</li>", html, re.IGNORECASE | re.DOTALL):
             item = re.sub(r"\s+", " ", m.group(1)).strip()

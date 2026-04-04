@@ -1,3 +1,2 @@
-"""
-Utilities package for the Sports Prediction System
+"""Utilities package for the Sports Prediction System
 """

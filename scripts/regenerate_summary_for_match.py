@@ -3,8 +3,8 @@
 Usage: python scripts/regenerate_summary_for_match.py <path/to/prediction.json>
 """
 
-import sys
 import json
+import sys
 from pathlib import Path
 
 # Ensure project root is on sys.path
@@ -15,7 +15,7 @@ from generate_fast_reports import SingleMatchGenerator
 
 if len(sys.argv) < 2:
     print(
-        "Usage: python scripts/regenerate_summary_for_match.py <path/to/prediction.json>"
+        "Usage: python scripts/regenerate_summary_for_match.py <path/to/prediction.json>",
     )
     sys.exit(2)
 
@@ -24,7 +24,7 @@ if not p.exists():
     print("File not found:", p)
     sys.exit(2)
 
-with open(p, "r", encoding="utf-8") as f:
+with open(p, encoding="utf-8") as f:
     data = json.load(f)
 
 # Directory containing prediction.json

@@ -1,5 +1,4 @@
-"""
-Context-Aware Weighting Module for Phase 3
+"""Context-Aware Weighting Module for Phase 3
 
 Applies dynamic adjustments based on match context:
 - Home/away effects
@@ -10,13 +9,11 @@ Applies dynamic adjustments based on match context:
 
 import json
 import os
-from typing import Dict, Optional, Tuple
 from datetime import date
 
 
 class ContextExtractor:
-    """
-    Extracts and applies context-based confidence adjustments.
+    """Extracts and applies context-based confidence adjustments.
 
     Provides four types of adjustments:
     1. Home/Away Effects - Teams perform differently at home vs away
@@ -84,30 +81,30 @@ class ContextExtractor:
         "relegation": {"vs_weak": 0.95, "vs_mid": 0.92, "vs_strong": 0.88},
     }
 
-    def __init__(self, cache_dir: Optional[str] = None):
-        """
-        Initialize ContextExtractor.
+    def __init__(self, cache_dir: str | None = None):
+        """Initialize ContextExtractor.
 
         Args:
             cache_dir: Directory for persisting venue performance data
+
         """
         self.cache_dir = cache_dir or "data/cache"
 
         # Venue performance history
-        self.venue_performance: Dict[str, Dict] = {}
+        self.venue_performance: dict[str, dict] = {}
 
         # Load persisted venue data
         self._load_venue_performance()
 
-    def get_season_phase(self, match_date: Optional[date] = None) -> str:
-        """
-        Determine season phase based on match date.
+    def get_season_phase(self, match_date: date | None = None) -> str:
+        """Determine season phase based on match date.
 
         Args:
             match_date: Date of match (defaults to today)
 
         Returns:
             Season phase key: 'early', 'buildup', 'midseason', 'second_half', 'late'
+
         """
         if match_date is None:
             match_date = date.today()
@@ -117,23 +114,22 @@ class ContextExtractor:
         # European football season: Aug-May
         if month in [8, 9]:  # Aug-Sep
             return "early"
-        elif month in [10, 11]:  # Oct-Nov
+        if month in [10, 11]:  # Oct-Nov
             return "buildup"
-        elif month in [12, 1]:  # Dec-Jan
+        if month in [12, 1]:  # Dec-Jan
             return "midseason"
-        elif month in [2, 3]:  # Feb-Mar
+        if month in [2, 3]:  # Feb-Mar
             return "second_half"
-        else:  # Apr-May (or Jun-Jul offseason)
-            return "late"
+        # Apr-May (or Jun-Jul offseason)
+        return "late"
 
     def calculate_home_away_adjustment(
         self,
         is_home: bool,
         home_team_level: str = "average",
         away_team_level: str = "average",
-    ) -> Tuple[float, Dict]:
-        """
-        Calculate home/away adjustment factor.
+    ) -> tuple[float, dict]:
+        """Calculate home/away adjustment factor.
 
         Home teams win ~55% of matches. This adjustment captures:
         - Elite teams maintain advantage everywhere
@@ -146,12 +142,13 @@ class ContextExtractor:
 
         Returns:
             Tuple of (adjustment_factor, metadata)
+
         """
         home_factors = self.HOME_AWAY_FACTORS.get(
-            home_team_level, self.HOME_AWAY_FACTORS["average"]
+            home_team_level, self.HOME_AWAY_FACTORS["average"],
         )
         away_factors = self.HOME_AWAY_FACTORS.get(
-            away_team_level, self.HOME_AWAY_FACTORS["average"]
+            away_team_level, self.HOME_AWAY_FACTORS["average"],
         )
 
         if is_home:
@@ -174,16 +171,16 @@ class ContextExtractor:
         return factor, metadata
 
     def calculate_season_phase_adjustment(
-        self, match_date: Optional[date] = None
-    ) -> Tuple[float, Dict]:
-        """
-        Calculate season phase adjustment factor.
+        self, match_date: date | None = None,
+    ) -> tuple[float, dict]:
+        """Calculate season phase adjustment factor.
 
         Args:
             match_date: Date of match (defaults to today)
 
         Returns:
             Tuple of (adjustment_factor, metadata)
+
         """
         phase = self.get_season_phase(match_date)
         phase_data = self.SEASON_PHASES.get(phase, self.SEASON_PHASES["late"])
@@ -201,10 +198,9 @@ class ContextExtractor:
         return factor, metadata
 
     def calculate_competition_level_adjustment(
-        self, home_level: str = "mid_table", away_level: str = "mid_table"
-    ) -> Tuple[float, Dict]:
-        """
-        Calculate competition level adjustment.
+        self, home_level: str = "mid_table", away_level: str = "mid_table",
+    ) -> tuple[float, dict]:
+        """Calculate competition level adjustment.
 
         Captures that matches between mismatched teams are more predictable.
         Elite vs weak = high predictability (elite usually wins)
@@ -216,9 +212,10 @@ class ContextExtractor:
 
         Returns:
             Tuple of (adjustment_factor, metadata)
+
         """
         home_comp = self.COMPETITION_LEVEL.get(
-            home_level, self.COMPETITION_LEVEL["mid_table"]
+            home_level, self.COMPETITION_LEVEL["mid_table"],
         )
 
         # Determine which bucket away team falls into
@@ -243,10 +240,9 @@ class ContextExtractor:
         return factor, metadata
 
     def calculate_venue_performance_adjustment(
-        self, venue: str, team: str, is_home: bool
-    ) -> Tuple[float, Dict]:
-        """
-        Calculate venue-specific performance adjustment.
+        self, venue: str, team: str, is_home: bool,
+    ) -> tuple[float, dict]:
+        """Calculate venue-specific performance adjustment.
 
         Tracks if specific teams perform better/worse at specific venues.
 
@@ -257,6 +253,7 @@ class ContextExtractor:
 
         Returns:
             Tuple of (adjustment_factor, metadata)
+
         """
         venue_key = f"{venue}_{team}" if is_home else f"{venue}_vs_{team}"
 
@@ -291,16 +288,16 @@ class ContextExtractor:
         return factor, metadata
 
     def record_match_at_venue(
-        self, venue: str, home_team: str, away_team: str, home_won: bool
+        self, venue: str, home_team: str, away_team: str, home_won: bool,
     ) -> None:
-        """
-        Record match result for venue performance tracking.
+        """Record match result for venue performance tracking.
 
         Args:
             venue: Venue name/identifier
             home_team: Home team name/identifier
             away_team: Away team name/identifier
             home_won: Whether home team won
+
         """
         # Update home team venue record
         home_key = f"{venue}_{home_team}"
@@ -340,14 +337,13 @@ class ContextExtractor:
         is_home: bool,
         home_team_level: str = "average",
         away_team_level: str = "average",
-        match_date: Optional[date] = None,
+        match_date: date | None = None,
         home_competition_level: str = "mid_table",
         away_competition_level: str = "mid_table",
-        venue: Optional[str] = None,
-        team: Optional[str] = None,
-    ) -> Tuple[float, Dict]:
-        """
-        Apply all context adjustments to confidence.
+        venue: str | None = None,
+        team: str | None = None,
+    ) -> tuple[float, dict]:
+        """Apply all context adjustments to confidence.
 
         Combines home/away, season phase, competition level, and venue effects.
 
@@ -364,6 +360,7 @@ class ContextExtractor:
 
         Returns:
             Tuple of (adjusted_confidence, all_metadata)
+
         """
         all_metadata = {"raw_confidence": confidence, "adjustments": {}}
 
@@ -371,7 +368,7 @@ class ContextExtractor:
 
         # 1. Home/away adjustment
         ha_factor, ha_meta = self.calculate_home_away_adjustment(
-            is_home, home_team_level, away_team_level
+            is_home, home_team_level, away_team_level,
         )
         adjusted *= ha_factor
         all_metadata["adjustments"]["home_away"] = ha_meta
@@ -385,7 +382,7 @@ class ContextExtractor:
         comp_level = home_competition_level if is_home else away_competition_level
         opp_level = away_competition_level if is_home else home_competition_level
         cl_factor, cl_meta = self.calculate_competition_level_adjustment(
-            comp_level, opp_level
+            comp_level, opp_level,
         )
         adjusted *= cl_factor
         all_metadata["adjustments"]["competition_level"] = cl_meta
@@ -393,7 +390,7 @@ class ContextExtractor:
         # 4. Venue adjustment (if data available)
         if venue and team:
             v_factor, v_meta = self.calculate_venue_performance_adjustment(
-                venue, team, is_home
+                venue, team, is_home,
             )
             adjusted *= v_factor
             all_metadata["adjustments"]["venue"] = v_meta
@@ -419,7 +416,7 @@ class ContextExtractor:
         venue_file = os.path.join(self.cache_dir, "venue_performance.json")
         if os.path.exists(venue_file):
             try:
-                with open(venue_file, "r") as f:
+                with open(venue_file) as f:
                     self.venue_performance = json.load(f)
             except Exception:
                 pass  # Silently fail if load is corrupted

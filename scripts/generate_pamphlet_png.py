@@ -3,6 +3,7 @@
 
 import json
 from pathlib import Path
+
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).parent.parent
@@ -62,7 +63,7 @@ for section in obj.get("sections", []):
                 lines.append((f"  {fix_line}", font_s, (80, 80, 80)))
         elif "cmd" not in it and "flag" not in it and "issue" not in it:
             # generic item
-            lines.append((f"• {str(it)}", font_s, (0, 0, 0)))
+            lines.append((f"• {it!s}", font_s, (0, 0, 0)))
 
 # Footer
 footer = f"Generated: {obj.get('version')}"

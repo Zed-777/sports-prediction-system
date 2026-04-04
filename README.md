@@ -2,12 +2,14 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Build Status](https://github.com/Zed-777/sports-prediction-system/actions/workflows/ci.yml/badge.svg)](https://github.com/Zed-777/sports-prediction-system/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage->70%25-brightgreen)](docs/)
 [![Phase 2 Lite](https://img.shields.io/badge/Phase%202%20Lite-Active-brightgreen.svg)](https://github.com/yourusername/sportspredictionsystem)
 [![Enhanced Intelligence](https://img.shields.io/badge/Enhanced%20Intelligence-v4.1-blue.svg)](https://github.com/yourusername/sportspredictionsystem)
 
 > **⚠️ DISCLAIMER**: This system is for **educational and analytical purposes only**. It is **not intended for financial or betting decisions**.
 
-An **advanced, AI-enhanced, and professional-grade** sports forecasting system that uses historical data, machine learning algorithms, enhanced intelligence, and probabilistic modeling to generate comprehensive reports on upcoming matches. Features **Enhanced Intelligence v4.1** with **Phase 2 Lite** for **+18% confidence improvements**.
+An **advanced, AI-enhanced, professional-grade** sports forecasting system that uses historical data, machine learning algorithms, enhanced intelligence, and probabilistic modeling to generate comprehensive reports on upcoming matches. Features **Enhanced Intelligence v4.1** with **Phase 2 Lite** for **+18% confidence improvements** versus the baseline Phase 1 model on 2023-24 La Liga data.
 
 ## ✨ **System Overview**
 
@@ -490,7 +492,19 @@ Access performance metrics via:
 6. Push to branch: `git push origin feature/amazing-feature`
 7. Open a Pull Request
 
-## 📚 Learning Resources
+## � Support
+
+If this project has been valuable to you, please consider supporting its development and ongoing maintenance. We accept cryptocurrency donations, community contributions, and sponsorships.
+
+See [SUPPORT.md](SUPPORT.md) for detailed information on:
+- **Cryptocurrency donations** (Bitcoin, Ethereum, USDT and more)
+- **Non-monetary support** (star, share, contribute, mentor)
+- **Community participation** (testing, documentation, feedback)
+- **Sponsorship opportunities** (funding, partnership)
+
+All contributions, regardless of size, help accelerate feature development and improve prediction accuracy.
+
+## �📚 Learning Resources
 
 ### Notebooks
 

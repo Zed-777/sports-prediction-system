@@ -1,11 +1,12 @@
-from pathlib import Path
-import sys
 import os
+import sys
+from pathlib import Path
 
 # Ensure repo root is on sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from flashscore_scraper import FlashScoreScraper
 import json
+
+from flashscore_scraper import FlashScoreScraper
 
 p = Path("data/cache/flashscore/page_2764.json")
 text = json.loads(p.read_text(encoding="utf-8")).get("content")

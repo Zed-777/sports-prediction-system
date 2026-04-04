@@ -48,7 +48,7 @@ def test_save_processed_file(tmp_path):
             "away_team": "B",
             "features": {},
             "label": 2,
-        }
+        },
     ]
     labels = [2]
     out_path = tmp_path / "historical_dataset.json"

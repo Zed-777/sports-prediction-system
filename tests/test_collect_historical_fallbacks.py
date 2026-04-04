@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from scripts.collect_historical_results import HistoricalResultsCollector
 
 
@@ -46,8 +47,8 @@ def test_fd_no_scores_uses_api_football_fallback(monkeypatch, tmp_path):
                 "teams": {"home": {"name": "Team X"}, "away": {"name": "Team Y"}},
                 "score": {"fulltime": {"home": 2, "away": 1}},
                 "fixture": {"id": 9999},
-            }
-        ]
+            },
+        ],
     }
 
     def fake_safe_request_get(
@@ -78,7 +79,7 @@ def test_fd_no_scores_uses_api_football_fallback(monkeypatch, tmp_path):
 
     # Should have used fallback and updated the historical record
     assert updated == 1
-    with open(out_file, "r", encoding="utf-8") as f:
+    with open(out_file, encoding="utf-8") as f:
         data = json.load(f)
     assert data[0]["actual_result"]["home_score"] == 2
     assert data[0]["actual_result"]["away_score"] == 1

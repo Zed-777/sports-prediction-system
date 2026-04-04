@@ -6,8 +6,8 @@ def test_get_intelligent_cache_duration_respects_settings():
     # Provide custom settings simulating config/settings.yaml entries
     p._settings["data_sources"] = {
         "cache_ttl_by_endpoint": {
-            "api.football-data.org": {"/v4/matches/": 3600, "/v4/teams/": 7200}
-        }
+            "api.football-data.org": {"/v4/matches/": 3600, "/v4/teams/": 7200},
+        },
     }
     # h2h -> maps to /v4/matches/
     ttl_h2h = p._get_intelligent_cache_duration("h2h_1_2", {})

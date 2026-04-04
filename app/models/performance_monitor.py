@@ -1,5 +1,4 @@
-"""
-Performance Monitoring System - Phase 4
+"""Performance Monitoring System - Phase 4
 
 Real-time tracking of prediction performance with automatic adjustment suggestions
 Monitors confidence accuracy, recalibration triggers, and performance trends
@@ -7,25 +6,26 @@ Monitors confidence accuracy, recalibration triggers, and performance trends
 
 import json
 import logging
-from datetime import datetime
-from typing import Dict, List, Optional, Any
-from pathlib import Path
-import numpy as np
 from collections import defaultdict, deque
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+import numpy as np
 
 
 class PerformanceMonitor:
     """Monitors prediction performance and triggers recalibration when needed"""
 
     def __init__(
-        self, cache_dir: str = "data/cache", lookback_windows: List[int] = None
+        self, cache_dir: str = "data/cache", lookback_windows: list[int] = None,
     ):
-        """
-        Initialize performance monitor
+        """Initialize performance monitor
 
         Args:
             cache_dir: Directory for performance data persistence
             lookback_windows: Windows (in matches) to track: [10, 50, 100]
+
         """
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -35,7 +35,7 @@ class PerformanceMonitor:
 
         # Performance tracking
         self.predictions: deque = deque(maxlen=500)  # Keep last 500 predictions
-        self.league_performance: Dict[str, Dict[str, Any]] = defaultdict(
+        self.league_performance: dict[str, dict[str, Any]] = defaultdict(
             lambda: {
                 "total_predictions": 0,
                 "correct_predictions": 0,
@@ -44,11 +44,11 @@ class PerformanceMonitor:
                 "calibration_error": 0.0,
                 "drift_detected": False,
                 "last_recalibration": None,
-            }
+            },
         )
 
         # ECE (Expected Calibration Error) tracking
-        self.ece_history: Dict[str, deque] = defaultdict(lambda: deque(maxlen=50))
+        self.ece_history: dict[str, deque] = defaultdict(lambda: deque(maxlen=50))
 
         # Drift detection thresholds
         self.drift_threshold = 0.05  # 5% drift triggers alert
@@ -56,13 +56,13 @@ class PerformanceMonitor:
 
         self._load_performance_history()
 
-    def record_prediction(self, league: str, prediction: Dict[str, Any]) -> None:
-        """
-        Record a prediction for performance tracking
+    def record_prediction(self, league: str, prediction: dict[str, Any]) -> None:
+        """Record a prediction for performance tracking
 
         Args:
             league: League name
             prediction: Prediction dict with 'confidence', 'outcome', 'timestamp'
+
         """
         try:
             timestamp = datetime.now()
@@ -71,7 +71,7 @@ class PerformanceMonitor:
                 "league": league,
                 "confidence": prediction.get("confidence", 0.0),
                 "outcome": prediction.get(
-                    "outcome"
+                    "outcome",
                 ),  # 0.0 (away win) to 1.0 (home win)
                 "timestamp": timestamp.isoformat(),
                 "match_id": prediction.get("match_id", ""),
@@ -86,7 +86,7 @@ class PerformanceMonitor:
             # Check if outcome matches prediction
             if record["outcome"] is not None:
                 is_correct = self._check_prediction_correctness(
-                    record["confidence"], record["outcome"]
+                    record["confidence"], record["outcome"],
                 )
                 if is_correct:
                     league_stats["correct_predictions"] += 1
@@ -97,28 +97,27 @@ class PerformanceMonitor:
                         "confidence": record["confidence"],
                         "outcome": record["outcome"],
                         "timestamp": timestamp.isoformat(),
-                    }
+                    },
                 )
 
         except Exception as e:
             self.logger.warning(f"Error recording prediction: {e}")
 
-    def get_performance_summary(self, league: Optional[str] = None) -> Dict[str, Any]:
-        """
-        Get performance summary for league or all leagues
+    def get_performance_summary(self, league: str | None = None) -> dict[str, Any]:
+        """Get performance summary for league or all leagues
 
         Args:
             league: Specific league or None for all
 
         Returns:
             Performance metrics
+
         """
         if league:
             return self._get_league_performance(league)
-        else:
-            return self._get_all_leagues_performance()
+        return self._get_all_leagues_performance()
 
-    def _get_league_performance(self, league: str) -> Dict[str, Any]:
+    def _get_league_performance(self, league: str) -> dict[str, Any]:
         """Get performance metrics for a specific league"""
         stats = self.league_performance.get(league, {})
 
@@ -161,7 +160,7 @@ class PerformanceMonitor:
             "last_recalibration": stats.get("last_recalibration"),
         }
 
-    def _get_all_leagues_performance(self) -> Dict[str, Any]:
+    def _get_all_leagues_performance(self) -> dict[str, Any]:
         """Get performance summary for all leagues"""
         return {
             "leagues": {
@@ -172,8 +171,7 @@ class PerformanceMonitor:
         }
 
     def _calculate_ece(self, league: str) -> float:
-        """
-        Calculate Expected Calibration Error (ECE)
+        """Calculate Expected Calibration Error (ECE)
 
         Expected Calibration Error measures how well predicted probabilities
         match actual outcomes
@@ -214,9 +212,8 @@ class PerformanceMonitor:
             self.logger.warning(f"Error calculating ECE: {e}")
             return 0.0
 
-    def detect_performance_drift(self, league: str, window: int = 50) -> Dict[str, Any]:
-        """
-        Detect if prediction performance is drifting
+    def detect_performance_drift(self, league: str, window: int = 50) -> dict[str, Any]:
+        """Detect if prediction performance is drifting
 
         Drift suggests the model may need recalibration
 
@@ -226,6 +223,7 @@ class PerformanceMonitor:
 
         Returns:
             Drift analysis with alert if needed
+
         """
         recent = self._get_recent_predictions(league, window)
 
@@ -249,7 +247,7 @@ class PerformanceMonitor:
             "drift_magnitude": drift_magnitude,
             "drift_detected": drift_magnitude > self.drift_threshold,
             "recommendation": self._get_drift_recommendation(
-                drift_magnitude, second_accuracy
+                drift_magnitude, second_accuracy,
             ),
         }
 
@@ -258,15 +256,15 @@ class PerformanceMonitor:
 
         return result
 
-    def suggest_recalibration_actions(self, league: str) -> List[str]:
-        """
-        Suggest actions for recalibration
+    def suggest_recalibration_actions(self, league: str) -> list[str]:
+        """Suggest actions for recalibration
 
         Args:
             league: League name
 
         Returns:
             List of recommended actions
+
         """
         stats = self._get_league_performance(league)
 
@@ -278,7 +276,7 @@ class PerformanceMonitor:
         # Check ECE (convert to proper threshold)
         if stats.get("expected_calibration_error", 0.0) > 0.10:
             actions.append(
-                "High calibration error: Run isotonic regression recalibration"
+                "High calibration error: Run isotonic regression recalibration",
             )
 
         # Check accuracy by window
@@ -287,7 +285,7 @@ class PerformanceMonitor:
             recent_acc = window_accs.get("last_10", 0.0)
             if recent_acc < 0.45:
                 actions.append(
-                    "Recent accuracy dropping: Review model weights and thresholds"
+                    "Recent accuracy dropping: Review model weights and thresholds",
                 )
 
         # Check drift
@@ -298,19 +296,18 @@ class PerformanceMonitor:
         # Check data freshness
         if stats.get("total_predictions", 0) < 20:
             actions.append(
-                "Insufficient historical data: Continue collecting predictions"
+                "Insufficient historical data: Continue collecting predictions",
             )
 
-        return actions if actions else ["System performing well, no action needed"]
+        return actions or ["System performing well, no action needed"]
 
-    def _get_recent_predictions(self, league: str, count: int) -> List[Dict]:
+    def _get_recent_predictions(self, league: str, count: int) -> list[dict]:
         """Get recent predictions for a league"""
         league_preds = [p for p in self.predictions if p.get("league") == league]
         return league_preds[-count:] if league_preds else []
 
     def _check_prediction_correctness(self, confidence: float, outcome: float) -> bool:
-        """
-        Check if prediction was correct
+        """Check if prediction was correct
 
         confidence: 0.0 to 1.0 (0=away win, 0.5=draw, 1.0=home win)
         outcome: 0.0 to 1.0 (actual result)
@@ -325,7 +322,7 @@ class PerformanceMonitor:
 
         return prediction == actual
 
-    def _calculate_accuracy(self, predictions: List[Dict]) -> float:
+    def _calculate_accuracy(self, predictions: list[dict]) -> float:
         """Calculate accuracy from prediction list"""
         if not predictions:
             return 0.0
@@ -341,12 +338,11 @@ class PerformanceMonitor:
         """Get recommendation based on drift and accuracy"""
         if drift_magnitude > 0.15:
             return "Significant drift detected - consider full model retraining"
-        elif drift_magnitude > 0.10:
+        if drift_magnitude > 0.10:
             return "Moderate drift - update calibration and weights"
-        elif accuracy < 0.45:
+        if accuracy < 0.45:
             return "Low accuracy period - check data quality and feature freshness"
-        else:
-            return "Minor drift - monitor closely, recalibrate if continues"
+        return "Minor drift - monitor closely, recalibrate if continues"
 
     def save_performance_history(self) -> None:
         """Save performance history to disk"""
@@ -382,7 +378,7 @@ class PerformanceMonitor:
                 self.logger.debug("No performance history found, starting fresh")
                 return
 
-            with open(history_file, "r") as f:
+            with open(history_file) as f:
                 data = json.load(f)
 
             # Restore league performance
@@ -391,28 +387,28 @@ class PerformanceMonitor:
                     "total_predictions": stats["total_predictions"],
                     "correct_predictions": stats["correct_predictions"],
                     "confidence_scores": deque(
-                        stats.get("confidence_scores", []), maxlen=100
+                        stats.get("confidence_scores", []), maxlen=100,
                     ),
                     "drift_detected": stats.get("drift_detected", False),
                     "last_recalibration": stats.get("last_recalibration"),
                 }
 
             self.logger.debug(
-                f"Loaded performance history for {len(self.league_performance)} leagues"
+                f"Loaded performance history for {len(self.league_performance)} leagues",
             )
 
         except Exception as e:
             self.logger.warning(f"Error loading performance history: {e}")
 
-    def generate_performance_report(self, league: Optional[str] = None) -> str:
-        """
-        Generate human-readable performance report
+    def generate_performance_report(self, league: str | None = None) -> str:
+        """Generate human-readable performance report
 
         Args:
             league: Specific league or None for all
 
         Returns:
             Formatted report string
+
         """
         report = []
         report.append("=" * 60)
@@ -438,7 +434,7 @@ class PerformanceMonitor:
         report.append("=" * 60)
         return "\n".join(report)
 
-    def _format_league_report(self, league: str, performance: Dict) -> List[str]:
+    def _format_league_report(self, league: str, performance: dict) -> list[str]:
         """Format league report lines"""
         lines = []
         league_display = league.replace("-", " ").upper()
@@ -446,10 +442,10 @@ class PerformanceMonitor:
         lines.append("-" * 40)
         lines.append(f"  Total Predictions: {performance.get('total_predictions', 0)}")
         lines.append(
-            f"  Overall Accuracy: {performance.get('overall_accuracy', 0):.1%}"
+            f"  Overall Accuracy: {performance.get('overall_accuracy', 0):.1%}",
         )
         lines.append(
-            f"  Calibration Error: {performance.get('expected_calibration_error', 0):.4f}"
+            f"  Calibration Error: {performance.get('expected_calibration_error', 0):.4f}",
         )
 
         windows = performance.get("window_accuracies", {})

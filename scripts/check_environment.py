@@ -3,8 +3,8 @@
 Prints python info, whether venv is active, installed key packages, .env keys found (not values).
 """
 
-import sys
 import importlib.util
+import sys
 from pathlib import Path
 
 print("python_executable:", sys.executable)

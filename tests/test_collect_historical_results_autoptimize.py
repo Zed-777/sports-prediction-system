@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from scripts.collect_historical_results import HistoricalResultsCollector
 
 
@@ -30,12 +31,12 @@ def test_auto_optimize_trigger(monkeypatch, tmp_path):
 
     monkeypatch.setenv("FOOTBALL_DATA_API_KEY", "fake")
     monkeypatch.setattr(
-        "scripts.optimize_accuracy.AccuracyOptimizer", lambda: FakeOpt()
+        "scripts.optimize_accuracy.AccuracyOptimizer", lambda: FakeOpt(),
     )
 
     collector = HistoricalResultsCollector()
     # simulate args.auto_optimize behavior by calling logic directly
-    data = json.load(open(out_file, "r", encoding="utf-8"))
+    data = json.load(open(out_file, encoding="utf-8"))
     completed = [r for r in data if r.get("actual_result") is not None]
     assert len(completed) == 1
     # threshold 1 should trigger

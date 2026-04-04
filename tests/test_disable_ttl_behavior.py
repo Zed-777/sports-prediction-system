@@ -16,7 +16,7 @@ def test_disable_on_429_uses_config_ttl(monkeypatch, tmp_path):
     cfg = yaml.safe_load(open(cfg_path, encoding="utf-8").read())
     # Temporarily set a smaller TTL for our tests
     cfg.setdefault("data_sources", {}).setdefault(
-        "disable_on_429_seconds", {}
+        "disable_on_429_seconds", {},
     ).setdefault("api-football-v1.p.rapidapi.com", {})["/v3/injuries"] = 2
     with open(cfg_path, "w", encoding="utf-8") as f:
         yaml.safe_dump(cfg, f)
@@ -33,7 +33,7 @@ def test_disable_on_429_uses_config_ttl(monkeypatch, tmp_path):
         backoff=None,
         logger=None,
     ):
-        return SimpleNamespace(status_code=429, text="429", json=lambda: {})
+        return SimpleNamespace(status_code=429, text="429", json=dict)
 
     monkeypatch.setattr("data_quality_enhancer.safe_request_get", fake_safe_get)
 

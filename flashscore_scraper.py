@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-FlashScore.es Data Scraper
+"""FlashScore.es Data Scraper
 Advanced web scraping for comprehensive match data, statistics, and live scores
 """
 
@@ -14,9 +13,10 @@ import time
 import zlib
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, cast, Dict, List, Optional
-from app.types import JSONDict, JSONList
+from typing import Any, cast
 from urllib.parse import urljoin
+
+from app.types import JSONDict, JSONList
 
 try:
     import brotli
@@ -29,7 +29,7 @@ import requests
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
@@ -103,7 +103,7 @@ class FlashScoreScraper:
                 "DNT": "1",
                 "Connection": "keep-alive",
                 "Upgrade-Insecure-Requests": "1",
-            }
+            },
         )
 
     def setup_cache(self) -> None:
@@ -127,7 +127,7 @@ class FlashScoreScraper:
         url_hash = hash(url) % 10000  # Simple hash for cache key
         return f"{self.cache_dir}/{prefix}{url_hash}.json"
 
-    def _load_cache(self, cache_path: str) -> Optional[JSONDict]:
+    def _load_cache(self, cache_path: str) -> JSONDict | None:
         """Load data from cache if available and fresh"""
         if not os.path.exists(cache_path):
             return None
@@ -138,7 +138,7 @@ class FlashScoreScraper:
 
         try:
             with open(cache_path, encoding="utf-8") as f:
-                return cast(JSONDict, json.load(f))
+                return cast("JSONDict", json.load(f))
         except Exception as e:
             logger.warning(f"Failed to load cache {cache_path}: {e}")
             return None
@@ -191,7 +191,7 @@ class FlashScoreScraper:
                 # If HTML is suspiciously short or missing tags, optionally save for debug and retry
                 if not html or len(html) < 1000 or "<html" not in html.lower():
                     logger.warning(
-                        f"Suspicious response (len={len(html)}); attempt {attempt}/{self.max_attempts}"
+                        f"Suspicious response (len={len(html)}); attempt {attempt}/{self.max_attempts}",
                     )
                     if self.debug_dir:
                         self._save_debug_html(url, html, tag=f"attempt{attempt}")
@@ -201,8 +201,7 @@ class FlashScoreScraper:
                         logger.debug(f"Retrying after {wait:.1f}s")
                         time.sleep(wait)
                         continue
-                    else:
-                        return None
+                    return None
 
                 if use_cache:
                     self._save_cache(
@@ -218,7 +217,7 @@ class FlashScoreScraper:
 
             except requests.RequestException as e:
                 logger.error(f"Failed to fetch {url} (attempt {attempt}): {e}")
-                if self.debug_dir and hasattr(e, 'response') and e.response is not None:
+                if self.debug_dir and hasattr(e, "response") and e.response is not None:
                     try:
                         self._save_debug_html(url, e.response.text, tag=f"error{attempt}")
                     except Exception:
@@ -253,10 +252,10 @@ class FlashScoreScraper:
 
         # Prefer to inspect <script> tags that contain the compact encoded payloads.
         script_contents = re.findall(
-            r"<script[^>]*>(.*?)</script>", html, re.DOTALL | re.IGNORECASE
+            r"<script[^>]*>(.*?)</script>", html, re.DOTALL | re.IGNORECASE,
         )
         logger.debug(
-            f"Found {len(script_contents)} <script> tags to inspect for encoded payloads"
+            f"Found {len(script_contents)} <script> tags to inspect for encoded payloads",
         )
 
         # Collect blocks from scripts; if none found, fall back to scanning full HTML
@@ -289,7 +288,7 @@ class FlashScoreScraper:
             seen = set()
             unique = []
             for m in matches:
-                mid = m.get('match_id')
+                mid = m.get("match_id")
                 if mid and mid not in seen:
                     seen.add(mid)
                     unique.append(m)
@@ -301,18 +300,18 @@ class FlashScoreScraper:
 
         # If no candidate script-like blocks found and the HTML is large but lacks <html>,
         # try common decompression heuristics (brotli/zlib) and re-run extraction on decompressed content
-        if not candidate_texts or (len(candidate_texts) == 1 and len(candidate_texts[0]) > 20000 and '<html' not in candidate_texts[0].lower()):
+        if not candidate_texts or (len(candidate_texts) == 1 and len(candidate_texts[0]) > 20000 and "<html" not in candidate_texts[0].lower()):
             tried = False
             for raw in candidate_texts:
                 try:
                     # Try brotli
-                    if 'brotli' in globals() and brotli is not None:
+                    if "brotli" in globals() and brotli is not None:
                         try:
-                            decompressed = brotli.decompress(raw.encode('latin-1'))
-                            decoded = decompressed.decode('utf-8', errors='ignore')
+                            decompressed = brotli.decompress(raw.encode("latin-1"))
+                            decoded = decompressed.decode("utf-8", errors="ignore")
                             candidate_texts = [decoded]
                             tried = True
-                            logger.info('Decompressed content using brotli and re-attempting extraction')
+                            logger.info("Decompressed content using brotli and re-attempting extraction")
                             break
                         except Exception:
                             pass
@@ -320,18 +319,18 @@ class FlashScoreScraper:
                     try:
                         import zlib
 
-                        decompressed = zlib.decompress(raw.encode('latin-1'))
-                        decoded = decompressed.decode('utf-8', errors='ignore')
+                        decompressed = zlib.decompress(raw.encode("latin-1"))
+                        decoded = decompressed.decode("utf-8", errors="ignore")
                         candidate_texts = [decoded]
                         tried = True
-                        logger.info('Decompressed content using zlib and re-attempting extraction')
+                        logger.info("Decompressed content using zlib and re-attempting extraction")
                         break
                     except Exception:
                         pass
                 except Exception:
                     continue
             if not tried:
-                logger.debug('No decompression heuristics applied; continuing with raw candidate_texts')
+                logger.debug("No decompression heuristics applied; continuing with raw candidate_texts")
 
         for text in candidate_texts:
             blocks = self._extract_encoded_blocks(text)
@@ -343,12 +342,12 @@ class FlashScoreScraper:
                         matches.append(match_data)
                         if len(matches) <= 3:
                             logger.debug(
-                                f"Parsed match sample: {match_data.get('home_team')} vs {match_data.get('away_team')} ({match_data.get('status')})"
+                                f"Parsed match sample: {match_data.get('home_team')} vs {match_data.get('away_team')} ({match_data.get('status')})",
                             )
                 except Exception as e:
                     logger.warning(f"Failed to build match from fields: {e}")
         logger.info(
-            f"Inspected {len(candidate_texts)} candidate script(s), extracted {total_found} raw blocks, parsed {len(matches)} matches before filtering"
+            f"Inspected {len(candidate_texts)} candidate script(s), extracted {total_found} raw blocks, parsed {len(matches)} matches before filtering",
         )
 
         # Remove duplicates based on match_id
@@ -382,13 +381,13 @@ class FlashScoreScraper:
 
         return matches
 
-    def _extract_encoded_blocks(self, text: str) -> List[Dict[str, str]]:
+    def _extract_encoded_blocks(self, text: str) -> list[dict[str, str]]:
         """Scan text for encoded match blocks and return list of field dicts.
 
         This is tolerant: it finds anchor tokens like '¬AA÷' or '¬~AA÷' or 'AA÷' and
         groups the following key÷value fragments until the next anchor.
         """
-        fields_list: List[Dict[str, str]] = []
+        fields_list: list[dict[str, str]] = []
 
         # Find anchor indices; be tolerant of slight variations in the anchor tokens
         anchors = [m.start() for m in re.finditer(r"¬~?AA÷|¬AA÷|AA÷|\bAA÷", text)]
@@ -399,7 +398,7 @@ class FlashScoreScraper:
             for part in parts:
                 if "AE" in part and "AF" in part:
                     # parse key/value pairs
-                    part_fields: Dict[str, str] = {}
+                    part_fields: dict[str, str] = {}
                     for km, vm in re.findall(r"([A-Z]{1,3})÷([^¬]*)", part):
                         part_fields[km] = vm
                     # check for leading ÷matchid
@@ -415,7 +414,7 @@ class FlashScoreScraper:
             end = anchors[i + 1] if i + 1 < len(anchors) else len(text)
             chunk = text[start:end]
 
-            fields: Dict[str, str] = {}
+            fields: dict[str, str] = {}
 
             # Capture explicit ÷matchid at start (some payloads prefix with ÷<id>)
             m0 = re.search(r"÷(\d+)", chunk)
@@ -469,7 +468,7 @@ class FlashScoreScraper:
         # Brotli: try if module is present
         try:
             if brotli is not None:
-                out_brotli: bytes = cast(bytes, brotli.decompress(b))
+                out_brotli: bytes = cast("bytes", brotli.decompress(b))
                 return out_brotli.decode("utf-8", errors="replace")
         except Exception:
             pass
@@ -488,8 +487,8 @@ class FlashScoreScraper:
             return b.decode("latin-1", errors="ignore")
 
     def _build_match_from_fields(
-        self, fields: Dict[str, str], league: str
-    ) -> Optional[JSONDict]:
+        self, fields: dict[str, str], league: str,
+    ) -> JSONDict | None:
         """Construct a normalized match dict from extracted fields dict."""
         try:
             match_id = fields.get("AA") or fields.get("A") or ""
@@ -514,13 +513,13 @@ class FlashScoreScraper:
                 if home and away and ts_raw:
                     # Avoid embedding backslashes in f-string expressions (can cause SyntaxError on some Python versions)
                     match_id = "{}_{}_{}".format(
-                        re.sub(r"\W+", "", home), re.sub(r"\W+", "", away), ts_raw
+                        re.sub(r"\W+", "", home), re.sub(r"\W+", "", away), ts_raw,
                     )
 
             if not (home and away and (timestamp is not None)):
                 # not enough data to form a match record
                 logger.debug(
-                    f"Insufficient fields to build match: AA={match_id}, AE={bool(home)}, AF={bool(away)}, AD={bool(ts_raw)}"
+                    f"Insufficient fields to build match: AA={match_id}, AE={bool(home)}, AF={bool(away)}, AD={bool(ts_raw)}",
                 )
                 return None
 
@@ -579,11 +578,11 @@ class FlashScoreScraper:
         stack = 0
         start = None
         for i, ch in enumerate(text):
-            if ch == '{':
+            if ch == "{":
                 if stack == 0:
                     start = i
                 stack += 1
-            elif ch == '}':
+            elif ch == "}":
                 stack -= 1
                 if stack == 0 and start is not None:
                     cand = text[start : i + 1]
@@ -622,47 +621,47 @@ class FlashScoreScraper:
             if not isinstance(d, dict):
                 return False
             keys = set(k.lower() for k in d.keys())
-            return 'home' in keys or 'hometeam' in keys or 'away' in keys or 'awayteam' in keys
+            return "home" in keys or "hometeam" in keys or "away" in keys or "awayteam" in keys
 
         def _walk(obj):
             if isinstance(obj, dict):
                 if _is_team_obj(obj):
                     # Try to extract team names and scores
                     try:
-                        if 'homeTeam' in obj and 'awayTeam' in obj and isinstance(obj['homeTeam'], dict):
-                            home = obj['homeTeam'].get('name') or obj['homeTeam'].get('title')
-                            away = obj['awayTeam'].get('name') or obj['awayTeam'].get('title')
+                        if "homeTeam" in obj and "awayTeam" in obj and isinstance(obj["homeTeam"], dict):
+                            home = obj["homeTeam"].get("name") or obj["homeTeam"].get("title")
+                            away = obj["awayTeam"].get("name") or obj["awayTeam"].get("title")
                             # attempt to get date from obj
-                            date = obj.get('utcDate') or obj.get('date') or obj.get('scheduled')
+                            date = obj.get("utcDate") or obj.get("date") or obj.get("scheduled")
                             # glean scores
-                            score = obj.get('score') or {}
-                            ft = score.get('fullTime') or {}
-                            hs = ft.get('home')
-                            as_ = ft.get('away')
+                            score = obj.get("score") or {}
+                            ft = score.get("fullTime") or {}
+                            hs = ft.get("home")
+                            as_ = ft.get("away")
                             # Build minimal normalized match dict
-                            mid = obj.get('id') or f"{home}_{away}_{date}"
+                            mid = obj.get("id") or f"{home}_{away}_{date}"
                             if home and away and date:
                                 found.append(
                                     {
-                                        'match_id': str(mid),
-                                        'league': league,
-                                        'home_team': home,
-                                        'away_team': away,
-                                        'date': date[:10] if isinstance(date, str) else str(date),
-                                        'time': date[11:16] if isinstance(date, str) and len(date) > 16 else '',
-                                        'datetime': date if isinstance(date, str) else str(date),
-                                        'status': 'finished' if hs is not None and as_ is not None else 'scheduled',
-                                        'home_score': hs,
-                                        'away_score': as_,
-                                        'raw_data': obj,
-                                    }
+                                        "match_id": str(mid),
+                                        "league": league,
+                                        "home_team": home,
+                                        "away_team": away,
+                                        "date": date[:10] if isinstance(date, str) else str(date),
+                                        "time": date[11:16] if isinstance(date, str) and len(date) > 16 else "",
+                                        "datetime": date if isinstance(date, str) else str(date),
+                                        "status": "finished" if hs is not None and as_ is not None else "scheduled",
+                                        "home_score": hs,
+                                        "away_score": as_,
+                                        "raw_data": obj,
+                                    },
                                 )
                         else:
                             # generic keys (home/away)
-                            home = obj.get('home') or obj.get('home_name') or obj.get('home_team')
-                            away = obj.get('away') or obj.get('away_name') or obj.get('away_team')
+                            home = obj.get("home") or obj.get("home_name") or obj.get("home_team")
+                            away = obj.get("away") or obj.get("away_name") or obj.get("away_team")
                             if home and away:
-                                found.append({'match_id': f"{home}_{away}", 'league': league, 'home_team': home, 'away_team': away, 'raw_data': obj})
+                                found.append({"match_id": f"{home}_{away}", "league": league, "home_team": home, "away_team": away, "raw_data": obj})
                     except Exception:
                         pass
                 # Recurse
@@ -698,13 +697,13 @@ class FlashScoreScraper:
                 if home and away and ts_raw:
                     # Avoid embedding backslashes in f-string expressions (can cause SyntaxError on some Python versions)
                     match_id = "{}_{}_{}".format(
-                        re.sub(r"\W+", "", home), re.sub(r"\W+", "", away), ts_raw
+                        re.sub(r"\W+", "", home), re.sub(r"\W+", "", away), ts_raw,
                     )
 
             if not (home and away and (timestamp is not None)):
                 # not enough data to form a match record
                 logger.debug(
-                    f"Insufficient fields to build match: AA={match_id}, AE={bool(home)}, AF={bool(away)}, AD={bool(ts_raw)}"
+                    f"Insufficient fields to build match: AA={match_id}, AE={bool(home)}, AF={bool(away)}, AD={bool(ts_raw)}",
                 )
                 return None
 
@@ -750,7 +749,7 @@ class FlashScoreScraper:
             logger.warning(f"Error building match from fields: {e}")
             return None
 
-    def parse_match_block_encoded(self, block: str, league: str) -> Optional[JSONDict]:
+    def parse_match_block_encoded(self, block: str, league: str) -> JSONDict | None:
         """Parse individual match data from encoded block"""
         try:
             # Extract key fields from the encoded data
@@ -782,7 +781,7 @@ class FlashScoreScraper:
 
             if not all([match_id, timestamp, home_team, away_team]):
                 logger.debug(
-                    f"Missing required fields - ID: {bool(match_id)}, Time: {bool(timestamp)}, Home: {bool(home_team)}, Away: {bool(away_team)}"
+                    f"Missing required fields - ID: {bool(match_id)}, Time: {bool(timestamp)}, Home: {bool(home_team)}, Away: {bool(away_team)}",
                 )
                 return None
 
@@ -818,7 +817,7 @@ class FlashScoreScraper:
             logger.warning(f"Failed to parse encoded match block: {e}")
             return None
 
-    def parse_match_block(self, match_id: str, league: str) -> Optional[JSONDict]:
+    def parse_match_block(self, match_id: str, league: str) -> JSONDict | None:
         """Parse individual match data"""
         # In a real implementation, this would parse the HTML
         # For now, return mock data structure
@@ -889,18 +888,18 @@ class FlashScoreScraper:
         for match in matches:
             try:
                 match_datetime = datetime.strptime(
-                    f"{match['date']} {match['time']}", "%Y-%m-%d %H:%M"
+                    f"{match['date']} {match['time']}", "%Y-%m-%d %H:%M",
                 )
                 if match_datetime <= cutoff_date and match["status"] == "scheduled":
                     upcoming_matches.append(match)
             except ValueError as e:
                 logger.warning(
-                    f"Invalid datetime for match {match.get('match_id', 'unknown')}: {e}"
+                    f"Invalid datetime for match {match.get('match_id', 'unknown')}: {e}",
                 )
                 continue
 
         logger.info(
-            f"Found {len(upcoming_matches)} upcoming matches within {days_ahead} days"
+            f"Found {len(upcoming_matches)} upcoming matches within {days_ahead} days",
         )
         return upcoming_matches
 
@@ -970,7 +969,7 @@ class FlashScoreScraper:
 
         # Inspect script tags first for encoded payloads
         script_contents = re.findall(
-            r"<script[^>]*>(.*?)</script>", html, re.DOTALL | re.IGNORECASE
+            r"<script[^>]*>(.*?)</script>", html, re.DOTALL | re.IGNORECASE,
         )
         candidate_texts = [
             s
@@ -1031,14 +1030,13 @@ class FlashScoreScraper:
                                 status = "live"
                         except Exception:
                             pass
-                    else:
-                        # If match started less than 5 hours ago, mark finished or live based on time
-                        if now - m_datetime < timedelta(hours=5):
-                            status = (
-                                "live"
-                                if now - m_datetime < timedelta(hours=3)
-                                else "finished"
-                            )
+                    # If match started less than 5 hours ago, mark finished or live based on time
+                    elif now - m_datetime < timedelta(hours=5):
+                        status = (
+                            "live"
+                            if now - m_datetime < timedelta(hours=3)
+                            else "finished"
+                        )
 
                 live_matches.append(
                     {
@@ -1051,7 +1049,7 @@ class FlashScoreScraper:
                         "home_score": home_score,
                         "away_score": away_score,
                         "raw_data": fields,
-                    }
+                    },
                 )
             except Exception as e:
                 logger.debug(f"Skipping block while building live match: {e}")
@@ -1074,7 +1072,7 @@ class FlashScoreScraper:
                                 "home_score": None,
                                 "away_score": None,
                                 "raw_html": blk,
-                            }
+                            },
                         )
 
         return live_matches
@@ -1092,7 +1090,7 @@ class AdvancedDataIntegrator:
         try:
             # Get team names defensively (support both API formats)
             def extract_team_name(
-                m: JSONDict, keys: tuple[str, str] = ("home_team", "homeTeam")
+                m: JSONDict, keys: tuple[str, str] = ("home_team", "homeTeam"),
             ) -> str:
                 for k in keys:
                     if k in m:
@@ -1100,7 +1098,7 @@ class AdvancedDataIntegrator:
                         if isinstance(val, dict):
                             # common nested format: {'id': .., 'name': 'Team Name'}
                             return str(val.get("name") or val.get("team_name") or "")
-                        elif isinstance(val, str):
+                        if isinstance(val, str):
                             return str(val)
                 # Fallbacks
                 if isinstance(m.get("home"), dict):
@@ -1120,7 +1118,7 @@ class AdvancedDataIntegrator:
 
             # Calculate advanced metrics
             advanced_metrics = self.calculate_advanced_metrics(
-                home_stats, away_stats, h2h_data
+                home_stats, away_stats, h2h_data,
             )
 
             # Get odds if available
@@ -1135,7 +1133,7 @@ class AdvancedDataIntegrator:
                 "advanced_metrics": advanced_metrics,
                 "odds_data": odds_data,
                 "data_quality_score": self.calculate_data_quality(
-                    match, home_stats, away_stats, h2h_data
+                    match, home_stats, away_stats, h2h_data,
                 ),
                 "last_updated": datetime.now().isoformat(),
             }
@@ -1147,7 +1145,7 @@ class AdvancedDataIntegrator:
             return match
 
     def calculate_advanced_metrics(
-        self, home_stats: JSONDict, away_stats: JSONDict, h2h: JSONList
+        self, home_stats: JSONDict, away_stats: JSONDict, h2h: JSONList,
     ) -> JSONDict:
         """Calculate sophisticated performance metrics"""
         # Form analysis
@@ -1156,7 +1154,7 @@ class AdvancedDataIntegrator:
 
         # Head-to-head advantage
         h2h_advantage = self.calculate_h2h_advantage(
-            h2h, home_stats["team"], away_stats["team"]
+            h2h, home_stats["team"], away_stats["team"],
         )
 
         # Home/away performance differential
@@ -1173,11 +1171,11 @@ class AdvancedDataIntegrator:
             "scoring_patterns": scoring_patterns,
             "momentum_indicator": self.calculate_momentum(home_stats, away_stats),
             "defensive_strength": self.calculate_defensive_strength(
-                home_stats, away_stats
+                home_stats, away_stats,
             ),
         }
 
-    def calculate_form_score(self, recent_results: List[str]) -> float:
+    def calculate_form_score(self, recent_results: list[str]) -> float:
         """Calculate form score from recent results"""
         if not recent_results:
             return 50.0
@@ -1192,7 +1190,7 @@ class AdvancedDataIntegrator:
         return (points / 15) * 100  # Max 15 points for 5 wins
 
     def calculate_h2h_advantage(
-        self, h2h_matches: JSONList, team1: str, team2: str
+        self, h2h_matches: JSONList, team1: str, team2: str,
     ) -> float:
         """Calculate head-to-head advantage score"""
         if not h2h_matches:
@@ -1225,7 +1223,7 @@ class AdvancedDataIntegrator:
         return (team1_win_rate - 0.5) * 200  # Convert to +/- percentage
 
     def calculate_home_advantage(
-        self, home_stats: JSONDict, away_stats: JSONDict
+        self, home_stats: JSONDict, away_stats: JSONDict,
     ) -> float:
         """Calculate home advantage differential"""
         home_home_stats = home_stats.get("home_away_stats", {}).get("home", {})
@@ -1250,24 +1248,24 @@ class AdvancedDataIntegrator:
         return (home_win_rate - away_win_rate) * 100
 
     def analyze_scoring_patterns(
-        self, home_stats: JSONDict, away_stats: JSONDict
+        self, home_stats: JSONDict, away_stats: JSONDict,
     ) -> JSONDict:
         """Analyze goal scoring patterns"""
         return {
             "home_goals_per_game": home_stats.get("season_stats", {}).get(
-                "goals_for", 0
+                "goals_for", 0,
             )
             / max(1, home_stats.get("season_stats", {}).get("matches_played", 1)),
             "away_goals_per_game": away_stats.get("season_stats", {}).get(
-                "goals_for", 0
+                "goals_for", 0,
             )
             / max(1, away_stats.get("season_stats", {}).get("matches_played", 1)),
             "home_conceded_per_game": home_stats.get("season_stats", {}).get(
-                "goals_against", 0
+                "goals_against", 0,
             )
             / max(1, home_stats.get("season_stats", {}).get("matches_played", 1)),
             "away_conceded_per_game": away_stats.get("season_stats", {}).get(
-                "goals_against", 0
+                "goals_against", 0,
             )
             / max(1, away_stats.get("season_stats", {}).get("goals_against", 1)),
         }
@@ -1279,23 +1277,22 @@ class AdvancedDataIntegrator:
 
         if home_form > away_form + 10:
             return "Home team strong momentum"
-        elif away_form > home_form + 10:
+        if away_form > home_form + 10:
             return "Away team strong momentum"
-        else:
-            return "Balanced momentum"
+        return "Balanced momentum"
 
     def calculate_defensive_strength(
-        self, home_stats: JSONDict, away_stats: JSONDict
+        self, home_stats: JSONDict, away_stats: JSONDict,
     ) -> JSONDict:
         """Calculate defensive strength metrics"""
         home_clean_sheets = home_stats.get("season_stats", {}).get("clean_sheets", 0)
         away_clean_sheets = away_stats.get("season_stats", {}).get("clean_sheets", 0)
 
         home_matches = max(
-            1, home_stats.get("season_stats", {}).get("matches_played", 1)
+            1, home_stats.get("season_stats", {}).get("matches_played", 1),
         )
         away_matches = max(
-            1, away_stats.get("season_stats", {}).get("matches_played", 1)
+            1, away_stats.get("season_stats", {}).get("matches_played", 1),
         )
 
         return {
@@ -1319,7 +1316,7 @@ class AdvancedDataIntegrator:
         }
 
     def calculate_data_quality(
-        self, match: JSONDict, home_stats: JSONDict, away_stats: JSONDict, h2h: JSONList
+        self, match: JSONDict, home_stats: JSONDict, away_stats: JSONDict, h2h: JSONList,
     ) -> int:
         """Calculate overall data quality score"""
         score = 50  # Base score

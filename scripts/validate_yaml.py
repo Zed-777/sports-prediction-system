@@ -8,39 +8,45 @@ Checks:
 Exit code: 0 if all files parse and have no tabs; 1 otherwise.
 """
 
+import logging
 import sys
 from pathlib import Path
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("validate_yaml")
+
 try:
     import yaml
-except Exception:  # pragma: no cover - best-effort in local dev
-    print("PyYAML not installed. Install with: pip install pyyaml", file=sys.stderr)
+except ImportError:  # pragma: no cover - best-effort in local dev
+    logger.error("PyYAML not installed. Install with: pip install pyyaml")
     sys.exit(2)
 
 root = Path(__file__).resolve().parents[1]
-errors = 0
 
 
-def check_file(p: Path):
-    global errors
+def check_file(p: Path) -> int:
+    """Check a YAML file for whitespace and parse issues, returning count of problems."""
+    issues = 0
     text = p.read_text(encoding="utf-8")
     if "\t" in text:
-        print(f"TAB_CHAR: {p}")
-        errors += 1
+        logger.error("TAB_CHAR: %s", p)
+        issues += 1
     try:
         yaml.safe_load(text)
-    except Exception as e:
-        print(f"YAML_ERROR: {p}: {e}")
-        errors += 1
+    except yaml.YAMLError as e:
+        logger.error("YAML_ERROR: %s: %s", p, e)
+        issues += 1
+    return issues
 
 
 wf_dir = root / ".github" / "workflows"
+errors = 0
 for f in sorted(wf_dir.glob("*.yml")):
-    check_file(f)
+    errors += check_file(f)
 
 dc = root / "docker-compose.yml"
 if dc.exists():
-    check_file(dc)
+    errors += check_file(dc)
 
 if errors:
     print(f"Validation finished: {errors} problem(s) found.")

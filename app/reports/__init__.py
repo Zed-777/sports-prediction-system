@@ -1,3 +1,2 @@
-"""
-Reports package for the Sports Prediction System
+"""Reports package for the Sports Prediction System
 """

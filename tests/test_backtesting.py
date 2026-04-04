@@ -1,7 +1,6 @@
 import json
 from datetime import datetime, timedelta
 
-
 from app.models.backtesting import BacktestingFramework
 
 
@@ -22,7 +21,7 @@ def make_sample_matches(n=10, start_date=datetime(2024, 1, 1)):
                 "home_goals": home_goals,
                 "away_goals": away_goals,
                 "outcome": outcome,
-            }
+            },
         )
     return matches
 

@@ -1,10 +1,8 @@
-"""
-Retry utility with exponential backoff
-"""
+"""Retry utility with exponential backoff."""
 
 import asyncio
 import logging
-import random
+import secrets
 from collections.abc import Callable
 from functools import wraps
 from typing import Any
@@ -17,34 +15,39 @@ def retry_with_backoff(
     backoff_strategy: str = "exponential",
     base_delay: float = 1.0,
     max_delay: float = 60.0,
+    *,
     jitter: bool = True,
-) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-    """Decorator for retrying functions with backoff.
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:  # noqa: C901
+
+    """Retry functions with backoff.
 
     Args:
-        max_attempts: Maximum number of retry attempts
-        backoff_strategy: 'exponential' or 'linear'
-        base_delay: Base delay in seconds
-        max_delay: Maximum delay in seconds
-        jitter: Add random jitter to delay
+        max_attempts: Maximum number of retry attempts.
+        backoff_strategy: 'exponential' or 'linear'.
+        base_delay: Base delay in seconds.
+        max_delay: Maximum delay in seconds.
+        jitter: Add random jitter to delay.
+
     """
 
     def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(func)
-        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
-            last_exception = None
+        async def async_wrapper(*args: object, **kwargs: object) -> object:  # noqa: PERF203
+            last_exception: Exception | None = None
 
             for attempt in range(max_attempts):
                 try:
-                    return await func(*args, **kwargs)
+                    return await func(*args, **kwargs)  # type: ignore[arg-type]
                 except Exception as e:
                     last_exception = e
 
                     if attempt == max_attempts - 1:
-                        logger.error(
-                            f"All {max_attempts} attempts failed for {func.__name__}: {e}"
+                        logger.exception(
+                            "All %d attempts failed for %s",
+                            max_attempts,
+                            func.__name__,
                         )
-                        raise e
+                        raise
 
                     # Calculate delay
                     if backoff_strategy == "exponential":
@@ -52,32 +55,33 @@ def retry_with_backoff(
                     else:  # linear
                         delay = min(base_delay * (attempt + 1), max_delay)
 
-                    # Add jitter
+                    # Add jitter; not security-critical random
                     if jitter:
-                        delay += random.uniform(0, delay * 0.1)
+                        delay += secrets.SystemRandom().uniform(0, delay * 0.1)
 
                     logger.warning(
-                        f"Attempt {attempt + 1} failed for {func.__name__}: {e}. Retrying in {delay:.2f}s"
+                        "Attempt %d failed for %s: %s. Retrying in %.2fs",
+                        attempt + 1,
+                        func.__name__,
+                        e,
+                        delay,
                     )
                     await asyncio.sleep(delay)
 
             # Should never reach here, but just in case
             if last_exception:
                 raise last_exception
-            else:
-                raise RuntimeError(
-                    "All retry attempts failed without capturing exception"
-                )
+            error_message = "All retry attempts failed without capturing exception"
+            raise RuntimeError(error_message)
 
         @wraps(func)
-        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+        def sync_wrapper(*args: object, **kwargs: object) -> object:
             # For synchronous functions, run the async wrapper
             return asyncio.run(async_wrapper(*args, **kwargs))
 
         # Return async wrapper if function is async, sync wrapper otherwise
         if asyncio.iscoroutinefunction(func):
             return async_wrapper
-        else:
-            return sync_wrapper
+        return sync_wrapper
 
     return decorator

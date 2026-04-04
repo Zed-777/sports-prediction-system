@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Unified fetcher for Football-Data.org (v4) and API-Football (RapidAPI v3).
+"""Unified fetcher for Football-Data.org (v4) and API-Football (RapidAPI v3).
 
 Provides functions used by the tests and supports a small CLI to write CSV backups.
 """
@@ -15,6 +14,7 @@ import sys
 from pathlib import Path
 
 import requests
+
 from app.utils.http import safe_request_get
 
 ROOT = Path(__file__).parent.parent
@@ -63,7 +63,7 @@ def fetch_fd_matches(api_key: str, competition: str, season: str) -> list[dict]:
                 .get("fullTime", {})
                 .get("awayTeam"),
                 "status": (m.get("status") or "FINISHED").lower(),
-            }
+            },
         )
     return results
 
@@ -104,7 +104,7 @@ def fetch_af_matches(api_key: str, league_id: str, season: str) -> list[dict]:
                     if fixture.get("status", {}).get("short") == "FT"
                     else "scheduled"
                 ),
-            }
+            },
         )
     return results
 
@@ -135,7 +135,7 @@ def write_csv(matches: list[dict], filename: str):
                     "home_score": m.get("home_score"),
                     "away_score": m.get("away_score"),
                     "status": m.get("status"),
-                }
+                },
             )
 
 
@@ -156,10 +156,10 @@ def save_last_processed(data: dict):
 def parse_cli_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Fetch historical matches for FD/AF")
     parser.add_argument(
-        "--fd", action="store_true", help="Fetch from Football-Data.org (v4)"
+        "--fd", action="store_true", help="Fetch from Football-Data.org (v4)",
     )
     parser.add_argument(
-        "--af", action="store_true", help="Fetch from API-Football (RapidAPI)"
+        "--af", action="store_true", help="Fetch from API-Football (RapidAPI)",
     )
     parser.add_argument(
         "--competition",
@@ -175,7 +175,7 @@ def parse_cli_args() -> argparse.Namespace:
         help="Seasons to fetch (space separated)",
     )
     parser.add_argument(
-        "--outfile", type=str, default=None, help="CSV filename (optional)"
+        "--outfile", type=str, default=None, help="CSV filename (optional)",
     )
     parser.add_argument(
         "--incremental",
@@ -202,7 +202,7 @@ def main() -> None:
     }
     if args.fd:
         api_key = os.environ.get("FOOTBALL_DATA_API_KEY") or read_env_file_for_key(
-            "FOOTBALL_DATA_API_KEY"
+            "FOOTBALL_DATA_API_KEY",
         )
         if not api_key:
             print("FOOTBALL_DATA_API_KEY not set; skipping FD fetch")
@@ -221,13 +221,13 @@ def main() -> None:
                         ):
                             try:
                                 detail = fetch_fd_match_detail(
-                                    api_key, int(m.get("id"))
+                                    api_key, int(m.get("id")),
                                 )
                                 m["home_score"] = detail.get("home_score")
                                 m["away_score"] = detail.get("away_score")
                             except Exception as e:
                                 print(
-                                    f"  -> detail fetch failed for ID {m.get('id')}: {e}"
+                                    f"  -> detail fetch failed for ID {m.get('id')}: {e}",
                                 )
                     all_matches.extend(matches)
                     if matches:
@@ -240,26 +240,26 @@ def main() -> None:
                     status = getattr(e.response, "status_code", None)
                     message = getattr(e.response, "text", str(e))
                     print(
-                        f"Failed to fetch FD {args.competition} season {s}: HTTP {status} {message}"
+                        f"Failed to fetch FD {args.competition} season {s}: HTTP {status} {message}",
                     )
                     if status and status == 403:
                         metrics["football_data"]["403"] += 1
                         af_key = os.environ.get(
-                            "API_FOOTBALL_KEY"
+                            "API_FOOTBALL_KEY",
                         ) or read_env_file_for_key("API_FOOTBALL_KEY")
                         af_league = (
                             os.environ.get("API_FOOTBALL_LEAGUE") or args.competition
                         )
                         if af_key:
                             print(
-                                f"  -> Attempting API-Football fallback for {af_league} season {s}..."
+                                f"  -> Attempting API-Football fallback for {af_league} season {s}...",
                             )
                             try:
                                 matches_af = fetch_af_matches(af_key, af_league, s)
                                 if matches_af:
                                     all_matches.extend(matches_af)
                                     print(
-                                        f"  -> API-Football fallback saved {len(matches_af)} matches for season {s}"
+                                        f"  -> API-Football fallback saved {len(matches_af)} matches for season {s}",
                                     )
                             except Exception as af_e:
                                 print(f"  -> API-Football fallback failed: {af_e}")
@@ -267,16 +267,16 @@ def main() -> None:
                         metrics["football_data"]["429"] += 1
                     if status == 403:
                         print(
-                            "  -> Permission issue (403). Consider subscription level or using API-Football as fallback."
+                            "  -> Permission issue (403). Consider subscription level or using API-Football as fallback.",
                         )
                     elif status == 429:
                         print(
-                            "  -> Rate limit exceeded (429). Increase wait/backoff or schedule fetchs later."
+                            "  -> Rate limit exceeded (429). Increase wait/backoff or schedule fetchs later.",
                         )
 
     if args.af:
         api_key = os.environ.get("API_FOOTBALL_KEY") or read_env_file_for_key(
-            "API_FOOTBALL_KEY"
+            "API_FOOTBALL_KEY",
         )
         if not api_key:
             print("API_FOOTBALL_KEY not set; skipping AF fetch")
@@ -301,7 +301,7 @@ def main() -> None:
                     elif status and status == 429:
                         metrics["api_football"]["429"] += 1
                     print(
-                        f"Failed to fetch AF {args.competition} season {s}: HTTP {status} - {getattr(e.response, 'text', str(e))}"
+                        f"Failed to fetch AF {args.competition} season {s}: HTTP {status} - {getattr(e.response, 'text', str(e))}",
                     )
                 except Exception as e:
                     print(f"Failed to fetch AF {args.competition} season {s}: {e}")

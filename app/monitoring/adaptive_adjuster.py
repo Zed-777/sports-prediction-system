@@ -1,5 +1,4 @@
-"""
-Phase 4: Adaptive Confidence Adjustment Engine
+"""Phase 4: Adaptive Confidence Adjustment Engine
 
 Dynamically adjusts confidence factors based on recent performance metrics,
 enabling the system to self-correct when drift is detected.
@@ -7,13 +6,11 @@ enabling the system to self-correct when drift is detected.
 
 import json
 import os
-from typing import Dict
 from datetime import datetime
 
 
 class AdaptiveAdjuster:
-    """
-    Dynamically adjusts confidence factors based on recent performance.
+    """Dynamically adjusts confidence factors based on recent performance.
 
     Adapts:
     - League adjustment factors based on per-league accuracy
@@ -23,12 +20,12 @@ class AdaptiveAdjuster:
     """
 
     def __init__(self, cache_dir: str = "data/cache", adaptation_rate: float = 0.1):
-        """
-        Initialize adaptive adjuster.
+        """Initialize adaptive adjuster.
 
         Args:
             cache_dir: Directory for persistence
             adaptation_rate: Rate of adaptation (0.0-1.0, higher = more aggressive)
+
         """
         self.cache_dir = cache_dir
         self.adaptation_rate = adaptation_rate
@@ -65,12 +62,12 @@ class AdaptiveAdjuster:
 
         self._load_adjuster_state()
 
-    def adapt_league_factors(self, league_performance: Dict[str, Dict]) -> None:
-        """
-        Adapt league adjustment factors based on per-league accuracy.
+    def adapt_league_factors(self, league_performance: dict[str, dict]) -> None:
+        """Adapt league adjustment factors based on per-league accuracy.
 
         Args:
             league_performance: {league: {'accuracy': float, 'samples': int, ...}}
+
         """
         for league, stats in league_performance.items():
             if league not in self.league_factors:
@@ -96,12 +93,12 @@ class AdaptiveAdjuster:
                 + adjustment * self.adaptation_rate
             )
 
-    def adapt_context_weights(self, context_effectiveness: Dict[str, float]) -> None:
-        """
-        Adapt context adjustment weights based on recent effectiveness.
+    def adapt_context_weights(self, context_effectiveness: dict[str, float]) -> None:
+        """Adapt context adjustment weights based on recent effectiveness.
 
         Args:
             context_effectiveness: {context_type: accuracy_contribution}
+
         """
         for context_type, effectiveness in context_effectiveness.items():
             if context_type not in self.context_weights:
@@ -121,12 +118,12 @@ class AdaptiveAdjuster:
             )
 
     def adapt_bayesian_parameters(self, calibration_error: float, samples: int) -> None:
-        """
-        Adapt Bayesian update parameters based on calibration performance.
+        """Adapt Bayesian update parameters based on calibration performance.
 
         Args:
             calibration_error: Mean absolute calibration error (ECE)
             samples: Number of samples used
+
         """
         if samples < 10:
             return  # Need minimum samples
@@ -147,16 +144,16 @@ class AdaptiveAdjuster:
 
         # Clamp adjustment
         self.bayesian_adaptation["learning_rate_adjustment"] = max(
-            0.5, min(1.5, self.bayesian_adaptation["learning_rate_adjustment"])
+            0.5, min(1.5, self.bayesian_adaptation["learning_rate_adjustment"]),
         )
 
     def adapt_confidence_scale(self, drift_severity: float, accuracy: float) -> None:
-        """
-        Adapt overall confidence scaling based on drift and accuracy.
+        """Adapt overall confidence scaling based on drift and accuracy.
 
         Args:
             drift_severity: Drift detection severity (0.0-1.0)
             accuracy: Current overall accuracy
+
         """
         baseline_accuracy = 0.65  # From Phase 3 target
         accuracy_ratio = accuracy / baseline_accuracy if baseline_accuracy > 0 else 1.0
@@ -186,7 +183,7 @@ class AdaptiveAdjuster:
         """Get the current adapted factor for a league."""
         return self.league_factors.get(league, 1.0)
 
-    def get_adapted_context_weights(self) -> Dict[str, float]:
+    def get_adapted_context_weights(self) -> dict[str, float]:
         """Get the current adapted context weights."""
         return self.context_weights.copy()
 
@@ -199,8 +196,7 @@ class AdaptiveAdjuster:
         return self.confidence_scale
 
     def apply_adaptations(self, raw_confidence: float, league: str) -> float:
-        """
-        Apply all active adaptations to a raw confidence value.
+        """Apply all active adaptations to a raw confidence value.
 
         Args:
             raw_confidence: Raw model confidence (0.0-1.0)
@@ -208,6 +204,7 @@ class AdaptiveAdjuster:
 
         Returns:
             Adapted confidence (0.0-1.0)
+
         """
         adapted = raw_confidence
 
@@ -243,14 +240,14 @@ class AdaptiveAdjuster:
         }
         self.confidence_scale = 1.0
 
-    def record_adaptation(self, change_type: str, details: Dict) -> None:
+    def record_adaptation(self, change_type: str, details: dict) -> None:
         """Record an adaptation event for audit trail."""
         self.adaptation_history.append(
             {
                 "timestamp": datetime.now().isoformat(),
                 "type": change_type,
                 "details": details,
-            }
+            },
         )
 
     def save_adjuster_state(self) -> None:
@@ -277,19 +274,19 @@ class AdaptiveAdjuster:
         filepath = os.path.join(self.cache_dir, "phase4_adjuster_state.json")
         if os.path.exists(filepath):
             try:
-                with open(filepath, "r") as f:
+                with open(filepath) as f:
                     state = json.load(f)
                     self.league_factors = state.get(
-                        "league_factors", self.league_factors
+                        "league_factors", self.league_factors,
                     )
                     self.context_weights = state.get(
-                        "context_weights", self.context_weights
+                        "context_weights", self.context_weights,
                     )
                     self.bayesian_adaptation = state.get(
-                        "bayesian_adaptation", self.bayesian_adaptation
+                        "bayesian_adaptation", self.bayesian_adaptation,
                     )
                     self.confidence_scale = state.get(
-                        "confidence_scale", self.confidence_scale
+                        "confidence_scale", self.confidence_scale,
                     )
                     self.adaptation_history = state.get("adaptation_history", [])
             except Exception:

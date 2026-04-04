@@ -1,5 +1,4 @@
-"""
-Prediction Enhancements Module - Phase 1 Quick Wins
+"""Prediction Enhancements Module - Phase 1 Quick Wins
 Implements: CC-005, MI-004, DQ-003, CC-004, FE-005, FE-006
 
 This module provides accuracy improvements through:
@@ -16,7 +15,7 @@ import math
 import os
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 # ============================================================================
 # CC-005: OVERCONFIDENCE CAPPING
@@ -26,8 +25,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 @dataclass
 class ConfidenceCapper:
-    """
-    Caps extreme confidence predictions to reduce overconfidence on favorites.
+    """Caps extreme confidence predictions to reduce overconfidence on favorites.
 
     Research shows models are systematically overconfident on heavy favorites.
     This applies a soft sigmoid cap that:
@@ -43,10 +41,9 @@ class ConfidenceCapper:
     upset_boost_amount: float = 0.03  # Add 3% to upset probability
 
     def cap_probabilities(
-        self, home_prob: float, draw_prob: float, away_prob: float
-    ) -> Tuple[float, float, float]:
-        """
-        Apply soft caps to extreme probabilities.
+        self, home_prob: float, draw_prob: float, away_prob: float,
+    ) -> tuple[float, float, float]:
+        """Apply soft caps to extreme probabilities.
 
         Args:
             home_prob: Home win probability (0-1)
@@ -55,6 +52,7 @@ class ConfidenceCapper:
 
         Returns:
             Tuple of (home, draw, away) capped probabilities
+
         """
         # Identify the favorite and underdog
         probs = {"home": home_prob, "draw": draw_prob, "away": away_prob}
@@ -101,8 +99,7 @@ class ConfidenceCapper:
 
 @dataclass
 class TimeDecayedELO:
-    """
-    ELO rating system with exponential time decay.
+    """ELO rating system with exponential time decay.
 
     Traditional ELO treats all matches equally. This version applies
     exponential decay so recent matches have higher influence.
@@ -116,7 +113,7 @@ class TimeDecayedELO:
 
     def __post_init__(self):
         os.makedirs(self.cache_dir, exist_ok=True)
-        self._ratings: Dict[int, float] = {}
+        self._ratings: dict[int, float] = {}
         self._load_ratings()
 
     def _load_ratings(self):
@@ -124,7 +121,7 @@ class TimeDecayedELO:
         cache_file = os.path.join(self.cache_dir, "team_elo_ratings.json")
         if os.path.exists(cache_file):
             try:
-                with open(cache_file, "r") as f:
+                with open(cache_file) as f:
                     data = json.load(f)
                     self._ratings = {int(k): v for k, v in data.items()}
             except Exception:
@@ -160,8 +157,7 @@ class TimeDecayedELO:
         match_date: datetime,
         is_home: bool = True,
     ) -> float:
-        """
-        Update ELO rating with time decay.
+        """Update ELO rating with time decay.
 
         Args:
             team_id: Team to update
@@ -172,6 +168,7 @@ class TimeDecayedELO:
 
         Returns:
             New ELO rating
+
         """
         team_rating = self.get_rating(team_id)
         opp_rating = self.get_rating(opponent_id)
@@ -193,12 +190,12 @@ class TimeDecayedELO:
 
         return new_rating
 
-    def predict_outcome(self, home_team_id: int, away_team_id: int) -> Dict[str, float]:
-        """
-        Predict match outcome using ELO ratings.
+    def predict_outcome(self, home_team_id: int, away_team_id: int) -> dict[str, float]:
+        """Predict match outcome using ELO ratings.
 
         Returns:
             Dict with home_win, draw, away_win probabilities
+
         """
         home_elo = self.get_rating(home_team_id) + self.home_advantage
         away_elo = self.get_rating(away_team_id)
@@ -231,7 +228,7 @@ class TimeDecayedELO:
             "elo_diff": elo_diff,
         }
 
-    def batch_update_from_history(self, matches: List[Dict[str, Any]]):
+    def batch_update_from_history(self, matches: list[dict[str, Any]]):
         """Update ratings from a list of historical matches (oldest first)"""
         for match in sorted(matches, key=lambda x: x.get("date", "")):
             try:
@@ -240,7 +237,7 @@ class TimeDecayedELO:
                 home_goals = match.get("home_goals", 0)
                 away_goals = match.get("away_goals", 0)
                 match_date = datetime.fromisoformat(
-                    match.get("date", "").replace("Z", "+00:00")
+                    match.get("date", "").replace("Z", "+00:00"),
                 )
 
                 # Determine result
@@ -252,10 +249,10 @@ class TimeDecayedELO:
                     home_result, away_result = 0.5, 0.5
 
                 self.update_rating(
-                    home_id, away_id, home_result, match_date, is_home=True
+                    home_id, away_id, home_result, match_date, is_home=True,
                 )
                 self.update_rating(
-                    away_id, home_id, away_result, match_date, is_home=False
+                    away_id, home_id, away_result, match_date, is_home=False,
                 )
 
             except Exception:
@@ -286,15 +283,14 @@ class RefereeTendency:
 
 @dataclass
 class RefereeTendencyDatabase:
-    """
-    Database of referee tendencies and their impact on predictions.
+    """Database of referee tendencies and their impact on predictions.
     """
 
     cache_dir: str = "data/referee_data"
 
     def __post_init__(self):
         os.makedirs(self.cache_dir, exist_ok=True)
-        self._tendencies: Dict[str, RefereeTendency] = {}
+        self._tendencies: dict[str, RefereeTendency] = {}
         self._load_tendencies()
 
     def _load_tendencies(self):
@@ -302,11 +298,11 @@ class RefereeTendencyDatabase:
         cache_file = os.path.join(self.cache_dir, "referee_tendencies.json")
         if os.path.exists(cache_file):
             try:
-                with open(cache_file, "r") as f:
+                with open(cache_file) as f:
                     data = json.load(f)
                     for name, stats in data.items():
                         self._tendencies[name] = RefereeTendency(
-                            referee_name=name, **stats
+                            referee_name=name, **stats,
                         )
             except Exception:
                 pass
@@ -331,7 +327,7 @@ class RefereeTendencyDatabase:
         except Exception:
             pass
 
-    def get_referee_tendency(self, referee_name: str) -> Optional[RefereeTendency]:
+    def get_referee_tendency(self, referee_name: str) -> RefereeTendency | None:
         """Get tendency data for a referee"""
         if not referee_name:
             return None
@@ -387,7 +383,7 @@ class RefereeTendencyDatabase:
         penalty_factor = (tendency.avg_penalties + 0.1) / (league_avg_penalties + 0.1)
 
         tendency.strictness_score = min(
-            1.0, (yellow_factor * 0.5 + red_factor * 0.3 + penalty_factor * 0.2)
+            1.0, (yellow_factor * 0.5 + red_factor * 0.3 + penalty_factor * 0.2),
         )
 
         self._save_tendencies()
@@ -397,9 +393,8 @@ class RefereeTendencyDatabase:
         referee_name: str,
         home_team_discipline: str = "average",  # 'disciplined', 'average', 'aggressive'
         away_team_discipline: str = "average",
-    ) -> Dict[str, float]:
-        """
-        Calculate prediction adjustments based on referee.
+    ) -> dict[str, float]:
+        """Calculate prediction adjustments based on referee.
 
         Returns adjustments for:
         - home_advantage_modifier: Adjust home win prob based on ref's home bias
@@ -451,8 +446,7 @@ class RefereeTendencyDatabase:
 
 @dataclass
 class LeagueCalibrator:
-    """
-    Applies league-specific confidence adjustments.
+    """Applies league-specific confidence adjustments.
 
     Some leagues are more predictable than others:
     - La Liga: Historically more predictable (top 3 dominance)
@@ -464,7 +458,7 @@ class LeagueCalibrator:
 
     # League predictability scores (from historical analysis)
     # Higher = more predictable
-    league_predictability: Dict[str, float] = field(
+    league_predictability: dict[str, float] = field(
         default_factory=lambda: {
             "la-liga": 0.72,
             "premier-league": 0.65,
@@ -474,12 +468,12 @@ class LeagueCalibrator:
             "eredivisie": 0.60,
             "primeira-liga": 0.62,
             "championship": 0.58,  # Very unpredictable
-        }
+        },
     )
 
     # Base confidence adjustment per league
     # Applied as multiplier to raw confidence
-    league_confidence_multipliers: Dict[str, float] = field(
+    league_confidence_multipliers: dict[str, float] = field(
         default_factory=lambda: {
             "la-liga": 1.05,
             "premier-league": 0.92,
@@ -489,10 +483,10 @@ class LeagueCalibrator:
             "eredivisie": 0.88,
             "primeira-liga": 0.90,
             "championship": 0.85,
-        }
+        },
     )
 
-    def get_calibration(self, league: str) -> Dict[str, float]:
+    def get_calibration(self, league: str) -> dict[str, float]:
         """Get calibration factors for a league"""
         normalized = league.lower().replace(" ", "-")
 
@@ -513,10 +507,9 @@ class LeagueCalibrator:
         return min(0.95, confidence * cal["confidence_multiplier"])
 
     def adjust_probabilities(
-        self, home_prob: float, draw_prob: float, away_prob: float, league: str
-    ) -> Tuple[float, float, float]:
-        """
-        Adjust probabilities based on league characteristics.
+        self, home_prob: float, draw_prob: float, away_prob: float, league: str,
+    ) -> tuple[float, float, float]:
+        """Adjust probabilities based on league characteristics.
         Less predictable leagues get probabilities pushed toward 33/33/33.
         """
         cal = self.get_calibration(league)
@@ -545,15 +538,14 @@ class LeagueCalibrator:
 
 @dataclass
 class VenuePerformanceTracker:
-    """
-    Tracks team performance at specific venues.
+    """Tracks team performance at specific venues.
     """
 
     cache_dir: str = "data/cache/venues"
 
     def __post_init__(self):
         os.makedirs(self.cache_dir, exist_ok=True)
-        self._venue_stats: Dict[str, Dict[str, Any]] = {}
+        self._venue_stats: dict[str, dict[str, Any]] = {}
         self._load_stats()
 
     def _load_stats(self):
@@ -561,7 +553,7 @@ class VenuePerformanceTracker:
         cache_file = os.path.join(self.cache_dir, "venue_performance.json")
         if os.path.exists(cache_file):
             try:
-                with open(cache_file, "r") as f:
+                with open(cache_file) as f:
                     self._venue_stats = json.load(f)
             except Exception:
                 pass
@@ -615,15 +607,15 @@ class VenuePerformanceTracker:
         self._save_stats()
 
     def get_venue_adjustment(
-        self, team_id: int, venue_id: str, is_home: bool = True
-    ) -> Dict[str, float]:
-        """
-        Get prediction adjustment based on team's historical venue performance.
+        self, team_id: int, venue_id: str, is_home: bool = True,
+    ) -> dict[str, float]:
+        """Get prediction adjustment based on team's historical venue performance.
 
         Returns:
             - win_rate_adjustment: Adjust win probability
             - goals_adjustment: Adjust expected goals
             - venue_known: Whether we have enough data
+
         """
         key = self._get_key(team_id, venue_id)
         stats = self._venue_stats.get(key)
@@ -668,25 +660,24 @@ class VenuePerformanceTracker:
 
 @dataclass
 class KickoffTimeAnalyzer:
-    """
-    Analyzes impact of kickoff time on match outcomes.
+    """Analyzes impact of kickoff time on match outcomes.
     """
 
     # Historical patterns (from research)
     # Early kickoffs tend to have fewer goals, late kickoffs more
-    time_slot_goals_multiplier: Dict[str, float] = field(
+    time_slot_goals_multiplier: dict[str, float] = field(
         default_factory=lambda: {
             "early_morning": 0.92,  # Before 12:00
             "lunch": 0.96,  # 12:00-14:00
             "afternoon": 1.00,  # 14:00-17:00
             "evening": 1.05,  # 17:00-20:00
             "night": 1.08,  # After 20:00
-        }
+        },
     )
 
     # Day of week patterns
     # Monday games tend to be more defensive, weekend more attacking
-    day_goals_multiplier: Dict[str, float] = field(
+    day_goals_multiplier: dict[str, float] = field(
         default_factory=lambda: {
             "monday": 0.94,
             "tuesday": 0.98,
@@ -695,11 +686,11 @@ class KickoffTimeAnalyzer:
             "friday": 1.02,
             "saturday": 1.02,
             "sunday": 1.00,
-        }
+        },
     )
 
     # Home advantage varies by day (TV games on Mon/Fri have less atmosphere)
-    day_home_advantage_modifier: Dict[str, float] = field(
+    day_home_advantage_modifier: dict[str, float] = field(
         default_factory=lambda: {
             "monday": -0.02,
             "tuesday": 0.0,
@@ -708,31 +699,30 @@ class KickoffTimeAnalyzer:
             "friday": -0.01,
             "saturday": 0.02,
             "sunday": 0.01,
-        }
+        },
     )
 
     def _get_time_slot(self, hour: int) -> str:
         """Classify hour into time slot"""
         if hour < 12:
             return "early_morning"
-        elif hour < 14:
+        if hour < 14:
             return "lunch"
-        elif hour < 17:
+        if hour < 17:
             return "afternoon"
-        elif hour < 20:
+        if hour < 20:
             return "evening"
-        else:
-            return "night"
+        return "night"
 
-    def get_adjustments(self, kickoff_time: datetime) -> Dict[str, float]:
-        """
-        Get prediction adjustments based on kickoff time.
+    def get_adjustments(self, kickoff_time: datetime) -> dict[str, float]:
+        """Get prediction adjustments based on kickoff time.
 
         Args:
             kickoff_time: Match kickoff datetime
 
         Returns:
             Adjustment factors for goals and home advantage
+
         """
         hour = kickoff_time.hour
         day = kickoff_time.strftime("%A").lower()
@@ -759,8 +749,7 @@ class KickoffTimeAnalyzer:
 
 
 class PredictionEnhancer:
-    """
-    Unified interface for all Phase 1 prediction enhancements.
+    """Unified interface for all Phase 1 prediction enhancements.
 
     Usage:
         enhancer = PredictionEnhancer()
@@ -782,15 +771,15 @@ class PredictionEnhancer:
         self.confidence_capper = ConfidenceCapper()
         self.elo_system = TimeDecayedELO(cache_dir=os.path.join(cache_dir, "elo"))
         self.referee_db = RefereeTendencyDatabase(
-            cache_dir=os.path.join(cache_dir, "referee_data")
+            cache_dir=os.path.join(cache_dir, "referee_data"),
         )
         self.league_calibrator = LeagueCalibrator()
         self.venue_tracker = VenuePerformanceTracker(
-            cache_dir=os.path.join(cache_dir, "venues")
+            cache_dir=os.path.join(cache_dir, "venues"),
         )
         self.kickoff_analyzer = KickoffTimeAnalyzer()
 
-        self._enhancement_log: List[str] = []
+        self._enhancement_log: list[str] = []
 
     def enhance_prediction(
         self,
@@ -801,17 +790,17 @@ class PredictionEnhancer:
         expected_home_goals: float,
         expected_away_goals: float,
         league: str,
-        kickoff_time: Optional[datetime] = None,
-        referee_name: Optional[str] = None,
-        home_team_id: Optional[int] = None,
-        away_team_id: Optional[int] = None,
-        venue_id: Optional[str] = None,
-    ) -> Dict[str, Any]:
-        """
-        Apply all Phase 1 enhancements to a prediction.
+        kickoff_time: datetime | None = None,
+        referee_name: str | None = None,
+        home_team_id: int | None = None,
+        away_team_id: int | None = None,
+        venue_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Apply all Phase 1 enhancements to a prediction.
 
         Returns:
             Enhanced prediction with adjusted probabilities, confidence, and goals
+
         """
         self._enhancement_log = []
 
@@ -842,7 +831,7 @@ class PredictionEnhancer:
             away_prob = away_prob * (1 - elo_weight) + elo_pred["away_win"] * elo_weight
 
             self._enhancement_log.append(
-                f"ELO adjustment applied (diff: {elo_pred['elo_diff']:.0f})"
+                f"ELO adjustment applied (diff: {elo_pred['elo_diff']:.0f})",
             )
 
         # 2. Apply referee adjustments (DQ-003)
@@ -854,13 +843,13 @@ class PredictionEnhancer:
                 expected_away_goals *= ref_adj["expected_goals_modifier"]
 
                 self._enhancement_log.append(
-                    f"Referee {referee_name}: strictness={ref_adj['referee_strictness']:.2f}"
+                    f"Referee {referee_name}: strictness={ref_adj['referee_strictness']:.2f}",
                 )
 
         # 3. Apply venue adjustments (FE-005)
         if home_team_id and venue_id:
             venue_adj = self.venue_tracker.get_venue_adjustment(
-                home_team_id, venue_id, is_home=True
+                home_team_id, venue_id, is_home=True,
             )
             if venue_adj["venue_known"]:
                 home_prob += venue_adj["win_rate_adjustment"]
@@ -868,7 +857,7 @@ class PredictionEnhancer:
 
                 self._enhancement_log.append(
                     f"Venue effect: {venue_adj['venue_matches']} matches, "
-                    f"win rate={venue_adj['venue_win_rate']:.0%}"
+                    f"win rate={venue_adj['venue_win_rate']:.0%}",
                 )
 
         # 4. Apply kickoff time adjustments (FE-006)
@@ -879,23 +868,23 @@ class PredictionEnhancer:
             home_prob += time_adj["home_advantage_modifier"]
 
             self._enhancement_log.append(
-                f"Kickoff: {time_adj['day_of_week']} {time_adj['time_slot']}"
+                f"Kickoff: {time_adj['day_of_week']} {time_adj['time_slot']}",
             )
 
         # 5. Apply league calibration (CC-004)
         home_prob, draw_prob, away_prob = self.league_calibrator.adjust_probabilities(
-            home_prob, draw_prob, away_prob, league
+            home_prob, draw_prob, away_prob, league,
         )
         confidence = self.league_calibrator.adjust_confidence(confidence, league)
 
         cal = self.league_calibrator.get_calibration(league)
         self._enhancement_log.append(
-            f"League calibration: {league} (predictability={cal['predictability']:.0%})"
+            f"League calibration: {league} (predictability={cal['predictability']:.0%})",
         )
 
         # 6. Apply confidence capping (CC-005) - LAST
         home_prob, draw_prob, away_prob = self.confidence_capper.cap_probabilities(
-            home_prob, draw_prob, away_prob
+            home_prob, draw_prob, away_prob,
         )
 
         if max(original["home_prob"], original["away_prob"]) > 0.75:
@@ -917,6 +906,6 @@ class PredictionEnhancer:
             "phase1_enhanced": True,
         }
 
-    def get_enhancement_summary(self) -> List[str]:
+    def get_enhancement_summary(self) -> list[str]:
         """Get log of enhancements applied to last prediction"""
         return self._enhancement_log.copy()

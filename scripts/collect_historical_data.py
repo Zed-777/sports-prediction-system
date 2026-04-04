@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Collect Historical Data
+"""Collect Historical Data
 - Reads CSV files in data/backup_csv
 - Computes rolling team stats and H2H for each match (using prior matches only)
 - Outputs processed JSON dataset for training in data/processed/historical/
@@ -130,7 +129,7 @@ class TeamStats:
 
 
 def compute_h2h_stats(
-    match_list: list[dict], home: str, away: str, match_date: str
+    match_list: list[dict], home: str, away: str, match_date: str,
 ) -> dict:
     """Compute head-to-head stats prior to match_date"""
     home_wins = 0
@@ -154,14 +153,13 @@ def compute_h2h_stats(
                     draws += 1
                 else:
                     away_wins += 1
+            # match home_team == away
+            elif m["away_score"] > m["home_score"]:
+                home_wins += 1
+            elif m["away_score"] == m["home_score"]:
+                draws += 1
             else:
-                # match home_team == away
-                if m["away_score"] > m["home_score"]:
-                    home_wins += 1
-                elif m["away_score"] == m["home_score"]:
-                    draws += 1
-                else:
-                    away_wins += 1
+                away_wins += 1
     return {
         "total_meetings": total,
         "home_wins": int(home_wins),
@@ -228,7 +226,7 @@ def process_matches(matches: list[dict]) -> tuple[list[dict], list[int]]:
                 "away_team": away,
                 "features": features,
                 "label": label,
-            }
+            },
         )
 
         labels.append(label)
@@ -281,7 +279,7 @@ def main():
     # Optionally collect from API if API key provided
     # You can set COLLECT_SEASONS env variable to comma-separated years e.g. "2018,2019,2020"
     seasons_env = os.environ.get(
-        "COLLECT_SEASONS", "2018,2019,2020,2021,2022,2023,2024"
+        "COLLECT_SEASONS", "2018,2019,2020,2021,2022,2023,2024",
     )
     seasons = [s.strip() for s in seasons_env.split(",") if s.strip()]
     # Football-Data.org: collect per season optionally for a competition
@@ -300,19 +298,19 @@ def main():
         return None
 
     api_key = os.environ.get("FOOTBALL_DATA_API_KEY") or read_env_file_for_key(
-        "FOOTBALL_DATA_API_KEY"
+        "FOOTBALL_DATA_API_KEY",
     )
     if api_key:
         for season in seasons:
             try:
                 print(
-                    f"Collecting from Football-Data.org API for competition {fd_competition} season {season}..."
+                    f"Collecting from Football-Data.org API for competition {fd_competition} season {season}...",
                 )
                 processed_api, labels_api = collect_from_api(
-                    api_key, competition_code=fd_competition, season=season
+                    api_key, competition_code=fd_competition, season=season,
                 )
                 print(
-                    f"  -> processed {len(processed_api)} matches from Football-Data.org API ({season})"
+                    f"  -> processed {len(processed_api)} matches from Football-Data.org API ({season})",
                 )
                 all_processed.extend(processed_api)
                 all_labels.extend(labels_api)
@@ -320,7 +318,7 @@ def main():
                 print(f"  -> Football-Data API collection failed for {season}: {e}")
     # Optional: API-Football integration via fetch script
     api_football_key = os.environ.get("API_FOOTBALL_KEY") or read_env_file_for_key(
-        "API_FOOTBALL_KEY"
+        "API_FOOTBALL_KEY",
     )
     api_football_league = os.environ.get("API_FOOTBALL_LEAGUE")
     api_football_seasons = os.environ.get("API_FOOTBALL_SEASONS")
@@ -368,7 +366,7 @@ def main():
 
 
 def collect_from_api(
-    api_key: str, competition_code: str = "PD", season: str = "2024"
+    api_key: str, competition_code: str = "PD", season: str = "2024",
 ) -> tuple[list[dict], list[int]]:
     """Collect historical matches from Football-Data.org API for a competition and season
     Requires env var FOOTBALL_DATA_API_KEY or passed api_key
@@ -385,7 +383,7 @@ def collect_from_api(
     raw_dir = ROOT / "data" / "raw" / "api" / "football-data.org"
     raw_dir.mkdir(parents=True, exist_ok=True)
     with open(
-        raw_dir / f"{competition_code}_{season}.json", "w", encoding="utf-8"
+        raw_dir / f"{competition_code}_{season}.json", "w", encoding="utf-8",
     ) as f:
         json.dump(data, f, indent=2)
     matches = []
@@ -406,7 +404,7 @@ def collect_from_api(
 
 
 def collect_api_football(
-    api_key: str, league_id: int = 140, season: str = "2024"
+    api_key: str, league_id: int = 140, season: str = "2024",
 ) -> tuple[list[dict], list[int]]:
     """Collect historical matches from API-Football for a league and season.
     Requires env var API_FOOTBALL_KEY or passed api_key.
@@ -428,7 +426,7 @@ def collect_api_football(
     raw_dir = ROOT / "data" / "raw" / "api" / "api-football"
     raw_dir.mkdir(parents=True, exist_ok=True)
     with open(
-        raw_dir / f"league_{league_id}_{season}.json", "w", encoding="utf-8"
+        raw_dir / f"league_{league_id}_{season}.json", "w", encoding="utf-8",
     ) as f:
         json.dump(data, f, indent=2)
     matches = []

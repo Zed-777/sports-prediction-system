@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Clean unified fetcher for Football-Data.org (v4) and API-Football (RapidAPI v3).
+"""Clean unified fetcher for Football-Data.org (v4) and API-Football (RapidAPI v3).
 
 This is a single, small script to replace the corrupted `fetch_historical_api.py` during cleanup.
 """
@@ -9,7 +8,6 @@ from __future__ import annotations
 
 import csv
 from pathlib import Path
-
 
 ROOT = Path(__file__).parent.parent
 BACKUP_CSV = ROOT / "data" / "backup_csv"
@@ -61,7 +59,7 @@ def write_csv(matches: list[dict], filename: str):
                     "home_score": m.get("home_score"),
                     "away_score": m.get("away_score"),
                     "status": m.get("status"),
-                }
+                },
             )
 
 

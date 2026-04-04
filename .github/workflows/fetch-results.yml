@@ -26,13 +26,13 @@ jobs:
 
       - name: Fetch results
         env:
-          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASS: ${{ secrets.SMTP_PASS }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY || '' }}
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY || '' }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST || '' }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT || '' }}
+          SMTP_USER: ${{ secrets.SMTP_USER || '' }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || '' }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO || '' }}
         run: |
           python scripts/collect_historical_results.py --fetch-all --auto-optimize 50 --notify || true
 

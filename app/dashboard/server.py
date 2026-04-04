@@ -1,5 +1,4 @@
-"""
-FastAPI dashboard server
+"""FastAPI dashboard server
 """
 
 import logging
@@ -158,7 +157,7 @@ class DashboardServer:
         return app
 
     def run(
-        self, host: str = "127.0.0.1", port: int = 8000, debug: bool = False
+        self, host: str = "127.0.0.1", port: int = 8000, debug: bool = False,
     ) -> None:
         """Run the dashboard server"""
         logger.info(f"Starting dashboard on http://{host}:{port}")

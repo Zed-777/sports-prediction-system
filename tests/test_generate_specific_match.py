@@ -2,7 +2,6 @@ import os
 import shutil
 
 
-
 class FakeResp:
     def __init__(self, json_data):
         self._json = json_data
@@ -27,8 +26,8 @@ def test_generate_specific_scheduled_match(monkeypatch, tmp_path, capsys):
                 "homeTeam": {"name": "Manchester City"},
                 "awayTeam": {"name": "Chelsea"},
                 "utcDate": match_date,
-            }
-        ]
+            },
+        ],
     }
 
     def fake_safe_request_get(url, headers=None, params=None, timeout=None, logger=None, **kwargs):

@@ -1,7 +1,6 @@
 import os
 
 
-
 def test_flashscore_ingest_and_image_generation(monkeypatch, tmp_path):
     """Integration-style test: ingest FlashScore data and produce JSON + PNG output."""
     # Set mock API key before importing modules
@@ -27,7 +26,7 @@ def test_flashscore_ingest_and_image_generation(monkeypatch, tmp_path):
                 "id": 999999,
                 "homeTeam": {"id": 1, "name": "Getafe CF"},
                 "awayTeam": {"id": 2, "name": "Girona FC"},
-            }
+            },
         ],
         "data_source": "football-data.org",
     }

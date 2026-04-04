@@ -1,0 +1,50 @@
+exclude = [
+  "**/.venv/**",
+  "**/.venv-Z1.1/**",
+  "**/miniforge3/**",
+  "**/envs/**",
+  "**/tools/**",
+  "**/reports/**",
+  "**/data/**",
+  "**/docs/**",
+  "**/scripts/backup/**",
+  "**/.github/workflows/**",
+]
+line-length = 88
+
+select = ["E", "F", "W", "C", "Q", "B", "I", "S"]
+ignore = ["C901", "PERF203", "PLR2004", "FBT001", "FBT002", "D201", "S101", "Q000", "D202", "B009"]
+
+per-file-ignores = {
+  "tools/**" = ["ALL"],
+  "reports/**" = ["ALL"],
+  "data/**" = ["ALL"],
+  "docs/**" = ["ALL"],
+  "scripts/**" = ["ALL"],
+  "phase2_lite.py" = ["ALL"],
+  "phase2_integration.py" = ["ALL"],
+  "generate_fast_reports.py" = ["ALL"],
+  "flashscore_scraper.py" = ["ALL"],
+  "enhanced_predictor.py" = ["ALL"],
+  "enhanced_data_ingestion.py" = ["ALL"],
+  "data_quality_enhancer.py" = ["ALL"],
+  "app/utils/state_sync.py" = ["ALL"],
+  "app/utils/reliability_calculator.py" = ["ALL"],
+  "app/utils/logging.py" = ["ALL"],
+  "app/utils/http.py" = ["ALL"],
+  "app/utils/context_extractor.py" = ["ALL"],
+  "app/utils/caching.py" = ["ALL"],
+  "app/utils/__init__.py" = ["ALL"],
+  "app/types.py" = ["ALL"],
+  "app/run.py" = ["ALL"],
+  "app/monitoring/synthetic_rate_monitor.py" = ["ALL"],
+  "app/monitoring/performance_monitor.py" = ["ALL"],
+  "app/monitoring/adaptive_adjuster.py" = ["ALL"],
+  "app/monitoring/__init__.py" = ["ALL"],
+  "app/models/xg_integration.py" = ["ALL"],
+  "app/models/trainer.py" = ["ALL"],
+  "app/models/staleness.py" = ["ALL"],
+  "scripts/backup/**" = ["ALL"],
+  "tests/**" = ["ALL"],
+}
+

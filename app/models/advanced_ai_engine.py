@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Advanced AI Prediction Engine v2.0 - Real ML Implementation
+"""Advanced AI Prediction Engine v2.0 - Real ML Implementation
 Machine Learning models with proper dependency handling
 """
 
@@ -67,8 +66,7 @@ class ModelMetrics:
 
 
 class AdvancedAIEngine:
-    """
-    Advanced AI Engine with ensemble ML models.
+    """Advanced AI Engine with ensemble ML models.
     Clean version with proper dependency handling.
     """
 
@@ -98,7 +96,7 @@ class AdvancedAIEngine:
         # Initialize or load models
         self._initialize_models()
         self.logger.info(
-            f"Advanced AI Engine initialized with models: {self.available_models}"
+            f"Advanced AI Engine initialized with models: {self.available_models}",
         )
 
     def is_available(self) -> bool:
@@ -119,10 +117,9 @@ class AdvancedAIEngine:
         }
 
     def enhanced_prediction(
-        self, match_data: dict[str, Any], league_code: str
+        self, match_data: dict[str, Any], league_code: str,
     ) -> dict[str, Any]:
-        """
-        Generate enhanced prediction using available models.
+        """Generate enhanced prediction using available models.
         Falls back to basic ensemble if advanced models unavailable.
         """
         if not self.is_available():
@@ -133,12 +130,12 @@ class AdvancedAIEngine:
             return self._advanced_prediction(match_data, league_code)
         except Exception as e:
             self.logger.warning(
-                f"Advanced prediction failed: {e}, falling back to basic"
+                f"Advanced prediction failed: {e}, falling back to basic",
             )
             return self._fallback_prediction(match_data, league_code)
 
     def _fallback_prediction(
-        self, match_data: dict[str, Any], league_code: str
+        self, match_data: dict[str, Any], league_code: str,
     ) -> dict[str, Any]:
         """Fallback prediction using basic ensemble"""
         return self._real_fallback_prediction(match_data, league_code)
@@ -170,7 +167,7 @@ class AdvancedAIEngine:
         )
 
         self.models["gradient_boosting"] = GradientBoostingClassifier(
-            n_estimators=100, max_depth=6, learning_rate=0.1, random_state=42
+            n_estimators=100, max_depth=6, learning_rate=0.1, random_state=42,
         )
 
         # Initialize XGBoost if available
@@ -183,15 +180,15 @@ class AdvancedAIEngine:
                     self.logger.info("Loaded existing XGBoost model")
                 except Exception as e:
                     self.logger.warning(f"Failed to load XGBoost: {e}")
-                    self.models["xgboost"] = cast(Any, xgb).XGBClassifier(
+                    self.models["xgboost"] = cast("Any", xgb).XGBClassifier(
                         n_estimators=100,
                         max_depth=6,
                         learning_rate=0.1,
                         random_state=42,
                     )
             else:
-                self.models["xgboost"] = cast(Any, xgb).XGBClassifier(
-                    n_estimators=100, max_depth=6, learning_rate=0.1, random_state=42
+                self.models["xgboost"] = cast("Any", xgb).XGBClassifier(
+                    n_estimators=100, max_depth=6, learning_rate=0.1, random_state=42,
                 )
 
         # Initialize LightGBM if available
@@ -204,7 +201,7 @@ class AdvancedAIEngine:
                     self.logger.info("Loaded existing LightGBM model")
                 except Exception as e:
                     self.logger.warning(f"Failed to load LightGBM: {e}")
-                    self.models["lightgbm"] = cast(Any, lgb).LGBMClassifier(
+                    self.models["lightgbm"] = cast("Any", lgb).LGBMClassifier(
                         n_estimators=100,
                         max_depth=6,
                         learning_rate=0.1,
@@ -212,7 +209,7 @@ class AdvancedAIEngine:
                         verbose=-1,
                     )
             else:
-                self.models["lightgbm"] = cast(Any, lgb).LGBMClassifier(
+                self.models["lightgbm"] = cast("Any", lgb).LGBMClassifier(
                     n_estimators=100,
                     max_depth=6,
                     learning_rate=0.1,
@@ -223,7 +220,7 @@ class AdvancedAIEngine:
         self.logger.info(f"Initialized models: {list(self.models.keys())}")
 
     def _extract_features(
-        self, match_data: dict[str, Any], league_code: str
+        self, match_data: dict[str, Any], league_code: str,
     ) -> np.ndarray:
         """Extract feature vector from match data for ML models"""
         features = []
@@ -241,7 +238,7 @@ class AdvancedAIEngine:
                 float(home_strength),
                 float(away_strength),
                 float(home_strength - away_strength),  # Strength differential
-            ]
+            ],
         )
 
         # Form features
@@ -256,7 +253,7 @@ class AdvancedAIEngine:
                 float(away_form.get("goals_per_game", 1.0)),
                 float(home_form.get("goals_conceded_per_game", 1.0)),
                 float(away_form.get("goals_conceded_per_game", 1.2)),
-            ]
+            ],
         )
 
         # Head-to-head
@@ -266,7 +263,7 @@ class AdvancedAIEngine:
                 float(h2h.get("home_wins", 0.45)),
                 float(h2h.get("draws", 0.30)),
                 float(h2h.get("away_wins", 0.25)),
-            ]
+            ],
         )
 
         # Venue and context
@@ -275,7 +272,7 @@ class AdvancedAIEngine:
                 1.0,  # Home advantage
                 float(match_data.get("is_derby", 0)),
                 float(match_data.get("league_position_diff", 0) / 20.0),  # Normalize
-            ]
+            ],
         )
 
         # Weather impact (if available)
@@ -284,7 +281,7 @@ class AdvancedAIEngine:
             [
                 float(weather.get("temperature", 18.0) / 40.0),
                 float(weather.get("precipitation", 0.0) / 10.0),
-            ]
+            ],
         )
 
         # League context
@@ -297,7 +294,7 @@ class AdvancedAIEngine:
         return np.array(features[:20]).reshape(1, -1)
 
     def train_models(
-        self, training_data: list[dict[str, Any]], labels: list[int]
+        self, training_data: list[dict[str, Any]], labels: list[int],
     ) -> None:
         """Train all available models on historical data
         Args:
@@ -306,7 +303,7 @@ class AdvancedAIEngine:
         """
         if len(training_data) < 50:
             self.logger.warning(
-                f"Insufficient training data: {len(training_data)} samples"
+                f"Insufficient training data: {len(training_data)} samples",
             )
             return
 
@@ -347,7 +344,7 @@ class AdvancedAIEngine:
         self.logger.info("Model training complete!")
 
     def _advanced_prediction(
-        self, match_data: dict[str, Any], league_code: str
+        self, match_data: dict[str, Any], league_code: str,
     ) -> dict[str, Any]:
         """Advanced prediction using full ML ensemble with real trained models"""
         import time
@@ -401,7 +398,7 @@ class AdvancedAIEngine:
 
             if not predictions:
                 self.logger.warning(
-                    "No models available for prediction, using fallback"
+                    "No models available for prediction, using fallback",
                 )
                 return self._real_fallback_prediction(match_data, league_code)
 
@@ -457,7 +454,7 @@ class AdvancedAIEngine:
             return self._real_fallback_prediction(match_data, league_code)
 
     def _real_fallback_prediction(
-        self, match_data: dict[str, Any], league_code: str
+        self, match_data: dict[str, Any], league_code: str,
     ) -> dict[str, Any]:
         """Real fallback when ML models fail"""
         return {

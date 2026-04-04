@@ -1,8 +1,8 @@
-"""
-Tests for scripts/run_backtest.py (BacktestingFramework CLI)
+"""Tests for scripts/run_backtest.py (BacktestingFramework CLI)
 """
 import sys
 from pathlib import Path
+
 import pytest
 
 _ROOT = str(Path(__file__).resolve().parent.parent)
@@ -14,8 +14,8 @@ def test_run_backtest_no_data(tmp_path, monkeypatch):
     """run_backtest.py with no historical data exits cleanly and writes a marker file."""
     monkeypatch.setenv("SKIP_INJURIES", "1")
 
+
     from scripts.run_backtest import main
-    import argparse
 
     # Patch sys.argv
     monkeypatch.setattr(
@@ -47,8 +47,8 @@ def test_run_backtest_no_data(tmp_path, monkeypatch):
 
 def test_run_backtest_with_sample_data(tmp_path, monkeypatch):
     """run_backtest.py runs successfully with sample historical data."""
-    from datetime import datetime, timedelta
     import json
+    from datetime import datetime, timedelta
 
     monkeypatch.setenv("SKIP_INJURIES", "1")
 
@@ -72,7 +72,7 @@ def test_run_backtest_with_sample_data(tmp_path, monkeypatch):
                 "away_team": "AwayFC",
                 "home_goals": hg,
                 "away_goals": ag,
-            }
+            },
         )
 
     with open(hist_dir / "sample.json", "w", encoding="utf-8") as f:

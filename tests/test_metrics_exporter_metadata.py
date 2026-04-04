@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
-from app.utils.metrics import reset_metrics, increment_metric
+
+from app.utils.metrics import increment_metric, reset_metrics
 from scripts import export_metrics
 
 
@@ -17,7 +18,7 @@ def test_metrics_exporter_writes_metadata_and_metrics(tmp_path: Path):
     json_file = export_metrics.export_metrics_to_json(out_dir)
     assert Path(json_file).exists()
 
-    with open(json_file, "r", encoding="utf-8") as f:
+    with open(json_file, encoding="utf-8") as f:
         obj = json.load(f)
     assert "metadata" in obj
     assert "metrics" in obj
@@ -28,8 +29,9 @@ def test_metrics_exporter_writes_metadata_and_metrics(tmp_path: Path):
 
 
 def test_metrics_exporter_idempotent(tmp_path: Path):
-    from scripts import export_metrics
     from pathlib import Path
+
+    from scripts import export_metrics
 
     out_dir = str(tmp_path / "metrics_out")
     # Run exporter twice

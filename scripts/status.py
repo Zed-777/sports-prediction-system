@@ -5,9 +5,11 @@ Usage:
 """
 
 from __future__ import annotations
+
+import json
+
 from app.utils import state_sync
 from app.utils.metrics import get_metrics
-import json
 
 
 def main():

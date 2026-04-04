@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""
-Advanced Feature Engineering Module
+"""Advanced Feature Engineering Module
 OPTIMIZATION #3: High-value feature extraction for ML models
 Provides 8-12 additional features beyond the base 20
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 import numpy as np
 
 logger = logging.getLogger(__name__)
@@ -20,9 +20,8 @@ class AdvancedFeatures:
         self.logger = logger
 
     # ========== OPTIMIZATION #3a: REST DIFFERENTIAL (Highest Impact) ==========
-    def calculate_rest_differential(self, match_data: Dict[str, Any]) -> float:
-        """
-        Calculate days since last match (rest advantage)
+    def calculate_rest_differential(self, match_data: dict[str, Any]) -> float:
+        """Calculate days since last match (rest advantage)
 
         Impact: Teams with <2 days rest underperform by ~5-8%
         Teams with 3+ days rest perform optimally
@@ -45,9 +44,8 @@ class AdvancedFeatures:
             return 0.0  # Neutral if data unavailable
 
     # ========== OPTIMIZATION #3b: INJURY IMPACT SCORE (Very High) ==========
-    def calculate_injury_impact(self, match_data: Dict[str, Any]) -> float:
-        """
-        Calculate weighted injury impact by position importance
+    def calculate_injury_impact(self, match_data: dict[str, Any]) -> float:
+        """Calculate weighted injury impact by position importance
 
         Impact: Losing key players significantly affects performance
         - Goalkeeper (0.1): Backup usually similar quality
@@ -76,7 +74,7 @@ class AdvancedFeatures:
             home_injured = match_data.get("home_injured_players", [])
             away_injured = match_data.get("away_injured_players", [])
 
-            def calculate_team_injury_impact(injured_list: List[Dict]) -> float:
+            def calculate_team_injury_impact(injured_list: list[dict]) -> float:
                 """Sum weighted importance of injured players"""
                 if not injured_list:
                     return 0.0
@@ -102,10 +100,9 @@ class AdvancedFeatures:
 
     # ========== OPTIMIZATION #3c: REFEREE BIAS (Medium) ==========
     def calculate_referee_bias(
-        self, match_data: Dict[str, Any], historical_referee_data: Optional[Dict] = None
+        self, match_data: dict[str, Any], historical_referee_data: dict | None = None,
     ) -> float:
-        """
-        Calculate referee's historical home/away bias
+        """Calculate referee's historical home/away bias
 
         Some referees favor home teams in penalties/decisions
 
@@ -139,9 +136,8 @@ class AdvancedFeatures:
             return 0.0  # Neutral if error
 
     # ========== OPTIMIZATION #3d: SET-PIECE EFFICIENCY (Medium) ==========
-    def calculate_set_piece_efficiency(self, match_data: Dict[str, Any]) -> float:
-        """
-        Goals from corners + free kicks as % of total
+    def calculate_set_piece_efficiency(self, match_data: dict[str, Any]) -> float:
+        """Goals from corners + free kicks as % of total
 
         Some teams are strong from set pieces, others weak
 
@@ -172,9 +168,8 @@ class AdvancedFeatures:
             return 0.0  # Neutral if error
 
     # ========== OPTIMIZATION #3e: SHOT ACCURACY RATIO (Medium) ==========
-    def calculate_shot_accuracy(self, match_data: Dict[str, Any]) -> float:
-        """
-        Expected Goals / Shots ratio (efficiency)
+    def calculate_shot_accuracy(self, match_data: dict[str, Any]) -> float:
+        """Expected Goals / Shots ratio (efficiency)
 
         Teams with high xG efficiency are more dangerous
 
@@ -208,9 +203,8 @@ class AdvancedFeatures:
             return 0.0  # Neutral if error
 
     # ========== OPTIMIZATION #3f: WEATHER IMPACT (Lower priority) ==========
-    def calculate_weather_impact(self, weather_data: Dict[str, Any]) -> float:
-        """
-        Wind and rain impact on gameplay
+    def calculate_weather_impact(self, weather_data: dict[str, Any]) -> float:
+        """Wind and rain impact on gameplay
 
         Strong wind favors defense, rain favors teams with good ball control
 
@@ -234,9 +228,8 @@ class AdvancedFeatures:
             return 0.0  # Neutral if error
 
     # ========== OPTIMIZATION #3g: MARKET MOVEMENT (Optional) ==========
-    def calculate_market_movement(self, match_data: Dict[str, Any]) -> float:
-        """
-        Odds movement indicating sharp money
+    def calculate_market_movement(self, match_data: dict[str, Any]) -> float:
+        """Odds movement indicating sharp money
 
         Large odds movements suggest informed betting (predictor of outcomes)
 
@@ -261,10 +254,9 @@ class AdvancedFeatures:
 
     # ========== OPTIMIZATION #3h: VENUE-SPECIFIC PERFORMANCE ==========
     def calculate_venue_performance(
-        self, match_data: Dict[str, Any], venue_history: Optional[Dict] = None
+        self, match_data: dict[str, Any], venue_history: dict | None = None,
     ) -> float:
-        """
-        Home team's performance at this specific stadium
+        """Home team's performance at this specific stadium
 
         Some teams have strong records at certain venues
 
@@ -298,12 +290,11 @@ class AdvancedFeatures:
     # ========== PUBLIC API ==========
     def extract_all_features(
         self,
-        match_data: Dict[str, Any],
-        historical_referee_data: Optional[Dict] = None,
-        venue_history: Optional[Dict] = None,
-    ) -> Dict[str, float]:
-        """
-        Extract all advanced features
+        match_data: dict[str, Any],
+        historical_referee_data: dict | None = None,
+        venue_history: dict | None = None,
+    ) -> dict[str, float]:
+        """Extract all advanced features
 
         Returns dict with 8 features (can be extended to 12+)
         """
@@ -311,16 +302,16 @@ class AdvancedFeatures:
             "rest_differential": self.calculate_rest_differential(match_data),
             "injury_impact": self.calculate_injury_impact(match_data),
             "referee_bias": self.calculate_referee_bias(
-                match_data, historical_referee_data
+                match_data, historical_referee_data,
             ),
             "set_piece_efficiency": self.calculate_set_piece_efficiency(match_data),
             "shot_accuracy": self.calculate_shot_accuracy(match_data),
             "weather_impact": self.calculate_weather_impact(
-                match_data.get("weather_data", {})
+                match_data.get("weather_data", {}),
             ),
             "market_movement": self.calculate_market_movement(match_data),
             "venue_performance": self.calculate_venue_performance(
-                match_data, venue_history
+                match_data, venue_history,
             ),
         }
 
@@ -328,13 +319,13 @@ class AdvancedFeatures:
 
     def extract_as_array(
         self,
-        match_data: Dict[str, Any],
-        historical_referee_data: Optional[Dict] = None,
-        venue_history: Optional[Dict] = None,
+        match_data: dict[str, Any],
+        historical_referee_data: dict | None = None,
+        venue_history: dict | None = None,
     ) -> np.ndarray:
         """Extract features as numpy array (for ML models)"""
         features = self.extract_all_features(
-            match_data, historical_referee_data, venue_history
+            match_data, historical_referee_data, venue_history,
         )
         return np.array([features[k] for k in sorted(features.keys())])
 

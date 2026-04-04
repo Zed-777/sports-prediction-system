@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from scripts.collect_historical_results import HistoricalResultsCollector
 
 

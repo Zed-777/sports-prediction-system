@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+
 from app.utils.metrics import get_metrics
 from enhanced_predictor import EnhancedPredictor
 
@@ -8,7 +9,7 @@ def test_enhanced_predictor_metrics_propagation(monkeypatch):
 
     # Monkeypatch safe_request_get to return a simple team matches payload
     def fake_safe_get(
-        url, headers=None, params=None, timeout=None, logger=None, **kwargs
+        url, headers=None, params=None, timeout=None, logger=None, **kwargs,
     ):
         payload = {
             "matches": [
@@ -16,8 +17,8 @@ def test_enhanced_predictor_metrics_propagation(monkeypatch):
                     "homeTeam": {"id": 1},
                     "awayTeam": {"id": 2},
                     "score": {"fullTime": {"home": 1, "away": 1}},
-                }
-            ]
+                },
+            ],
         }
         return SimpleNamespace(
             status_code=200,

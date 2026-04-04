@@ -3,7 +3,6 @@ import os
 import re
 
 
-
 class StubPredictor:
     def enhanced_prediction(self, match, competition_code):
         return {
@@ -24,7 +23,7 @@ class StubEnhancer:
             "data_provenance": {
                 "weather_clamped": True,
                 "weather_clamped_fields": {
-                    "wind_speed": {"original": 120.0, "clamped_to": 60.0}
+                    "wind_speed": {"original": 120.0, "clamped_to": 60.0},
                 },
                 "home_injury_clamped": False,
             },

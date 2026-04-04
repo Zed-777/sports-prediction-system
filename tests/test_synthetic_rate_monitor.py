@@ -1,10 +1,7 @@
-"""
-Tests for app/monitoring/synthetic_rate_monitor.py (TODO #49)
+"""Tests for app/monitoring/synthetic_rate_monitor.py (TODO #49)
 """
 
 from __future__ import annotations
-
-import json
 
 import pytest
 
@@ -13,7 +10,6 @@ from app.monitoring.synthetic_rate_monitor import (
     SyntheticRateAlert,
     SyntheticRateMonitor,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

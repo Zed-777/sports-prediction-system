@@ -4,19 +4,18 @@ Computes log_loss, multiclass Brier score, accuracy, and a simple calibration
 summary (per-class binned calibration). Outputs JSON to `--out` path.
 """
 
-from pathlib import Path
-import json
 import argparse
-from typing import List
+import json
+from pathlib import Path
 
 import numpy as np
 from sklearn.metrics import log_loss
 
-from app.models.advanced_predictor import AdvancedAIMLPredictor
 from app.data.advanced_model_features import _extract_target
+from app.models.advanced_predictor import AdvancedAIMLPredictor
 
 
-def multiclass_brier(y_true: List[int], y_prob: List[List[float]]) -> float:
+def multiclass_brier(y_true: list[int], y_prob: list[list[float]]) -> float:
     # y_prob: n x k
     n = len(y_true)
     if n == 0:
@@ -31,7 +30,7 @@ def multiclass_brier(y_true: List[int], y_prob: List[List[float]]) -> float:
     return s / n
 
 
-def calibration_summary(y_true: List[int], y_prob: List[List[float]], bins: int = 10):
+def calibration_summary(y_true: list[int], y_prob: list[list[float]], bins: int = 10):
     # For each class, create bins and compute mean predicted vs observed
     n = len(y_true)
     if n == 0:
@@ -62,7 +61,7 @@ def calibration_summary(y_true: List[int], y_prob: List[List[float]], bins: int 
                     "predicted_mean": mean_pred,
                     "observed_freq": observed,
                     "count": int(mask.sum()),
-                }
+                },
             )
         res[f"class_{cls}"] = cls_res
     return res

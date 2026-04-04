@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Helper: Run fetch_historical_api.py for specified seasons using FD key loaded from secrets/.env.backup.
+"""Helper: Run fetch_historical_api.py for specified seasons using FD key loaded from secrets/.env.backup.
 Reports which seasons succeed and which fail due to 403 or other errors.
 """
 

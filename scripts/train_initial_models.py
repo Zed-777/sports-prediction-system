@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Initial Model Training Script
+"""Initial Model Training Script
 Trains ML models with synthetic data to bootstrap the system
 """
 
@@ -79,7 +78,7 @@ def generate_synthetic_training_data(n_samples: int = 500):
 
     print(f"✓ Generated {len(training_data)} training samples")
     print(
-        f"  Outcome distribution: Home={labels.count(2)}, Draw={labels.count(1)}, Away={labels.count(0)}"
+        f"  Outcome distribution: Home={labels.count(2)}, Draw={labels.count(1)}, Away={labels.count(0)}",
     )
 
     return training_data, labels

@@ -15,10 +15,10 @@ def test_extract_features_handles_none():
 
     match_data = {"league": "La Liga"}
     home_stats = {
-        "home": {"win_rate": None, "avg_goals_for": None, "weighted_form_score": None}
+        "home": {"win_rate": None, "avg_goals_for": None, "weighted_form_score": None},
     }
     away_stats = {
-        "away": {"win_rate": None, "avg_goals_for": None, "weighted_form_score": None}
+        "away": {"win_rate": None, "avg_goals_for": None, "weighted_form_score": None},
     }
     h2h_data = {}
     weather_data = {
@@ -44,7 +44,7 @@ def test_extract_features_handles_none():
         pytest.skip("numpy not available in test environment")
 
     features = model.extract_advanced_features(
-        match_data, home_stats, away_stats, h2h_data, weather_data, referee_data
+        match_data, home_stats, away_stats, h2h_data, weather_data, referee_data,
     )
 
     assert isinstance(features, np.ndarray)
@@ -79,10 +79,10 @@ def test_enhanced_predictor_handles_ai_exceptions(monkeypatch):
         "league": "La Liga",
     }
     home_stats = {
-        "home": {"win_rate": 50, "avg_goals_for": 1.5, "weighted_form_score": 50}
+        "home": {"win_rate": 50, "avg_goals_for": 1.5, "weighted_form_score": 50},
     }
     away_stats = {
-        "away": {"win_rate": 45, "avg_goals_for": 1.3, "weighted_form_score": 50}
+        "away": {"win_rate": 45, "avg_goals_for": 1.3, "weighted_form_score": 50},
     }
     h2h_data = {}
     weather_data = {"impact_assessment": {"goal_modifier": 1.0}}
@@ -90,7 +90,7 @@ def test_enhanced_predictor_handles_ai_exceptions(monkeypatch):
 
     # Call the AI-enhanced prediction - should not raise
     result = predictor.ai_enhanced_prediction(
-        match_data, home_stats, away_stats, h2h_data, weather_data, referee_data
+        match_data, home_stats, away_stats, h2h_data, weather_data, referee_data,
     )
 
     assert isinstance(result, dict)

@@ -1,7 +1,7 @@
-from typing import Any, Dict, List
+from typing import Any
 
-JSONDict = Dict[str, Any]
-JSONList = List[JSONDict]
+JSONDict = dict[str, Any]
+JSONList = list[JSONDict]
 
 # Common types for predictions and match data
 MatchData = JSONDict

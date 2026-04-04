@@ -1,5 +1,4 @@
-"""
-Prediction engine for generating match predictions
+"""Prediction engine for generating match predictions
 """
 
 import json
@@ -17,10 +16,9 @@ class PredictionEngine:
         self.config = config
 
     def predict_matches(
-        self, league: str, prediction_date: str, model_name: str = "ensemble"
+        self, league: str, prediction_date: str, model_name: str = "ensemble",
     ) -> list[dict[str, Any]]:
-        """
-        Generate predictions for matches on a specific date
+        """Generate predictions for matches on a specific date
 
         Args:
             league: League name
@@ -29,6 +27,7 @@ class PredictionEngine:
 
         Returns:
             List of match predictions
+
         """
         logger.info(f"Generating predictions for {league} on {prediction_date}")
 

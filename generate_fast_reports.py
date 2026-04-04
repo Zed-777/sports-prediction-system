@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Single Match Report Generator
+"""Single Match Report Generator
 Generate report for just the next 1 La Liga match
 """
 
@@ -12,13 +11,14 @@ import time
 import warnings
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Any, cast
 
 import matplotlib.pyplot as plt
-from app.utils.http import safe_request_get
 import yaml
 from matplotlib.patches import FancyBboxPatch, Rectangle
-from typing import Any, Dict, Optional, List, Union, cast
+
 from app.types import JSONDict
+from app.utils.http import safe_request_get
 
 # Suppress font warnings for cleaner output
 warnings.filterwarnings("ignore", category=UserWarning, message=".*missing from font.*")
@@ -101,7 +101,7 @@ class ProfessionalDesignSystem:
     }
 
     @classmethod
-    def get_theme(cls, league_name: str) -> Dict[str, str]:
+    def get_theme(cls, league_name: str) -> dict[str, str]:
         """Get theme colors for league"""
         # Normalize league name
         normalized = league_name.lower().replace(" ", "-")
@@ -113,12 +113,11 @@ class ProfessionalDesignSystem:
         p = max(0.0, min(100.0, probability))
         if p >= 75:
             return "#27AE60"  # Green - 75-100%
-        elif p >= 50:
+        if p >= 50:
             return "#17A2B8"  # Cyan - 50-75% (highly visible)
-        elif p >= 25:
+        if p >= 25:
             return "#F39C12"  # Orange - 25-50%
-        else:
-            return "#E74C3C"  # Red - 0-25%
+        return "#E74C3C"  # Red - 0-25%
 
     # Professional typography system for consistent styling
     TYPOGRAPHY = {
@@ -187,6 +186,7 @@ class ProfessionalDesignSystem:
             values: List of numeric values (e.g., last 5 form scores)
             color: Line color (default blue)
             title: Optional title above sparkline
+
         """
         if not values or len(values) < 2:
             # Draw placeholder if insufficient data
@@ -236,7 +236,7 @@ class ProfessionalDesignSystem:
         # Optional background area under curve
         y_baseline = [y_pos - height / 2] * n_points
         ax.fill_between(
-            x_coords, y_coords, y_baseline, alpha=0.1, color=color, zorder=1
+            x_coords, y_coords, y_baseline, alpha=0.1, color=color, zorder=1,
         )
 
     @staticmethod
@@ -265,6 +265,7 @@ class ProfessionalDesignSystem:
             away_team: Away team name (for labeling)
             home_color: Color for home team wins
             away_color: Color for away team wins
+
         """
         if not h2h_results or len(h2h_results) == 0:
             # Draw "No H2H history" message
@@ -393,7 +394,7 @@ class SingleMatchGenerator:
         api_key = os.getenv("FOOTBALL_DATA_API_KEY")
         if not api_key:
             raise ValueError(
-                "FOOTBALL_DATA_API_KEY environment variable not set. Please configure it in .env or your shell environment."
+                "FOOTBALL_DATA_API_KEY environment variable not set. Please configure it in .env or your shell environment.",
             )
         self.api_key = api_key
         self.headers = {"X-Auth-Token": self.api_key}
@@ -429,7 +430,7 @@ class SingleMatchGenerator:
         self.export_metrics_dir = export_metrics_dir or "reports/metrics"
 
         # Load centralized settings (safe fallback to empty dict)
-        self._settings: Dict[str, Any] = {}
+        self._settings: dict[str, Any] = {}
         try:
             cfg_path = Path(__file__).parent / "config" / "settings.yaml"
             if cfg_path.exists():
@@ -440,7 +441,7 @@ class SingleMatchGenerator:
 
         # Phase 2 Lite integration
         if PHASE2_LITE_AVAILABLE:
-            self.phase2_lite_predictor: Optional[Phase2LitePredictor] = (
+            self.phase2_lite_predictor: Phase2LitePredictor | None = (
                 Phase2LitePredictor(self.api_key)
             )
             print("Phase 2 Lite enhanced intelligence active!")
@@ -486,8 +487,7 @@ class SingleMatchGenerator:
             if isinstance(value, str):
                 v = value.strip()
                 # handle percentage strings like "45%"
-                if v.endswith("%"):
-                    v = v[:-1]
+                v = v.removesuffix("%")
                 return float(v)
             return float(value)
         except Exception:
@@ -525,7 +525,7 @@ class SingleMatchGenerator:
         if not self.api_key or self.api_key == "":
 
             issues.append(
-                "❌ API key not found. Set FOOTBALL_DATA_API_KEY environment variable"
+                "❌ API key not found. Set FOOTBALL_DATA_API_KEY environment variable",
             )
         elif len(self.api_key) < 10:
             issues.append("⚠️  API key seems too short - check if it's complete")
@@ -537,7 +537,7 @@ class SingleMatchGenerator:
                 __import__(module)
             except ImportError:
                 issues.append(
-                    f"❌ Missing required module: {module}. Run: pip install {module}"
+                    f"❌ Missing required module: {module}. Run: pip install {module}",
                 )
 
         # Check directory permissions
@@ -577,10 +577,10 @@ class SingleMatchGenerator:
             if not os.path.exists(keep_file):
                 with open(keep_file, "w", encoding="utf-8") as f:
                     f.write(
-                        f"# Keep file for {directory}\n# Preserves directory structure when cleaning reports\n"
+                        f"# Keep file for {directory}\n# Preserves directory structure when cleaning reports\n",
                     )
 
-    def get_league_info(self, league_name: Optional[str]) -> Optional[Dict[str, str]]:
+    def get_league_info(self, league_name: str | None) -> dict[str, str] | None:
         """Map CLI league names to API codes and folder names."""
         if not league_name:
             return None
@@ -611,14 +611,13 @@ class SingleMatchGenerator:
         low, mid, high = th[0], th[1], th[2]
         if p < low:
             return palette[0]
-        elif p < mid:
+        if p < mid:
             return palette[1]
-        elif p < high:
+        if p < high:
             return palette[2]
-        else:
-            return palette[3]
+        return palette[3]
 
-    def list_supported_leagues(self) -> List[str]:
+    def list_supported_leagues(self) -> list[str]:
         """Return sorted list of supported canonical league slugs."""
         return sorted(self._LEAGUE_CANONICAL.keys())
 
@@ -642,8 +641,8 @@ class SingleMatchGenerator:
         If both `home_team` and `away_team` are provided, the method will attempt to locate
         the scheduled match within the next `num_matches` matches and generate a report for
         that match only. Matching is case-insensitive and allows partial name matches.
-        """
 
+        """
         start_time = time.time()
 
         league_info = self.get_league_info(league_name)
@@ -657,7 +656,7 @@ class SingleMatchGenerator:
         safe_print(f"⏱️  Started at: {datetime.now().strftime('%H:%M:%S')}")
 
         url = f"https://api.football-data.org/v4/competitions/{league_info['code']}/matches"
-        params: Dict[str, Union[str, int]] = {
+        params: dict[str, str | int] = {
             "status": "SCHEDULED",
             "limit": num_matches,
         }
@@ -665,10 +664,10 @@ class SingleMatchGenerator:
 
         try:
             response = safe_request_get(
-                url, headers=self.headers, params=params, logger=None
+                url, headers=self.headers, params=params, logger=None,
             )
             response.raise_for_status()
-            data = cast(JSONDict, response.json())
+            data = cast("JSONDict", response.json())
             all_matches = data.get("matches", [])
             matches = all_matches[:num_matches]
         except Exception as exc:
@@ -699,7 +698,7 @@ class SingleMatchGenerator:
             found = [m for m in matches if _match_candidate(m)]
             if not found:
                 print(
-                    f"❌ No scheduled match found matching '{home_team}' vs '{away_team}' in the next {num_matches} scheduled matches"
+                    f"❌ No scheduled match found matching '{home_team}' vs '{away_team}' in the next {num_matches} scheduled matches",
                 )
                 return
             matches = [found[0]]  # Only process the first matching scheduled match
@@ -717,7 +716,7 @@ class SingleMatchGenerator:
             match_time = match["utcDate"][11:16]
 
             print(
-                f"[MATCH {index}/{len(matches)}] Processing: {home_team} vs {away_team} on {match_date}"
+                f"[MATCH {index}/{len(matches)}] Processing: {home_team} vs {away_team} on {match_date}",
             )
 
             # Use a safe slug for filesystem names
@@ -738,7 +737,7 @@ class SingleMatchGenerator:
 
             try:
                 competition_code = get_competition_code_from_league(
-                    league_info["folder"]
+                    league_info["folder"],
                 )
             except Exception:
                 competition_code = league_info["code"]
@@ -746,21 +745,21 @@ class SingleMatchGenerator:
             try:
                 if self.phase2_lite_predictor is not None:
                     prediction = self.phase2_lite_predictor.enhanced_prediction(
-                        match, competition_code
+                        match, competition_code,
                     )
                     prediction_engine = prediction.get(
-                        "prediction_engine", "Enhanced Intelligence v4.1 + Phase 2 Lite"
+                        "prediction_engine", "Enhanced Intelligence v4.1 + Phase 2 Lite",
                     )
                 else:
                     prediction = self.enhanced_predictor.enhanced_prediction(
-                        match, competition_code
+                        match, competition_code,
                     )
                     prediction_engine = prediction.get(
-                        "prediction_engine", "Enhanced Intelligence v4.1"
+                        "prediction_engine", "Enhanced Intelligence v4.1",
                     )
             except Exception as exc:
                 print(
-                    f"   [ERROR] Prediction failed for {home_team} vs {away_team}: {exc}"
+                    f"   [ERROR] Prediction failed for {home_team} vs {away_team}: {exc}",
                 )
                 continue
 
@@ -782,7 +781,7 @@ class SingleMatchGenerator:
 
             # Extract data for enhanced confidence calculation
             h2h_data = prediction.get(
-                "head_to_head_analysis", prediction.get("head_to_head", {})
+                "head_to_head_analysis", prediction.get("head_to_head", {}),
             )
             weather_data = enhanced_data.get("weather_conditions", {})
             player_data = enhanced_data.get("player_availability", {})
@@ -801,20 +800,20 @@ class SingleMatchGenerator:
             calibration_applied = 1.08 if calibration_details.get("applied") else 1.0
             h2h_total = h2h_data.get("total_meetings", 0)
             h2h_bonus = min(
-                0.12, h2h_total * 0.008
+                0.12, h2h_total * 0.008,
             )  # Up to 12% bonus for comprehensive H2H data
 
             # Additional data availability bonuses
             weather_available = bool(weather_data.get("conditions"))
             player_available = bool(
-                player_data.get("home_team") or player_data.get("away_team")
+                player_data.get("home_team") or player_data.get("away_team"),
             )
             referee_available = bool(
                 referee_data.get("name")
-                and referee_data.get("name") not in ["TBD", "Unknown Referee"]
+                and referee_data.get("name") not in ["TBD", "Unknown Referee"],
             )
             team_news_available = bool(
-                team_news.get("home_team") or team_news.get("away_team")
+                team_news.get("home_team") or team_news.get("away_team"),
             )
 
             data_availability_bonus = (
@@ -843,7 +842,7 @@ class SingleMatchGenerator:
                     player_available,
                     referee_available,
                     team_news_available,
-                ]
+                ],
             )
             # Base minimum: 45% with no data, up to 75% with all 4 sources + good quality
             # This prevents artificially high confidence when data is sparse
@@ -853,19 +852,19 @@ class SingleMatchGenerator:
                 + (data_quality_score - 0.5) * 0.15
             )
             dynamic_min_confidence = max(
-                0.40, min(0.75, dynamic_min_confidence)
+                0.40, min(0.75, dynamic_min_confidence),
             )  # Floor 40%, ceiling 75%
 
             confidence_value = max(dynamic_min_confidence, min(0.95, confidence_value))
 
             accuracy_probability = self._safe_float(
-                prediction.get("report_accuracy_probability"), 0.65
+                prediction.get("report_accuracy_probability"), 0.65,
             )
 
             # FIX: Calculate multiplier safely THEN apply bounds
             # (calibration_applied - 1.0) can be unbounded, so clamp BEFORE multiplication
             calibration_factor = max(
-                0.0, min(2.0, calibration_applied - 1.0)
+                0.0, min(2.0, calibration_applied - 1.0),
             )  # Clamp to [0, 2]
             accuracy_multiplier = (
                 1.0
@@ -880,48 +879,48 @@ class SingleMatchGenerator:
             accuracy_probability = accuracy_probability * accuracy_multiplier
             # Use same dynamic minimum for accuracy
             accuracy_probability = max(
-                dynamic_min_confidence, min(0.95, accuracy_probability)
+                dynamic_min_confidence, min(0.95, accuracy_probability),
             )
 
             # Defensive extraction for win probabilities
             home_prob_raw = prediction.get(
-                "home_win_probability", prediction.get("home_win_prob", 0.0)
+                "home_win_probability", prediction.get("home_win_prob", 0.0),
             )
             home_prob = self._safe_float(home_prob_raw, 0.0)
 
             draw_prob_raw = prediction.get(
-                "draw_probability", prediction.get("draw_prob", 0.0)
+                "draw_probability", prediction.get("draw_prob", 0.0),
             )
             draw_prob = self._safe_float(draw_prob_raw, 0.0)
 
             away_prob_raw = prediction.get(
-                "away_win_probability", prediction.get("away_win_prob", 0.0)
+                "away_win_probability", prediction.get("away_win_prob", 0.0),
             )
             away_prob = self._safe_float(away_prob_raw, 0.0)
 
             expected_home_goals = self._safe_float(
-                prediction.get("expected_home_goals"), 1.5
+                prediction.get("expected_home_goals"), 1.5,
             )
             expected_away_goals = self._safe_float(
-                prediction.get("expected_away_goals"), 1.2
+                prediction.get("expected_away_goals"), 1.2,
             )
             processing_time = self._safe_float(prediction.get("processing_time"), 0.0)
             score_probability = self._safe_float(
-                prediction.get("score_probability"), 10.0
+                prediction.get("score_probability"), 10.0,
             )
             score_probability_normalized = self._safe_float(
-                prediction.get("score_probability_normalized"), 5.0
+                prediction.get("score_probability_normalized"), 5.0,
             )
             top3_combined_probability = self._safe_float(
-                prediction.get("top3_combined_probability"), 25.0
+                prediction.get("top3_combined_probability"), 25.0,
             )
             top3_probability_normalized = self._safe_float(
-                prediction.get("top3_probability_normalized"), 7.0
+                prediction.get("top3_probability_normalized"), 7.0,
             )
 
             # Calculate over 2.5 and BTTS from expected goals if not provided (Poisson-based)
             over_2_5_raw = prediction.get(
-                "over_2_5_goals_probability", prediction.get("over_2_5_probability")
+                "over_2_5_goals_probability", prediction.get("over_2_5_probability"),
             )
             if over_2_5_raw is not None:
                 over_2_5_probability = self._safe_float(over_2_5_raw, 45.0)
@@ -951,7 +950,7 @@ class SingleMatchGenerator:
             raw_expected_score = prediction.get("expected_final_score", "1-1")
             # If the prediction includes letters (team names), reconstruct from expected goals
             if isinstance(raw_expected_score, str) and re.search(
-                r"[A-Za-z]", raw_expected_score
+                r"[A-Za-z]", raw_expected_score,
             ):
                 safe_expected_score = f"{int(round(expected_home_goals))}-{int(round(expected_away_goals))}"
             else:
@@ -970,22 +969,22 @@ class SingleMatchGenerator:
                 prediction.get("odds")
                 or prediction.get("market_odds")
                 or prediction.get("bookmakers")
-                or prediction.get("betting")
+                or prediction.get("betting"),
             )
 
             flashscore_present = bool(
                 enhanced_data.get("flashscore")
                 or enhanced_data.get("flashscore_snapshot")
-                or enhanced_data.get("flashscore_data")
+                or enhanced_data.get("flashscore_data"),
             )
 
             match_data = {
                 "match_id": match.get("id"),
                 "home_team": (
-                    home_team if home_team else prediction.get("home_team", "Home")
+                    home_team or prediction.get("home_team", "Home")
                 ),
                 "away_team": (
-                    away_team if away_team else prediction.get("away_team", "Away")
+                    away_team or prediction.get("away_team", "Away")
                 ),
                 "date": match_date,
                 "time": match_time,
@@ -1003,7 +1002,7 @@ class SingleMatchGenerator:
                         "home_win_prob": home_prob,
                         "draw_prob": draw_prob,
                         "away_win_prob": away_prob,
-                    }
+                    },
                 ),
                 "confidence_level": self.get_confidence_description(confidence_value),
                 "expected_final_score": safe_expected_score,
@@ -1014,21 +1013,21 @@ class SingleMatchGenerator:
                 "alternative_scores": prediction.get("alternative_scores", []),
                 "score_probabilities": prediction.get("score_probabilities", []),
                 "score_probabilities_normalized": prediction.get(
-                    "score_probabilities_normalized", []
+                    "score_probabilities_normalized", [],
                 ),
                 "over_2_5_goals_probability": round(over_2_5_probability, 1),
                 "both_teams_score_probability": round(both_teams_score_probability, 1),
                 "head_to_head_analysis": prediction.get(
-                    "head_to_head_analysis", prediction.get("head_to_head", {})
+                    "head_to_head_analysis", prediction.get("head_to_head", {}),
                 ),
                 "home_performance_analysis": prediction.get(
-                    "home_performance_analysis", prediction.get("home_performance", {})
+                    "home_performance_analysis", prediction.get("home_performance", {}),
                 ),
                 "away_performance_analysis": prediction.get(
-                    "away_performance_analysis", prediction.get("away_performance", {})
+                    "away_performance_analysis", prediction.get("away_performance", {}),
                 ),
                 "goal_timing_prediction": prediction.get(
-                    "goal_timing_prediction", prediction.get("goal_timing", {})
+                    "goal_timing_prediction", prediction.get("goal_timing", {}),
                 ),
                 "intelligence_summary": prediction.get("intelligence_summary", {}),
                 "player_availability": enhanced_data.get("player_availability", {}),
@@ -1078,10 +1077,10 @@ class SingleMatchGenerator:
                 "optimization_metadata": {
                     "match_context": prediction.get("match_context", "unknown"),
                     "model_agreement_factor": prediction.get(
-                        "model_agreement_factor", 0.5
+                        "model_agreement_factor", 0.5,
                     ),
                     "optimization_applied": prediction.get(
-                        "optimization_applied", False
+                        "optimization_applied", False,
                     ),
                     "ensemble_weights": prediction.get("component_weights", {}),
                 },
@@ -1134,16 +1133,16 @@ class SingleMatchGenerator:
                     )
                     plt.axis("off")
                     plt.savefig(
-                        f"{full_path}/prediction_card.png", dpi=150, bbox_inches="tight"
+                        f"{full_path}/prediction_card.png", dpi=150, bbox_inches="tight",
                     )
                     plt.close(placeholder_fig)
                     print(
-                        f"   • Wrote placeholder image at: {full_path}/prediction_card.png"
+                        f"   • Wrote placeholder image at: {full_path}/prediction_card.png",
                     )
                 except Exception:
                     # If placeholder fails, continue silently but log
                     print(
-                        "   • Could not write placeholder image for match", match_folder
+                        "   • Could not write placeholder image for match", match_folder,
                     )
             self.save_format_copies(match_data, match_folder)
 
@@ -1157,18 +1156,18 @@ class SingleMatchGenerator:
                 safe_print(f"⚠️ Could not write fallback image for match {match_folder}: {fallback_ex}")
             print("   Phase 2 Lite report generated")
             print(
-                f"   Expected Score: {match_data['expected_final_score']} ({match_data['score_probability']:.1f}%)"
+                f"   Expected Score: {match_data['expected_final_score']} ({match_data['score_probability']:.1f}%)",
             )
             safe_print(
-                f"   ⚽ Expected Goals: {match_data['expected_home_goals']:.1f} - {match_data['expected_away_goals']:.1f}"
+                f"   ⚽ Expected Goals: {match_data['expected_home_goals']:.1f} - {match_data['expected_away_goals']:.1f}",
             )
             safe_print(
-                f"   📊 Data Confidence: {match_data['confidence']:.1%} | Accuracy {match_data['report_accuracy_probability']:.1%}"
+                f"   📊 Data Confidence: {match_data['confidence']:.1%} | Accuracy {match_data['report_accuracy_probability']:.1%}",
             )
 
             if reliability_metrics:
                 rel_indicator = reliability_metrics.get(
-                    "indicator"
+                    "indicator",
                 ) or reliability_metrics.get("level", "Reliability")
                 rel_score = reliability_metrics.get("score")
                 if rel_score is not None:
@@ -1189,7 +1188,7 @@ class SingleMatchGenerator:
             # Add delay between matches if specified (helps avoid API rate limiting)
             if match_delay > 0 and index < len(matches):
                 print(
-                    f"   ⏳ Waiting {match_delay}s before next match (rate limit protection)..."
+                    f"   ⏳ Waiting {match_delay}s before next match (rate limit protection)...",
                 )
                 time.sleep(match_delay)
 
@@ -1255,6 +1254,7 @@ class SingleMatchGenerator:
             away_query: Partial or full away team name to match
             league_name: League identifier (slug)
             lookahead_days: How many days ahead to search for scheduled matches
+
         """
         league_info = self.get_league_info(league_name)
         if not league_info:
@@ -1268,7 +1268,7 @@ class SingleMatchGenerator:
         date_to = (today + timedelta(days=lookahead_days)).isoformat()
 
         url = f"https://api.football-data.org/v4/competitions/{league_info['code']}/matches"
-        params: Dict[str, Union[str, int]] = {
+        params: dict[str, str | int] = {
             "status": "SCHEDULED",
             "dateFrom": date_from,
             "dateTo": date_to,
@@ -1279,7 +1279,7 @@ class SingleMatchGenerator:
         try:
             response = safe_request_get(url, headers=self.headers, params=params)
             response.raise_for_status()
-            data = cast(JSONDict, response.json())
+            data = cast("JSONDict", response.json())
             all_matches = data.get("matches", [])
         except Exception as exc:
             print(f"❌ Error fetching data: {exc}")
@@ -1302,7 +1302,7 @@ class SingleMatchGenerator:
 
         if not found:
             print(
-                f"❌ No scheduled match found for '{home_query} vs {away_query}' in {league_info['name']} within next {lookahead_days} days."
+                f"❌ No scheduled match found for '{home_query} vs {away_query}' in {league_info['name']} within next {lookahead_days} days.",
             )
             # Fallback: try again without status filter (some matches may be TIMED or PAUSED)
             try:
@@ -1310,7 +1310,7 @@ class SingleMatchGenerator:
                 params2 = {k: str(v) for k, v in params2.items()}
                 response2 = safe_request_get(url, headers=self.headers, params=params2)
                 response2.raise_for_status()
-                data2 = cast(JSONDict, response2.json())
+                data2 = cast("JSONDict", response2.json())
                 all_matches2 = data2.get("matches", [])
                 for m in all_matches2:
                     raw_home = m.get("homeTeam", {}).get("name", "") or ""
@@ -1353,17 +1353,17 @@ class SingleMatchGenerator:
         try:
             if self.phase2_lite_predictor is not None:
                 prediction = self.phase2_lite_predictor.enhanced_prediction(
-                    found, competition_code
+                    found, competition_code,
                 )
                 prediction_engine = prediction.get(
-                    "prediction_engine", "Enhanced Intelligence v4.1 + Phase 2 Lite"
+                    "prediction_engine", "Enhanced Intelligence v4.1 + Phase 2 Lite",
                 )
             else:
                 prediction = self.enhanced_predictor.enhanced_prediction(
-                    found, competition_code
+                    found, competition_code,
                 )
                 prediction_engine = prediction.get(
-                    "prediction_engine", "Enhanced Intelligence v4.1"
+                    "prediction_engine", "Enhanced Intelligence v4.1",
                 )
         except Exception as exc:
             print(f"   [ERROR] Prediction failed for {home_team} vs {away_team}: {exc}")
@@ -1371,7 +1371,7 @@ class SingleMatchGenerator:
 
         try:
             enhanced_data = self.data_quality_enhancer.comprehensive_data_enhancement(
-                found
+                found,
             )
         except Exception as exc:
             print(f"   [WARNING] Data quality enhancer issue: {exc}")
@@ -1385,7 +1385,7 @@ class SingleMatchGenerator:
             reliability_metrics = enhanced_data.get("reliability_metrics", {}) or {}
             reliability_score = self._safe_float(reliability_metrics.get("score"), 0.7)
             calibration_applied = self._safe_float(
-                prediction.get("calibration_applied"), 1.0
+                prediction.get("calibration_applied"), 1.0,
             )
             h2h_bonus = self._safe_float(prediction.get("h2h_bonus", 0.0), 0.0)
             data_availability_bonus = 0.0
@@ -1393,7 +1393,7 @@ class SingleMatchGenerator:
             # accuracy/probability extraction (safe)
             home_prob = self._safe_float(
                 prediction.get(
-                    "home_win_probability", prediction.get("home_win_prob", 0.0)
+                    "home_win_probability", prediction.get("home_win_prob", 0.0),
                 ),
                 0.0,
             )
@@ -1403,37 +1403,37 @@ class SingleMatchGenerator:
             )
             away_prob = self._safe_float(
                 prediction.get(
-                    "away_win_probability", prediction.get("away_win_prob", 0.0)
+                    "away_win_probability", prediction.get("away_win_prob", 0.0),
                 ),
                 0.0,
             )
 
             expected_home_goals = self._safe_float(
-                prediction.get("expected_home_goals"), 1.5
+                prediction.get("expected_home_goals"), 1.5,
             )
             expected_away_goals = self._safe_float(
-                prediction.get("expected_away_goals"), 1.2
+                prediction.get("expected_away_goals"), 1.2,
             )
 
             # Additional defensive metrics
             score_probability = self._safe_float(
-                prediction.get("score_probability"), 10.0
+                prediction.get("score_probability"), 10.0,
             )
             score_probability_normalized = self._safe_float(
-                prediction.get("score_probability_normalized"), 5.0
+                prediction.get("score_probability_normalized"), 5.0,
             )
             top3_combined_probability = self._safe_float(
-                prediction.get("top3_combined_probability"), 25.0
+                prediction.get("top3_combined_probability"), 25.0,
             )
             top3_probability_normalized = self._safe_float(
-                prediction.get("top3_probability_normalized"), 7.0
+                prediction.get("top3_probability_normalized"), 7.0,
             )
             processing_time = self._safe_float(prediction.get("processing_time"), 0.0)
 
             # Safe expected final score
             raw_expected_score = prediction.get("expected_final_score", "1-1")
             if isinstance(raw_expected_score, str) and re.search(
-                r"[A-Za-z]", raw_expected_score
+                r"[A-Za-z]", raw_expected_score,
             ):
                 safe_expected_score = f"{int(round(expected_home_goals))}-{int(round(expected_away_goals))}"
             else:
@@ -1446,7 +1446,7 @@ class SingleMatchGenerator:
                     safe_expected_score = f"{int(round(expected_home_goals))}-{int(round(expected_away_goals))}"
 
             over_2_5_raw = prediction.get(
-                "over_2_5_goals_probability", prediction.get("over_2_5_probability")
+                "over_2_5_goals_probability", prediction.get("over_2_5_probability"),
             )
             if over_2_5_raw is not None:
                 over_2_5_probability = self._safe_float(over_2_5_raw, 45.0)
@@ -1485,7 +1485,7 @@ class SingleMatchGenerator:
                 "confidence": round(confidence_value, 3),
                 "report_accuracy_probability": round(
                     self._safe_float(
-                        prediction.get("report_accuracy_probability", 0.65), 0.65
+                        prediction.get("report_accuracy_probability", 0.65), 0.65,
                     ),
                     3,
                 ),
@@ -1506,17 +1506,17 @@ class SingleMatchGenerator:
                         "home_win_prob": home_prob,
                         "draw_prob": draw_prob,
                         "away_win_prob": away_prob,
-                    }
+                    },
                 ),
                 "confidence_level": self.get_confidence_description(confidence_value),
                 "head_to_head_analysis": prediction.get(
-                    "head_to_head_analysis", prediction.get("head_to_head", {})
+                    "head_to_head_analysis", prediction.get("head_to_head", {}),
                 ),
                 "home_performance_analysis": prediction.get(
-                    "home_performance_analysis", prediction.get("home_performance", {})
+                    "home_performance_analysis", prediction.get("home_performance", {}),
                 ),
                 "away_performance_analysis": prediction.get(
-                    "away_performance_analysis", prediction.get("away_performance", {})
+                    "away_performance_analysis", prediction.get("away_performance", {}),
                 ),
                 "intelligence_summary": prediction.get("intelligence_summary", {}),
                 "player_availability": enhanced_data.get("player_availability", {}),
@@ -1558,30 +1558,30 @@ class SingleMatchGenerator:
                         feat = adv.extract_advanced_features(
                             {
                                 "expected_home_goals": match_data.get(
-                                    "expected_home_goals"
+                                    "expected_home_goals",
                                 ),
                                 "expected_away_goals": match_data.get(
-                                    "expected_away_goals"
+                                    "expected_away_goals",
                                 ),
                                 "home_win_prob": match_data.get("home_win_probability")
                                 or match_data.get("raw_prediction", {}).get(
-                                    "home_win_prob"
+                                    "home_win_prob",
                                 ),
                                 "draw_prob": match_data.get("draw_probability")
                                 or match_data.get("raw_prediction", {}).get(
-                                    "draw_prob"
+                                    "draw_prob",
                                 ),
                                 "away_win_prob": match_data.get("away_win_probability")
                                 or match_data.get("raw_prediction", {}).get(
-                                    "away_win_prob"
+                                    "away_win_prob",
                                 ),
                                 "confidence": match_data.get(
-                                    "report_accuracy_probability"
+                                    "report_accuracy_probability",
                                 )
                                 or match_data.get("raw_prediction", {}).get(
-                                    "confidence"
+                                    "confidence",
                                 ),
-                            }
+                            },
                         )
                         adv_pred = adv.predict_with_ml_ensemble(feat)
                         match_data["advanced_model"] = {
@@ -1602,14 +1602,14 @@ class SingleMatchGenerator:
             print(f"❌ Failed to save report: {exc}")
             return
 
-    def save_json(self, match_data: JSONDict, path: Union[str, Path]) -> None:
+    def save_json(self, match_data: JSONDict, path: str | Path) -> None:
         """Save match data as JSON. Synthetic reports are redirected to `reports/simulated/` to avoid publishing made-up data in the normal reports area."""
         # Base synthetic detection from existing flags
         is_synthetic = bool(
             match_data.get("is_synthetic")
             or match_data.get("fallback_used")
             or (match_data.get("prediction_method") or "").startswith("fallback")
-            or (match_data.get("mode") or "") == "simulated"
+            or (match_data.get("mode") or "") == "simulated",
         )
 
         # Publication gate: treat low-confidence or low data-quality reports as synthetic
@@ -1667,9 +1667,8 @@ class SingleMatchGenerator:
         with open(f"{path}/prediction.json", "w", encoding="utf-8") as f:
             json.dump(match_data, f, indent=2, ensure_ascii=False)
 
-    def save_summary(self, match_data: JSONDict, path: Union[str, Path]) -> None:
+    def save_summary(self, match_data: JSONDict, path: str | Path) -> None:
         """Save enhanced human-readable summary with intelligence analysis"""
-
         # Extract enhanced data
         h2h_data = match_data.get("head_to_head_analysis", {})
         home_perf = match_data.get("home_performance_analysis", {})
@@ -1710,24 +1709,24 @@ class SingleMatchGenerator:
                     feat = adv.extract_advanced_features(
                         {
                             "expected_home_goals": match_data.get(
-                                "expected_home_goals"
+                                "expected_home_goals",
                             ),
                             "expected_away_goals": match_data.get(
-                                "expected_away_goals"
+                                "expected_away_goals",
                             ),
                             "home_win_prob": match_data.get("home_win_probability")
                             or match_data.get("raw_prediction", {}).get(
-                                "home_win_prob"
+                                "home_win_prob",
                             ),
                             "draw_prob": match_data.get("draw_probability")
                             or match_data.get("raw_prediction", {}).get("draw_prob"),
                             "away_win_prob": match_data.get("away_win_probability")
                             or match_data.get("raw_prediction", {}).get(
-                                "away_win_prob"
+                                "away_win_prob",
                             ),
                             "confidence": match_data.get("report_accuracy_probability")
                             or match_data.get("raw_prediction", {}).get("confidence"),
-                        }
+                        },
                     )
                     adv_pred = adv.predict_with_ml_ensemble(feat)
                     print(f"[DEBUG] advanced model predicted: {adv_pred}")
@@ -1745,7 +1744,7 @@ class SingleMatchGenerator:
             pass
 
         prediction_engine = match_data.get(
-            "prediction_engine", "Enhanced Intelligence v4.1"
+            "prediction_engine", "Enhanced Intelligence v4.1",
         )
         phase2_active = "Phase 2 Lite" in prediction_engine
         engine_title = (
@@ -1778,7 +1777,7 @@ class SingleMatchGenerator:
             match_data.get("is_synthetic")
             or match_data.get("fallback_used")
             or (match_data.get("prediction_method") or "").startswith("fallback")
-            or (match_data.get("mode") or "") == "simulated"
+            or (match_data.get("mode") or "") == "simulated",
         )
         if is_synthetic:
             synth_notice = match_data.get("synthetic_notice", "Synthetic/fallback report - not data-driven")
@@ -1805,7 +1804,7 @@ class SingleMatchGenerator:
         # Score probability breakdown (defensive to missing/invalid structures)
         score_probabilities = match_data.get("score_probabilities", [])
         score_probabilities_normalized = match_data.get(
-            "score_probabilities_normalized", []
+            "score_probabilities_normalized", [],
         )
         score_lines = []
         for idx, item in enumerate(score_probabilities[:3]):
@@ -1821,14 +1820,14 @@ class SingleMatchGenerator:
             if normalized_value is None:
                 normalized_value = max(0.0, min(10.0, probability / 2))
             score_lines.append(
-                f"  - {score}: **{normalized_value:.0f}/10** ({probability:.1f}%)"
+                f"  - {score}: **{normalized_value:.0f}/10** ({probability:.1f}%)",
             )
         if not score_lines:
             score_lines.append("  - Data insufficient for detailed score probabilities")
         score_breakdown = "\n".join(score_lines)
 
         key_factors = intelligence.get(
-            "key_factors", ["Standard analysis factors applied"]
+            "key_factors", ["Standard analysis factors applied"],
         )
         key_factors_block = "\n".join([f"- {factor}" for factor in key_factors])
 
@@ -1853,7 +1852,7 @@ class SingleMatchGenerator:
 
         if reliability_metrics:
             indicator = reliability_metrics.get("indicator") or reliability_metrics.get(
-                "level", "Unknown"
+                "level", "Unknown",
             )
             if reliability_score_value is not None:
                 data_reliability = f"{indicator} ({reliability_score_value:.1f})"
@@ -1871,7 +1870,7 @@ class SingleMatchGenerator:
             "Volatile"
             if abs(
                 match_data.get("home_win_probability", 43.7)
-                - match_data.get("away_win_probability", 19.0)
+                - match_data.get("away_win_probability", 19.0),
             )
             < 15
             else "Stable"
@@ -1907,7 +1906,7 @@ class SingleMatchGenerator:
         def format_list(
             items: list[Any],
             default_text: str = "None reported",
-            limit: Optional[int] = None,
+            limit: int | None = None,
         ) -> str:
             if not items:
                 return default_text
@@ -1919,7 +1918,7 @@ class SingleMatchGenerator:
             return ", ".join(cleaned)
 
         def format_recent_matches(
-            recent_matches: list, team_name: str, max_matches: int = 5
+            recent_matches: list, team_name: str, max_matches: int = 5,
         ) -> str:
             """Format recent match results into a clear readable format"""
             if not recent_matches:
@@ -1937,7 +1936,7 @@ class SingleMatchGenerator:
                     opponent = opponent[:18] + "..."
                 emoji = result_emoji.get(result, "❓")
                 lines.append(
-                    f"  - {emoji} **{result}** {goals_for}-{goals_against} vs {opponent}"
+                    f"  - {emoji} **{result}** {goals_for}-{goals_against} vs {opponent}",
                 )
 
             return "\n".join(lines) if lines else "No recent match data"
@@ -1947,10 +1946,10 @@ class SingleMatchGenerator:
         away_recent_matches = away_perf.get("away", {}).get("recent_matches", [])
 
         home_recent_results = format_recent_matches(
-            home_recent_matches, match_data.get("home_team", "Home")
+            home_recent_matches, match_data.get("home_team", "Home"),
         )
         away_recent_results = format_recent_matches(
-            away_recent_matches, match_data.get("away_team", "Away")
+            away_recent_matches, match_data.get("away_team", "Away"),
         )
 
         tactical_adjustments = format_list(
@@ -1982,7 +1981,7 @@ class SingleMatchGenerator:
 
         if reliability_metrics:
             rec_text = reliability_metrics.get(
-                "recommendation", "Reliability insight unavailable"
+                "recommendation", "Reliability insight unavailable",
             )
             reliability_score_line = (
                 f"{reliability_metrics.get('indicator', reliability_metrics.get('level', 'Unknown'))} "
@@ -1999,14 +1998,14 @@ class SingleMatchGenerator:
             away_interval = confidence_intervals.get("away")
             def _call_format_interval(interval_val):
                 # Prefer instance method if available, otherwise use module-level helper or fallback
-                if callable(getattr(self, '_format_interval_segment', None)):
+                if callable(getattr(self, "_format_interval_segment", None)):
                     try:
                         return self._format_interval_segment(interval_val)
                     except Exception:
                         pass
-                if callable(globals().get('_format_interval_segment')):
+                if callable(globals().get("_format_interval_segment")):
                     try:
-                        return globals()['_format_interval_segment'](interval_val)
+                        return globals()["_format_interval_segment"](interval_val)
                     except Exception:
                         pass
                 # Fallback
@@ -2284,7 +2283,7 @@ class SingleMatchGenerator:
     # ================================================================
     # ==================== START OF save_image SECTION ====================
     # ================================================================
-    def save_image(self, match_data: JSONDict, path: Union[str, Path]) -> None:
+    def save_image(self, match_data: JSONDict, path: str | Path) -> None:
         """Generate visually stunning match prediction card with modern design, professional spacing, and gauges
 
         This function is defensive: it will not raise exceptions for missing optional fields and will
@@ -2301,18 +2300,18 @@ class SingleMatchGenerator:
             time_str = match_data.get("time", "")
             expected_final_score = match_data.get("expected_final_score", "N/A")
             expected_home_goals = float(
-                match_data.get("expected_home_goals", 0.0) or 0.0
+                match_data.get("expected_home_goals", 0.0) or 0.0,
             )
             expected_away_goals = float(
-                match_data.get("expected_away_goals", 0.0) or 0.0
+                match_data.get("expected_away_goals", 0.0) or 0.0,
             )
             # Use report_accuracy_probability as canonical source for displayed confidence; fallback to 'confidence' if present
             confidence = (
                 float(
                     match_data.get(
-                        "report_accuracy_probability", match_data.get("confidence", 0.0)
+                        "report_accuracy_probability", match_data.get("confidence", 0.0),
                     )
-                    or 0.0
+                    or 0.0,
                 )
                 * 100
             )
@@ -2344,7 +2343,7 @@ class SingleMatchGenerator:
             # Build color palette with league theme
             base_colors = ProfessionalDesignSystem.BASE_COLORS.copy()
             colors = self._settings.get("constants", {}).get(
-                "colors", base_colors.copy()
+                "colors", base_colors.copy(),
             )
 
             # Override with professional defaults and league theme
@@ -2367,7 +2366,7 @@ class SingleMatchGenerator:
                     "goals_bg": league_theme["secondary"],
                     "underline": league_theme["primary"],
                     "shadow": "#00000015",
-                }
+                },
             )
 
             # font sizes
@@ -2500,7 +2499,6 @@ class SingleMatchGenerator:
             # NOTE: saving moved to the end of the function to ensure all drawing operations are complete before writing the image.
             plt.tight_layout()
             # Saving deferred to the end of the function
-            pass
         except Exception as e:
             safe_print(f"⚠️  save_image encountered an error: {e}")
             # Attempt to create a minimal placeholder image so callers can rely on file existence
@@ -2806,12 +2804,11 @@ class SingleMatchGenerator:
         def get_strength_tier(win_rate):
             if win_rate >= 65:
                 return "Elite", "#27AE60"
-            elif win_rate >= 50:
+            if win_rate >= 50:
                 return "Strong", "#17A2B8"
-            elif win_rate >= 35:
+            if win_rate >= 35:
                 return "Average", "#F39C12"
-            else:
-                return "Struggling", "#E74C3C"
+            return "Struggling", "#E74C3C"
 
         home_tier, home_tier_color = get_strength_tier(home_win_rate)
         away_tier, away_tier_color = get_strength_tier(away_win_rate)
@@ -3428,7 +3425,7 @@ class SingleMatchGenerator:
         final_path = f"{path}/prediction_card.png"
         print("[TRACE] about to call plt.savefig to temp file (final save)")
         plt.savefig(
-            tmp_path, dpi=300, bbox_inches="tight", facecolor="white", pad_inches=0.3
+            tmp_path, dpi=300, bbox_inches="tight", facecolor="white", pad_inches=0.3,
         )
         print("[TRACE] matplotlib final temp save completed")
         plt.close()
@@ -3441,7 +3438,8 @@ class SingleMatchGenerator:
             print(f"[TRACE] final temp image nonwhite pixels: {nonwhite}")
             if nonwhite > 0:
                 try:
-                    import shutil, os
+                    import os
+                    import shutil
 
                     shutil.move(tmp_path, final_path)
                     # verify final file
@@ -3450,7 +3448,7 @@ class SingleMatchGenerator:
                     print(f"[TRACE] final file nonwhite pixels after move: {nonwhite2}")
                     if nonwhite2 == 0:
                         print(
-                            "[WARN] final file appears blank after move; writing pillow fallback instead"
+                            "[WARN] final file appears blank after move; writing pillow fallback instead",
                         )
                         raise RuntimeError("Final moved file blank")
                 except Exception as e:
@@ -3462,7 +3460,7 @@ class SingleMatchGenerator:
                         print("[WARN] could not save image with PIL:", e2)
             else:
                 print(
-                    "[WARN] Matplotlib final temp output blank; writing Pillow fallback image"
+                    "[WARN] Matplotlib final temp output blank; writing Pillow fallback image",
                 )
                 w, h = 1200, 800
                 img = Image.new("RGB", (w, h), color="#ffffff")
@@ -3545,7 +3543,7 @@ class SingleMatchGenerator:
     # ================================================================
 
     def save_format_copies(
-        self, match_data: JSONDict, match_folder: Union[str, Path]
+        self, match_data: JSONDict, match_folder: str | Path,
     ) -> None:
         """Save copies in format-specific directories for easy access"""
         # JSON copy
@@ -3595,21 +3593,19 @@ class SingleMatchGenerator:
         if (max_prob - second_prob) < 10:
             if max_prob == home_prob:
                 return "Competitive (Home Edge)"
-            elif max_prob == draw_prob:
+            if max_prob == draw_prob:
                 return "Competitive (Draw Edge)"
-            else:
-                return "Competitive (Away Edge)"
+            return "Competitive (Away Edge)"
 
         # Clear winner with >10pt margin
         if max_prob == home_prob:
             return "Home Win Likely" if max_prob >= 50 else "Home Win Possible"
-        elif max_prob == draw_prob:
+        if max_prob == draw_prob:
             return "Draw Expected" if max_prob >= 40 else "Draw Possible"
-        else:
-            return "Away Win Likely" if max_prob >= 50 else "Away Win Possible"
+        return "Away Win Likely" if max_prob >= 50 else "Away Win Possible"
 
 
-def ensure_prediction_image_exists(full_path: str, match_data: Dict[str, Any], match_folder: str) -> bool:
+def ensure_prediction_image_exists(full_path: str, match_data: dict[str, Any], match_folder: str) -> bool:
     """Ensure a PNG prediction image exists at full_path/prediction_card.png.
     Returns True if the image exists or was created successfully, False otherwise.
 
@@ -3670,14 +3666,14 @@ def ensure_prediction_image_exists(full_path: str, match_data: Dict[str, Any], m
             label = "Very Poor"
         return f"{pct:.1f}% ({label})"
 
-    def _format_interval_segment(self, interval: Union[list[float], tuple[float, float]]) -> str:
+    def _format_interval_segment(self, interval: list[float] | tuple[float, float]) -> str:
         """Instance wrapper to format interval segments.
 
         This fallback ensures the method is available on the instance even if the
         static helper is not bound correctly at import time (defensive fix).
         """
         # If the static implementation exists on the class, invoke it
-        if hasattr(self.__class__, '_format_interval_segment') and callable(getattr(self.__class__, '_format_interval_segment')):
+        if hasattr(self.__class__, "_format_interval_segment") and callable(self.__class__._format_interval_segment):
             try:
                 # call class-level staticmethod if present
                 return self.__class__._format_interval_segment(interval)
@@ -3695,7 +3691,7 @@ def ensure_prediction_image_exists(full_path: str, match_data: Dict[str, Any], m
 
     @staticmethod
     def _format_interval_segment(
-        interval: Union[list[float], tuple[float, float]],
+        interval: list[float] | tuple[float, float],
     ) -> str:
         """Convert interval collections to a normalized percentage string."""
         if isinstance(interval, (list, tuple)) and len(interval) >= 2:
@@ -3733,10 +3729,10 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
         factors = btts.get("factors", {})
         if factors:
             lines.append(
-                f"- **Home Scoring Chance:** {factors.get('home_scoring_chance', 0):.1f}%"
+                f"- **Home Scoring Chance:** {factors.get('home_scoring_chance', 0):.1f}%",
             )
             lines.append(
-                f"- **Away Scoring Chance:** {factors.get('away_scoring_chance', 0):.1f}%"
+                f"- **Away Scoring Chance:** {factors.get('away_scoring_chance', 0):.1f}%",
             )
     else:
         lines.append("- Data not available")
@@ -3745,20 +3741,19 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
     lines.append("### 📊 Over/Under Analysis (Phase 4)")
     if over_under:
         lines.append(
-            f"- **Expected Total Goals:** {over_under.get('expected_total_goals', 0):.2f}"
+            f"- **Expected Total Goals:** {over_under.get('expected_total_goals', 0):.2f}",
         )
         ou_lines = over_under.get("lines", {})
         for line_val in ["1.5", "2.5", "3.5"]:
             line_data = ou_lines.get(line_val, {})
             if line_data:
                     lines.append(
-                        f"- **O/U {line_val}:** Over {line_data.get('over_probability', 0):.1f}% / Under {line_data.get('under_probability', 0):.1f}%"
+                        f"- **O/U {line_val}:** Over {line_data.get('over_probability', 0):.1f}% / Under {line_data.get('under_probability', 0):.1f}%",
                     )
             lines.append(
-                f"- **Recommended Line:** {over_under.get('recommended_line', 'N/A')}"
+                f"- **Recommended Line:** {over_under.get('recommended_line', 'N/A')}",
             )
-        else:
-            lines.append("- Data not available")
+        lines.append("- Data not available")
 
         lines.append("")
         lines.append("### 🎲 Exact Score Predictions (Phase 4)")
@@ -3792,23 +3787,23 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
         lines.append("### 📈 Odds Movement Analysis (Phase 6)")
         if odds_movement:
             lines.append(
-                f"- **Home Movement:** {odds_movement.get('home_movement', 'stable')} ({odds_movement.get('home_movement_pct', 0):.1f}%)"
+                f"- **Home Movement:** {odds_movement.get('home_movement', 'stable')} ({odds_movement.get('home_movement_pct', 0):.1f}%)",
             )
             lines.append(
-                f"- **Away Movement:** {odds_movement.get('away_movement', 'stable')} ({odds_movement.get('away_movement_pct', 0):.1f}%)"
+                f"- **Away Movement:** {odds_movement.get('away_movement', 'stable')} ({odds_movement.get('away_movement_pct', 0):.1f}%)",
             )
             lines.append(
-                f"- **Movement Strength:** {odds_movement.get('movement_strength', 'minimal')}"
+                f"- **Movement Strength:** {odds_movement.get('movement_strength', 'minimal')}",
             )
             lines.append(
-                f"- **Sharp Money Detected:** {'⚠️ Yes' if odds_movement.get('sharp_money_detected') else '✅ No'}"
+                f"- **Sharp Money Detected:** {'⚠️ Yes' if odds_movement.get('sharp_money_detected') else '✅ No'}",
             )
             if odds_movement.get("sharp_money_detected"):
                 lines.append(
-                    f"- **Sharp Money Side:** {odds_movement.get('sharp_money_side', 'N/A')}"
+                    f"- **Sharp Money Side:** {odds_movement.get('sharp_money_side', 'N/A')}",
                 )
             lines.append(
-                f"- **Market Favorite:** {odds_movement.get('market_favorite', 'N/A')}"
+                f"- **Market Favorite:** {odds_movement.get('market_favorite', 'N/A')}",
             )
         else:
             lines.append("- Data not available")
@@ -3821,15 +3816,15 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
             away_impact = player_impact.get("away_impact", {})
             if home_impact:
                 lines.append(
-                    f"- **Home Team Impact:** {home_impact.get('total_impact', 0):.2f}"
+                    f"- **Home Team Impact:** {home_impact.get('total_impact', 0):.2f}",
                 )
             if away_impact:
                 lines.append(
-                    f"- **Away Team Impact:** {away_impact.get('total_impact', 0):.2f}"
+                    f"- **Away Team Impact:** {away_impact.get('total_impact', 0):.2f}",
                 )
             if player_impact.get("key_absences"):
                 lines.append(
-                    f"- **Key Absences:** {', '.join(player_impact.get('key_absences', []))}"
+                    f"- **Key Absences:** {', '.join(player_impact.get('key_absences', []))}",
                 )
         else:
             lines.append("- Player impact data not available for this match")
@@ -3844,7 +3839,7 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
                 if phase_enhancements.get(key, False):
                     active_phases.append(f"Phase {i}")
             lines.append(
-                f"- **Active:** {', '.join(active_phases) if active_phases else 'None'}"
+                f"- **Active:** {', '.join(active_phases) if active_phases else 'None'}",
             )
         else:
             lines.append("- Phase enhancement status not available")
@@ -3899,6 +3894,7 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
 
         Returns:
             Formatted team name, truncated with '...' if necessary
+
         """
         if not name:
             return "Unknown"
@@ -3916,6 +3912,7 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
 
         Returns:
             Validated match data with safe defaults for missing fields
+
         """
         # Define required fields with safe defaults
         defaults = {
@@ -3942,19 +3939,19 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
         # Type conversion and validation
         try:
             validated["expected_home_goals"] = float(
-                validated.get("expected_home_goals", 0.0)
+                validated.get("expected_home_goals", 0.0),
             )
             validated["expected_away_goals"] = float(
-                validated.get("expected_away_goals", 0.0)
+                validated.get("expected_away_goals", 0.0),
             )
             validated["home_win_probability"] = float(
-                validated.get("home_win_probability", 0.0)
+                validated.get("home_win_probability", 0.0),
             )
             validated["draw_probability"] = float(
-                validated.get("draw_probability", 0.0)
+                validated.get("draw_probability", 0.0),
             )
             validated["away_win_probability"] = float(
-                validated.get("away_win_probability", 0.0)
+                validated.get("away_win_probability", 0.0),
             )
             validated["confidence"] = float(validated.get("confidence", 50.0))
         except (ValueError, TypeError):
@@ -3983,7 +3980,7 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
         if not allow_prune and os.getenv("PRUNE_ALLOWED") != "1":
             raise RuntimeError(
                 "Refusing to remove reports: destructive operation requires explicit approval. "
-                "Use the `sports-forecast run-prune` command or set PRUNE_ALLOWED=1 in the environment."
+                "Use the `sports-forecast run-prune` command or set PRUNE_ALLOWED=1 in the environment.",
             )
 
         if match_filter:
@@ -4018,7 +4015,7 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
                         match_dirs = [d for d in match_dirs if match_filter.lower() in d.lower()]
 
                     print(
-                        f"   🏟️ Cleaning {len(match_dirs)} matches from {league_dir.split('/')[-2]}"
+                        f"   🏟️ Cleaning {len(match_dirs)} matches from {league_dir.split('/')[-2]}",
                     )
 
                     for match_dir in match_dirs:
@@ -4074,14 +4071,15 @@ def _format_advanced_predictions_section_impl(match_data: JSONDict) -> str:
 # Backward-compatibility safeguard: ensure the SingleMatchGenerator has a usable clean_old_reports method.
 # Some execution environments or import-time side effects may have left the method unavailable on the class.
 # Provide a safe, minimal implementation that mirrors the intended behavior (non-destructive if directories are absent).
-if not hasattr(SingleMatchGenerator, 'clean_old_reports'):
+if not hasattr(SingleMatchGenerator, "clean_old_reports"):
     def clean_old_reports(self, match_filter: str | None = None) -> None:
         """Fallback cleaner for reports (safe and idempotent).
 
         This implementation is intentionally conservative: it will remove match directories
         and clear format directories while preserving `.keep` files and directory structure.
         """
-        import shutil, os
+        import os
+        import shutil
 
         # Enforce prune guard for fallback implementation as well
         if os.getenv("PRUNE_ALLOWED") != "1":
@@ -4098,7 +4096,7 @@ if not hasattr(SingleMatchGenerator, 'clean_old_reports'):
 
         league_directories = [
             f"reports/leagues/{info['folder']}/matches"
-            for info in getattr(self, '_LEAGUE_CANONICAL', {}).values()
+            for info in getattr(self, "_LEAGUE_CANONICAL", {}).values()
         ]
 
         for league_dir in league_directories:
@@ -4109,7 +4107,7 @@ if not hasattr(SingleMatchGenerator, 'clean_old_reports'):
                         d
                         for d in all_items
                         if os.path.isdir(os.path.join(league_dir, d))
-                        and d not in ['.keep', '.gitkeep']
+                        and d not in [".keep", ".gitkeep"]
                     ]
 
                     if match_filter:
@@ -4141,7 +4139,7 @@ if not hasattr(SingleMatchGenerator, 'clean_old_reports'):
                     format_files = [
                         f
                         for f in os.listdir(format_dir)
-                        if os.path.isfile(os.path.join(format_dir, f)) and f != '.keep'
+                        if os.path.isfile(os.path.join(format_dir, f)) and f != ".keep"
                     ]
 
                     for file in format_files:
@@ -4156,7 +4154,7 @@ if not hasattr(SingleMatchGenerator, 'clean_old_reports'):
                     print(f"⚠️ Could not clean {format_dir}: {e}")
 
         for _root, _dirs, files in os.walk("reports"):
-            if '.keep' in files:
+            if ".keep" in files:
                 directories_preserved += 1
 
         safe_print("Comprehensive cleanup complete!")
@@ -4167,7 +4165,7 @@ if not hasattr(SingleMatchGenerator, 'clean_old_reports'):
         safe_print("   Directory structure maintained with .keep files")
 
     # Attach fallback method to the class
-    setattr(SingleMatchGenerator, 'clean_old_reports', clean_old_reports)
+    SingleMatchGenerator.clean_old_reports = clean_old_reports
 
 
 def main() -> None:
@@ -4205,7 +4203,7 @@ def main() -> None:
             del sys.argv[idx : idx + 2]
         except Exception:
             print(
-                "❌ Invalid --disable-injuries-ttl value. Provide a numeric seconds value."
+                "❌ Invalid --disable-injuries-ttl value. Provide a numeric seconds value.",
             )
             return
 
@@ -4224,13 +4222,13 @@ def main() -> None:
     if not args or (len(args) == 1 and args[0].lower() in ["help", "--help", "-h"]):
         print("📋 Usage Format:")
         print(
-            "     python generate_fast_reports.py generate [number] matches for [league|all]"
+            "     python generate_fast_reports.py generate [number] matches for [league|all]",
         )
         print("\n📋 Examples:")
         print("   python generate_fast_reports.py generate 2 matches for bundesliga")
         print("   python generate_fast_reports.py generate 1 matches for la-liga")
         print(
-            "   python generate_fast_reports.py generate 3 matches for premier-league"
+            "   python generate_fast_reports.py generate 3 matches for premier-league",
         )
         print("   python generate_fast_reports.py generate 1 matches for all")
         print("\n📋 Other Commands:")
@@ -4239,7 +4237,7 @@ def main() -> None:
         print("\n📋 Flags:")
         print("   --no-injuries     - Skip injuries calls to external RapidAPI")
         print(
-            "   --delay [seconds] - Wait between matches (e.g., --delay 60 for 1 min)"
+            "   --delay [seconds] - Wait between matches (e.g., --delay 60 for 1 min)",
         )
         print("\n🏆 Available Leagues:")
         print("   " + ", ".join(generator.list_supported_leagues()))
@@ -4264,7 +4262,7 @@ def main() -> None:
                 num_matches = int(args[2])
             else:
                 print(
-                    "❌ When using 'generate all', provide an optional numeric count like 'generate all 2'."
+                    "❌ When using 'generate all', provide an optional numeric count like 'generate all 2'.",
                 )
                 return
         if num_matches < 1 or num_matches > 10:
@@ -4308,21 +4306,21 @@ def main() -> None:
             lower_args = [a.lower() for a in args]
             if "for" not in lower_args:
                 print(
-                    '❌ Usage: python generate_fast_reports.py match "Home vs Away" for <league>'
+                    '❌ Usage: python generate_fast_reports.py match "Home vs Away" for <league>',
                 )
                 return
             idx_for = lower_args.index("for")
             match_str = " ".join(args[1:idx_for]).strip()
             if idx_for + 1 >= len(args):
                 print(
-                    "❌ Please specify a league after 'for', e.g., 'for premier-league'"
+                    "❌ Please specify a league after 'for', e.g., 'for premier-league'",
                 )
                 return
             league = args[idx_for + 1].lower()
 
             # Parse match string into home and away using common separators
             parts = re.split(
-                r"\s+v(?:s)?\.?\s+|\s+vs\.?\s+|\s+v\.\s+", match_str, flags=re.I
+                r"\s+v(?:s)?\.?\s+|\s+vs\.?\s+|\s+v\.\s+", match_str, flags=re.IGNORECASE,
             )
             if len(parts) != 2:
                 print('❌ Could not parse match string. Use format: "Home vs Away"')
@@ -4339,10 +4337,10 @@ def main() -> None:
     # If no valid format, show help
     print("❌ Invalid command format!")
     print(
-        "💡 Use: python generate_fast_reports.py generate [number] matches for [league]"
+        "💡 Use: python generate_fast_reports.py generate [number] matches for [league]",
     )
     print(
-        "💡 Example: python generate_fast_reports.py generate 2 matches for bundesliga"
+        "💡 Example: python generate_fast_reports.py generate 2 matches for bundesliga",
     )
     print("💡 Or use: python generate_fast_reports.py help")
 

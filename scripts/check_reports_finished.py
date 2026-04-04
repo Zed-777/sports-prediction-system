@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-"""
-Check reports directory for finished matches and summarize correctness
+"""Check reports directory for finished matches and summarize correctness
 
 Usage:
     python scripts/check_reports_finished.py
 """
 
 import json
+from datetime import UTC, datetime
 from pathlib import Path
-from datetime import datetime, timezone
 
 PROJECT_ROOT = Path(__file__).parent.parent
 REPORTS_DIR = PROJECT_ROOT / "reports" / "leagues"
@@ -45,14 +44,14 @@ def load_historical_for_league(league):
     if not path.exists():
         return {}
     try:
-        data = json.load(open(path, "r", encoding="utf-8"))
+        data = json.load(open(path, encoding="utf-8"))
     except Exception:
         return {}
     return {r.get("match_id"): r for r in data}
 
 
 def main():
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     leagues = [p for p in REPORTS_DIR.iterdir() if p.is_dir()]
     summary = {}
     missing_results = []
@@ -78,7 +77,7 @@ def main():
             if not pred_file.exists():
                 continue
             try:
-                pred = json.load(open(pred_file, "r", encoding="utf-8"))
+                pred = json.load(open(pred_file, encoding="utf-8"))
             except Exception:
                 continue
             mdt = parse_match_datetime(pred)
@@ -110,7 +109,7 @@ def main():
                         "no_result",
                         None,
                         None,
-                    )
+                    ),
                 )
                 continue
             ar = record.get("actual_result")
@@ -124,7 +123,7 @@ def main():
                         "no_result",
                         None,
                         None,
-                    )
+                    ),
                 )
                 continue
             recorded_results += 1
@@ -145,7 +144,7 @@ def main():
                     "recorded",
                     pred_corr,
                     exact_corr,
-                )
+                ),
             )
 
         summary[league] = {

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Advanced Neural Prediction System v1.0
+"""Advanced Neural Prediction System v1.0
 State-of-the-art deep learning for sports prediction with:
 - Transformer attention mechanisms for feature importance
 - LSTM sequence modeling for temporal patterns
@@ -14,7 +13,7 @@ import logging
 import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Tuple, List, Dict
+from typing import Any
 
 import numpy as np
 
@@ -62,8 +61,8 @@ class PredictionResult:
     away_win_prob: float
     confidence: float
     uncertainty: float
-    prediction_interval: Tuple[float, float]
-    feature_importance: Dict[str, float]
+    prediction_interval: tuple[float, float]
+    feature_importance: dict[str, float]
     model_agreement: float
     calibrated: bool = False
     ensemble_size: int = 1
@@ -73,10 +72,10 @@ class PredictionResult:
 class TemporalFeatures:
     """Temporal sequence features for LSTM processing"""
 
-    form_sequence: List[float] = field(default_factory=list)
-    goals_sequence: List[float] = field(default_factory=list)
-    xg_sequence: List[float] = field(default_factory=list)
-    opponent_strength_sequence: List[float] = field(default_factory=list)
+    form_sequence: list[float] = field(default_factory=list)
+    goals_sequence: list[float] = field(default_factory=list)
+    xg_sequence: list[float] = field(default_factory=list)
+    opponent_strength_sequence: list[float] = field(default_factory=list)
     sequence_length: int = 10
 
 
@@ -95,15 +94,15 @@ class AttentionMechanism:
         self.W_v = np.random.randn(feature_dim, feature_dim) * scale
         self.W_o = np.random.randn(feature_dim, feature_dim) * scale
 
-    def forward(self, x: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Apply multi-head self-attention
+    def forward(self, x: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Apply multi-head self-attention
 
         Args:
             x: Input features [batch_size, seq_len, feature_dim]
 
         Returns:
             (attended_features, attention_weights)
+
         """
         batch_size = x.shape[0] if len(x.shape) > 2 else 1
         if len(x.shape) == 2:
@@ -118,13 +117,13 @@ class AttentionMechanism:
 
         # Reshape for multi-head attention
         Q = Q.reshape(batch_size, seq_len, self.num_heads, self.head_dim).transpose(
-            0, 2, 1, 3
+            0, 2, 1, 3,
         )
         K = K.reshape(batch_size, seq_len, self.num_heads, self.head_dim).transpose(
-            0, 2, 1, 3
+            0, 2, 1, 3,
         )
         V = V.reshape(batch_size, seq_len, self.num_heads, self.head_dim).transpose(
-            0, 2, 1, 3
+            0, 2, 1, 3,
         )
 
         # Scaled dot-product attention
@@ -137,7 +136,7 @@ class AttentionMechanism:
 
         # Reshape and project output
         attended = attended.transpose(0, 2, 1, 3).reshape(
-            batch_size, seq_len, self.feature_dim
+            batch_size, seq_len, self.feature_dim,
         )
         output = np.dot(attended, self.W_o)
 
@@ -180,15 +179,15 @@ class LSTMLayer:
         self.U_o = np.random.randn(hidden_dim, hidden_dim) * scale
         self.b_o = np.zeros(hidden_dim)
 
-    def forward(self, x_sequence: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Process sequence through LSTM
+    def forward(self, x_sequence: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Process sequence through LSTM
 
         Args:
             x_sequence: Input sequence [seq_len, input_dim]
 
         Returns:
             (final_hidden_state, all_hidden_states)
+
         """
         seq_len = x_sequence.shape[0]
 
@@ -285,10 +284,9 @@ class MonteCarloDropout:
         self.num_samples = num_samples
 
     def predict_with_uncertainty(
-        self, model_forward_fn, x: np.ndarray
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-        """
-        Make predictions with uncertainty estimates using MC Dropout
+        self, model_forward_fn, x: np.ndarray,
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Make predictions with uncertainty estimates using MC Dropout
 
         Args:
             model_forward_fn: Function that takes x and training=True flag
@@ -296,6 +294,7 @@ class MonteCarloDropout:
 
         Returns:
             (mean_prediction, epistemic_uncertainty, aleatoric_uncertainty)
+
         """
         predictions = []
 
@@ -322,21 +321,21 @@ class ConformalPredictor:
     """Conformal prediction for calibrated confidence intervals"""
 
     def __init__(self, alpha: float = 0.1):
-        """
-        Args:
-            alpha: Significance level (0.1 = 90% confidence intervals)
+        """Args:
+        alpha: Significance level (0.1 = 90% confidence intervals)
+
         """
         self.alpha = alpha
-        self.calibration_scores: List[float] = []
+        self.calibration_scores: list[float] = []
         self.is_calibrated = False
 
     def calibrate(self, predictions: np.ndarray, true_outcomes: np.ndarray):
-        """
-        Calibrate using holdout data
+        """Calibrate using holdout data
 
         Args:
             predictions: Model predictions [n_samples, n_classes]
             true_outcomes: True class labels [n_samples]
+
         """
         # Calculate nonconformity scores (1 - probability of true class)
         for i, (pred, true_label) in enumerate(zip(predictions, true_outcomes)):
@@ -347,15 +346,15 @@ class ConformalPredictor:
         self.calibration_scores.sort()
         self.is_calibrated = True
 
-    def get_prediction_set(self, prediction: np.ndarray) -> Tuple[List[int], float]:
-        """
-        Get prediction set with guaranteed coverage
+    def get_prediction_set(self, prediction: np.ndarray) -> tuple[list[int], float]:
+        """Get prediction set with guaranteed coverage
 
         Args:
             prediction: Model prediction [n_classes]
 
         Returns:
             (prediction_set, confidence)
+
         """
         if not self.is_calibrated:
             # Return top prediction with base confidence
@@ -383,8 +382,7 @@ class ConformalPredictor:
 
 
 class AdvancedNeuralPredictor:
-    """
-    State-of-the-art neural prediction system combining:
+    """State-of-the-art neural prediction system combining:
     - Multi-head self-attention for feature importance
     - Bidirectional LSTM for temporal patterns
     - Residual connections and layer normalization
@@ -444,7 +442,7 @@ class AdvancedNeuralPredictor:
 
         # Initialize components
         self.attention = AttentionMechanism(
-            self.STATIC_FEATURE_DIM, self.NUM_ATTENTION_HEADS
+            self.STATIC_FEATURE_DIM, self.NUM_ATTENTION_HEADS,
         )
         self.lstm = LSTMLayer(self.TEMPORAL_FEATURE_DIM, self.HIDDEN_DIM)
 
@@ -475,16 +473,16 @@ class AdvancedNeuralPredictor:
         self.logger.info(f"  - TensorFlow available: {TF_AVAILABLE}")
 
     def extract_features(
-        self, match_data: Dict[str, Any]
-    ) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Extract static and temporal features from match data
+        self, match_data: dict[str, Any],
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Extract static and temporal features from match data
 
         Args:
             match_data: Complete match data dictionary
 
         Returns:
             (static_features, temporal_features)
+
         """
         # Static features (team strengths, venue, context)
         static = np.zeros(self.STATIC_FEATURE_DIM)
@@ -574,10 +572,9 @@ class AdvancedNeuralPredictor:
         return static, temporal
 
     def _forward(
-        self, static: np.ndarray, temporal: np.ndarray, training: bool = False
+        self, static: np.ndarray, temporal: np.ndarray, training: bool = False,
     ) -> np.ndarray:
-        """
-        Forward pass through the neural network
+        """Forward pass through the neural network
 
         Args:
             static: Static features [static_dim]
@@ -586,6 +583,7 @@ class AdvancedNeuralPredictor:
 
         Returns:
             Probability distribution [3] (home_win, draw, away_win)
+
         """
         # Process static features through attention
         static_expanded = static.reshape(1, -1)  # [1, static_dim]
@@ -617,15 +615,15 @@ class AdvancedNeuralPredictor:
 
         return probabilities
 
-    def predict(self, match_data: Dict[str, Any]) -> PredictionResult:
-        """
-        Make prediction with full uncertainty quantification
+    def predict(self, match_data: dict[str, Any]) -> PredictionResult:
+        """Make prediction with full uncertainty quantification
 
         Args:
             match_data: Complete match data dictionary
 
         Returns:
             PredictionResult with probabilities, confidence, and uncertainty
+
         """
         # Extract features
         static, temporal = self.extract_features(match_data)
@@ -680,10 +678,9 @@ class AdvancedNeuralPredictor:
         )
 
     def calibrate(
-        self, calibration_data: List[Dict[str, Any]], true_outcomes: List[int]
-    ) -> Dict[str, Any]:
-        """
-        Calibrate the model using holdout data
+        self, calibration_data: list[dict[str, Any]], true_outcomes: list[int],
+    ) -> dict[str, Any]:
+        """Calibrate the model using holdout data
 
         Args:
             calibration_data: List of match data dictionaries
@@ -691,6 +688,7 @@ class AdvancedNeuralPredictor:
 
         Returns:
             Calibration statistics
+
         """
         predictions = []
 
@@ -711,7 +709,7 @@ class AdvancedNeuralPredictor:
 
         # Brier score (lower is better)
         brier_score = np.mean(
-            np.sum((predictions - np.eye(3)[true_outcomes_arr]) ** 2, axis=1)
+            np.sum((predictions - np.eye(3)[true_outcomes_arr]) ** 2, axis=1),
         )
 
         # Expected calibration error
@@ -726,7 +724,7 @@ class AdvancedNeuralPredictor:
         }
 
     def _calculate_ece(
-        self, predictions: np.ndarray, true_outcomes: np.ndarray, n_bins: int = 10
+        self, predictions: np.ndarray, true_outcomes: np.ndarray, n_bins: int = 10,
     ) -> float:
         """Calculate Expected Calibration Error"""
         confidences = np.max(predictions, axis=1)
@@ -787,12 +785,12 @@ class AdvancedNeuralPredictor:
 
         if not weights_path.exists():
             self.logger.info(
-                "No pre-trained weights found, using random initialization"
+                "No pre-trained weights found, using random initialization",
             )
             return
 
         try:
-            with open(weights_path, "r") as f:
+            with open(weights_path) as f:
                 weights = json.load(f)
 
             self.attention.W_q = np.array(weights["attention_W_q"])
@@ -884,13 +882,13 @@ if __name__ == "__main__":
     print(f"   Confidence: {result.confidence:.1%}")
     print(f"   Uncertainty: {result.uncertainty:.4f}")
     print(
-        f"   Prediction Interval: [{result.prediction_interval[0]:.1%}, {result.prediction_interval[1]:.1%}]"
+        f"   Prediction Interval: [{result.prediction_interval[0]:.1%}, {result.prediction_interval[1]:.1%}]",
     )
     print(f"   Model Agreement: {result.model_agreement:.1%}")
     print(f"   Calibrated: {result.calibrated}")
-    print(f"\n   Top 5 Feature Importance:")
+    print("\n   Top 5 Feature Importance:")
     sorted_features = sorted(
-        result.feature_importance.items(), key=lambda x: x[1], reverse=True
+        result.feature_importance.items(), key=lambda x: x[1], reverse=True,
     )[:5]
     for name, importance in sorted_features:
         print(f"      {name}: {importance:.4f}")

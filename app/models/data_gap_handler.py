@@ -1,5 +1,4 @@
-"""
-Graceful Degradation on Data Gaps (TODO #36)
+"""Graceful Degradation on Data Gaps (TODO #36)
 =============================================
 When individual data sources are unavailable (lineup API down, xG cache miss,
 weather service timeout, etc.), the prediction pipeline should degrade
@@ -29,8 +28,7 @@ The confidence penalties were calibrated empirically from held-out experiments:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
-
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Field registry — maps optional data field names → confidence penalty (0-1)
@@ -38,7 +36,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 #: Each entry is (penalty_fraction, human_label).
 #: Penalties are additive up to a configurable cap.
-FIELD_PENALTIES: Dict[str, Tuple[float, str]] = {
+FIELD_PENALTIES: dict[str, tuple[float, str]] = {
     "lineup":         (0.07, "lineup / team selection"),
     "xg":             (0.05, "expected goals (xG)"),
     "weather":        (0.02, "weather conditions"),
@@ -65,13 +63,14 @@ CRITICAL_CONFIDENCE_FLOOR: float = 0.50
 @dataclass
 class DataGapReport:
     """Summary of which fields were missing and the aggregate penalty applied."""
-    missing_fields:   List[str]          # field-names that were absent
-    field_penalties:  Dict[str, float]   # {field: penalty_fraction}
+
+    missing_fields:   list[str]          # field-names that were absent
+    field_penalties:  dict[str, float]   # {field: penalty_fraction}
     total_penalty:    float              # sum, capped at MAX_TOTAL_PENALTY
     original_confidence: float
     adjusted_confidence: float
     is_critical:      bool               # True if adjusted_confidence < floor
-    notes:            List[str] = field(default_factory=list)
+    notes:            list[str] = field(default_factory=list)
 
     def summary(self) -> str:
         if not self.missing_fields:
@@ -88,7 +87,8 @@ class DataGapReport:
 @dataclass
 class DegradedPrediction:
     """A prediction with data-gap metadata attached."""
-    prediction: Dict[str, Any]       # original prediction dict (possibly mutated)
+
+    prediction: dict[str, Any]       # original prediction dict (possibly mutated)
     gap_report: DataGapReport
     degraded: bool                   # True if any penalties were applied
 
@@ -98,8 +98,7 @@ class DegradedPrediction:
 # ---------------------------------------------------------------------------
 
 class DataGapHandler:
-    """
-    Detects missing optional fields in a prediction context and applies
+    """Detects missing optional fields in a prediction context and applies
     calibrated confidence penalties.
 
     Usage
@@ -114,13 +113,14 @@ class DataGapHandler:
     max_penalty         : cap on total additive penalty (default 0.30)
     confidence_floor    : minimum confidence before marking as critical (0.50)
     custom_penalties    : dict overriding default field penalties
+
     """
 
     def __init__(
         self,
         max_penalty:      float = MAX_TOTAL_PENALTY,
         confidence_floor: float = CRITICAL_CONFIDENCE_FLOOR,
-        custom_penalties: Optional[Dict[str, float]] = None,
+        custom_penalties: dict[str, float] | None = None,
     ) -> None:
         self.max_penalty      = max_penalty
         self.confidence_floor = confidence_floor
@@ -134,12 +134,11 @@ class DataGapHandler:
 
     def handle(
         self,
-        prediction: Dict[str, Any],
-        available_fields: Optional[List[str]] = None,
-        missing_fields:   Optional[List[str]] = None,
+        prediction: dict[str, Any],
+        available_fields: list[str] | None = None,
+        missing_fields:   list[str] | None = None,
     ) -> DegradedPrediction:
-        """
-        Apply data-gap handling to a single prediction dict.
+        """Apply data-gap handling to a single prediction dict.
 
         Supply EITHER:
         - ``available_fields`` : list of fields that ARE present
@@ -168,7 +167,7 @@ class DataGapHandler:
             missing = sorted(set(missing_fields))
 
         # Compute penalty
-        field_penalties: Dict[str, float] = {}
+        field_penalties: dict[str, float] = {}
         total = 0.0
         for f in missing:
             pen = self._penalties.get(f, 0.0)
@@ -182,7 +181,7 @@ class DataGapHandler:
         is_critical = adj_conf < self.confidence_floor
 
         # Notes
-        notes: List[str] = []
+        notes: list[str] = []
         if is_critical:
             notes.append(f"Confidence {adj_conf:.2f} below critical floor {self.confidence_floor:.2f}")
         for f in missing:
@@ -213,15 +212,15 @@ class DataGapHandler:
     # Convenience methods for specific data sources
     # ------------------------------------------------------------------
 
-    def handle_missing_lineup(self, prediction: Dict[str, Any]) -> DegradedPrediction:
+    def handle_missing_lineup(self, prediction: dict[str, Any]) -> DegradedPrediction:
         """Shortcut: apply lineup-missing penalty."""
         return self.handle(prediction, missing_fields=["lineup"])
 
-    def handle_missing_xg(self, prediction: Dict[str, Any]) -> DegradedPrediction:
+    def handle_missing_xg(self, prediction: dict[str, Any]) -> DegradedPrediction:
         """Shortcut: apply xG-missing penalty."""
         return self.handle(prediction, missing_fields=["xg"])
 
-    def handle_missing_form(self, prediction: Dict[str, Any]) -> DegradedPrediction:
+    def handle_missing_form(self, prediction: dict[str, Any]) -> DegradedPrediction:
         """Shortcut: apply form-missing penalty."""
         return self.handle(prediction, missing_fields=["form"])
 
@@ -231,12 +230,11 @@ class DataGapHandler:
 
     def handle_batch(
         self,
-        predictions: List[Dict[str, Any]],
-        available_fields: Optional[List[str]] = None,
-        missing_fields:   Optional[List[str]] = None,
-    ) -> List[DegradedPrediction]:
-        """
-        Apply the same data-gap profile to a list of predictions.
+        predictions: list[dict[str, Any]],
+        available_fields: list[str] | None = None,
+        missing_fields:   list[str] | None = None,
+    ) -> list[DegradedPrediction]:
+        """Apply the same data-gap profile to a list of predictions.
         Useful when processing a set of matches from the same fixture-data fetch.
         """
         return [
@@ -248,7 +246,7 @@ class DataGapHandler:
     # Audit
     # ------------------------------------------------------------------
 
-    def penalty_table(self) -> List[Dict[str, Any]]:
+    def penalty_table(self) -> list[dict[str, Any]]:
         """Return the full penalty table as a list of dicts (for display)."""
         rows = []
         for field_name, (penalty, label) in FIELD_PENALTIES.items():
@@ -266,9 +264,8 @@ class DataGapHandler:
 # Utility: extract available fields from a prediction dict
 # ---------------------------------------------------------------------------
 
-def infer_available_fields(prediction: Dict[str, Any]) -> List[str]:
-    """
-    Heuristically determine which optional data fields are present in a
+def infer_available_fields(prediction: dict[str, Any]) -> list[str]:
+    """Heuristically determine which optional data fields are present in a
     prediction dict, based on well-known key names.
 
     This is a best-effort helper; callers can always be explicit.

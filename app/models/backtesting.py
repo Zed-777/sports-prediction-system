@@ -1,5 +1,4 @@
-"""
-Backtesting Framework (VB-001)
+"""Backtesting Framework (VB-001)
 ============================
 
 Historical backtesting framework for validating prediction accuracy.
@@ -17,12 +16,12 @@ Key Features:
 
 import json
 import logging
+import math
+from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Callable, Optional
-import math
-from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -144,20 +143,19 @@ class BacktestSummary:
 
 
 class BacktestingFramework:
-    """
-    Historical backtesting framework for prediction validation.
+    """Historical backtesting framework for prediction validation.
 
     Uses time-series cross-validation to prevent future data leakage.
     Tests predictions against historical match results.
     """
 
     def __init__(self, data_dir: str = "data", results_dir: str = "reports/backtests"):
-        """
-        Initialize backtesting framework.
+        """Initialize backtesting framework.
 
         Args:
             data_dir: Directory containing historical match data
             results_dir: Directory to save backtest results
+
         """
         self.data_dir = Path(data_dir)
         self.results_dir = Path(results_dir)
@@ -169,12 +167,11 @@ class BacktestingFramework:
 
     def load_historical_data(
         self,
-        leagues: Optional[list[str]] = None,
-        start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None,
+        leagues: list[str] | None = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
     ) -> list[dict]:
-        """
-        Load historical match data for backtesting.
+        """Load historical match data for backtesting.
 
         Args:
             leagues: List of league IDs to include (None = all)
@@ -183,6 +180,7 @@ class BacktestingFramework:
 
         Returns:
             List of match dictionaries with results
+
         """
         matches = []
 
@@ -201,7 +199,7 @@ class BacktestingFramework:
             # Load JSON files
             for json_file in hist_dir.glob("**/*.json"):
                 try:
-                    with open(json_file, "r", encoding="utf-8") as f:
+                    with open(json_file, encoding="utf-8") as f:
                         data = json.load(f)
 
                     # Handle different data formats
@@ -242,12 +240,12 @@ class BacktestingFramework:
         logger.info(f"Loaded {len(matches)} historical matches for backtesting")
         return matches
 
-    def _parse_match_data(self, data: dict) -> Optional[dict]:
-        """
-        Parse match data from various formats.
+    def _parse_match_data(self, data: dict) -> dict | None:
+        """Parse match data from various formats.
 
         Returns:
             Standardized match dictionary or None if invalid
+
         """
         try:
             # Try to extract required fields
@@ -330,10 +328,10 @@ class BacktestingFramework:
 
             # Optional fields
             match["home_team_id"] = data.get("home_team_id") or data.get(
-                "homeTeam", {}
+                "homeTeam", {},
             ).get("id")
             match["away_team_id"] = data.get("away_team_id") or data.get(
-                "awayTeam", {}
+                "awayTeam", {},
             ).get("id")
 
             return match
@@ -346,13 +344,12 @@ class BacktestingFramework:
         self,
         predictor: Callable[[dict], dict],
         model_name: str = "default",
-        test_matches: Optional[list[dict]] = None,
+        test_matches: list[dict] | None = None,
         train_window_days: int = 180,
         test_window_days: int = 30,
         min_train_matches: int = 50,
     ) -> BacktestSummary:
-        """
-        Run backtest using time-series cross-validation.
+        """Run backtest using time-series cross-validation.
 
         Uses a rolling window approach:
         1. Train on matches from [t - train_window, t]
@@ -369,6 +366,7 @@ class BacktestingFramework:
 
         Returns:
             BacktestSummary with comprehensive metrics
+
         """
         if test_matches is None:
             if not self._data_loaded:
@@ -377,7 +375,7 @@ class BacktestingFramework:
 
         if len(test_matches) < min_train_matches:
             logger.warning(
-                f"Insufficient data for backtesting: {len(test_matches)} matches"
+                f"Insufficient data for backtesting: {len(test_matches)} matches",
             )
             # Return empty summary
             return BacktestSummary(
@@ -433,11 +431,11 @@ class BacktestingFramework:
 
                     # Extract probabilities
                     home_prob = prediction.get(
-                        "home_win_prob", prediction.get("home_prob", 33.3)
+                        "home_win_prob", prediction.get("home_prob", 33.3),
                     )
                     draw_prob = prediction.get("draw_prob", 33.3)
                     away_prob = prediction.get(
-                        "away_win_prob", prediction.get("away_prob", 33.3)
+                        "away_win_prob", prediction.get("away_prob", 33.3),
                     )
                     confidence = prediction.get("confidence", 50.0)
 
@@ -476,7 +474,7 @@ class BacktestingFramework:
         return summary
 
     def _calculate_summary(
-        self, results: list[BacktestResult], model_name: str
+        self, results: list[BacktestResult], model_name: str,
     ) -> BacktestSummary:
         """Calculate summary statistics from backtest results."""
         if not results:
@@ -508,13 +506,13 @@ class BacktestingFramework:
         away_preds = [r for r in results if r.predicted_outcome == "2"]
 
         home_accuracy = sum(1 for r in home_preds if r.correct) / max(
-            len(home_preds), 1
+            len(home_preds), 1,
         )
         draw_accuracy = sum(1 for r in draw_preds if r.correct) / max(
-            len(draw_preds), 1
+            len(draw_preds), 1,
         )
         away_accuracy = sum(1 for r in away_preds if r.correct) / max(
-            len(away_preds), 1
+            len(away_preds), 1,
         )
 
         # Mean metrics
@@ -615,8 +613,7 @@ class BacktestingFramework:
         logger.info(f"Saved backtest results to {summary_file}")
 
     def compare_models(self, summaries: list[BacktestSummary]) -> dict:
-        """
-        Compare multiple model backtests.
+        """Compare multiple model backtests.
 
         Returns comparison data showing which model performs better.
         """
@@ -671,14 +668,14 @@ class BacktestingFramework:
 
 
 def create_simple_predictor(enhanced_predictor) -> Callable[[dict], dict]:
-    """
-    Create a predictor function from EnhancedPredictor for backtesting.
+    """Create a predictor function from EnhancedPredictor for backtesting.
 
     Args:
         enhanced_predictor: Instance of EnhancedPredictor
 
     Returns:
         Function that takes match dict and returns prediction
+
     """
 
     def predict(match: dict) -> dict:
@@ -758,7 +755,7 @@ if __name__ == "__main__":
             test_matches=sample_matches,
         )
 
-        print(f"\nBacktest Summary:")
+        print("\nBacktest Summary:")
         print(f"  Model: {summary.model_name}")
         print(f"  Matches tested: {summary.total_matches}")
         print(f"  Accuracy: {summary.accuracy * 100:.1f}%")

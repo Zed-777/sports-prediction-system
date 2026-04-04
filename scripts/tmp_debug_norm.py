@@ -1,4 +1,5 @@
-import unicodedata, re
+import re
+import unicodedata
 
 
 def normalize(s):

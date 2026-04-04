@@ -1,6 +1,7 @@
+import time
+
 from app.utils.http import safe_request_get
 from app.utils.state_sync import set_disabled_flag
-import time
 
 
 def test_safe_request_get_respects_disabled_flag():

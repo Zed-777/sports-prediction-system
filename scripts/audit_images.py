@@ -7,8 +7,9 @@ Usage:
   python scripts/audit_images.py
 """
 
-from PIL import Image, ImageStat
 from pathlib import Path
+
+from PIL import Image, ImageStat
 
 root = Path(__file__).resolve().parents[1]
 pattern = root / "reports" / "leagues" / "*" / "matches" / "*" / "prediction_card.png"
@@ -28,7 +29,7 @@ for p in images:
         nonwhite = sum(1 for px in im.getdata() if px != (255, 255, 255))
         pct_nonwhite = 100.0 * nonwhite / (w * h)
         print(
-            f"{p}: size={w}x{h}, mean={mean}, var={var}, nonwhite={nonwhite} ({pct_nonwhite:.3f}%)"
+            f"{p}: size={w}x{h}, mean={mean}, var={var}, nonwhite={nonwhite} ({pct_nonwhite:.3f}%)",
         )
 
         # Heuristics for suspicious images

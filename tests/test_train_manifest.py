@@ -1,5 +1,5 @@
-from scripts.train_advanced_model import train_baseline
 from app.data.advanced_model_features import build_sample_dataset
+from scripts.train_advanced_model import train_baseline
 
 
 def test_train_writes_manifest(tmp_path):

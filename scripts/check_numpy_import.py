@@ -1,4 +1,5 @@
-import sys, importlib
+import importlib
+import sys
 
 importlib.invalidate_caches()
 try:

@@ -93,7 +93,7 @@ def main():
 
     for filepath in module_files:
         if os.path.exists(filepath):
-            with open(filepath, "r", encoding="utf-8") as f:
+            with open(filepath, encoding="utf-8") as f:
                 lines = len(f.readlines())
                 total_lines += lines
                 print(f"   📄 {os.path.basename(filepath)}: {lines} lines")

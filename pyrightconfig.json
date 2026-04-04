@@ -6,7 +6,12 @@
     "**/.venv-Z1.1/**",
     "**/miniforge3/**",
     "**/envs/**",
+    "**/node_modules/**",
+    "**/__pycache__/**",
+    "**/*.pyc",
+    "**/.*",
     "scripts/backup/**",
     "reports/historical/**"
-  ]
+  ],
 }
+

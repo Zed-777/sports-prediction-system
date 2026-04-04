@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Historical Data Loader
+"""Historical Data Loader
 - Loads processed historical dataset produced by scripts/collect_historical_data.py
 - Provides API to get features and labels for training
 """

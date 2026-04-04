@@ -1,7 +1,6 @@
-"""
-Tests for:
-  app/models/staleness.py         (TODO #38 — model staleness detection)
-  app/models/data_gap_handler.py  (TODO #36 — graceful degradation)
+"""Tests for:
+app/models/staleness.py         (TODO #38 — model staleness detection)
+app/models/data_gap_handler.py  (TODO #36 — graceful degradation)
 """
 
 from __future__ import annotations
@@ -11,18 +10,16 @@ import time
 
 import pytest
 
+from app.models.data_gap_handler import (
+    DataGapHandler,
+    infer_available_fields,
+)
 from app.models.staleness import (
     ModelStalenessDetector,
     Severity,
     StalenessReport,
     is_model_stale,
 )
-from app.models.data_gap_handler import (
-    DataGapHandler,
-    DegradedPrediction,
-    infer_available_fields,
-)
-
 
 # ===========================================================================
 # ModelStalenessDetector

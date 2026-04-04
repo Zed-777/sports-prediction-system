@@ -1,5 +1,4 @@
-"""
-Market Odds Simulator (PROF-002)
+"""Market Odds Simulator (PROF-002)
 =================================
 Generates realistic bookmaker decimal odds from true-probability estimates,
 applying a configurable book overround (margin).
@@ -23,7 +22,6 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass
-
 
 # ---------------------------------------------------------------------------
 # Data structures
@@ -90,8 +88,7 @@ LEAGUE_MARGIN_ADJUSTMENTS: dict[str, float] = {
 
 
 class MarketSimulator:
-    """
-    Converts true-probability estimates into bookmaker decimal odds.
+    """Converts true-probability estimates into bookmaker decimal odds.
 
     Typical usage
     -------------
@@ -107,13 +104,13 @@ class MarketSimulator:
         noise_std: float = 0.01,
         seed: int = 42,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         bookmaker_type : "soft" | "sharp" | "exchange" | "default"
         noise_std      : standard deviation of Gaussian noise on implied probs
                          to simulate market uncertainty (0 = no noise).
         seed           : random seed for reproducible noise
+
         """
         self.base_margin = BOOKMAKER_MARGINS.get(bookmaker_type, BOOKMAKER_MARGINS["default"])
         self.noise_std = noise_std
@@ -128,8 +125,7 @@ class MarketSimulator:
         league: str = "default",
         add_noise: bool = False,
     ) -> SimulatedOdds:
-        """
-        Build simulated bookmaker odds from true probabilities.
+        """Build simulated bookmaker odds from true probabilities.
 
         The method:
         1. Normalise the three probs to sum to 1.
@@ -199,8 +195,7 @@ class MarketSimulator:
         away_prob: float,
         league: str = "default",
     ) -> SimulatedOdds:
-        """
-        Simulate closing-line odds (tighter margin, higher accuracy).
+        """Simulate closing-line odds (tighter margin, higher accuracy).
 
         Closing-line odds are the last odds before kick-off and represent
         the market's most efficient estimate of true probabilities.
@@ -218,8 +213,7 @@ class MarketSimulator:
         model_prob: float,
         closing_decimal_odds: float,
     ) -> float:
-        """
-        Closing Line Value (CLV):  model_prob / closing_implied_prob - 1
+        """Closing Line Value (CLV):  model_prob / closing_implied_prob - 1
 
         Positive CLV means we beat the closing market price.
         Sustained positive CLV is the gold standard for demonstrating edge.
@@ -236,8 +230,7 @@ class MarketSimulator:
 
 
 class SyntheticMatchGenerator:
-    """
-    Generates a synthetic dataset of matches with model predictions and
+    """Generates a synthetic dataset of matches with model predictions and
     realistic market odds for backtesting the profitability engine.
 
     The generator uses a configurable model accuracy to simulate realistic
@@ -260,12 +253,12 @@ class SyntheticMatchGenerator:
         bookmaker_type: str = "sharp",
         seed: int = 42,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         model_accuracy : overall 3-outcome accuracy to simulate (e.g. 0.60)
         bookmaker_type : type of bookmaker to simulate odds for
         seed           : random seed
+
         """
         self.model_accuracy = model_accuracy
         self.market_sim = MarketSimulator(bookmaker_type=bookmaker_type, seed=seed)
@@ -276,8 +269,7 @@ class SyntheticMatchGenerator:
         n_matches: int = 500,
         leagues: list[str] | None = None,
     ) -> list[dict]:
-        """
-        Generate n_matches synthetic match records.
+        """Generate n_matches synthetic match records.
 
         Each record contains:
             match_id, league, home_team, away_team,

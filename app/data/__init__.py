@@ -1,3 +1,2 @@
-"""
-Data package for the Sports Prediction System
+"""Data package for the Sports Prediction System
 """

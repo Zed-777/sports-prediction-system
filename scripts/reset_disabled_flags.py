@@ -8,22 +8,24 @@ Usage:
 """
 
 from __future__ import annotations
+
 import argparse
+
 from app.utils import state_sync
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Reset or list disabled endpoint flags"
+        description="Reset or list disabled endpoint flags",
     )
     parser.add_argument("--list", action="store_true", help="List all disabled flags")
     parser.add_argument(
-        "--clear-all", action="store_true", help="Clear all disabled flags"
+        "--clear-all", action="store_true", help="Clear all disabled flags",
     )
     parser.add_argument("--host", type=str, help="Host for a specific flag")
     parser.add_argument("--path", type=str, help="Path for a specific flag")
     parser.add_argument(
-        "--clear", action="store_true", help="Clear a specific host/path flag"
+        "--clear", action="store_true", help="Clear a specific host/path flag",
     )
     args = parser.parse_args()
 

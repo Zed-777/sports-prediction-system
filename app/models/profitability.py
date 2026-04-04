@@ -1,5 +1,4 @@
-"""
-Profitability Engine (PROF-001)
+"""Profitability Engine (PROF-001)
 ================================
 Core expected-value, ROI, Kelly criterion, drawdown, and statistical-significance
 calculations for validating whether the prediction strategy is profitable enough
@@ -30,7 +29,6 @@ import math
 import random
 import statistics
 from dataclasses import dataclass, field
-from typing import Optional
 
 # ---------------------------------------------------------------------------
 # Data structures
@@ -55,7 +53,7 @@ class BetResult:
     confidence: float           # model confidence 0-1
     data_quality: float         # data quality score 0-1
     qualified: bool             # passed qualifying gate?
-    disqualification_reason: Optional[str] = None
+    disqualification_reason: str | None = None
 
 
 @dataclass
@@ -141,8 +139,7 @@ class ProfitabilityReport:
 
 
 def calculate_ev(model_prob: float, decimal_odds: float) -> float:
-    """
-    Expected value as fraction of stake.
+    """Expected value as fraction of stake.
 
     EV = model_prob * (decimal_odds - 1) - (1 - model_prob)
        = model_prob * decimal_odds - 1
@@ -153,8 +150,7 @@ def calculate_ev(model_prob: float, decimal_odds: float) -> float:
 
 
 def calculate_edge(model_prob: float, decimal_odds: float) -> float:
-    """
-    Edge = model probability − market-implied probability.
+    """Edge = model probability − market-implied probability.
     Positive means the model sees more value than the market prices in.
     """
     market_prob = 1.0 / decimal_odds
@@ -162,8 +158,7 @@ def calculate_edge(model_prob: float, decimal_odds: float) -> float:
 
 
 def kelly_fraction(model_prob: float, decimal_odds: float) -> float:
-    """
-    Full Kelly criterion: f* = (model_prob * decimal_odds - 1) / (decimal_odds - 1)
+    """Full Kelly criterion: f* = (model_prob * decimal_odds - 1) / (decimal_odds - 1)
 
     Returns fraction of bankroll to stake (can be negative if EV ≤ 0).
     """
@@ -185,8 +180,7 @@ def quarter_kelly(model_prob: float, decimal_odds: float) -> float:
 
 
 def compute_drawdown(profit_series: list[float]) -> tuple[float, float]:
-    """
-    Compute maximum drawdown from a cumulative P&L series.
+    """Compute maximum drawdown from a cumulative P&L series.
 
     Returns (max_drawdown_absolute, max_drawdown_pct_of_peak).
     peak never goes below 0 (baseline = 0).
@@ -204,11 +198,9 @@ def compute_drawdown(profit_series: list[float]) -> tuple[float, float]:
     max_dd = 0.0
 
     for c in cumulative:
-        if c > peak:
-            peak = c
+        peak = max(peak, c)
         dd = peak - c
-        if dd > max_dd:
-            max_dd = dd
+        max_dd = max(max_dd, dd)
 
     # Express as % of peak (or % of initial bankroll, use 100 units as baseline)
     baseline = max(peak, 100.0)
@@ -229,8 +221,7 @@ def max_consecutive_losses(won_flags: list[bool]) -> int:
 
 
 def sharpe_equivalent(profit_series: list[float]) -> float:
-    """
-    Sharpe-equivalent: mean(profit per bet) / std(profit per bet).
+    """Sharpe-equivalent: mean(profit per bet) / std(profit per bet).
     Higher is better. Annualise by noting most leagues have ~300 games/season.
     """
     if len(profit_series) < 2:
@@ -248,10 +239,9 @@ def sharpe_equivalent(profit_series: list[float]) -> float:
 
 
 def binomial_significance_test(
-    n_bets: int, n_wins: int, expected_hit_rate: float
+    n_bets: int, n_wins: int, expected_hit_rate: float,
 ) -> tuple[float, float]:
-    """
-    One-tailed binomial test: H0: actual win rate ≤ expected_hit_rate
+    """One-tailed binomial test: H0: actual win rate ≤ expected_hit_rate
 
     Uses normal approximation (valid for n > 30).
 
@@ -276,8 +266,7 @@ def binomial_significance_test(
 
 def roi_confidence_interval(roi_pct: float, n_bets: int, std_profit: float,
                              stake: float = 1.0) -> tuple[float, float]:
-    """
-    95% confidence interval on ROI (% of stake) using normal approximation.
+    """95% confidence interval on ROI (% of stake) using normal approximation.
 
     Returns (lower_bound_pct, upper_bound_pct).
     """
@@ -304,8 +293,7 @@ def estimate_risk_of_ruin(
     ruin_threshold: float = 0.50,
     seed: int = 42,
 ) -> float:
-    """
-    Monte Carlo estimate of Risk of Ruin (proportion of simulations where
+    """Monte Carlo estimate of Risk of Ruin (proportion of simulations where
     bankroll drops below `ruin_threshold` fraction of starting bankroll).
 
     Parameters
@@ -322,6 +310,7 @@ def estimate_risk_of_ruin(
     Returns
     -------
     risk_of_ruin_pct : percentage 0–100 of simulations that hit ruin.
+
     """
     rng = random.Random(seed)
     ruin_count = 0
@@ -361,8 +350,7 @@ LIVE_CRITERIA: dict[str, dict] = {
 
 
 def score_live_readiness(report: ProfitabilityReport) -> tuple[float, bool, list[str]]:
-    """
-    Score the strategy's live-readiness on a 0-100 scale.
+    """Score the strategy's live-readiness on a 0-100 scale.
 
     Returns (score, live_ready, failure_reasons).
     A strategy is live-ready only if ALL hard criteria pass.
@@ -389,7 +377,7 @@ def score_live_readiness(report: ProfitabilityReport) -> tuple[float, bool, list
             earned_weight += criterion["weight"]
         else:
             failures.append(
-                f"{criterion['label']}: got {value:.3g}, need {direction} {threshold}"
+                f"{criterion['label']}: got {value:.3g}, need {direction} {threshold}",
             )
 
     score = (earned_weight / total_weight) * 100.0
@@ -407,8 +395,7 @@ def build_profitability_report(
     market_expected_hit_rate: float = 0.40,      # typical market-implied hit rate
     n_montecarlo: int = 5_000,
 ) -> ProfitabilityReport:
-    """
-    Build a ProfitabilityReport from a list of BetResult objects.
+    """Build a ProfitabilityReport from a list of BetResult objects.
 
     Only qualifying bets (result.qualified == True) are counted in financials.
     """
@@ -488,7 +475,7 @@ def build_profitability_report(
             "bets": len(lr),
             "wins": sum(1 for r in lr if r.won),
             "roi_pct": round(
-                sum(r.profit for r in lr) / max(sum(r.stake for r in lr), 1e-9) * 100, 2
+                sum(r.profit for r in lr) / max(sum(r.stake for r in lr), 1e-9) * 100, 2,
             ),
             "hit_rate_pct": round(sum(1 for r in lr if r.won) / len(lr) * 100, 2),
         }
