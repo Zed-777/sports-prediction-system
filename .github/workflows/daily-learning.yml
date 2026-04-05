@@ -71,6 +71,13 @@ jobs:
           done
         continue-on-error: true
 
+      - name: Generate baseline predictions for continuous tracking
+        id: baseline
+        run: |
+          echo "[STEP 4] Generating baseline predictions for continuous learning..."
+          python scripts/generate_baseline_predictions.py || true
+        continue-on-error: true
+
       - name: Upload learning logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -99,6 +106,7 @@ jobs:
           echo "- ✅ Collect Results: $([ ${{ steps.collect.outcome }} == 'success' ] && echo 'PASS' || echo 'FAIL (non-blocking)')" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Update Tracker: $([ ${{ steps.tracker.outcome }} == 'success' ] && echo 'PASS' || echo 'FAIL (non-blocking)')" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Optimize Models: $([ ${{ steps.optimize.outcome }} == 'success' ] && echo 'PASS' || echo 'FAIL (non-blocking)')" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Generate Baselines: $([ ${{ steps.baseline.outcome }} == 'success' ] && echo 'PASS' || echo 'FAIL (non-blocking)')" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Schedule" >> $GITHUB_STEP_SUMMARY
           echo "- **Time**: 4:00 AM UTC daily" >> $GITHUB_STEP_SUMMARY
