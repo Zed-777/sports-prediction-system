@@ -20,13 +20,10 @@ RUN apt-get update \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt requirements_phase2.txt requirements_phase2_fixed.txt requirements_phase2_no_tf.txt ./
+COPY requirements.txt ./
 
 RUN pip install --upgrade pip \
-	&& pip install -r requirements.txt \
-	&& pip install -r requirements_phase2.txt \
-	&& pip install -r requirements_phase2_fixed.txt \
-	&& pip install -r requirements_phase2_no_tf.txt
+	&& pip install -r requirements.txt
 
 COPY . .
 
