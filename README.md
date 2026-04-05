@@ -481,7 +481,54 @@ Access performance metrics via:
 - Added `--backfill-provider-ids` CLI option to copy provider ids from `reports` into `data/historical` when available. ✅
 - Preserve existing `actual_result`/`provider_ids` when saving new collected results. ✅
 - Added tests for matching, provider ID backfill, and merge behavior.
+## 🤖 Automated Learning Architecture (v4.1.1)
 
+The system operates with **ZERO manual ML tuning**. Models retrain automatically daily, accuracy drift is detected and corrected, and all learning happens without user intervention.
+
+### Quick Setup (One-Time, 5 minutes)
+
+```powershell
+# Run as Administrator
+python scripts/setup_automated_learning.py
+
+# Expected output: "Scheduled task created successfully!"
+```
+
+### What Happens Automatically
+
+Every day at 4 AM UTC:
+1. ✅ **Collect Results**: Fetch completed matches from Football-Data.org
+2. ✅ **Track Predictions**: Record actual outcomes and measure accuracy
+3. ✅ **Retrain Models**: Per-league optimization (ELO, Poisson, RF, GB, Neural networks, Calibration)
+4. ✅ **Cleanup**: Remove old cache files
+
+**All automated** — no manual intervention required. Users only:
+- **Generate predictions manually**: `python generate_fast_reports.py generate 5 for premier-league`
+- **View results manually**: Open `prediction_card.png`
+- **Everything else is automatic** ✨
+
+### Learn More
+
+📖 **Full documentation**: See [docs/MPDP.md](docs/MPDP.md) for:
+- Complete automation workflow and diagrams
+- Persistence model (what survives report deletion)
+- Monitoring commands and troubleshooting
+- Architecture alternatives (GitHub Actions, Docker)
+
+### Verify Automation
+
+```powershell
+# Check task exists
+schtasks /query /tn "SportsPrediction\SportsPredictionSystem-DailyLearning"
+
+# View latest learning logs
+Get-Content data/logs/automated/learning_loop_*.log -Tail 50
+
+# Manually trigger for testing
+schtasks /run /tn "SportsPrediction\SportsPredictionSystem-DailyLearning"
+```
+
+---
 ## 🤝 Contributing
 
 1. Fork the repository
