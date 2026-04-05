@@ -31,7 +31,7 @@ jobs:
         run: |
           python scripts/audit_synthetic_reports.py --days 7 --out reports/metrics/simulated_ci_summary.json
       - name: Upload synthetic summary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: synthetic-summary
           path: reports/metrics/simulated_ci_summary.json

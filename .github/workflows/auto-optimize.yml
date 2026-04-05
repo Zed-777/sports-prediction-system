@@ -40,7 +40,7 @@ jobs:
           python scripts/run_backtest.py --days 365 --skip-predictor || true
 
       - name: Upload optimization artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: optimization-results
           path: |
