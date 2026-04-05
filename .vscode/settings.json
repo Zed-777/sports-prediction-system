@@ -1,18 +1,18 @@
 {
     "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
     "python.terminal.activateEnvironment": true,
-    // Python analysis is configured in pyrightconfig.json - do not override here
+    // Python analysis configured in pyrightconfig.json - do not override
     "python.linting.enabled": true,
-    "python.linting.mypyEnabled": false,
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": false,
     "python.linting.pyrightEnabled": true,
+    "github.copilot.advanced": {
+        "authProvider": "github"
+    },
     "githubPullRequests.ignoredPullRequestBranches": [
         "feature/injuries-connector"
     ],
-    // GitHub Actions workflows use expression syntax (${{ secrets.* }}) that
-    // VS Code's YAML validator doesn't recognize. Since GitHub validates
-    // workflows at runtime and our workflows are tested/working, disable
-    // the false-positive warnings from the YAML validator
-    "yaml.validate": false
+    // Red Hat YAML extension with GitHub Actions support
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-workflow.json": ".github/workflows/**/*.{yml,yaml}"
+    },
+    "yaml.validate": true
 }
