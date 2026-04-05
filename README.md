@@ -483,50 +483,49 @@ Access performance metrics via:
 - Added tests for matching, provider ID backfill, and merge behavior.
 ## 🤖 Automated Learning Architecture (v4.1.1)
 
-The system operates with **ZERO manual ML tuning**. Models retrain automatically daily, accuracy drift is detected and corrected, and all learning happens without user intervention.
+The system operates with **ZERO manual ML tuning**. Models retrain automatically daily via **GitHub Actions**, and all learning happens without user intervention.
 
-### Quick Setup (One-Time, 5 minutes)
+### Zero-Setup Automation
 
-```powershell
-# Run as Administrator
-python scripts/setup_automated_learning.py
+Learning automatically runs **every day at 4 AM UTC** via GitHub Actions. No setup required!
 
-# Expected output: "Scheduled task created successfully!"
-```
-
-### What Happens Automatically
-
-Every day at 4 AM UTC:
+**What happens automatically**:
 1. ✅ **Collect Results**: Fetch completed matches from Football-Data.org
 2. ✅ **Track Predictions**: Record actual outcomes and measure accuracy
 3. ✅ **Retrain Models**: Per-league optimization (ELO, Poisson, RF, GB, Neural networks, Calibration)
 4. ✅ **Cleanup**: Remove old cache files
+5. ✅ **Commit**: Updated models pushed back to repo
 
-**All automated** — no manual intervention required. Users only:
-- **Generate predictions manually**: `python generate_fast_reports.py generate 5 for premier-league`
-- **View results manually**: Open `prediction_card.png`
+**What you do manually**:
+- **Generate predictions**: `python generate_fast_reports.py generate 5 for premier-league`
+- **View results**: Open `prediction_card.png`
 - **Everything else is automatic** ✨
+
+### Monitor Learning Runs
+
+```bash
+# View all learning workflow runs
+# Go to: https://github.com/Zed-777/sports-prediction-system/actions/workflows/daily-learning.yml
+
+# Or manually trigger a run
+# GitHub UI → Actions → Daily Automated Learning Loop → Run workflow
+```
+
+### Verify It's Working
+
+Learning artifacts are saved to the repo automatically:
+- `data/predictions.db` - Prediction tracking (survives report deletion)
+- `data/historical/*.json` - Historical results
+- `models/advanced/*.joblib` - Trained model artifacts
+- Check GitHub Actions logs for detailed run information
 
 ### Learn More
 
 📖 **Full documentation**: See [docs/MPDP.md](docs/MPDP.md) for:
 - Complete automation workflow and diagrams
-- Persistence model (what survives report deletion)
-- Monitoring commands and troubleshooting
-- Architecture alternatives (GitHub Actions, Docker)
-
-### Verify Automation
-
-```powershell
-# Check task exists
-schtasks /query /tn "SportsPrediction\SportsPredictionSystem-DailyLearning"
-
-# View latest learning logs
-Get-Content data/logs/automated/learning_loop_*.log -Tail 50
-
-# Manually trigger for testing
-schtasks /run /tn "SportsPrediction\SportsPredictionSystem-DailyLearning"
-```
+- Data persistence model (what survives report deletion)
+- Manual testing and troubleshooting
+- Alternative options (Windows Task Scheduler for local execution)
 
 ---
 ## 🤝 Contributing

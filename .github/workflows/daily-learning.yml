@@ -1,0 +1,119 @@
+name: Daily Automated Learning Loop
+
+on:
+  schedule:
+    - cron: '0 4 * * *'  # Runs daily at 04:00 UTC (1 hour after fetch-results)
+  workflow_dispatch:     # Allow manual triggers
+
+jobs:
+  daily-learning:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120  # 2 hour timeout (learning can take 45-90 min)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Create logs directory
+        run: |
+          mkdir -p data/logs/automated
+
+      - name: Run Automated Learning Loop
+        id: learning
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY || '' }}
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY || '' }}
+        run: |
+          echo "[INFO] Starting automated learning loop..."
+          python scripts/automated_learning_loop.py --verbose 2>&1 | tee learning_run.log
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+          exit $EXIT_CODE
+        continue-on-error: true
+
+      - name: Collect match results
+        id: collect
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY || '' }}
+        run: |
+          echo "[STEP 1] Collecting completed match results..."
+          python scripts/collect_historical_results.py --fetch-all --auto-optimize 50 || true
+        continue-on-error: true
+
+      - name: Update prediction tracker
+        id: tracker
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY || '' }}
+        run: |
+          echo "[STEP 2] Updating prediction tracker with match results..."
+          python scripts/update_prediction_results.py --days-back 14 --verbose || true
+        continue-on-error: true
+
+      - name: Optimize models per-league
+        id: optimize
+        run: |
+          echo "[STEP 3] Optimizing models..."
+          for league in "premier-league" "la-liga" "serie-a" "bundesliga" "ligue-1"; do
+            echo "  Processing: $league"
+            python scripts/optimize_accuracy.py --mode full --league "$league" || true
+          done
+        continue-on-error: true
+
+      - name: Upload learning logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: learning-logs
+          path: |
+            data/logs/automated/
+            learning_run.log
+          retention-days: 30
+
+      - name: Commit updated models and calibration
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -A data/historical/*.json data/predictions.db models/advanced/*.joblib data/cache/calibration_*.pkl || true
+          git commit -m 'ci: automated learning loop - retrain models and calibration (daily)' || true
+          git push || true
+
+      - name: Report Status
+        if: always()
+        run: |
+          echo "## Daily Learning Loop Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Steps Completed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Collect Results: $([ ${{ steps.collect.outcome }} == 'success' ] && echo 'PASS' || echo 'FAIL (non-blocking)')" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Update Tracker: $([ ${{ steps.tracker.outcome }} == 'success' ] && echo 'PASS' || echo 'FAIL (non-blocking)')" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Optimize Models: $([ ${{ steps.optimize.outcome }} == 'success' ] && echo 'PASS' || echo 'FAIL (non-blocking)')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Schedule" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time**: 4:00 AM UTC daily" >> $GITHUB_STEP_SUMMARY
+          echo "- **Duration**: ~45-90 minutes" >> $GITHUB_STEP_SUMMARY
+          echo "- **Next Run**: Tomorrow 4:00 AM UTC" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Learning Data Saved" >> $GITHUB_STEP_SUMMARY
+          echo "- Predictions tracking: \`data/predictions.db\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Historical results: \`data/historical/*.json\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Trained models: \`models/advanced/*.joblib\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Calibration state: \`data/cache/calibration_*.pkl\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f learning_run.log ]; then
+            echo "### Latest Logs" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            tail -30 learning_run.log >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          fi
