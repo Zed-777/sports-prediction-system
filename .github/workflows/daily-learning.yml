@@ -33,8 +33,8 @@ jobs:
       - name: Run Automated Learning Loop
         id: learning
         env:
-          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY || '' }}
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY || '' }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
         run: |
           echo "[INFO] Starting automated learning loop..."
           python scripts/automated_learning_loop.py --verbose 2>&1 | tee learning_run.log
@@ -46,7 +46,7 @@ jobs:
       - name: Collect match results
         id: collect
         env:
-          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY || '' }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: |
           echo "[STEP 1] Collecting completed match results..."
           python scripts/collect_historical_results.py --fetch-all --auto-optimize 50 || true
@@ -55,7 +55,7 @@ jobs:
       - name: Update prediction tracker
         id: tracker
         env:
-          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY || '' }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: |
           echo "[STEP 2] Updating prediction tracker with match results..."
           python scripts/update_prediction_results.py --days-back 14 --verbose || true
