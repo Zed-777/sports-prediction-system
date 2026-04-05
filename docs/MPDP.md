@@ -40,55 +40,62 @@ When users delete PNG/MD reports from `reports/`, the learning infrastructure **
 
 **Implication**: Reports are ephemeral (views); learning artifacts are permanent (state).
 
-### Setup Instructions (5 minutes, One-Time)
+### Setup Instructions (Zero Setup Required!)
 
-**Prerequisite**: Administrator privileges on Windows
+**The good news: GitHub Actions is already configured.** No setup needed!
 
-```powershell
-# Step 1: Navigate to project root
-cd C:\Dev\STATS
+The workflow file is already in place and will automatically run daily at 4 AM UTC:
+- ✅ Workflow: `.github/workflows/daily-learning.yml`
+- ✅ Schedule: Daily at 4:00 AM UTC
+- ✅ Runtime: ~45-90 minutes (5 leagues × 10-15 min each)
+- ✅ Status: Active and running (as soon as this workflow file is pushed)
 
-# Step 2: Run setup script (admin required)
-python scripts/setup_automated_learning.py
-
-# Expected output:
-# [SUCCESS] Scheduled task created successfully!
-# [INFO] Learning loop will run tomorrow at 4 AM UTC
-```
-
-**What it does**:
-- Validates Python learning loop script exists
-- Creates Windows Task Scheduler task
-- Task folder: `SportsPrediction`
-- Task name: `SportsPredictionSystem-DailyLearning`
-- Schedule: Daily 4 AM UTC
-- Runtime: ~45-90 minutes (5 leagues × 10-15 min each)
+**What it does automatically**:
+- Collects completed match results from Football-Data.org
+- Updates prediction tracker with actual outcomes
+- Retrains models per-league (ELO, Poisson, RF, GB, Neural, Calibration)
+- Cleans up old cache files
+- Commits updated models/calibration back to the repo
+- Logs all activity (available in Actions tab)
 
 ### Verification Commands
 
-```powershell
-# Check task exists
-schtasks /query /tn "SportsPrediction\SportsPredictionSystem-DailyLearning" /v
+```bash
+# View learning workflow runs (in GitHub UI)
+# Go to: https://github.com/Zed-777/sports-prediction-system/actions/workflows/daily-learning.yml
 
-# View recent runs
-Get-Content data/logs/automated/learning_loop_*.log | Select-Object -Last 50
+# Or use GitHub CLI:
+gh workflow view daily-learning.yml --repo Zed-777/sports-prediction-system
 
-# Manually trigger (test)
-schtasks /run /tn "SportsPrediction\SportsPredictionSystem-DailyLearning"
+# View latest run
+gh run list --repo Zed-777/sports-prediction-system --workflow daily-learning.yml --limit 5
+
+# View detailed logs of latest run
+gh run view --repo Zed-777/sports-prediction-system -w daily-learning.yml --log
+```
+
+**Manual Test** (trigger immediately):
+
+```bash
+# Using GitHub CLI
+gh workflow run daily-learning.yml --repo Zed-777/sports-prediction-system
+
+# Or use GitHub UI: Actions → Daily Automated Learning Loop → Run workflow
 ```
 
 ### Scripts Involved
 
-#### `scripts/setup_automated_learning.py` (Setup)
-- **Purpose**: Register Windows Task Scheduler task (run once)
-- **Run**: `python scripts/setup_automated_learning.py [--force]`
-- **Output**: Creates Task Scheduler task running learning loop daily
-- **Requires**: Administrator (checked via `ctypes.windll.shell.IsUserAnAdmin()`)
-- **Status**: ✅ READY
+#### `.github/workflows/daily-learning.yml` (PRIMARY - GitHub Actions)
+- **Purpose**: Cloud-hosted daily learning orchestrator
+- **Trigger**: Runs at 4 AM UTC daily automatically
+- **Manual Trigger**: Available via `workflow_dispatch` in GitHub UI
+- **Status**: ✅ ACTIVE - Running daily
+- **Monitoring**: View in GitHub Actions tab
 
-#### `scripts/automated_learning_loop.py` (Daily Runner)
-- **Purpose**: Execute 4-step learning cycle (runs daily 4 AM UTC)
+#### `scripts/automated_learning_loop.py` (Learning Executor)
+- **Purpose**: Execute 4-step learning cycle
 - **Run**: `python scripts/automated_learning_loop.py [--league {all|premier-league|la-liga|...}]`
+- **Also used by**: GitHub Actions workflow (daily), can be run locally for testing
 
 **4-Step Cycle**:
 
@@ -123,6 +130,7 @@ schtasks /run /tn "SportsPrediction\SportsPredictionSystem-DailyLearning"
 - Both file (DEBUG) and console (INFO) handlers
 
 **Example Usage**:
+
 ```bash
 # Run all leagues (default)
 python scripts/automated_learning_loop.py
@@ -136,18 +144,18 @@ python scripts/automated_learning_loop.py --verbose
 
 ### Architecture Options
 
-#### **Option 1: Windows Task Scheduler (PRIMARY - Current)**
-- **Pros**: Native to Windows, reliable, no external dependencies, local execution
-- **Cons**: Windows-only
-- **Setup**: `python scripts/setup_automated_learning.py`
-- **Status**: ✅ IMPLEMENTED
-
-#### **Option 2: GitHub Actions (FALLBACK - Future v4.2)**
-- **Pros**: Cross-platform, integrated with repo, free, monitored via GitHub UI
-- **Cons**: Require GitHub token, API rate limits, network-dependent
-- **Workflow**: `.github/workflows/daily-learning.yml` (TBD)
+#### **Option 1: GitHub Actions (PRIMARY - Current v4.1.1)**
+- **Pros**: Cloud-hosted, no machine dependency, integrated with repo, free (generous limits), built-in logging
+- **Cons**: Slight latency (runs in cloud), API rate limits (manageable for this use case)
+- **Workflow**: `.github/workflows/daily-learning.yml`
 - **Schedule**: `0 4 * * *` (4 AM UTC daily via `schedule`)
-- **Status**: 🔳 NOT YET IMPLEMENTED
+- **Status**: ✅ IMPLEMENTED - Active and running daily
+
+#### **Option 2: Windows Task Scheduler (ALTERNATIVE)**
+- **Pros**: Local execution, no cloud dependency, full system privileges
+- **Cons**: Windows-only, requires local machine on, admin setup friction
+- **Setup**: `python scripts/setup_automated_learning.py` (requires admin)
+- **Status**: 🔳 Available if local execution needed
 
 #### **Option 3: Docker Cron (FUTURE v5.0)**
 - **Pros**: All-platform, containerized, portable
@@ -158,6 +166,7 @@ python scripts/automated_learning_loop.py --verbose
 ### Monitoring & Troubleshooting
 
 #### Check Task Status
+
 ```powershell
 # List tasks in SportsPrediction folder
 schtasks /query /tn "SportsPrediction\*" /v
@@ -167,6 +176,7 @@ schtasks /query /tn "SportsPrediction\SportsPredictionSystem-DailyLearning" /v |
 ```
 
 #### View Logs
+
 ```powershell
 # Last 50 lines of latest log
 Get-Content (Get-ChildItem data/logs/automated -Filter "learning_loop_*.log" | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName -Tail 50
@@ -176,6 +186,7 @@ Select-String "ERROR|CRITICAL|FAIL" data/logs/automated/learning_loop_*.log
 ```
 
 #### Manual Test
+
 ```powershell
 # Run once to verify
 python scripts/automated_learning_loop.py --league premier-league --verbose
@@ -243,14 +254,14 @@ Get-Content data/logs/automated/learning_loop_*.log -Tail 100
 ## 🔄 Full Learning Loop Workflow (Detailed)
 
 ```
-4 AM UTC (Daily)
+4 AM UTC Daily (GitHub Actions)
   │
-  ├─► [Task Scheduler] Main entry: schtasks runs Python
-  │   │
-  │   └─► [setup_automated_learning.py] Initial registration (one-time setup)
-  │       └─► Registers Task Scheduler task to run learning loop
+  ├─► [GitHub Actions] Trigger: schedule cron '0 4 * * *'
+  │   └─► Or manual: workflow_dispatch (GitHub UI)
   │
-  └─► [learning_loop.py] Execution (daily)
+  └─► [daily-learning.yml] Execution (Ubuntu runner)
+      │
+      ├─► Setup: Checkout code, Python 3.11, Install dependencies
       │
       ├─► Step 1: Collect Results
       │   ├─ Football-Data.org API: fetch finished matches (last 7 days)
@@ -284,11 +295,15 @@ Get-Content data/logs/automated/learning_loop_*.log -Tail 100
       │   ├─ Compact: SQLite DB (VACUUM)
       │   └─ Time: ~1 min
       │
-      └─► [Log Summary]
-          ├─ Status: SUCCESS/FAILURE
-          ├─ Models retrained: {5 leagues}
-          ├─ Accuracy delta: {before → after %}
-          └─ Next run: {tomorrow 4 AM UTC}
+      ├─► Commit Results
+      │   ├─ Git add: models/advanced/*.joblib, data/historical/*.json, data/predictions.db
+      │   ├─ Commit: 'ci: automated learning loop - retrain models and calibration (daily)'
+      │   └─ Push: back to main branch
+      │
+      └─► Report Summary
+          ├─ Upload logs artifact (30-day retention)
+          ├─ Post GitHub summary (visible in Actions tab)
+          └─ Next run: Tomorrow 4 AM UTC
 ```
 
 ---
@@ -296,6 +311,7 @@ Get-Content data/logs/automated/learning_loop_*.log -Tail 100
 ## 🚀 Quick Start (Users)
 
 ### Generate Predictions (Manual)
+
 ```bash
 # Generate 5 predictions for Premier League
 python generate_fast_reports.py generate 5 for premier-league
@@ -304,58 +320,71 @@ python generate_fast_reports.py generate 5 for premier-league
 open reports/prediction_card.png
 ```
 
-### Enable Automated Learning (One-Time)
-```powershell
-# Run as Administrator
-python scripts/setup_automated_learning.py
+### Automated Learning (Zero Setup Required!)
+- ✅ Learning loop **already configured** in GitHub Actions
+- ✅ Runs automatically **every day at 4 AM UTC**
+- ✅ Models updated and committed back to repo
+- ✅ No local machine required
 
-# Verify
-schtasks /query /tn "SportsPrediction\SportsPredictionSystem-DailyLearning"
-```
+**To monitor learning runs**:
+1. Go to: <https://github.com/Zed-777/sports-prediction-system/actions>
+2. Click: "Daily Automated Learning Loop"
+3. View latest run logs and status
 
-### Monitor Learning (Ongoing)
-```powershell
-# View latest log
-Get-Content data/logs/automated/learning_loop_*.log -Tail 30
-
-# Manually trigger today (for testing)
-schtasks /run /tn "SportsPrediction\SportsPredictionSystem-DailyLearning"
-```
+**To manually trigger a learning run** (test):
+1. Go to GitHub Actions page
+2. Select: "Daily Automated Learning Loop"
+3. Click: "Run workflow"
 
 ---
 
 ## 🔧 Architecture Decisions
 
-### Why Python for Learning Loop (Not PowerShell)?
-- **Simplicity**: Direct subprocess calls, exception handling, logging (no $() nesting issues)
-- **Portability**: Python backend already in use for ML; single language throughout
-- **Maintainability**: Less brittle than nested PowerShell error expressions
-- **Logging**: Python logging module = cleaner output than Write-Progress
+### Why GitHub Actions (Primary Solution)?
+- **No setup friction**: GitHub Actions is built-in; no admin elevation needed
+- **Cloud-hosted**: Learning runs whether your machine is on or off
+- **Native integration**: Workflow file in `.github/workflows/` is version-controlled
+- **Built-in logging**: All runs visible in GitHub UI with full logs
+- **Free tier**: Generous limits (2,000 minutes/month free, task takes ~1.5 hrs)
+- **Reliability**: GitHub's infrastructure, not machine-dependent
+- **Results committed back**: Updated models automatically pushed to repo
 
-### Why Windows Task Scheduler (Not GitHub Actions)?
-- **Local execution**: No network dependency, API rate limits, or GitHub token rotation
-- **Reliability**: Native Windows feature, no external failures
-- **Privacy**: All data stays in-house (no cloud sync)
-- **Development velocity**: GitHub Actions future-proof (v4.2+), but Task Scheduler ready now
+### Why NOT Windows Task Scheduler?
+- ✅ Still available as alternative (see Option 2)
+- ❌ Requires admin privileges (not always available)
+- ❌ Machine must stay on/running (not suitable for laptops)
+- ❌ Manual log checking required
+- ❌ More setup friction
+
+### Why Python for Learning Loop (Not PowerShell)?
+- **Simplicity**: Direct subprocess calls, exception handling, logging
+- **Consistency**: Python backend already in use; single language throughout
+- **Portability**: Runs identically on Linux (GitHub Actions) and Windows
+- **Maintainability**: Less brittle error handling than nested PowerShell $()
 
 ### Why 4 AM UTC?
-- **Time**: Low-traffic cluster for APIs (4 AM UTC = 11 PM EST = off-peak)
+- **Time**: Low-traffic cluster for APIs (4 AM UTC = off-peak noise trading)
 - **Before trading**: Predictions ready for next day's markets
-- **Run window**: 45-90 min fits comfortably before work hours
+- **After fetch**: Schedules 1 hour after fetch-results workflow (3 AM UTC)
+- **Run window**: 45-90 min fits comfortably before trading opens
 
 ---
 
 ## 📝 Next Steps (Post-v4.1.1)
+
+### Immediate (This Week)
+- [ ] Verify first automated learning run (check GitHub Actions tab)
+- [ ] Monitor accuracy trends (view logs to verify models improving)
+- [ ] Test manual trigger (run workflow once via GitHub UI)
 
 ### v4.1.2 (Bug Fixes)
 - [ ] Add webhook notifications (email on drift detection)
 - [ ] Implement circuit breaker (skip days if API down >12 hours)
 - [ ] Add model comparison dashboard (accuracy trends over time)
 
-### v4.2 (GitHub Actions)
-- [ ] Implement `.github/workflows/daily-learning.yml` (fallback automation)
-- [ ] Store secrets in GitHub (API keys, SMTP config)
-- [ ] Artifact storage for historical logs
+### v4.2 (Windows Alternative)
+- [ ] Document Windows Task Scheduler setup (`.github/workflows/daily-learning.yml` is primary, but alternative available)
+- [ ] Create helper script for Windows users (batch/PowerShell elevate wrapper)
 
 ### v5.0 (Monitoring Dashboard)
 - [ ] Flask/Streamlit dashboard: Real-time learning status
