@@ -1,0 +1,16 @@
+---
+extends: default
+
+rules:
+  line-length:
+    max: 120
+    level: warning
+  document-start: disable
+  comments:
+    min-spaces-from-content: 2
+
+# Note: GitHub Actions context access warnings (like ${{ secrets.* }})
+# are false positives from the YAML linter. These are valid GitHub Actions
+# syntax that executes correctly at runtime. The linter simply doesn't
+# recognize the GitHub Actions context, so these warnings can be safely ignored.
+
