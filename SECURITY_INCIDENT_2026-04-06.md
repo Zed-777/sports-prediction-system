@@ -16,12 +16,12 @@ A valid API key for Football-Data.org was exposed in the source code as a hardco
 
 | Item | Details |
 |------|---------|
-| **Key** | `REDACTED_API_KEY` |
+| **Key** | `[REDACTED-API-KEY]` |
 | **Provider** | Football-Data.org |
 | **Type** | API Authentication Token |
 | **Found In** | 2 files (see below) |
-| **Exposure** | Git history (permanent until key is rotated) |
-| **Impact** | High - Valid credential, no expiration |
+| **Exposure** | Git history (scrubbed from code and commits) |
+| **Impact** | High - Valid credential until rotated |
 
 ---
 
