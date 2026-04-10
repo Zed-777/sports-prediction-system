@@ -16,9 +16,12 @@ class AdvancedPredictionEngine:
     """Enhanced prediction engine with dynamic confidence and advanced analytics"""
 
     def __init__(self):
-        self.api_key = os.getenv(
-            "FOOTBALL_DATA_API_KEY", "REDACTED_API_KEY",
-        )
+        self.api_key = os.getenv("FOOTBALL_DATA_API_KEY")
+        if not self.api_key:
+            raise ValueError(
+                "FOOTBALL_DATA_API_KEY environment variable not set. "
+                "Please set it in .env or export it before running."
+            )
         self.headers = {"X-Auth-Token": self.api_key}
 
         # La Liga team strength ratings (based on recent seasons)

@@ -64,9 +64,12 @@ class RealTimeDataIntegrator:
     """Advanced real-time data integration system"""
 
     def __init__(self) -> None:
-        self.football_api_key = os.getenv(
-            "FOOTBALL_DATA_API_KEY", "REDACTED_API_KEY",
-        )
+        self.football_api_key = os.getenv("FOOTBALL_DATA_API_KEY")
+        if not self.football_api_key:
+            raise ValueError(
+                "FOOTBALL_DATA_API_KEY environment variable not set. "
+                "Please set it in .env or export it before running."
+            )
         self.weather_api_base = "https://api.open-meteo.com/v1/forecast"
         self.headers = {"X-Auth-Token": self.football_api_key}
 
