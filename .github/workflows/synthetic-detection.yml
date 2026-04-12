@@ -36,7 +36,7 @@ jobs:
           name: synthetic-summary
           path: reports/metrics/simulated_ci_summary.json
       - name: Alert if synthetic reports exceed threshold
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           SYNTHETIC_ALERT_THRESHOLD: 0
           SYNTHETIC_ALERT_FRACTION: 0.10
