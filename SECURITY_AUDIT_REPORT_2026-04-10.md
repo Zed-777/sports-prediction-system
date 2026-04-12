@@ -9,8 +9,9 @@
 A thorough security review of the sports-prediction-system repository has been completed. **The codebase is now secure and free of exposed credentials**.
 
 ### Audit Results
+
 | Category | Status | Details |
-|----------|--------|---------|
+| -------- | ------ | ------- |
 | Exposed API Keys | ✅ CLEAN | All instances removed from code, commits, and documentation |
 | Hardcoded Credentials | ✅ CLEAN | No passwords, tokens, secrets found in code |
 | Environment Configuration | ✅ SECURE | `.env.example` provided, `.env` excluded from git |
@@ -36,6 +37,7 @@ A thorough security review of the sports-prediction-system repository has been c
 5. Force-pushed cleaned history to GitHub
 
 **Verification:**
+
 ```bash
 ❌ FOUND (April 6): 17405508d1774f46a368390ff07f8a31 in 2 files + 2 commits + 1 report
 ✅ CLEAN (April 10): 0 instances of key remaining in git history
@@ -50,7 +52,7 @@ A thorough security review of the sports-prediction-system repository has been c
 **Files Scanned:** 127 Python files, 8 YAML config files, 10 JSON schema files
 
 **Credential Patterns Checked:**
-- ✅ `password = "..."`  — No hardcoded values (except 3 dummy test keys: `DUMMY_API_KEY`, dummy_key_for_training`, `loader_key`)
+- ✅ `password = "..."`  — No hardcoded values (except 3 dummy test keys: `DUMMY_API_KEY`, dummy_key_for_training`,`loader_key`)
 - ✅ `api_key = "..."`  — All use `os.getenv()` with strict enforcement
 - ✅ `token = "..."`  — No hardcoded OAuth tokens
 - ✅ `secret = "..."`  — No hardcoded secrets (except test fixtures)
@@ -72,6 +74,7 @@ These are dummy values intentionally used in test fixtures:
 
 ### .env Management
 **Current State:**
+
 ```bash
 .env              → IGNORED by git (in .gitignore)         ✅
 .env.example      → TRACKED in git (template with blanks)  ✅
@@ -79,14 +82,17 @@ These are dummy values intentionally used in test fixtures:
 ```
 
 **Required Environment Variables:**
-```
+
+```text
 FOOTBALL_DATA_API_KEY    → User must set (fails loudly if missing)
 ODDS_API_KEY             → Optional (not currently used)
 OPEN_METEO_API_KEY       → Optional (weather service)
 ```
 
 **Verification Script Added:**
+
 All critical services now throw `ValueError` if required env vars are missing:
+
 ```python
 api_key = os.getenv("FOOTBALL_DATA_API_KEY")
 if not self.api_key:
@@ -100,7 +106,9 @@ if not self.api_key:
 ## 4. Code Vulnerabilities Assessment
 
 ### SQL Injection Risk: **LOW ✅**
+
 All database queries use parameterized statements:
+
 ```python
 # ✅ SAFE: Parameterized
 cursor.execute(
@@ -122,10 +130,11 @@ cursor.execute(
 - ✅ JWT tokens (if used) properly validated
 
 ### Dependency Vulnerabilities
+
 ```bash
-$ bandit -r app/              → No issues
-$ safety check                → No known vulnerabilities
-$ pip-audit                   → Clean
+bandit -r app/               → No issues
+safety check                 → No known vulnerabilities
+pip-audit                    → Clean
 ```
 
 ---
@@ -133,7 +142,8 @@ $ pip-audit                   → Clean
 ## 5. File System & Directory Permissions
 
 ### Git Ignore Configuration
-```
+
+```text
 .env                          # ✅ Environment variables excluded
 *.pyc, __pycache__           # ✅ Cache excluded
 .venv, venv/                 # ✅ Virtual env excluded
@@ -171,17 +181,18 @@ models/*sandbox*             # ✅ Sandbox models excluded
 
 ### API Credentials Management
 
-**Football-Data.org API Key**
+#### Football-Data.org API Key
 - ✅ Removed from source code
 - ✅ Loaded from environment variable only
 - ✅ Fails loudly if missing
 - ✅ **ACTION REQUIRED**: Rotate key at provider (see below)
 
-**Open-Meteo API**
+#### Open-Meteo API
+
 - ✅ Free public API, no key required
 - ✅ No authentication credentials stored
 
-**The Odds API**
+#### The Odds API
 - ✅ Optional service (not currently enabled)
 - ✅ Would use environment variable if enabled
 
@@ -190,7 +201,7 @@ models/*sandbox*             # ✅ Sandbox models excluded
 ## 8. Incident Timeline & Resolution
 
 | Date | Event | Status |
-|------|-------|--------|
+| ---- | ----- | ------ |
 | Apr 6 | Created security incident report | 📋 Documented |
 | Apr 6 | Removed hardcoded API key from code | ✅ FIXED |
 | Apr 8-10 | Cleaned git history (committed messages) | ✅ CLEANED |
@@ -203,19 +214,22 @@ models/*sandbox*             # ✅ Sandbox models excluded
 ## 9. Remaining Action Items
 
 ### 🚨 CRITICAL - User Must Do
-**Rotate the Exposed API Key Immediately**
+
+#### Rotate the Exposed API Key Immediately
 
 The key `17405508d1774f46a368390ff07f8a31` is now scrubbed from git history but **must be rotated at Football-Data.org**:
 
-1. Go to: https://www.football-data.org/client/register
+1. Go to: <https://www.football-data.org/client/register>
 2. Log in to your account
 3. Regenerate/create a new API key
 4. Delete the old key (if possible)
 5. Update local `.env`:
-   ```bash
-   FOOTBALL_DATA_API_KEY=<YOUR_NEW_KEY_HERE>
-   ```
-6. Test: `python phase2_lite.py` (should work with new key)
+
+```bash
+FOOTBALL_DATA_API_KEY=<YOUR_NEW_KEY_HERE>
+```
+
+1. Test: `python phase2_lite.py` (should work with new key)
 
 **Timeline:** Do this ASAP (within 24 hours if possible)
 
@@ -225,6 +239,7 @@ The key `17405508d1774f46a368390ff07f8a31` is now scrubbed from git history but 
 
 ### 1. Prevent Future Key Leaks
 Install pre-commit hook to catch credentials:
+
 ```bash
 pip install detect-secrets
 detect-secrets scan --baseline .secrets.baseline
@@ -232,6 +247,7 @@ detect-secrets scan --baseline .secrets.baseline
 
 ### 2. Add to CI/CD Pipeline
 In `.github/workflows/`:
+
 ```yaml
 - name: Scan for secrets
   run: detect-secrets scan --baseline .secrets.baseline
@@ -255,7 +271,7 @@ Before committing, verify:
 ## 11. Compliance Checklist
 
 | Item | Status | Notes |
-|------|--------|-------|
+| ---- | ------ | ----- |
 | No exposed API keys in current code | ✅ | Strict environment variable enforcement |
 | No exposed API keys in git history | ✅ | Cleaned via git rewrite |
 | No hardcoded passwords | ✅ | 0 found (only dummy test keys) |

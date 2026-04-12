@@ -15,7 +15,7 @@ A valid API key for Football-Data.org was exposed in the source code as a hardco
 ## Exposed Credentials
 
 | Item | Details |
-|------|---------|
+| ---- | ------- |
 | **Key** | `[REDACTED-API-KEY]` |
 | **Provider** | Football-Data.org |
 | **Type** | API Authentication Token |
@@ -28,10 +28,11 @@ A valid API key for Football-Data.org was exposed in the source code as a hardco
 ## Affected Files
 
 ### 1. `advanced_prediction_engine.py` (Line 20)
+
 ```python
 # BEFORE (EXPOSED):
 self.api_key = os.getenv(
-    "FOOTBALL_DATA_API_KEY", "REDACTED_API_KEY",  # ← KEY
+    "FOOTBALL_DATA_API_KEY", "[REDACTED-API-KEY]",  # ← KEY
 )
 
 # AFTER (FIXED):
@@ -41,10 +42,11 @@ if not self.api_key:
 ```
 
 ### 2. `app/data/realtime_integrator.py` (Line 68)
+
 ```python
 # BEFORE (EXPOSED):
 self.football_api_key = os.getenv(
-    "FOOTBALL_DATA_API_KEY", "REDACTED_API_KEY",  # ← KEY
+    "FOOTBALL_DATA_API_KEY", "[REDACTED-API-KEY]",  # ← KEY
 )
 
 # AFTER (FIXED):
@@ -73,6 +75,7 @@ if not self.football_api_key:
 ## IMMEDIATE ACTIONS REQUIRED 🚨
 
 ### 1. **ROTATE THE EXPOSED KEY** (Do This First)
+
 ```bash
 # Go to: https://www.football-data.org/client/register
 # Or contact: Football-Data.org support
@@ -85,12 +88,14 @@ if not self.football_api_key:
 ```
 
 ### 2. **Update Your Local .env**
+
 ```bash
 # Edit: .env
 FOOTBALL_DATA_API_KEY=<YOUR_NEW_KEY_HERE>
 ```
 
 ### 3. **Verify Code is Using Environment Variable**
+
 ```bash
 # These should now work (using .env):
 python phase2_lite.py
@@ -102,6 +107,7 @@ python -c "from advanced_prediction_engine import AdvancedPredictionEngine; e = 
 ```
 
 ### 4. **Commit the Fix** (Already Done)
+
 ```bash
 git log --oneline | head -1
 # 2b6c8aa CRITICAL SECURITY: Remove hardcoded API key from source code
@@ -112,6 +118,7 @@ git log --oneline | head -1
 ## Why This Happened
 
 **Root Cause:** Fallback default values in environment variable access
+
 ```python
 # BAD PATTERN (NEVER USE):
 api_key = os.getenv("MY_KEY", "hardcoded_default_value")  # ← DANGEROUS
@@ -127,6 +134,7 @@ if not api_key:
 ## Prevention (Going Forward)
 
 ### 1. **Pre-Commit Hook** (Recommended)
+
 ```bash
 # Add to .git/hooks/pre-commit
 #!/bin/bash
@@ -137,6 +145,7 @@ fi
 ```
 
 ### 2. **Linter Configuration** (Add to CI)
+
 ```bash
 # Use detect-secrets or similar:
 pip install detect-secrets
@@ -165,6 +174,7 @@ detect-secrets scan --baseline .secrets.baseline
 ## Git History Considerations
 
 ### The Key is Still in Git History
+
 ```bash
 # Anyone with repository access can recover the old key:
 git log --all -S "REDACTED_API_KEY"
@@ -183,7 +193,7 @@ Since the exposed key is now rotated/disabled, the risk is minimized.
 ## Incident Timeline
 
 | Time | Event | Status |
-|------|-------|--------|
+| ---- | ----- | ------ |
 | 2026-04-06 10:30 | Automated security audit discovered hardcoded key | 🚨 Found |
 | 2026-04-06 10:31 | Removed hardcoded values from code | ✅ Fixed |
 | 2026-04-06 10:32 | Committed security fix to git | ✅ Committed |

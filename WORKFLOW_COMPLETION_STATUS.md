@@ -51,11 +51,11 @@
 ## Actual Status
 
 | Component | Status | Details |
-|-----------|--------|---------|
+| --------- | ------ | ------- |
 | Workflow Triggered | ❓ Unclear | User said it completed, but unclear when/how |
 | Database Updated | ❌ No | Main DB untouched since Dec 14 |
 | Predictions Generated | ✅ Yes | 499 in cache (but old: Dec 16) |
-| Results Committed | ❌ No | No git commits from workflow |  
+| Results Committed | ❌ No | No git commits from workflow |
 | Learning Active | ⚠️ Partial | Code can generate predictions, but not properly integrated |
 
 ---
@@ -105,19 +105,22 @@ python examine_cache_db.py
 
 ## Next Steps
 
-**Option A: If Workflow Just Completed Successfully**
+### Option A: If Workflow Just Completed Successfully
+
 1. Check GitHub Actions page for the run
 2. Get the latest commit from GitHub (pull)
 3. Verify new predictions in database
 4. Run: `python check_workflow_status.py`
 
-**Option B: If Workflow Failed**
+### Option B: If Workflow Failed
+
 1. Check error logs in GitHub Actions console
 2. Fix the issue (likely API key or environment setup)
 3. Retrigger manually
 4. Monitor logs in real-time
 
-**Option C: Workflow Status Unknown**
+### Option C: Workflow Status Unknown
+
 - Use GitHub CLI: `gh run list --limit 5`
 - Or provide screenshot of GitHub Actions page
 

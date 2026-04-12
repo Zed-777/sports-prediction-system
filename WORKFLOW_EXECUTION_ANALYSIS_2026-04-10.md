@@ -26,7 +26,8 @@ The 4 AM automated learning workflow is **NOT EXECUTING**. Despite being success
 ### Evidence
 
 **Database Status:**
-```
+
+```bash
 File: data/predictions.db
 Last Modified: Dec 14, 2025 23:09:20
 Age: 118 days
@@ -34,7 +35,8 @@ Records: 0 entries
 ```
 
 **Log Directory:**
-```
+
+```bash
 Path: data/logs/automated/
 Status: DOES NOT EXIST
 (Workflow never created logs = never executed)
@@ -43,7 +45,7 @@ Status: DOES NOT EXIST
 **Expected vs Actual:**
 
 | Date | Time | Expected | Actual | Status |
-|------|------|----------|--------|--------|
+| ---- | ---- | -------- | ------ | ------ |
 | Apr 7 | 04:00 UTC | Learning run #1 | No execution | ❌ |
 | Apr 8 | 04:00 UTC | Learning run #2 | No execution | ❌ |
 | Apr 9 | 04:00 UTC | Learning run #3 | No execution | ❌ |
@@ -56,6 +58,7 @@ Status: DOES NOT EXIST
 ## Why GitHub Secrets Matter
 
 **Workflow Step (from .github/workflows/daily-learning.yml):**
+
 ```yaml
 - name: Run Automated Learning Loop
   env:
@@ -79,7 +82,8 @@ Status: DOES NOT EXIST
 #### Step 1: Set GitHub Repository Secret
 
 1. **Go to GitHub:**
-   ```
+
+   ```text
    https://github.com/Zed-777/sports-prediction-system
    → Settings → Secrets and variables → Actions
    ```
@@ -89,7 +93,7 @@ Status: DOES NOT EXIST
 3. **Enter:**
    - **Name:** `FOOTBALL_DATA_API_KEY`
    - **Value:** `<YOUR_FOOTBALL_DATA_ORG_API_KEY>`
-   
+
    ⚠️ **Important:** This must match your key at Football-Data.org
 
 4. **Click "Add secret"**
@@ -97,7 +101,8 @@ Status: DOES NOT EXIST
 #### Step 2: Verify Secret is Accessible
 
 1. Return to GitHub Actions page:
-   ```
+
+   ```text
    https://github.com/Zed-777/sports-prediction-system/actions
    ```
 
@@ -123,12 +128,14 @@ Status: DOES NOT EXIST
 After test run completes (~2 hours later):
 
 **Check Database:**
+
 ```bash
 python check_workflow_status.py
 ```
 
 **Expected Output:**
-```
+
+```bash
 ✓ Database exists
 ✓ Database is accessible
 Tables (1):
@@ -138,12 +145,14 @@ Tables (1):
 ```
 
 **Check Logs:**
-```
+
+```bash
 data/logs/automated/learning_loop_2026-04-10_HHMMSS.log
 ```
 
 Should contain:
-```
+
+```bash
 [INFO] Starting automated learning loop...
 [INFO] Step 1: Collect Results... OK
 [INFO] Step 2: Update Tracker... OK
@@ -157,7 +166,7 @@ Should contain:
 ## Timeline to Get Automation Working
 
 | Step | Duration | Notes |
-|------|----------|-------|
+| ---- | -------- | ----- |
 | Add GitHub Secret | 2 minutes | Fastest part |
 | Verify Secret | 1 minute | Confirmation |
 | Trigger Test Run | < 1 minute | Click button |
@@ -204,18 +213,21 @@ Should contain:
    - Delete old key: `17405508d1774f46a368390ff07f8a31`
 
 2. ✅ **Update local `.env`**
+
    ```bash
    FOOTBALL_DATA_API_KEY=<YOUR_NEW_KEY>
    ```
 
 3. ✅ **Update GitHub Secret**
-   ```
+
+   ```text
    https://github.com/Zed-777/sports-prediction-system
    → Settings → Secrets → FOOTBALL_DATA_API_KEY
    → Update value (paste new key)
    ```
 
 4. ✅ **Test locally**
+
    ```bash
    python phase2_lite.py
    python generate_fast_reports.py
@@ -236,7 +248,7 @@ Should contain:
 Once GitHub Secret is set:
 
 | Date | Time UTC | Expected Action | Logs Location |
-|------|----------|---------|---|
+| ---- | -------- | --------------- | ------------- |
 | Apr 11 | 04:00 | Automatic learning run | `data/logs/automated/learning_loop_2026-04-11_*.log` |
 | Apr 12 | 04:00 | Automatic learning run | `data/logs/automated/learning_loop_2026-04-12_*.log` |
 | Apr 13 | 04:00 | Automatic learning run | `data/logs/automated/learning_loop_2026-04-13_*.log` |
@@ -249,12 +261,14 @@ Once GitHub Secret is set:
 If the workflow continues to fail after setting the secret:
 
 **Manual Trigger:**
+
 ```bash
 # Run on your machine every 4 AM
 python scripts/automated_learning_loop.py --verbose
 ```
 
 **Windows Task Scheduler Alternative:**
+
 ```powershell
 # Create scheduled task for 4 AM UTC (your local time)
 $trigger = New-ScheduledTaskTrigger -Daily -At 4:00AM
@@ -267,7 +281,7 @@ Register-ScheduledTask -TaskName "STATS-Learning-Loop" -Trigger $trigger -Action
 ## Summary
 
 | Item | Status | Action |
-|------|--------|--------|
+| ---- | ------ | ------ |
 | Code (API key removed) | ✅ Done | None needed |
 | GitHub Secret configured | ❌ Missing | **Add now** |
 | Workflow file created | ✅ Done | None needed |
