@@ -14,7 +14,7 @@ shap>=0.42.0
 # Statistical models
 pymc>=5.7.0
 arviz>=0.16.0
-statsmodels>=0.14.0
+statsmodels>=0.14.6
 
 # Data processing and APIs
 requests>=2.31.0
